@@ -15,10 +15,10 @@ impl Plugin for ConfigPlugin {
         #[cfg(feature = "web")]
         let config_str = include_str!("../assets/config.ron");
         #[cfg(not(feature = "web"))]
-        let config_str = std::fs::read_to_string("assets/config.ron")
+        let config_str = &std::fs::read_to_string("assets/config.ron")
             .tap_err(|e| error!("Reading config: {e}"))
             .unwrap_or_default();
-        let config = from_str::<Config>(&config_str)
+        let config = from_str::<Config>(config_str)
             .tap_err(|e| error!("Deserializing config: {e}"))
             .unwrap_or_default();
         info!("Loaded config");

@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use bevy::app::MainScheduleOrder;
 use bevy::ecs::schedule::ScheduleLabel;
 use bevy::prelude::*;
