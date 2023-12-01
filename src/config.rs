@@ -1,5 +1,3 @@
-use std::fs::read_to_string;
-
 use bevy::prelude::*;
 use bevy::window::ExitCondition;
 use bevy::window::PresentMode;
@@ -14,13 +12,15 @@ pub struct ConfigPlugin;
 
 impl Plugin for ConfigPlugin {
     fn build(&self, app: &mut App) {
-        let config = from_str::<Config>(
-            &read_to_string(CONFIG_PATH)
-                .tap_err(|e| error!("Reading config: {e}"))
-                .unwrap_or_default(),
-        )
-        .tap_err(|e| error!("Deserializing config: {e}"))
-        .unwrap_or_default();
+        #[cfg(feature = "web")]
+        let config_str = include_str!("../assets/config.ron");
+        #[cfg(not(feature = "web"))]
+        let config_str = std::fs::read_to_string("assets/config.ron")
+            .tap_err(|e| error!("Reading config: {e}"))
+            .unwrap_or_default();
+        let config = from_str::<Config>(&config_str)
+            .tap_err(|e| error!("Deserializing config: {e}"))
+            .unwrap_or_default();
         info!("Loaded config");
 
         app.register_type::<Config>()
@@ -29,6 +29,9 @@ impl Plugin for ConfigPlugin {
                     present_mode: config.present_mode,
                     mode: config.window_mode,
                     title: WINDOW_TITLE.to_string(),
+                    canvas: Some("#bevy".to_string()),
+                    fit_canvas_to_parent: true,
+                    prevent_default_event_handling: true,
                     ..default()
                 }),
                 exit_condition: ExitCondition::OnPrimaryClosed,
@@ -40,7 +43,6 @@ impl Plugin for ConfigPlugin {
 }
 
 const WINDOW_TITLE: &str = "bevy_jam_template";
-const CONFIG_PATH: &str = "assets/config.ron";
 
 // TODO: DevConfig
 #[derive(Resource, Reflect, Serialize, Deserialize)]
