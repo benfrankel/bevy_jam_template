@@ -64,7 +64,7 @@ function linux() {
   rm -rf "${OUT_DIR:?}"/* "${OUT_ZIP}"
 
   # Build
-  cargo build --release --features=native --target="${TARGET}"
+  cargo build --release --features=native,bevy/wayland --target="${TARGET}"
 
   # Prepare zip
   cp -r assets "target/${TARGET}/release/run" "${OUT_DIR}"
