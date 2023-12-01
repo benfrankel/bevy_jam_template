@@ -1,0 +1,21 @@
+# General
+max_width = 100
+use_field_init_shorthand = true
+use_try_shorthand = true
+
+# Use the default for now, but may want to tweak later:
+#
+# struct_lit_width = 18
+# where_single_line = false
+# wrap_comments = false
+
+# Unstable
+group_imports = "StdExternalCrate"
+imports_granularity = "Item"
+imports_layout = "HorizontalVertical"
+match_block_trailing_comma = true
+# normalize_comments = true
+normalize_doc_attributes = true
+# overflow_delimited_expr = true
+# Commented out because this also alphabetizes, which is totally undesirable...
+# reorder_impl_items = true
