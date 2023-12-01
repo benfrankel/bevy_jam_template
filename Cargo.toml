@@ -13,8 +13,8 @@ bevy_mod_debugdump = { version = "0.9", optional = true }
 bevy_rapier2d = "0.23"
 iyes_progress = "0.10"
 leafwing-input-manager = "0.11"
-noise = "0.8"
-rand = { version = "0.8", features = ["small_rng"] }
+#noise = "0.8"
+#rand = { version = "0.8", features = ["small_rng"] }
 ron = "0.8"
 serde = "1"
 strum = { version = "0.25", features = ["derive"] }
@@ -22,7 +22,6 @@ tap = "1"
 wasm-bindgen = { version = "0.2", optional = true }
 
 [features]
-default = ["native_dev"]
 core = [
     # Core functionality
     "bevy/bevy_core_pipeline",
@@ -34,6 +33,7 @@ core = [
     "bevy/bevy_text",
     "bevy/bevy_ui",
     "bevy/multi-threaded",
+    "bevy/webgl2",
 
     # Extra functionality
     #"bevy/bevy_gilrs",
@@ -52,8 +52,8 @@ dev = [
 ]
 native = ["core", "bevy_rapier2d/parallel"]
 native_dev = ["native", "dev", "bevy/file_watcher", "bevy/embedded_watcher"]
-wasm = ["core", "dep:wasm-bindgen", "bevy_rapier2d/wasm-bindgen"]
-wasm_dev = ["wasm", "dev"]
+web = ["core", "dep:wasm-bindgen", "bevy_rapier2d/wasm-bindgen"]
+web_dev = ["web", "dev"]
 trace = ["bevy/trace", "bevy/wgpu_trace", "bevy/trace_tracy"]
 debug_dump = ["dep:bevy_mod_debugdump"]
 

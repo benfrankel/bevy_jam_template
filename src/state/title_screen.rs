@@ -37,7 +37,7 @@ impl Plugin for TitleScreenStatePlugin {
     }
 }
 
-const TITLE: &str = "The Title";
+const TITLE: &str = "bevy_jam_template";
 
 #[derive(AssetCollection, Resource, Reflect, Default)]
 #[reflect(Resource)]

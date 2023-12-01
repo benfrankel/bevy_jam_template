@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>bevy_jam_template</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <script type="module">
+        import './restart-audio-context.js'
+        import init from './run.js'
+        init().catch((error) => {
+            if (!error.message.startsWith("Using exceptions for control flow, don't mind me. This isn't actually an error!")) {
+                throw error;
+            }
+        });
+    </script>
+
+    <div class="game-container">
+        <canvas id="bevy">
+            Javascript and canvas support is required
+        </canvas>
+    </div>
+</body>
+
+</html>

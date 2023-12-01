@@ -39,7 +39,7 @@ impl Plugin for ConfigPlugin {
     }
 }
 
-const WINDOW_TITLE: &str = "The Window Title";
+const WINDOW_TITLE: &str = "bevy_jam_template";
 const CONFIG_PATH: &str = "assets/config.ron";
 
 // TODO: DevConfig
