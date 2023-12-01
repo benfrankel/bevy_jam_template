@@ -33,7 +33,7 @@ jobs:
       - name: Install rust toolchain
         uses: dtolnay/rust-toolchain@nightly
       - name: Install dependencies
-        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev mold
         if: runner.os == 'linux'
       - name: Run tests
         run: cargo test
@@ -58,7 +58,7 @@ jobs:
       - name: Install rust toolchain
         uses: dtolnay/rust-toolchain@nightly
       - name: Install dependencies
-        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev mold
       - name: Run doc tests with all features (this also compiles README examples)
         run: cargo test --doc --all-features
 
@@ -84,7 +84,7 @@ jobs:
         with:
           components: clippy
       - name: Install dependencies
-        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev mold
       - name: Run clippy
         run: cargo clippy --workspace --all-targets --all-features -- --deny warnings
 
