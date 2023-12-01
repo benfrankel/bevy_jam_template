@@ -1,0 +1,103 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    name: Test Suite
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - name: Check out sources
+        uses: actions/checkout@v3
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-test-${{ hashFiles('**/Cargo.toml') }}
+      - name: Install rust toolchain
+        uses: dtolnay/rust-toolchain@nightly
+      - name: Install dependencies
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
+        if: runner.os == 'linux'
+      - name: Run tests
+        run: cargo test
+
+  doc-test:
+    name: Doc Test Suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out sources
+        uses: actions/checkout@v3
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-doc-test-${{ hashFiles('**/Cargo.toml') }}
+      - name: Install rust toolchain
+        uses: dtolnay/rust-toolchain@nightly
+      - name: Install dependencies
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
+      - name: Run doc tests with all features (this also compiles README examples)
+        run: cargo test --doc --all-features
+
+  clippy:
+    name: Clippy
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out sources
+        uses: actions/checkout@v3
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-clippy-${{ hashFiles('**/Cargo.toml') }}
+      - name: Install rust toolchain
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: clippy
+      - name: Install dependencies
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev
+      - name: Run clippy
+        run: cargo clippy --workspace --all-targets --all-features -- --deny warnings
+
+  format:
+    name: Format
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out sources
+        uses: actions/checkout@v4
+      - name: Install rust toolchain
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: rustfmt
+      - name: Run cargo fmt
+        run: cargo fmt --all -- --check
