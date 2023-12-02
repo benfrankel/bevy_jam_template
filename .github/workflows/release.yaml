@@ -1,0 +1,290 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version - in the form of v1.2.3'
+        required: true
+        type: string
+
+env:
+  EXE_NAME: run
+  GAME_NAME: bevy-jam-template
+  ADD_BINARIES_TO_GITHUB_RELEASE: true
+  ITCH_TARGET: pyrious/bevy-jam-template
+
+jobs:
+  get-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get tag
+        id: tag
+        run: echo "tag=${GITHUB_REF#refs/tags/}" >> "${GITHUB_OUTPUT}"
+    outputs:
+      version: ${{ inputs.version || steps.tag.outputs.tag }}
+
+  build-web:
+    runs-on: ubuntu-latest
+    needs: get-version
+    env:
+      VERSION: ${{ needs.get-version.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          targets: wasm32-unknown-unknown
+      - name: Install dependencies
+        run: |
+          cargo install wasm-bindgen-cli
+      - name: Build
+        run: |
+          cargo build --profile=wasm-release --target=wasm32-unknown-unknown --features=web
+      - name: Prepare package
+        run: |
+          mkdir -p build/web
+          wasm-bindgen --no-typescript --out-name ${{ env.EXE_NAME }} --out-dir build/web --target web target/wasm32-unknown-unknown/wasm-release/${{ env.EXE_NAME }}.wasm
+          cp -r assets web/* build/web
+      - name: Optimize wasm
+        uses: NiklasEi/wasm-opt-action@v2
+        with:
+          file: build/web/*.wasm
+      - name: Package as a zip
+        run: |
+          zip --recurse-paths ${{ env.GAME_NAME }}-web.zip build/web
+      - name: Upload zip to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: ${{ env.GAME_NAME }}-web.zip
+          name: web
+          retention-days: 1
+      - name: Upload zip to release
+        if: ${{ env.ADD_BINARIES_TO_GITHUB_RELEASE == 'true' }}
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ env.GAME_NAME }}-web.zip
+          asset_name: ${{ env.GAME_NAME }}-${{ env.VERSION }}-web.zip
+          release_name: ${{ env.VERSION }}
+          tag: ${{ env.VERSION }}
+          overwrite: true
+
+  build-linux:
+    runs-on: ubuntu-latest
+    needs: get-version
+    env:
+      VERSION: ${{ needs.get-version.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          targets: x86_64-unknown-linux-gnu
+      - name: Install dependencies
+        run: |
+          sudo apt-get update; sudo apt-get install pkg-config libx11-dev libasound2-dev libudev-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev mold
+      - name: Build
+        run: |
+          cargo build --release --target=x86_64-unknown-linux-gnu --features=native,bevy/wayland
+      - name: Prepare package
+        run: |
+          mkdir -p build/linux
+          cp target/x86_64-unknown-linux-gnu/release/${{ env.EXE_NAME }} build/linux
+          cp -r assets build/linux
+      - name: Compress to zip
+        run: |
+          zip --recurse-paths ${{ env.GAME_NAME }}-linux.zip build/linux
+      - name: Upload zip to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: ${{ env.GAME_NAME }}-linux.zip
+          name: linux
+          retention-days: 1
+      - name: Upload zip to release
+        if: ${{ env.ADD_BINARIES_TO_GITHUB_RELEASE == 'true' }}
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ env.GAME_NAME }}-linux.zip
+          asset_name: ${{ env.GAME_NAME }}-${{ env.VERSION }}-linux.zip
+          release_name: ${{ env.VERSION }}
+          tag: ${{ env.VERSION }}
+          overwrite: true
+
+  build-windows:
+    runs-on: windows-latest
+    needs: get-version
+    env:
+      VERSION: ${{ needs.get-version.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          targets: x86_64-pc-windows-msvc
+      - name: Build
+        run: |
+          cargo build --release --target=x86_64-pc-windows-msvc --features=native
+      - name: Prepare package
+        run: |
+          mkdir -p build/windows
+          cp target/x86_64-pc-windows-msvc/release/${{ env.EXE_NAME }}.exe build/windows
+          cp -r assets build/windows
+      - name: Package as a zip
+        run: |
+          Compress-Archive -Path build/windows/* -DestinationPath ${{ env.GAME_NAME }}-windows.zip
+      - name: Upload zip to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: ${{ env.GAME_NAME }}-windows.zip
+          name: windows
+          retention-days: 1
+      - name: Upload zip to release
+        if: ${{ env.ADD_BINARIES_TO_GITHUB_RELEASE == 'true' }}
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ env.GAME_NAME }}-windows.zip
+          asset_name: ${{ env.GAME_NAME }}-${{ env.VERSION }}-windows.zip
+          release_name: ${{ env.VERSION }}
+          tag: ${{ env.VERSION }}
+          overwrite: true
+
+  build-macOS-intel:
+    runs-on: macOS-latest
+    needs: get-version
+    env:
+      VERSION: ${{ needs.get-version.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          targets: x86_64-apple-darwin
+      - name: Environment Setup
+        run: |
+          export CFLAGS="-fno-stack-check"
+          export MACOSX_DEPLOYMENT_TARGET="10.9"
+      - name: Build
+        run: |
+          cargo build --release --target=x86_64-apple-darwin --features=native
+      - name: Prepare package
+        run: |
+          mkdir -p ${{ env.EXE_NAME }}.app/Contents/MacOS
+          cp target/x86_64-apple-darwin/release/${{ env.EXE_NAME }} ${{ env.EXE_NAME }}.app/Contents/MacOS/
+          cp -r assets ${{ env.EXE_NAME }}.app/Contents/MacOS/
+          hdiutil create -fs HFS+ -volname "${{ env.EXE_NAME }}" -srcfolder ${{ env.EXE_NAME }}.app ${{ env.GAME_NAME }}-macOS-intel.dmg
+      - name: Upload dmg to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: ${{ env.GAME_NAME }}-macOS-intel.dmg
+          name: macOS-intel
+          retention-days: 1
+      - name: Upload dmg to release
+        if: ${{ env.ADD_BINARIES_TO_GITHUB_RELEASE == 'true' }}
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file:  ${{ env.GAME_NAME }}-macOS-intel.dmg
+          asset_name: ${{ env.GAME_NAME }}-${{ env.VERSION }}-macOS-intel.dmg
+          release_name: ${{ env.VERSION }}
+          tag: ${{ env.VERSION }}
+          overwrite: true
+
+  build-macOS-apple-silicon:
+    runs-on: macOS-latest
+    needs: get-version
+    env:
+      # macOS 11.0 Big Sur is the first version to support universal binaries
+      MACOSX_DEPLOYMENT_TARGET: 11.0
+      VERSION: ${{ needs.get-version.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          targets: aarch64-apple-darwin
+      - name: Build
+        run: |
+          cargo build --release --target=aarch64-apple-darwin --features=native
+      - name: Prepare package
+        run: |
+          mkdir -p ${{ env.EXE_NAME }}.app/Contents/MacOS
+          cp target/aarch64-apple-darwin/release/${{ env.EXE_NAME }} ${{ env.EXE_NAME }}.app/Contents/MacOS/
+          cp -r assets ${{ env.EXE_NAME }}.app/Contents/MacOS/
+          hdiutil create -fs HFS+ -volname "${{ env.EXE_NAME }}" -srcfolder ${{ env.EXE_NAME }}.app ${{ env.GAME_NAME }}-macOS-apple-silicon.dmg
+      - name: Upload dmg to artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: ${{ env.GAME_NAME }}-macOS-apple-silicon.dmg
+          name: macOS-apple-silicon
+          retention-days: 1
+      - name: Upload dmg to release
+        if: ${{ env.ADD_BINARIES_TO_GITHUB_RELEASE == 'true' }}
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ env.GAME_NAME }}-macOS-apple-silicon.dmg
+          asset_name: ${{ env.GAME_NAME }}-${{ env.VERSION }}-macOS-apple-silicon.dmg
+          release_name: ${{ env.VERSION }}
+          tag: ${{ env.VERSION }}
+          overwrite: true
+
+  check-if-upload-to-itch-is-configured:
+    runs-on: ubuntu-latest
+    outputs:
+      should-upload: ${{ steps.check-env.outputs.has-itch-target }}
+    steps:
+      - name: Check ITCH_TARGET
+        id: check-env
+        run: |
+          if [[ -z "${ITCH_TARGET}" ]]; then
+            echo "has-itch-target=no" >> "${GITHUB_OUTPUT}"
+          else
+            echo "has-itch-target=yes" >> "${GITHUB_OUTPUT}"
+          fi
+
+  upload-to-itch:
+    runs-on: ubuntu-latest
+    needs:
+      - get-version
+      - check-if-upload-to-itch-is-configured
+      - build-web
+      - build-linux
+      - build-windows
+      - build-macOS-intel
+      - build-macOS-apple-silicon
+    env:
+      VERSION: ${{ needs.get-version.outputs.version }}
+    if: ${{ needs.check-if-upload-to-itch-is-configured.outputs.should-upload == 'yes' }}
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: ./builds
+      - name: Install butler
+        run: |
+          curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+          unzip butler.zip
+          chmod +x butler
+          ./butler -V
+      - name: Upload to itch.io
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIALS }}
+        run: |
+          for channel in $(ls builds); do
+            ./butler push \
+                --fix-permissions \
+                --userversion="${{ env.VERSION }}" \
+                builds/"${channel}"/* \
+                ${{ env.ITCH_TARGET }}:"${channel}"
+          done
