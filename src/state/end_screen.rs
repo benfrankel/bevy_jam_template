@@ -1,5 +1,6 @@
 use bevy::app::AppExit;
 use bevy::prelude::*;
+use bevy::ui::Val::*;
 use bevy_asset_loader::prelude::*;
 use leafwing_input_manager::common_conditions::action_just_pressed;
 use leafwing_input_manager::prelude::*;
@@ -16,18 +17,20 @@ pub struct EndScreenStatePlugin;
 impl Plugin for EndScreenStatePlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<EndScreenAssets>()
-            .init_collection::<EndScreenAssets>()
-            .init_resource::<ActionState<EndScreenAction>>()
+            .init_collection::<EndScreenAssets>();
+
+        app.init_resource::<ActionState<EndScreenAction>>()
             .add_plugins(InputManagerPlugin::<EndScreenAction>::default())
-            .add_systems(OnEnter(EndScreen), enter_end_screen)
-            .add_systems(OnExit(EndScreen), exit_end_screen)
             .add_systems(
                 Update,
                 (
-                    end_screen_action_restart.run_if(action_just_pressed(EndScreenAction::Restart)),
-                    end_screen_action_quit.run_if(action_just_pressed(EndScreenAction::Quit)),
+                    restart.run_if(action_just_pressed(EndScreenAction::Restart)),
+                    quit.run_if(action_just_pressed(EndScreenAction::Quit)),
                 ),
             );
+
+        app.add_systems(OnEnter(EndScreen), enter_end_screen)
+            .add_systems(OnExit(EndScreen), exit_end_screen);
     }
 }
 
@@ -53,19 +56,28 @@ fn enter_end_screen(mut commands: Commands, root: Res<AppRoot>) {
             .build(),
     );
 
+    let screen = spawn_end_screen(&mut commands);
+    commands.entity(screen).set_parent(root.ui);
+}
+
+fn exit_end_screen(mut commands: Commands, root: Res<AppRoot>) {
+    commands.remove_resource::<InputMap<EndScreenAction>>();
+    commands.entity(root.ui).despawn_descendants();
+}
+
+fn spawn_end_screen(commands: &mut Commands) -> Entity {
     let screen = commands
         .spawn((
             Name::new("EndScreen"),
             NodeBundle {
                 style: Style {
-                    width: Val::Percent(100.0),
-                    height: Val::Percent(100.0),
+                    width: Percent(100.0),
+                    height: Percent(100.0),
                     ..default()
                 },
                 ..default()
             },
         ))
-        .set_parent(root.ui)
         .id();
 
     commands
@@ -73,8 +85,8 @@ fn enter_end_screen(mut commands: Commands, root: Res<AppRoot>) {
             Name::new("TheEnd"),
             TextBundle {
                 style: Style {
-                    margin: UiRect::new(Val::Auto, Val::Auto, Val::Percent(5.0), Val::Auto),
-                    height: Val::Percent(8.0),
+                    margin: UiRect::new(Auto, Auto, Percent(5.0), Auto),
+                    height: Percent(8.0),
                     ..default()
                 },
                 text: Text::from_section(
@@ -86,21 +98,18 @@ fn enter_end_screen(mut commands: Commands, root: Res<AppRoot>) {
                 ),
                 ..default()
             },
-            FontSize::new(Val::Vw(5.0)),
+            FontSize::new(Vw(5.0)),
             PaletteColor::Foreground,
         ))
         .set_parent(screen);
+
+    screen
 }
 
-fn exit_end_screen(mut commands: Commands, root: Res<AppRoot>) {
-    commands.remove_resource::<InputMap<EndScreenAction>>();
-    commands.entity(root.ui).despawn_descendants();
-}
-
-fn end_screen_action_restart(mut next_state: ResMut<NextState<AppState>>) {
+fn restart(mut next_state: ResMut<NextState<AppState>>) {
     next_state.set(TitleScreen);
 }
 
-fn end_screen_action_quit(mut app_exit: EventWriter<AppExit>) {
+fn quit(mut app_exit: EventWriter<AppExit>) {
     app_exit.send(AppExit);
 }

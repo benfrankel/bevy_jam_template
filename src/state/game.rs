@@ -9,8 +9,9 @@ pub struct GameStatePlugin;
 impl Plugin for GameStatePlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<GameAssets>()
-            .init_collection::<GameAssets>()
-            .add_systems(OnEnter(Game), enter_game)
+            .init_collection::<GameAssets>();
+
+        app.add_systems(OnEnter(Game), enter_game)
             .add_systems(OnExit(Game), exit_game);
     }
 }
@@ -22,8 +23,8 @@ pub struct GameAssets {}
 fn enter_game() {}
 
 fn exit_game(root: Res<AppRoot>, mut transform_query: Query<&mut Transform>) {
-    let Ok(mut transform) = transform_query.get_mut(root.camera) else {
-        return;
+    // Restore camera
+    if let Ok(mut transform) = transform_query.get_mut(root.camera) {
+        transform.translation = Vec2::ZERO.extend(transform.translation.z);
     };
-    transform.translation = Vec2::ZERO.extend(transform.translation.z);
 }

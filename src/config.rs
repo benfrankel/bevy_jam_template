@@ -23,7 +23,8 @@ impl Plugin for ConfigPlugin {
             .unwrap();
         info!("Loaded config");
 
-        app.insert_resource(config)
+        app.register_type::<Config>()
+            .insert_resource(config)
             .add_systems(PreUpdate, apply_config.run_if(resource_changed::<Config>()));
     }
 }
