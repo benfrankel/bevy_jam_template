@@ -9,6 +9,7 @@ mod config;
 mod debug;
 mod physics;
 mod state;
+mod theme;
 mod ui;
 mod window;
 

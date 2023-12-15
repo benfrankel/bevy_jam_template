@@ -5,10 +5,10 @@ use iyes_progress::prelude::*;
 use leafwing_input_manager::common_conditions::action_just_pressed;
 use leafwing_input_manager::prelude::*;
 
-use crate::config::Config;
 use crate::state::game::GameAssets;
 use crate::state::AppState;
 use crate::state::AppState::*;
+use crate::theme::PaletteColor;
 use crate::ui::FontSize;
 use crate::ui::BOLD_FONT_HANDLE;
 use crate::AppRoot;
@@ -50,9 +50,7 @@ enum TitleScreenAction {
     Quit,
 }
 
-fn enter_title_screen(mut commands: Commands, root: Res<AppRoot>, config: Res<Config>) {
-    commands.insert_resource(ClearColor(config.bg_color));
-
+fn enter_title_screen(mut commands: Commands, root: Res<AppRoot>) {
     commands.insert_resource(
         InputMap::default()
             .insert(MouseButton::Left, TitleScreenAction::Start)
@@ -92,13 +90,13 @@ fn enter_title_screen(mut commands: Commands, root: Res<AppRoot>, config: Res<Co
                     TITLE,
                     TextStyle {
                         font: BOLD_FONT_HANDLE,
-                        color: config.fg_color,
                         ..default()
                     },
                 ),
                 ..default()
             },
             FontSize::new(Val::Vw(5.0)),
+            PaletteColor::Foreground,
         ))
         .set_parent(screen);
 }

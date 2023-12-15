@@ -7,9 +7,9 @@ use bevy::render::texture::ImageType;
 use bevy_asset_loader::prelude::*;
 use iyes_progress::prelude::*;
 
-use crate::config::Config;
 use crate::state::title_screen::TitleScreenAssets;
 use crate::state::AppState::*;
+use crate::theme::PaletteColor;
 use crate::AppRoot;
 
 pub struct SplashScreenStatePlugin;
@@ -41,6 +41,7 @@ impl Plugin for SplashScreenStatePlugin {
             .add_systems(OnExit(SplashScreen), exit_splash_screen)
             .add_systems(
                 Update,
+                // TODO: This has to run after apply_palette_colors
                 update_splash_screen
                     .track_progress()
                     .run_if(in_state(SplashScreen)),
@@ -56,14 +57,7 @@ const SPLASH_SCREEN_IMAGE_HANDLE: Handle<Image> =
 #[reflect(Resource)]
 struct SplashScreenStartTime(f64);
 
-fn enter_splash_screen(
-    mut commands: Commands,
-    root: Res<AppRoot>,
-    config: Res<Config>,
-    time: Res<Time>,
-) {
-    commands.insert_resource(ClearColor(config.bg_color));
-
+fn enter_splash_screen(mut commands: Commands, root: Res<AppRoot>, time: Res<Time>) {
     commands.insert_resource(SplashScreenStartTime(time.elapsed_seconds_f64()));
 
     let screen = commands
@@ -93,7 +87,8 @@ fn enter_splash_screen(
                 image: UiImage::new(SPLASH_SCREEN_IMAGE_HANDLE),
                 ..default()
             },
-            SplashImageFadeInOut(config.fg_color),
+            PaletteColor::Foreground,
+            SplashImageFadeInOut,
         ))
         .set_parent(screen);
 }
@@ -104,23 +99,23 @@ fn exit_splash_screen(mut commands: Commands, root: Res<AppRoot>) {
 }
 
 #[derive(Component, Reflect)]
-struct SplashImageFadeInOut(Color);
+struct SplashImageFadeInOut;
 
 // TODO: Replace this with some Animation component
 fn update_splash_screen(
-    mut color_query: Query<(&mut BackgroundColor, &SplashImageFadeInOut)>,
+    mut color_query: Query<&mut BackgroundColor, With<SplashImageFadeInOut>>,
     time: Res<Time>,
     start: Res<SplashScreenStartTime>,
 ) -> Progress {
     let elapsed = (time.elapsed_seconds_f64() - start.0) / SPLASH_SCREEN_MIN_SECS;
 
-    for (mut color, fade) in &mut color_query {
+    for mut color in &mut color_query {
         let t = elapsed as f32;
         let amplitude = 1.5;
         let alpha = (amplitude * (PI * t).sin() - amplitude + 1.0)
             .max(0.0)
             .powf(1.2);
-        color.0 = fade.0.with_a(alpha);
+        color.0.set_a(alpha);
     }
 
     (elapsed >= 1.0).into()

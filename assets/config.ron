@@ -5,6 +5,10 @@
         present_mode: AutoVsync,
     ),
 
-    fg_color: Rgba(red: 0.925, green: 0.925, blue: 0.925, alpha: 1.0),
-    bg_color: Rgba(red: 0.157, green: 0.157, blue: 0.157, alpha: 1.0),
+    theme: ThemeConfig(
+        palette: Palette((
+            Rgba(red: 0.157, green: 0.157, blue: 0.157, alpha: 1.0),
+            Rgba(red: 0.925, green: 0.925, blue: 0.925, alpha: 1.0),
+        )),
+    ),
 )

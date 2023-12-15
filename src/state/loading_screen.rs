@@ -3,9 +3,10 @@ use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
 use iyes_progress::prelude::*;
 
-use crate::config::Config;
 use crate::state::game::GameAssets;
 use crate::state::AppState::*;
+use crate::theme::PaletteColor;
+use crate::ui::FontSize;
 use crate::ui::FONT_HANDLE;
 use crate::AppRoot;
 
@@ -31,9 +32,7 @@ impl Plugin for LoadingScreenStatePlugin {
 #[derive(Component, Reflect)]
 struct IsLoadingBarFill;
 
-fn enter_loading(mut commands: Commands, root: Res<AppRoot>, config: Res<Config>) {
-    commands.insert_resource(ClearColor(config.bg_color));
-
+fn enter_loading(mut commands: Commands, root: Res<AppRoot>) {
     let screen = commands
         .spawn((
             Name::new("LoadingScreen"),
@@ -77,12 +76,13 @@ fn enter_loading(mut commands: Commands, root: Res<AppRoot>, config: Res<Config>
                         "Loading...",
                         TextStyle {
                             font: FONT_HANDLE,
-                            font_size: 64.0,
-                            color: config.fg_color,
+                            ..default()
                         },
                     ),
                     ..default()
                 },
+                FontSize::new(Val::Vw(5.0)),
+                PaletteColor::Foreground,
             ));
 
             commands
@@ -101,7 +101,6 @@ fn enter_loading(mut commands: Commands, root: Res<AppRoot>, config: Res<Config>
                     commands.spawn((
                         Name::new("LoadingBarFill"),
                         NodeBundle {
-                            background_color: BackgroundColor(config.fg_color),
                             style: Style {
                                 width: Val::Percent(0.0),
                                 height: Val::Percent(100.0),
@@ -109,6 +108,8 @@ fn enter_loading(mut commands: Commands, root: Res<AppRoot>, config: Res<Config>
                             },
                             ..default()
                         },
+                        // TODO: BackgroundPaletteColor
+                        PaletteColor::Foreground,
                         IsLoadingBarFill,
                     ));
                 });

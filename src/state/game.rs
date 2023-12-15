@@ -1,7 +1,6 @@
 use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
 
-use crate::config::Config;
 use crate::state::AppState::*;
 use crate::AppRoot;
 
@@ -20,9 +19,7 @@ impl Plugin for GameStatePlugin {
 #[reflect(Resource)]
 pub struct GameAssets {}
 
-fn enter_game(mut commands: Commands, config: Res<Config>) {
-    commands.insert_resource(ClearColor(config.bg_color));
-}
+fn enter_game() {}
 
 fn exit_game(root: Res<AppRoot>, mut transform_query: Query<&mut Transform>) {
     let Ok(mut transform) = transform_query.get_mut(root.camera) else {
