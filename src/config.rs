@@ -5,7 +5,6 @@ use serde::Serialize;
 use tap::TapFallible;
 
 use crate::window::WindowConfig;
-use crate::AppRoot;
 
 pub struct ConfigPlugin;
 
@@ -19,18 +18,16 @@ impl Plugin for ConfigPlugin {
             .unwrap_or_default();
         let config = from_str::<Config>(config_str)
             .tap_err(|e| error!("Deserializing config: {e}"))
-            .unwrap_or_default();
+            .unwrap();
         info!("Loaded config");
 
-        app.register_type::<Config>()
-            .insert_resource(config)
+        app.insert_resource(config)
             .add_systems(PreUpdate, apply_config.run_if(resource_changed::<Config>()));
     }
 }
 
 // TODO: DevConfig
-#[derive(Resource, Reflect, Serialize, Deserialize)]
-#[reflect(Resource)]
+#[derive(Resource, Serialize, Deserialize)]
 pub struct Config {
     pub window: WindowConfig,
     // TODO: Color palette
@@ -41,28 +38,12 @@ pub struct Config {
     // TODO: Keybindings
 }
 
-impl Default for Config {
-    fn default() -> Self {
-        Self {
-            window: default(),
-            fg_color: Color::WHITE,
-            bg_color: Color::BLACK,
-        }
-    }
-}
-
-// TODO: Make this an exclusive system
-fn apply_config(
-    config: Res<Config>,
-    root: Res<AppRoot>,
-    mut clear_color: ResMut<ClearColor>,
-    mut window_query: Query<&mut Window>,
-) {
+fn apply_config(world: &mut World) {
     info!("Applying config");
 
-    if let Ok(mut window) = window_query.get_mut(root.window) {
-        config.window.apply(&mut window);
-    }
+    world.resource_scope(|world, config: Mut<Config>| {
+        config.window.apply(world);
 
-    clear_color.0 = config.bg_color;
+        world.resource_mut::<ClearColor>().0 = config.bg_color;
+    });
 }

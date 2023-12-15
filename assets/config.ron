@@ -1,5 +1,6 @@
 (
     window: WindowConfig(
+        title: "bevy_jam_template",
         window_mode: Windowed,
         present_mode: AutoVsync,
     ),
