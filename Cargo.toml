@@ -8,8 +8,11 @@ default-run = "run"
 bevy = { version = "0.12", default-features = false }
 bevy_asset_loader = { version = "0.18", features = ["2d", "progress_tracking"] }
 bevy_editor_pls = { version = "0.6", optional = true }
-bevy_kira_audio = { version = "0.18", features = ["mp3"] }
+bevy_kira_audio = "0.18"
 bevy_mod_debugdump = { version = "0.9", optional = true }
+bevy_mod_picking = { version = "0.17", default-features = false, features = [
+    "backend_bevy_ui",
+] }
 bevy_rapier2d = "0.23"
 iyes_progress = "0.10"
 leafwing-input-manager = "0.11"
@@ -48,6 +51,7 @@ dev = [
     "core",
     "dep:bevy_editor_pls",
     "bevy/dynamic_linking",
+    "bevy_mod_picking/debug",
     "bevy_rapier2d/debug-render-2d",
 ]
 native = ["core", "bevy_rapier2d/parallel"]

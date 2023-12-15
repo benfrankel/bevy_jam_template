@@ -7,7 +7,6 @@ use bevy::ecs::schedule::LogLevel;
 use bevy::ecs::schedule::ScheduleBuildSettings;
 use bevy::input::common_conditions::input_just_pressed;
 use bevy::prelude::*;
-use bevy::window::WindowMode;
 use bevy_editor_pls::EditorPlugin;
 use bevy_rapier2d::render::DebugRenderContext;
 use bevy_rapier2d::render::RapierDebugRenderPlugin;
@@ -21,10 +20,27 @@ pub struct DebugPlugin {
     pub system_information_diagnostics: bool,
     pub entity_count_diagnostics: bool,
     pub ambiguity_detection: bool,
+    pub debug_picking: bool,
     pub debug_render: bool,
     pub editor: bool,
     pub start: AppState,
     pub extend_loading_screen: f32,
+}
+
+impl Default for DebugPlugin {
+    fn default() -> Self {
+        Self {
+            frame_time_diagnostics: true,
+            system_information_diagnostics: true,
+            entity_count_diagnostics: true,
+            ambiguity_detection: true,
+            debug_picking: true,
+            debug_render: true,
+            editor: true,
+            extend_loading_screen: 0.0,
+            start: default(),
+        }
+    }
 }
 
 impl Plugin for DebugPlugin {
@@ -59,13 +75,28 @@ impl Plugin for DebugPlugin {
             });
         }
 
+        // Debug picking
+        if self.debug_picking {
+            use bevy_mod_picking::debug::DebugPickingMode::*;
+            app.insert_resource(State::new(Disabled)).add_systems(
+                Update,
+                (
+                    (|mut next: ResMut<NextState<_>>| next.set(Normal))
+                        .run_if(in_state(Disabled).and_then(input_just_pressed(DEBUG_TOGGLE_KEY))),
+                    (|mut next: ResMut<NextState<_>>| next.set(Disabled))
+                        .run_if(in_state(Normal).and_then(input_just_pressed(DEBUG_TOGGLE_KEY))),
+                ),
+            );
+        }
+
         // Debug render
         if self.debug_render {
             app.add_plugins(RapierDebugRenderPlugin::default());
             app.world.resource_mut::<DebugRenderContext>().enabled = false;
             app.add_systems(
                 Update,
-                toggle_debug_render.run_if(input_just_pressed(DEBUG_RENDER_TOGGLE_KEY)),
+                (|mut ctx: ResMut<DebugRenderContext>| ctx.enabled = !ctx.enabled)
+                    .run_if(input_just_pressed(DEBUG_TOGGLE_KEY)),
             );
         }
 
@@ -98,7 +129,6 @@ impl Plugin for DebugPlugin {
         // Editor
         if self.editor {
             app.add_plugins(EditorPlugin::new().in_new_window(Window {
-                mode: WindowMode::BorderlessFullscreen,
                 title: "bevy_editor_pls".to_string(),
                 focused: false,
                 ..default()
@@ -110,6 +140,8 @@ impl Plugin for DebugPlugin {
     }
 }
 
+const DEBUG_TOGGLE_KEY: KeyCode = KeyCode::F3;
+
 fn debug_start(world: &mut World) {
     let frame = world.resource::<FrameCount>().0;
     let prefix = format!("[Frame {frame} start] ");
@@ -120,25 +152,4 @@ fn debug_end(world: &mut World) {
     let frame = world.resource::<FrameCount>().0;
     let prefix = format!("[Frame {frame} end] ");
     let _ = prefix;
-}
-
-impl Default for DebugPlugin {
-    fn default() -> Self {
-        Self {
-            frame_time_diagnostics: true,
-            system_information_diagnostics: true,
-            entity_count_diagnostics: true,
-            ambiguity_detection: true,
-            debug_render: true,
-            editor: true,
-            extend_loading_screen: 0.0,
-            start: default(),
-        }
-    }
-}
-
-const DEBUG_RENDER_TOGGLE_KEY: KeyCode = KeyCode::F3;
-
-fn toggle_debug_render(mut debug_render_context: ResMut<DebugRenderContext>) {
-    debug_render_context.enabled = !debug_render_context.enabled;
 }

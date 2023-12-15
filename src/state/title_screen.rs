@@ -9,7 +9,8 @@ use crate::config::Config;
 use crate::state::game::GameAssets;
 use crate::state::AppState;
 use crate::state::AppState::*;
-use crate::ui::FONT_HANDLE;
+use crate::ui::FontSize;
+use crate::ui::BOLD_FONT_HANDLE;
 use crate::AppRoot;
 
 pub struct TitleScreenStatePlugin;
@@ -90,20 +91,20 @@ fn enter_title_screen(mut commands: Commands, root: Res<AppRoot>, config: Res<Co
                 text: Text::from_section(
                     TITLE,
                     TextStyle {
-                        font: FONT_HANDLE,
-                        font_size: 64.0,
+                        font: BOLD_FONT_HANDLE,
                         color: config.fg_color,
+                        ..default()
                     },
                 ),
                 ..default()
             },
+            FontSize::new(Val::Vw(5.0)),
         ))
         .set_parent(screen);
 }
 
 fn exit_title_screen(mut commands: Commands, root: Res<AppRoot>) {
     commands.remove_resource::<InputMap<TitleScreenAction>>();
-    // TODO: This and the other despawn_decendants() should probably make use of DespawnSet...
     commands.entity(root.ui).despawn_descendants();
 }
 

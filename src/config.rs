@@ -1,12 +1,11 @@
 use bevy::prelude::*;
-use bevy::window::ExitCondition;
-use bevy::window::PresentMode;
-use bevy::window::PrimaryWindow;
-use bevy::window::WindowMode;
 use ron::from_str;
 use serde::Deserialize;
 use serde::Serialize;
 use tap::TapFallible;
+
+use crate::window::WindowConfig;
+use crate::AppRoot;
 
 pub struct ConfigPlugin;
 
@@ -24,32 +23,16 @@ impl Plugin for ConfigPlugin {
         info!("Loaded config");
 
         app.register_type::<Config>()
-            .add_plugins(WindowPlugin {
-                primary_window: Some(Window {
-                    present_mode: config.present_mode,
-                    mode: config.window_mode,
-                    title: WINDOW_TITLE.to_string(),
-                    canvas: Some("#bevy".to_string()),
-                    fit_canvas_to_parent: true,
-                    prevent_default_event_handling: true,
-                    ..default()
-                }),
-                exit_condition: ExitCondition::OnPrimaryClosed,
-                ..default()
-            })
             .insert_resource(config)
-            .add_systems(Update, apply_config.run_if(resource_changed::<Config>()));
+            .add_systems(PreUpdate, apply_config.run_if(resource_changed::<Config>()));
     }
 }
-
-const WINDOW_TITLE: &str = "bevy_jam_template";
 
 // TODO: DevConfig
 #[derive(Resource, Reflect, Serialize, Deserialize)]
 #[reflect(Resource)]
 pub struct Config {
-    pub window_mode: WindowMode,
-    pub present_mode: PresentMode,
+    pub window: WindowConfig,
     // TODO: Color palette
     pub fg_color: Color,
     pub bg_color: Color,
@@ -61,24 +44,24 @@ pub struct Config {
 impl Default for Config {
     fn default() -> Self {
         Self {
-            window_mode: WindowMode::BorderlessFullscreen,
-            present_mode: PresentMode::AutoVsync,
+            window: default(),
             fg_color: Color::WHITE,
             bg_color: Color::BLACK,
         }
     }
 }
 
+// TODO: Make this an exclusive system
 fn apply_config(
     config: Res<Config>,
+    root: Res<AppRoot>,
     mut clear_color: ResMut<ClearColor>,
-    mut window_query: Query<&mut Window, With<PrimaryWindow>>,
+    mut window_query: Query<&mut Window>,
 ) {
     info!("Applying config");
 
-    if let Ok(mut window) = window_query.get_single_mut() {
-        window.mode = config.window_mode;
-        window.present_mode = config.present_mode;
+    if let Ok(mut window) = window_query.get_mut(root.window) {
+        config.window.apply(&mut window);
     }
 
     clear_color.0 = config.bg_color;

@@ -1,0 +1,87 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run native dev",
+			"type": "cargo",
+			"command": "run",
+			"args": [
+				"--features=native_dev"
+			],
+			"options": {
+				"env": {
+					"RUST_BACKTRACE": "full"
+				}
+			},
+			"presentation": {
+				"clear": true
+			},
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"label": "Run native release",
+			"type": "cargo",
+			"command": "run",
+			"args": [
+				"--release",
+				"--features=native"
+			],
+			"presentation": {
+				"clear": true
+			},
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Debug native dev",
+			"type": "cargo",
+			"command": "run",
+			"args": [
+				"--bin=debug",
+				"--features=native_dev,debug_dump"
+			],
+			"options": {
+				"env": {
+					"RUST_BACKTRACE": "full"
+				}
+			},
+			"presentation": {
+				"clear": true
+			},
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "Debug native release",
+			"type": "cargo",
+			"command": "run",
+			"args": [
+				"--release",
+				"--bin=debug",
+				"--features=native,debug_dump"
+			],
+			"options": {
+				"env": {
+					"RUST_BACKTRACE": "full"
+				}
+			},
+			"presentation": {
+				"clear": true
+			},
+			"problemMatcher": [
+				"$rustc"
+			],
+			"group": "build"
+		}
+	]
+}

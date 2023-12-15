@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use bevy::render::camera::ScalingMode;
 
 use crate::AppRoot;
 
@@ -19,10 +18,6 @@ fn spawn_camera(mut commands: Commands, mut root: ResMut<AppRoot>) {
             Camera2dBundle {
                 projection: OrthographicProjection {
                     near: -1000.0,
-                    scaling_mode: ScalingMode::AutoMax {
-                        max_width: 1920.0,
-                        max_height: 1080.0,
-                    },
                     ..default()
                 },
                 ..default()
