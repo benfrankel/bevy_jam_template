@@ -1,10 +1,9 @@
+use bevy::ecs::event::ManualEventReader;
 use bevy::prelude::*;
-use ron::from_str;
+use bevy_common_assets::ron::RonAssetPlugin;
 use serde::Deserialize;
 use serde::Serialize;
-use tap::TapFallible;
 
-use crate::theme::PaletteColor;
 use crate::theme::ThemeConfig;
 use crate::window::WindowConfig;
 
@@ -12,25 +11,21 @@ pub struct ConfigPlugin;
 
 impl Plugin for ConfigPlugin {
     fn build(&self, app: &mut App) {
-        #[cfg(feature = "web")]
-        let config_str = include_str!("../assets/config.ron");
-        #[cfg(not(feature = "web"))]
-        let config_str = &std::fs::read_to_string("assets/config.ron")
-            .tap_err(|e| error!("Reading config: {e}"))
-            .unwrap_or_default();
-        let config = from_str::<Config>(config_str)
-            .tap_err(|e| error!("Deserializing config: {e}"))
-            .unwrap();
-        info!("Loaded config");
-
         app.register_type::<Config>()
-            .insert_resource(config)
-            .add_systems(PreUpdate, apply_config.run_if(resource_changed::<Config>()));
+            .add_plugins(RonAssetPlugin::<Config>::new(&["config.ron"]))
+            .add_systems(Startup, load_config)
+            .add_systems(
+                PreUpdate,
+                apply_config.run_if(on_event::<AssetEvent<Config>>()),
+            );
     }
 }
 
+#[derive(Resource)]
+pub struct ConfigHandle(pub Handle<Config>);
+
 // TODO: DevConfig
-#[derive(Resource, Reflect, Serialize, Deserialize)]
+#[derive(Asset, Reflect, Serialize, Deserialize)]
 #[reflect(from_reflect = false)]
 pub struct Config {
     pub window: WindowConfig,
@@ -40,12 +35,23 @@ pub struct Config {
     // TODO: Keybindings
 }
 
-fn apply_config(world: &mut World) {
+fn load_config(mut commands: Commands, ass: Res<AssetServer>) {
+    commands.insert_resource(ConfigHandle(ass.load("main.config.ron")));
+}
+
+fn apply_config(world: &mut World, mut reader: Local<ManualEventReader<AssetEvent<Config>>>) {
+    if !reader
+        .read(world.resource::<Events<AssetEvent<_>>>())
+        .any(|event| event.is_loaded_with_dependencies(&world.resource::<ConfigHandle>().0))
+    {
+        return;
+    }
+
     info!("Applying config");
+    world.resource_scope(|world, config: Mut<Assets<Config>>| {
+        let config = config.get(&world.resource::<ConfigHandle>().0).unwrap();
 
-    world.resource_scope(|world, config: Mut<Config>| {
         config.window.apply(world);
-
-        world.resource_mut::<ClearColor>().0 = config.theme.palette[PaletteColor::Background];
+        config.theme.apply(world);
     });
 }

@@ -5,6 +5,7 @@ use serde::Deserialize;
 use serde::Serialize;
 
 use crate::config::Config;
+use crate::config::ConfigHandle;
 use crate::AppSet;
 
 pub struct ThemePlugin;
@@ -21,11 +22,13 @@ pub struct ThemeConfig {
     pub palette: Palette,
 }
 
-// TODO: Split the Component into SpritePaletteColor, TextPaletteColor, BackgroundPaletteColor, etc.
-#[derive(Component, Reflect, Clone, Copy)]
-pub enum PaletteColor {
-    Background,
-    Foreground,
+impl ThemeConfig {
+    pub fn apply(&self, world: &mut World) {
+        world.resource_mut::<ClearColor>().0 = self.palette[PaletteColor::Background];
+        for mut color in world.query::<&mut PaletteColor>().iter_mut(world) {
+            color.set_changed();
+        }
+    }
 }
 
 #[derive(Reflect, Serialize, Deserialize)]
@@ -39,20 +42,39 @@ impl Index<PaletteColor> for Palette {
     }
 }
 
+/// Applies color to:
+/// - Sprite
+/// - TextureAtlasSprite
+/// - Text (all sections)
+/// - BackgroundColor (only when there's no Text component)
+#[derive(Component, Reflect, Clone, Copy)]
+pub enum PaletteColor {
+    Background,
+    Foreground,
+}
+
 fn apply_palette_color(
-    config: Res<Config>,
+    config_handle: Res<ConfigHandle>,
+    config: Res<Assets<Config>>,
     mut color_query: Query<
         (
             &PaletteColor,
             Option<&mut Sprite>,
             Option<&mut TextureAtlasSprite>,
             Option<&mut Text>,
+            Option<&mut BackgroundColor>,
         ),
         Changed<PaletteColor>,
     >,
 ) {
-    let palette = &config.theme.palette;
-    for (&color, sprite, atlas_sprite, text) in &mut color_query {
+    let Some(palette) = &config
+        .get(&config_handle.0)
+        .map(|config| &config.theme.palette)
+    else {
+        return;
+    };
+
+    for (&color, sprite, atlas_sprite, text, background_color) in &mut color_query {
         let color = palette[color];
         if let Some(mut sprite) = sprite {
             sprite.color = color;
@@ -64,6 +86,8 @@ fn apply_palette_color(
             for section in &mut text.sections {
                 section.style.color = color;
             }
+        } else if let Some(mut background_color) = background_color {
+            background_color.0 = color;
         }
     }
 }

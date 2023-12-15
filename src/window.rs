@@ -7,25 +7,20 @@ use bevy::window::WindowPlugin as BevyWindowPlugin;
 use serde::Deserialize;
 use serde::Serialize;
 
-use crate::config::Config;
 use crate::AppRoot;
 
 pub struct WindowPlugin;
 
 impl Plugin for WindowPlugin {
     fn build(&self, app: &mut App) {
-        let mut window = Window {
-            canvas: Some("#bevy".to_string()),
-            fit_canvas_to_parent: true,
-            prevent_default_event_handling: true,
-            ..default()
-        };
-        app.world
-            .resource::<Config>()
-            .window
-            .apply_to_window(&mut window);
         app.add_plugins(BevyWindowPlugin {
-            primary_window: Some(window),
+            primary_window: Some(Window {
+                canvas: Some("#bevy".to_string()),
+                fit_canvas_to_parent: true,
+                prevent_default_event_handling: true,
+                visible: false,
+                ..default()
+            }),
             exit_condition: ExitCondition::OnPrimaryClosed,
             ..default()
         })
@@ -45,6 +40,7 @@ impl WindowConfig {
         window.title = self.title.clone();
         window.mode = self.window_mode;
         window.present_mode = self.present_mode;
+        window.visible = true;
     }
 
     pub fn apply(&self, world: &mut World) {

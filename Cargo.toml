@@ -7,6 +7,7 @@ default-run = "run"
 [dependencies]
 bevy = { version = "0.12", default-features = false }
 bevy_asset_loader = { version = "0.18", features = ["2d", "progress_tracking"] }
+bevy_common_assets = { version = "0.8", features = ["ron"] }
 bevy_editor_pls = { version = "0.6", optional = true }
 bevy_kira_audio = "0.18"
 bevy_mod_debugdump = { version = "0.9", optional = true }

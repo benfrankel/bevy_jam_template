@@ -46,19 +46,24 @@ impl Plugin for AppPlugin {
         // Order-dependent plugins
         app.add_plugins((
             LogPlugin::default(),
-            config::ConfigPlugin,
             window::WindowPlugin,
             DefaultPlugins
                 .build()
                 .disable::<LogPlugin>()
                 .disable::<WindowPlugin>()
                 .set(ImagePlugin::default_nearest()),
-            audio::AudioPlugin,
-            state::StatePlugin,
         ));
 
         // Other plugins
-        app.add_plugins((camera::CameraPlugin, physics::PhysicsPlugin, ui::UiPlugin));
+        app.add_plugins((
+            audio::AudioPlugin,
+            camera::CameraPlugin,
+            config::ConfigPlugin,
+            physics::PhysicsPlugin,
+            state::StatePlugin,
+            theme::ThemePlugin,
+            ui::UiPlugin,
+        ));
 
         #[cfg(feature = "dev")]
         app.add_plugins(debug::DebugPlugin {
@@ -81,6 +86,7 @@ pub enum AppSet {
     ApplyDeferred,
     /// Synchronize end-of-frame values (after commands have been applied)
     End,
+    // TODO: Animate sets
 }
 
 // Global entities
