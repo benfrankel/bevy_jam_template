@@ -99,7 +99,7 @@ fn spawn_splash_screen(commands: &mut Commands) -> Entity {
                 image: UiImage::new(SPLASH_SCREEN_IMAGE_HANDLE),
                 ..default()
             },
-            PaletteColor::Foreground,
+            PaletteColor::BodyText,
             SplashImageFadeInOut,
         ))
         .set_parent(screen);

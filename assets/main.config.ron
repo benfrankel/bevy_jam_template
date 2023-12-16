@@ -7,8 +7,24 @@
 
     theme: ThemeConfig(
         palette: Palette((
-            Rgba(red: 0.157, green: 0.157, blue: 0.157, alpha: 1.0),
-            Rgba(red: 0.925, green: 0.925, blue: 0.925, alpha: 1.0),
+            // None
+            Rgba(red: 0.000, green: 0.000, blue: 0.000, alpha: 0.000),
+
+            // Body
+            Rgba(red: 0.157, green: 0.157, blue: 0.157, alpha: 1.000),
+            // BodyText
+            Rgba(red: 0.925, green: 0.925, blue: 0.925, alpha: 1.000),
+            
+            // Primary
+            Rgba(red: 0.000, green: 0.400, blue: 0.700, alpha: 1.000),
+            // PrimaryHovered
+            Rgba(red: 0.200, green: 0.500, blue: 0.800, alpha: 1.000),
+            // PrimaryPressed
+            Rgba(red: 0.000, green: 0.300, blue: 0.500, alpha: 1.000),
+            // PrimaryDisabled
+            Rgba(red: 0.000, green: 0.300, blue: 0.500, alpha: 1.000),
+            // PrimaryText
+            Rgba(red: 0.157, green: 0.157, blue: 0.157, alpha: 1.000),
         )),
     ),
 )

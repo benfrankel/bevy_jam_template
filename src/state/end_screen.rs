@@ -9,7 +9,7 @@ use crate::state::AppState;
 use crate::state::AppState::*;
 use crate::theme::PaletteColor;
 use crate::ui::FontSize;
-use crate::ui::FONT_HANDLE;
+use crate::ui::BOLD_FONT_HANDLE;
 use crate::AppRoot;
 
 pub struct EndScreenStatePlugin;
@@ -82,24 +82,24 @@ fn spawn_end_screen(commands: &mut Commands) -> Entity {
 
     commands
         .spawn((
-            Name::new("TheEnd"),
+            Name::new("EndText"),
             TextBundle {
                 style: Style {
-                    margin: UiRect::new(Auto, Auto, Percent(5.0), Auto),
+                    margin: UiRect::top(Percent(5.0)),
                     height: Percent(8.0),
                     ..default()
                 },
                 text: Text::from_section(
                     "The End",
                     TextStyle {
-                        font: FONT_HANDLE,
+                        font: BOLD_FONT_HANDLE,
                         ..default()
                     },
                 ),
                 ..default()
             },
             FontSize::new(Vw(5.0)),
-            PaletteColor::Foreground,
+            PaletteColor::BodyText,
         ))
         .set_parent(screen);
 

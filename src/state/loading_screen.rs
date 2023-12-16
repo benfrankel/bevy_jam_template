@@ -62,7 +62,7 @@ fn spawn_loading_screen(commands: &mut Commands) -> Entity {
 
     commands
         .spawn((
-            Name::new("Header"),
+            Name::new("LoadingText"),
             TextBundle {
                 style: Style {
                     margin: UiRect::all(Percent(1.0)),
@@ -78,7 +78,7 @@ fn spawn_loading_screen(commands: &mut Commands) -> Entity {
                 ..default()
             },
             FontSize::new(Vw(5.0)),
-            PaletteColor::Foreground,
+            PaletteColor::BodyText,
         ))
         .set_parent(screen);
 
@@ -108,8 +108,7 @@ fn spawn_loading_screen(commands: &mut Commands) -> Entity {
                 },
                 ..default()
             },
-            // TODO: BackgroundPaletteColor
-            PaletteColor::Foreground,
+            PaletteColor::BodyText,
             IsLoadingBarFill,
         ))
         .set_parent(loading_bar);

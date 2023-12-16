@@ -44,6 +44,7 @@ impl Plugin for AppPlugin {
             PostUpdate,
             (
                 (UiSystem::Layout, PhysicsSet::Writeback),
+                AppSet::AnimateSync,
                 AppSet::Animate,
                 TransformSystem::TransformPropagate,
             )
@@ -98,6 +99,8 @@ pub enum AppSet {
     ApplyDeferred,
     /// (Update) Synchronize end-of-frame values (after commands have been applied)
     End,
+    /// (PostUpdate) Synchronize pre-animation values
+    AnimateSync,
     /// (PostUpdate) Update animations
     Animate,
 }

@@ -2,16 +2,16 @@ use bevy::app::AppExit;
 use bevy::prelude::*;
 use bevy::ui::Val::*;
 use bevy_asset_loader::prelude::*;
+use bevy_mod_picking::prelude::*;
 use iyes_progress::prelude::*;
-use leafwing_input_manager::common_conditions::action_just_pressed;
-use leafwing_input_manager::prelude::*;
 
 use crate::state::game::GameAssets;
-use crate::state::AppState;
 use crate::state::AppState::*;
 use crate::theme::PaletteColor;
 use crate::ui::FontSize;
+use crate::ui::InteractionPalette;
 use crate::ui::BOLD_FONT_HANDLE;
+use crate::ui::FONT_HANDLE;
 use crate::AppRoot;
 
 pub struct TitleScreenStatePlugin;
@@ -20,18 +20,6 @@ impl Plugin for TitleScreenStatePlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<TitleScreenAssets>()
             .init_collection::<TitleScreenAssets>();
-
-        app.init_resource::<ActionState<TitleScreenAction>>()
-            .add_plugins(InputManagerPlugin::<TitleScreenAction>::default())
-            .add_systems(
-                Update,
-                (
-                    start
-                        .run_if(action_just_pressed(TitleScreenAction::Start))
-                        .after(TrackedProgressSet),
-                    quit.run_if(action_just_pressed(TitleScreenAction::Quit)),
-                ),
-            );
 
         app.add_loading_state(LoadingState::new(TitleScreen))
             .add_collection_to_loading_state::<_, GameAssets>(TitleScreen)
@@ -47,30 +35,12 @@ const TITLE: &str = "bevy_jam_template";
 #[reflect(Resource)]
 pub struct TitleScreenAssets {}
 
-#[derive(Actionlike, Reflect, Clone)]
-enum TitleScreenAction {
-    Start,
-    Quit,
-}
-
 fn enter_title_screen(mut commands: Commands, root: Res<AppRoot>) {
-    commands.insert_resource(
-        InputMap::default()
-            .insert(MouseButton::Left, TitleScreenAction::Start)
-            .insert(GamepadButtonType::Start, TitleScreenAction::Start)
-            .insert(KeyCode::Return, TitleScreenAction::Start)
-            .insert(KeyCode::Space, TitleScreenAction::Start)
-            .insert(KeyCode::Escape, TitleScreenAction::Quit)
-            .insert(KeyCode::Q, TitleScreenAction::Quit)
-            .build(),
-    );
-
     let screen = spawn_title_screen(&mut commands);
     commands.entity(screen).set_parent(root.ui);
 }
 
 fn exit_title_screen(mut commands: Commands, root: Res<AppRoot>) {
-    commands.remove_resource::<InputMap<TitleScreenAction>>();
     commands.entity(root.ui).despawn_descendants();
 }
 
@@ -82,6 +52,8 @@ fn spawn_title_screen(commands: &mut Commands) -> Entity {
                 style: Style {
                     width: Percent(100.0),
                     height: Percent(100.0),
+                    align_items: AlignItems::Center,
+                    flex_direction: FlexDirection::Column,
                     ..default()
                 },
                 ..default()
@@ -92,35 +64,108 @@ fn spawn_title_screen(commands: &mut Commands) -> Entity {
     commands
         .spawn((
             Name::new("Title"),
-            TextBundle {
-                style: Style {
-                    margin: UiRect::new(Auto, Auto, Percent(5.0), Auto),
-                    height: Percent(8.0),
+            TextBundle::from_section(
+                TITLE,
+                TextStyle {
+                    font: BOLD_FONT_HANDLE,
                     ..default()
                 },
-                text: Text::from_section(
-                    TITLE,
-                    TextStyle {
-                        font: BOLD_FONT_HANDLE,
-                        ..default()
-                    },
-                ),
+            )
+            .with_style(Style {
+                margin: UiRect::vertical(Vw(5.0)),
                 ..default()
-            },
+            }),
             FontSize::new(Vw(5.0)),
-            PaletteColor::Foreground,
+            PaletteColor::BodyText,
         ))
         .set_parent(screen);
+
+    let button_container = commands
+        .spawn((
+            Name::new("ButtonContainer"),
+            NodeBundle {
+                style: Style {
+                    width: Percent(100.0),
+                    height: Vw(40.0),
+                    align_items: AlignItems::Center,
+                    justify_content: JustifyContent::Center,
+                    flex_direction: FlexDirection::Column,
+                    row_gap: Vw(2.5),
+                    ..default()
+                },
+                ..default()
+            },
+        ))
+        .set_parent(screen)
+        .id();
+
+    let play_button = spawn_button(commands, "Play");
+    commands
+        .entity(play_button)
+        .insert(On::<Pointer<Click>>::run(
+            |mut next_state: ResMut<NextState<_>>, progress: Res<ProgressCounter>| {
+                let Progress { done, total } = progress.progress_complete();
+                next_state.set(if done >= total { Game } else { LoadingScreen });
+            },
+        ))
+        .set_parent(button_container);
+
+    let quit_button = spawn_button(commands, "Quit");
+    commands
+        .entity(quit_button)
+        .insert((
+            #[cfg(feature = "web")]
+            crate::ui::Disabled(true),
+            #[cfg(not(feature = "web"))]
+            On::<Pointer<Click>>::run(|mut app_exit: EventWriter<_>| {
+                app_exit.send(AppExit);
+            }),
+        ))
+        .set_parent(button_container);
 
     screen
 }
 
-fn start(mut next_state: ResMut<NextState<AppState>>, progress: Res<ProgressCounter>) {
-    // Show loading screen only if assets are still loading
-    let Progress { done, total } = progress.progress_complete();
-    next_state.set(if done >= total { Game } else { LoadingScreen });
-}
+fn spawn_button(commands: &mut Commands, text: impl Into<String>) -> Entity {
+    let text = text.into();
 
-fn quit(mut app_exit: EventWriter<AppExit>) {
-    app_exit.send(AppExit);
+    let button = commands
+        .spawn((
+            Name::new(format!("{}Button", text.replace(' ', ""))),
+            ButtonBundle {
+                style: Style {
+                    height: Vw(8.0),
+                    width: Vw(30.0),
+                    justify_content: JustifyContent::Center,
+                    align_items: AlignItems::Center,
+                    ..default()
+                },
+                ..default()
+            },
+            PaletteColor::None,
+            InteractionPalette {
+                normal: PaletteColor::Primary,
+                hovered: PaletteColor::PrimaryHovered,
+                pressed: PaletteColor::PrimaryPressed,
+                disabled: PaletteColor::PrimaryDisabled,
+            },
+        ))
+        .id();
+
+    commands
+        .spawn((
+            Name::new("ButtonText"),
+            TextBundle::from_section(
+                text,
+                TextStyle {
+                    font: FONT_HANDLE,
+                    ..default()
+                },
+            ),
+            FontSize::new(Vw(4.0)),
+            PaletteColor::PrimaryText,
+        ))
+        .set_parent(button);
+
+    button
 }

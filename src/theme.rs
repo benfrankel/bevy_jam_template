@@ -3,6 +3,7 @@ use std::ops::Index;
 use bevy::prelude::*;
 use serde::Deserialize;
 use serde::Serialize;
+use strum::EnumCount;
 
 use crate::config::Config;
 use crate::config::ConfigHandle;
@@ -13,7 +14,7 @@ pub struct ThemePlugin;
 impl Plugin for ThemePlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<PaletteColor>()
-            .add_systems(Update, apply_palette_color.in_set(AppSet::End));
+            .add_systems(PostUpdate, apply_palette_color.in_set(AppSet::AnimateSync));
     }
 }
 
@@ -24,7 +25,7 @@ pub struct ThemeConfig {
 
 impl ThemeConfig {
     pub fn apply(&self, world: &mut World) {
-        world.resource_mut::<ClearColor>().0 = self.palette[PaletteColor::Background];
+        world.resource_mut::<ClearColor>().0 = self.palette[PaletteColor::Body];
         for mut color in world.query::<&mut PaletteColor>().iter_mut(world) {
             color.set_changed();
         }
@@ -32,7 +33,7 @@ impl ThemeConfig {
 }
 
 #[derive(Reflect, Serialize, Deserialize)]
-pub struct Palette([Color; 2]);
+pub struct Palette([Color; PaletteColor::COUNT]);
 
 impl Index<PaletteColor> for Palette {
     type Output = Color;
@@ -47,10 +48,20 @@ impl Index<PaletteColor> for Palette {
 /// - TextureAtlasSprite
 /// - Text (all sections)
 /// - BackgroundColor (only when there's no Text component)
-#[derive(Component, Reflect, Clone, Copy)]
+///
+/// See: https://getbootstrap.com/docs/5.3/customize/color/
+#[derive(Component, Reflect, Clone, Copy, EnumCount)]
 pub enum PaletteColor {
-    Background,
-    Foreground,
+    None,
+
+    Body,
+    BodyText,
+
+    Primary,
+    PrimaryHovered,
+    PrimaryPressed,
+    PrimaryDisabled,
+    PrimaryText,
 }
 
 fn apply_palette_color(
