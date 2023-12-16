@@ -23,7 +23,6 @@ TODO:
     - Some helpful log messages
 
 ## Planned
-- [ ] DespawnSet
 - [ ] Audio settings, keybindings, and an in-game settings menu
 - [ ] In-game pause menu with restart and quit (to title screen) buttons
 - [ ] Persistence on native + web via `bevy-persistent`

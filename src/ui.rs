@@ -1,3 +1,5 @@
+#![allow(unused_imports)]
+
 mod font;
 mod interaction_palette;
 
@@ -7,7 +9,6 @@ use bevy_mod_picking::prelude::*;
 pub use crate::ui::font::FontSize;
 pub use crate::ui::font::BOLD_FONT_HANDLE;
 pub use crate::ui::font::FONT_HANDLE;
-#[allow(unused_imports)]
 pub use crate::ui::interaction_palette::Disabled;
 pub use crate::ui::interaction_palette::InteractionPalette;
 

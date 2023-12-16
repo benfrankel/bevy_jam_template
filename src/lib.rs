@@ -11,6 +11,7 @@ mod physics;
 mod state;
 mod theme;
 mod ui;
+mod util;
 mod window;
 
 use bevy::log::LogPlugin;
@@ -76,6 +77,7 @@ impl Plugin for AppPlugin {
             state::StatePlugin,
             theme::ThemePlugin,
             ui::UiPlugin,
+            util::UtilPlugin,
         ));
 
         #[cfg(feature = "dev")]
@@ -97,7 +99,7 @@ pub enum AppSet {
     Despawn,
     /// (Update) Apply all commands (e.g. spawn, despawn)
     ApplyDeferred,
-    /// (Update) Synchronize end-of-frame values (after commands have been applied)
+    /// (Update) Synchronize end-of-frame values
     End,
     /// (PostUpdate) Synchronize pre-animation values
     AnimateSync,
