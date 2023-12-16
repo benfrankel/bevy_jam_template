@@ -33,7 +33,7 @@ impl Plugin for AppPlugin {
             Update,
             (
                 AppSet::Start,
-                AppSet::Tick,
+                AppSet::Update,
                 AppSet::Despawn,
                 AppSet::ApplyDeferred,
                 AppSet::End,
@@ -89,10 +89,10 @@ impl Plugin for AppPlugin {
 
 #[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum AppSet {
-    /// (Update) Initialize start-of-frame values
+    /// (Update) Initialize start-of-frame values and tick timers
     Start,
-    /// (Update) Tick timers
-    Tick,
+    /// (Update) Step game logic
+    Update,
     /// (Update) Queue despawn commands
     Despawn,
     /// (Update) Apply all commands (e.g. spawn, despawn)

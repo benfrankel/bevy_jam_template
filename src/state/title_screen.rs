@@ -1,4 +1,3 @@
-use bevy::app::AppExit;
 use bevy::prelude::*;
 use bevy::ui::Val::*;
 use bevy_asset_loader::prelude::*;
@@ -118,7 +117,7 @@ fn spawn_title_screen(commands: &mut Commands) -> Entity {
             crate::ui::Disabled(true),
             #[cfg(not(feature = "web"))]
             On::<Pointer<Click>>::run(|mut app_exit: EventWriter<_>| {
-                app_exit.send(AppExit);
+                app_exit.send(bevy::app::AppExit);
             }),
         ))
         .set_parent(button_container);
