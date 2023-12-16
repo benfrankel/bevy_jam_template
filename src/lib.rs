@@ -15,6 +15,9 @@ mod window;
 
 use bevy::log::LogPlugin;
 use bevy::prelude::*;
+use bevy::transform::TransformSystem;
+use bevy::ui::UiSystem;
+use bevy_rapier2d::plugin::PhysicsSet;
 
 pub struct AppPlugin;
 
@@ -34,6 +37,15 @@ impl Plugin for AppPlugin {
                 AppSet::Despawn,
                 AppSet::ApplyDeferred,
                 AppSet::End,
+            )
+                .chain(),
+        )
+        .configure_sets(
+            PostUpdate,
+            (
+                (UiSystem::Layout, PhysicsSet::Writeback),
+                AppSet::Animate,
+                TransformSystem::TransformPropagate,
             )
                 .chain(),
         )
@@ -76,17 +88,18 @@ impl Plugin for AppPlugin {
 
 #[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum AppSet {
-    /// Initialize start-of-frame values
+    /// (Update) Initialize start-of-frame values
     Start,
-    /// Tick timers
+    /// (Update) Tick timers
     Tick,
-    /// Queue despawn commands
+    /// (Update) Queue despawn commands
     Despawn,
-    /// Apply all commands (e.g. spawn, despawn)
+    /// (Update) Apply all commands (e.g. spawn, despawn)
     ApplyDeferred,
-    /// Synchronize end-of-frame values (after commands have been applied)
+    /// (Update) Synchronize end-of-frame values (after commands have been applied)
     End,
-    // TODO: Animate sets
+    /// (PostUpdate) Update animations
+    Animate,
 }
 
 // Global entities

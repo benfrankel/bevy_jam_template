@@ -12,6 +12,7 @@ use crate::state::title_screen::TitleScreenAssets;
 use crate::state::AppState::*;
 use crate::theme::PaletteColor;
 use crate::AppRoot;
+use crate::AppSet;
 
 pub struct SplashScreenStatePlugin;
 
@@ -36,10 +37,10 @@ impl Plugin for SplashScreenStatePlugin {
         app.register_type::<SplashScreenStartTime>()
             .register_type::<SplashImageFadeInOut>()
             .add_systems(
-                Update,
-                // TODO: This has to run after apply_palette_colors
-                update_splash_screen
+                PostUpdate,
+                animate_splash_screen
                     .track_progress()
+                    .in_set(AppSet::Animate)
                     .run_if(in_state(SplashScreen)),
             );
 
@@ -110,7 +111,7 @@ fn spawn_splash_screen(commands: &mut Commands) -> Entity {
 struct SplashImageFadeInOut;
 
 // TODO: Replace this with some Animation component
-fn update_splash_screen(
+fn animate_splash_screen(
     mut color_query: Query<&mut BackgroundColor, With<SplashImageFadeInOut>>,
     time: Res<Time>,
     start: Res<SplashScreenStartTime>,
