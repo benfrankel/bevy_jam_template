@@ -13,32 +13,33 @@ pub struct ThemePlugin;
 
 impl Plugin for ThemePlugin {
     fn build(&self, app: &mut App) {
-        app.register_type::<PaletteColor>()
-            .add_systems(PostUpdate, apply_palette_color.in_set(AppSet::AnimateSync));
+        app.register_type::<ThemeColor>()
+            .add_systems(PostUpdate, apply_theme_color.in_set(AppSet::AnimateSync));
     }
 }
 
 #[derive(Reflect, Serialize, Deserialize)]
 pub struct ThemeConfig {
-    pub palette: Palette,
+    pub colors: ThemeColorList,
+    // TODO: pub fonts: ThemeFontList,
 }
 
 impl ThemeConfig {
     pub fn apply(&self, world: &mut World) {
-        world.resource_mut::<ClearColor>().0 = self.palette[PaletteColor::Body];
-        for mut color in world.query::<&mut PaletteColor>().iter_mut(world) {
+        world.resource_mut::<ClearColor>().0 = self.colors[ThemeColor::Body];
+        for mut color in world.query::<&mut ThemeColor>().iter_mut(world) {
             color.set_changed();
         }
     }
 }
 
 #[derive(Reflect, Serialize, Deserialize)]
-pub struct Palette([Color; PaletteColor::COUNT]);
+pub struct ThemeColorList([Color; ThemeColor::COUNT]);
 
-impl Index<PaletteColor> for Palette {
+impl Index<ThemeColor> for ThemeColorList {
     type Output = Color;
 
-    fn index(&self, index: PaletteColor) -> &Self::Output {
+    fn index(&self, index: ThemeColor) -> &Self::Output {
         &self.0[index as usize]
     }
 }
@@ -49,9 +50,9 @@ impl Index<PaletteColor> for Palette {
 /// - Text (all sections)
 /// - BackgroundColor (only when there's no Text component)
 ///
-/// See: https://getbootstrap.com/docs/5.3/customize/color/
+/// (see: https://getbootstrap.com/docs/5.3/customize/color/)
 #[derive(Component, Reflect, Clone, Copy, EnumCount)]
-pub enum PaletteColor {
+pub enum ThemeColor {
     None,
 
     Body,
@@ -62,25 +63,27 @@ pub enum PaletteColor {
     PrimaryPressed,
     PrimaryDisabled,
     PrimaryText,
+
+    Popup,
 }
 
-fn apply_palette_color(
+fn apply_theme_color(
     config_handle: Res<ConfigHandle>,
     config: Res<Assets<Config>>,
     mut color_query: Query<
         (
-            &PaletteColor,
+            &ThemeColor,
             Option<&mut Sprite>,
             Option<&mut TextureAtlasSprite>,
             Option<&mut Text>,
             Option<&mut BackgroundColor>,
         ),
-        Changed<PaletteColor>,
+        Changed<ThemeColor>,
     >,
 ) {
     let Some(palette) = &config
         .get(&config_handle.0)
-        .map(|config| &config.theme.palette)
+        .map(|config| &config.theme.colors)
     else {
         return;
     };

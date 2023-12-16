@@ -6,7 +6,7 @@ use iyes_progress::prelude::*;
 
 use crate::state::game::GameAssets;
 use crate::state::AppState::*;
-use crate::theme::PaletteColor;
+use crate::theme::ThemeColor;
 use crate::ui::FontSize;
 use crate::ui::FONT_HANDLE;
 use crate::AppRoot;
@@ -78,7 +78,7 @@ fn spawn_loading_screen(commands: &mut Commands) -> Entity {
                 ..default()
             },
             FontSize::new(Vw(5.0)),
-            PaletteColor::BodyText,
+            ThemeColor::BodyText,
         ))
         .set_parent(screen);
 
@@ -108,7 +108,7 @@ fn spawn_loading_screen(commands: &mut Commands) -> Entity {
                 },
                 ..default()
             },
-            PaletteColor::BodyText,
+            ThemeColor::BodyText,
             IsLoadingBarFill,
         ))
         .set_parent(loading_bar);

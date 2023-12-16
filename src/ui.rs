@@ -2,6 +2,7 @@
 
 mod font;
 mod interaction_palette;
+mod tooltip;
 
 use bevy::prelude::*;
 use bevy_mod_picking::prelude::*;
@@ -11,6 +12,8 @@ pub use crate::ui::font::BOLD_FONT_HANDLE;
 pub use crate::ui::font::FONT_HANDLE;
 pub use crate::ui::interaction_palette::Disabled;
 pub use crate::ui::interaction_palette::InteractionPalette;
+pub use crate::ui::tooltip::Tooltip;
+pub use crate::ui::tooltip::TooltipSide;
 
 pub struct UiPlugin;
 
@@ -20,6 +23,7 @@ impl Plugin for UiPlugin {
             DefaultPickingPlugins,
             font::FontPlugin,
             interaction_palette::InteractionPalettePlugin,
+            tooltip::TooltipPlugin,
         ));
     }
 }

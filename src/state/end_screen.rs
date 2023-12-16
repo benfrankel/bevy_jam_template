@@ -7,7 +7,7 @@ use leafwing_input_manager::prelude::*;
 
 use crate::state::AppState;
 use crate::state::AppState::*;
-use crate::theme::PaletteColor;
+use crate::theme::ThemeColor;
 use crate::ui::FontSize;
 use crate::ui::BOLD_FONT_HANDLE;
 use crate::AppRoot;
@@ -99,7 +99,7 @@ fn spawn_end_screen(commands: &mut Commands) -> Entity {
                 ..default()
             },
             FontSize::new(Vw(5.0)),
-            PaletteColor::BodyText,
+            ThemeColor::BodyText,
         ))
         .set_parent(screen);
 

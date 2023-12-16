@@ -10,7 +10,7 @@ use iyes_progress::prelude::*;
 
 use crate::state::title_screen::TitleScreenAssets;
 use crate::state::AppState::*;
-use crate::theme::PaletteColor;
+use crate::theme::ThemeColor;
 use crate::AppRoot;
 use crate::AppSet;
 
@@ -99,7 +99,7 @@ fn spawn_splash_screen(commands: &mut Commands) -> Entity {
                 image: UiImage::new(SPLASH_SCREEN_IMAGE_HANDLE),
                 ..default()
             },
-            PaletteColor::BodyText,
+            ThemeColor::BodyText,
             SplashImageFadeInOut,
         ))
         .set_parent(screen);

@@ -112,6 +112,8 @@ pub enum AppSet {
 pub struct AppRoot {
     window: Entity,
     camera: Entity,
+    tooltip: Entity,
+    tooltip_text: Entity,
 
     // Logical entities
     ui: Entity,
@@ -123,6 +125,8 @@ impl Default for AppRoot {
         Self {
             window: Entity::PLACEHOLDER,
             camera: Entity::PLACEHOLDER,
+            tooltip: Entity::PLACEHOLDER,
+            tooltip_text: Entity::PLACEHOLDER,
 
             ui: Entity::PLACEHOLDER,
             world: Entity::PLACEHOLDER,

@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::theme::PaletteColor;
+use crate::theme::ThemeColor;
 use crate::AppSet;
 
 pub struct InteractionPalettePlugin;
@@ -17,13 +17,14 @@ impl Plugin for InteractionPalettePlugin {
 pub struct Disabled(pub bool);
 
 // TODO: Text colors
-// The palette color to use in each interaction state
+/// The theme color to use in each Interaction state
+/// Requires Interaction and ThemeColor components to function
 #[derive(Component, Reflect)]
 pub struct InteractionPalette {
-    pub normal: PaletteColor,
-    pub hovered: PaletteColor,
-    pub pressed: PaletteColor,
-    pub disabled: PaletteColor,
+    pub normal: ThemeColor,
+    pub hovered: ThemeColor,
+    pub pressed: ThemeColor,
+    pub disabled: ThemeColor,
 }
 
 fn apply_interaction_palette(
@@ -32,7 +33,7 @@ fn apply_interaction_palette(
             &Interaction,
             &InteractionPalette,
             Option<&Disabled>,
-            &mut PaletteColor,
+            &mut ThemeColor,
         ),
         Or<(Changed<Interaction>, Changed<Disabled>)>,
     >,

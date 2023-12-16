@@ -6,7 +6,7 @@ use iyes_progress::prelude::*;
 
 use crate::state::game::GameAssets;
 use crate::state::AppState::*;
-use crate::theme::PaletteColor;
+use crate::theme::ThemeColor;
 use crate::ui::FontSize;
 use crate::ui::InteractionPalette;
 use crate::ui::BOLD_FONT_HANDLE;
@@ -75,7 +75,7 @@ fn spawn_title_screen(commands: &mut Commands) -> Entity {
                 ..default()
             }),
             FontSize::new(Vw(5.0)),
-            PaletteColor::BodyText,
+            ThemeColor::BodyText,
         ))
         .set_parent(screen);
 
@@ -141,12 +141,12 @@ fn spawn_button(commands: &mut Commands, text: impl Into<String>) -> Entity {
                 },
                 ..default()
             },
-            PaletteColor::None,
+            ThemeColor::None,
             InteractionPalette {
-                normal: PaletteColor::Primary,
-                hovered: PaletteColor::PrimaryHovered,
-                pressed: PaletteColor::PrimaryPressed,
-                disabled: PaletteColor::PrimaryDisabled,
+                normal: ThemeColor::Primary,
+                hovered: ThemeColor::PrimaryHovered,
+                pressed: ThemeColor::PrimaryPressed,
+                disabled: ThemeColor::PrimaryDisabled,
             },
         ))
         .id();
@@ -162,7 +162,7 @@ fn spawn_button(commands: &mut Commands, text: impl Into<String>) -> Entity {
                 },
             ),
             FontSize::new(Vw(4.0)),
-            PaletteColor::PrimaryText,
+            ThemeColor::PrimaryText,
         ))
         .set_parent(button);
 

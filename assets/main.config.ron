@@ -6,7 +6,7 @@
     ),
 
     theme: ThemeConfig(
-        palette: Palette((
+        colors: ThemeColorList((
             // None
             Rgba(red: 0.000, green: 0.000, blue: 0.000, alpha: 0.000),
 
@@ -25,6 +25,9 @@
             Rgba(red: 0.000, green: 0.300, blue: 0.500, alpha: 1.000),
             // PrimaryText
             Rgba(red: 0.157, green: 0.157, blue: 0.157, alpha: 1.000),
+            
+            // Popup
+            Rgba(red: 0.106, green: 0.118, blue: 0.122, alpha: 0.850),
         )),
     ),
 )
