@@ -11,13 +11,19 @@ impl Plugin for FontPlugin {
         load_internal_binary_asset!(
             app,
             FONT_HANDLE,
-            "../../assets/font/PyriousPixel-R.ttf",
+            "../../assets/font/pypx.ttf",
             |bytes: &[u8], _path: String| Font::try_from_bytes(bytes.to_vec()).unwrap()
         );
         load_internal_binary_asset!(
             app,
             BOLD_FONT_HANDLE,
-            "../../assets/font/PyriousPixel-B.ttf",
+            "../../assets/font/pypx-B.ttf",
+            |bytes: &[u8], _path: String| Font::try_from_bytes(bytes.to_vec()).unwrap()
+        );
+        load_internal_binary_asset!(
+            app,
+            THICK_FONT_HANDLE,
+            "../../assets/font/pypx-T.ttf",
             |bytes: &[u8], _path: String| Font::try_from_bytes(bytes.to_vec()).unwrap()
         );
 
@@ -30,6 +36,8 @@ pub const FONT_HANDLE: Handle<Font> =
     Handle::weak_from_u128(303551798864246209986336759745415587961);
 pub const BOLD_FONT_HANDLE: Handle<Font> =
     Handle::weak_from_u128(317423448069604009516378143395193332978);
+pub const THICK_FONT_HANDLE: Handle<Font> =
+    Handle::weak_from_u128(93153499609634570285243616548722721367);
 
 #[derive(Component, Reflect)]
 pub struct FontSize {
