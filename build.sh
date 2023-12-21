@@ -23,7 +23,7 @@ function web() {
   rm -rf "${OUT_DIR:?}/"* "${OUT_ZIP}"
 
   # Build
-  cargo build --profile=wasm-release --target="${TARGET}" --features=web
+  cargo build --profile=wasm-release --target="${TARGET}" --no-default-features --features=web
   wasm-bindgen --no-typescript --out-name "${EXE}" --out-dir "${OUT_DIR}" --target web "target/${TARGET}/wasm-release/${EXE}.wasm"
   wasm-opt -O -ol 100 -s 100 -o "${OUT_DIR}/${EXE}_bg.wasm" "${OUT_DIR}/${EXE}_bg.wasm"
 
@@ -45,7 +45,7 @@ function windows() {
   rm -rf "${OUT_DIR:?}"/* "${OUT_ZIP}"
 
   # Build
-  cargo build --release --target="${TARGET}" --features=native
+  cargo build --release --target="${TARGET}" --no-default-features --features=native
 
   # Prepare zip
   cp -r assets "target/${TARGET}/release/${EXE}.exe" "${OUT_DIR}"
@@ -65,7 +65,7 @@ function linux() {
   rm -rf "${OUT_DIR:?}"/* "${OUT_ZIP}"
 
   # Build
-  cargo build --release --target="${TARGET}" --features=native,bevy/wayland
+  cargo build --release --target="${TARGET}" --no-default-features --features=native,bevy/wayland
 
   # Prepare zip
   cp -r assets "target/${TARGET}/release/${EXE}" "${OUT_DIR}"
@@ -86,7 +86,7 @@ function mac() {
   rm -rf "${OUT_DIR:?}"/* "${OUT_ZIP}"
 
   # Build
-  cargo build --release --target="${TARGET}" --features=native
+  cargo build --release --target="${TARGET}" --no-default-features --features=native
 
   # Prepare zip
   cp -r assets "target/${TARGET}/release/${EXE}.exe" "${OUT_DIR}"

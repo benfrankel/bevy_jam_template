@@ -44,7 +44,7 @@ jobs:
           cargo install wasm-bindgen-cli
       - name: Build
         run: |
-          cargo build --profile=wasm-release --target=wasm32-unknown-unknown --features=web
+          cargo build --profile=wasm-release --target=wasm32-unknown-unknown --no-default-features --features=web
       - name: Prepare package
         run: |
           mkdir -p build/web
@@ -91,7 +91,7 @@ jobs:
           sudo apt-get update; sudo apt-get install pkg-config libx11-dev libasound2-dev libudev-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev mold
       - name: Build
         run: |
-          cargo build --release --target=x86_64-unknown-linux-gnu --features=native,bevy/wayland
+          cargo build --release --target=x86_64-unknown-linux-gnu --no-default-features --features=native,bevy/wayland
       - name: Prepare package
         run: |
           mkdir -p build/linux
@@ -131,7 +131,7 @@ jobs:
           targets: x86_64-pc-windows-msvc
       - name: Build
         run: |
-          cargo build --release --target=x86_64-pc-windows-msvc --features=native
+          cargo build --release --target=x86_64-pc-windows-msvc --no-default-features --features=native
       - name: Prepare package
         run: |
           mkdir -p build/windows
@@ -175,7 +175,7 @@ jobs:
           export MACOSX_DEPLOYMENT_TARGET="10.9"
       - name: Build
         run: |
-          cargo build --release --target=x86_64-apple-darwin --features=native
+          cargo build --release --target=x86_64-apple-darwin --no-default-features --features=native
       - name: Prepare package
         run: |
           mkdir -p ${{ env.EXE_NAME }}.app/Contents/MacOS
@@ -215,7 +215,7 @@ jobs:
           targets: aarch64-apple-darwin
       - name: Build
         run: |
-          cargo build --release --target=aarch64-apple-darwin --features=native
+          cargo build --release --target=aarch64-apple-darwin --no-default-features --features=native
       - name: Prepare package
         run: |
           mkdir -p ${{ env.EXE_NAME }}.app/Contents/MacOS

@@ -16,6 +16,7 @@ bevy_mod_picking = { version = "0.17", default-features = false, features = [
 ] }
 bevy_rapier2d = "0.23"
 iyes_progress = "0.10"
+lazy-regex = { version = "3", features = ["lite"] }
 leafwing-input-manager = "0.11"
 #noise = "0.8"
 #rand = { version = "0.8", features = ["small_rng"] }
@@ -26,6 +27,7 @@ tap = "1"
 wasm-bindgen = { version = "0.2", optional = true }
 
 [features]
+default = ["native_dev"]
 core = [
     # Core functionality
     "bevy/bevy_core_pipeline",

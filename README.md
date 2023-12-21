@@ -18,7 +18,8 @@ TODO:
     - Window settings (`WindowConfig`)
     - Color palette (`ThemeConfig`)
 - UI utilities (`ui.rs`)
-    - Built-in regular / bold pixel fonts with dynamic font size (`ui/font.rs`)
+    - Built-in pixel fonts with dynamic font size (`ui/font.rs`, with fonts in `assets/font`)
+    - Basic "rich text" parsing (`ui/text.rs`)
     - Interactive buttons (`ui/interaction_palette.rs` + `bevy_mod_picking`)
     - Tooltip on hover (`ui/tooltip.rs`)
 - Debug mode for dev builds (`debug.rs`)
@@ -29,7 +30,6 @@ TODO:
 ## Planned
 
 - [ ] Screen fade animation between states
-- [ ] Text sections parser
 - [ ] Audio settings, keybindings, and an in-game settings menu
 - [ ] In-game pause menu with restart and quit (to title screen) buttons
 - [ ] Persistence on native + web via `bevy-persistent`
