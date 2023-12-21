@@ -2,6 +2,8 @@ use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
 
 use crate::state::AppState::*;
+use crate::state::FADE_IN_DURATION;
+use crate::ui::fade_in;
 use crate::AppRoot;
 
 pub struct GameStatePlugin;
@@ -20,7 +22,9 @@ impl Plugin for GameStatePlugin {
 #[reflect(Resource)]
 pub struct GameAssets {}
 
-fn enter_game() {}
+fn enter_game(mut commands: Commands) {
+    fade_in(&mut commands, FADE_IN_DURATION);
+}
 
 fn exit_game(root: Res<AppRoot>, mut transform_query: Query<&mut Transform>) {
     // Restore camera

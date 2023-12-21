@@ -21,7 +21,10 @@ impl Plugin for StatePlugin {
     }
 }
 
-#[derive(States, Default, Copy, Clone, Eq, PartialEq, Hash, Debug, EnumIter)]
+const FADE_IN_DURATION: f32 = 0.3;
+const FADE_OUT_DURATION: f32 = 0.3;
+
+#[derive(States, Reflect, Default, Copy, Clone, Eq, PartialEq, Hash, Debug, EnumIter)]
 pub enum AppState {
     #[default]
     SplashScreen,

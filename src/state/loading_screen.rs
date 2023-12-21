@@ -6,9 +6,11 @@ use iyes_progress::prelude::*;
 
 use crate::state::game::GameAssets;
 use crate::state::AppState::*;
+use crate::state::FADE_IN_DURATION;
 use crate::theme::ThemeColor;
+use crate::ui::fade_in;
 use crate::ui::FontSize;
-use crate::ui::FONT_HANDLE;
+use crate::ui::THICK_FONT_HANDLE;
 use crate::AppRoot;
 
 pub struct LoadingScreenStatePlugin;
@@ -36,6 +38,8 @@ struct IsLoadingBarFill;
 fn enter_loading(mut commands: Commands, root: Res<AppRoot>) {
     let screen = spawn_loading_screen(&mut commands);
     commands.entity(screen).set_parent(root.ui);
+
+    fade_in(&mut commands, FADE_IN_DURATION);
 }
 
 fn exit_loading(mut commands: Commands, root: Res<AppRoot>) {
@@ -71,7 +75,7 @@ fn spawn_loading_screen(commands: &mut Commands) -> Entity {
                 text: Text::from_section(
                     "Loading...",
                     TextStyle {
-                        font: FONT_HANDLE,
+                        font: THICK_FONT_HANDLE,
                         ..default()
                     },
                 ),
@@ -87,10 +91,14 @@ fn spawn_loading_screen(commands: &mut Commands) -> Entity {
             Name::new("LoadingBar"),
             NodeBundle {
                 style: Style {
-                    width: Percent(50.0),
-                    height: Percent(5.0),
+                    width: Percent(60.0),
+                    height: Percent(8.0),
+                    padding: UiRect::all(VMin(1.0)),
+                    border: UiRect::all(VMin(1.0)),
                     ..default()
                 },
+                // TODO: ThemeColor for border_color
+                border_color: Color::WHITE.into(),
                 ..default()
             },
         ))

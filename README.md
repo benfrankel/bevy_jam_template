@@ -14,12 +14,13 @@ TODO:
 - VSCode tasks
 - System ordering (`AppSet { Start, Update, Despawn, ApplyDeferred, End, AnimateSync, Animate }`)
 - State transitions (`AppState { SplashScreen, TitleScreen, LoadingScreen, Game, EndScreen }`)
+    - Screen fade in / out animation (`ui/transition.rs`)
 - Config file with hot-reloading (`config.rs`, with values from `assets/main.config.ron`)
     - Window settings (`WindowConfig`)
     - Color palette (`ThemeConfig`)
 - UI utilities (`ui.rs`)
     - Built-in pixel fonts with dynamic font size (`ui/font.rs`, with fonts in `assets/font`)
-    - Basic "rich text" parsing (`ui/text.rs`)
+    - Basic "rich text" parsing (`ui/font.rs`)
     - Interactive buttons (`ui/interaction.rs`)
     - Tooltip on hover (`ui/tooltip.rs`)
 - Debug mode for dev builds (`debug.rs`)
@@ -29,11 +30,10 @@ TODO:
 
 ## Planned
 
-- [ ] Screen fade animation between states
+- [ ] Persistence on native + web via `bevy-persistent`
+- [ ] 9-slice UI via `bevy_nice_slice_ui`?
 - [ ] Audio settings, keybindings, and an in-game settings menu
 - [ ] In-game pause menu with restart and quit (to title screen) buttons
-- [ ] Persistence on native + web via `bevy-persistent`
-- [ ] 9-slice UI via `bevy_nice_slice_ui`
 
 # License
 

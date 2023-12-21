@@ -6,7 +6,11 @@ use iyes_progress::prelude::*;
 
 use crate::state::game::GameAssets;
 use crate::state::AppState::*;
+use crate::state::FADE_IN_DURATION;
+use crate::state::FADE_OUT_DURATION;
 use crate::theme::ThemeColor;
+use crate::ui::fade_in;
+use crate::ui::fade_out;
 use crate::ui::FontSize;
 use crate::ui::InteractionPalette;
 use crate::ui::BOLD_FONT_HANDLE;
@@ -37,6 +41,8 @@ pub struct TitleScreenAssets {}
 fn enter_title_screen(mut commands: Commands, root: Res<AppRoot>) {
     let screen = spawn_title_screen(&mut commands);
     commands.entity(screen).set_parent(root.ui);
+
+    fade_in(&mut commands, FADE_IN_DURATION);
 }
 
 fn exit_title_screen(mut commands: Commands, root: Res<AppRoot>) {
@@ -102,9 +108,13 @@ fn spawn_title_screen(commands: &mut Commands) -> Entity {
     commands
         .entity(play_button)
         .insert(On::<Pointer<Click>>::run(
-            |mut next_state: ResMut<NextState<_>>, progress: Res<ProgressCounter>| {
+            |mut commands: Commands, progress: Res<ProgressCounter>| {
                 let Progress { done, total } = progress.progress_complete();
-                next_state.set(if done >= total { Game } else { LoadingScreen });
+                fade_out(
+                    &mut commands,
+                    FADE_OUT_DURATION,
+                    if done >= total { Game } else { LoadingScreen },
+                );
             },
         ))
         .set_parent(button_container);

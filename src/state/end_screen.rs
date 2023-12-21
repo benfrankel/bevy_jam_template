@@ -5,9 +5,12 @@ use bevy_asset_loader::prelude::*;
 use leafwing_input_manager::common_conditions::action_just_pressed;
 use leafwing_input_manager::prelude::*;
 
-use crate::state::AppState;
 use crate::state::AppState::*;
+use crate::state::FADE_IN_DURATION;
+use crate::state::FADE_OUT_DURATION;
 use crate::theme::ThemeColor;
+use crate::ui::fade_in;
+use crate::ui::fade_out;
 use crate::ui::FontSize;
 use crate::ui::BOLD_FONT_HANDLE;
 use crate::AppRoot;
@@ -58,6 +61,8 @@ fn enter_end_screen(mut commands: Commands, root: Res<AppRoot>) {
 
     let screen = spawn_end_screen(&mut commands);
     commands.entity(screen).set_parent(root.ui);
+
+    fade_in(&mut commands, FADE_IN_DURATION);
 }
 
 fn exit_end_screen(mut commands: Commands, root: Res<AppRoot>) {
@@ -106,8 +111,8 @@ fn spawn_end_screen(commands: &mut Commands) -> Entity {
     screen
 }
 
-fn restart(mut next_state: ResMut<NextState<AppState>>) {
-    next_state.set(TitleScreen);
+fn restart(mut commands: Commands) {
+    fade_out(&mut commands, FADE_OUT_DURATION, TitleScreen);
 }
 
 fn quit(mut app_exit: EventWriter<AppExit>) {
