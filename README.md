@@ -20,7 +20,7 @@ TODO:
 - UI utilities (`ui.rs`)
     - Built-in pixel fonts with dynamic font size (`ui/font.rs`, with fonts in `assets/font`)
     - Basic "rich text" parsing (`ui/text.rs`)
-    - Interactive buttons (`ui/interaction_palette.rs` + `bevy_mod_picking`)
+    - Interactive buttons (`ui/interaction.rs`)
     - Tooltip on hover (`ui/tooltip.rs`)
 - Debug mode for dev builds (`debug.rs`)
     - Editor (`bevy_editor_pls`)
