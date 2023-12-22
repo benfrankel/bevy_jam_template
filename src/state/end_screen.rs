@@ -6,8 +6,8 @@ use leafwing_input_manager::common_conditions::action_just_pressed;
 use leafwing_input_manager::prelude::*;
 
 use crate::state::AppState::*;
-use crate::state::FADE_IN_DURATION;
-use crate::state::FADE_OUT_DURATION;
+use crate::state::FADE_IN_SECS;
+use crate::state::FADE_OUT_SECS;
 use crate::theme::ThemeColor;
 use crate::ui::fade_in;
 use crate::ui::fade_out;
@@ -62,7 +62,7 @@ fn enter_end_screen(mut commands: Commands, root: Res<AppRoot>) {
     let screen = spawn_end_screen(&mut commands);
     commands.entity(screen).set_parent(root.ui);
 
-    fade_in(&mut commands, FADE_IN_DURATION);
+    fade_in(&mut commands, FADE_IN_SECS);
 }
 
 fn exit_end_screen(mut commands: Commands, root: Res<AppRoot>) {
@@ -112,7 +112,7 @@ fn spawn_end_screen(commands: &mut Commands) -> Entity {
 }
 
 fn restart(mut commands: Commands) {
-    fade_out(&mut commands, FADE_OUT_DURATION, TitleScreen);
+    fade_out(&mut commands, FADE_OUT_SECS, TitleScreen);
 }
 
 fn quit(mut app_exit: EventWriter<AppExit>) {

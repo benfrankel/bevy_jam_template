@@ -6,9 +6,11 @@ use iyes_progress::prelude::*;
 
 use crate::state::game::GameAssets;
 use crate::state::AppState::*;
-use crate::state::FADE_IN_DURATION;
+use crate::state::FADE_IN_SECS;
+use crate::state::FADE_OUT_SECS;
 use crate::theme::ThemeColor;
 use crate::ui::fade_in;
+use crate::ui::fade_out;
 use crate::ui::FontSize;
 use crate::ui::THICK_FONT_HANDLE;
 use crate::AppRoot;
@@ -17,18 +19,18 @@ pub struct LoadingScreenStatePlugin;
 
 impl Plugin for LoadingScreenStatePlugin {
     fn build(&self, app: &mut App) {
+        app.add_loading_state(LoadingState::new(LoadingScreen))
+            .add_collection_to_loading_state::<_, GameAssets>(LoadingScreen)
+            .add_plugins(ProgressPlugin::new(LoadingScreen))
+            .add_systems(OnEnter(LoadingScreen), enter_loading)
+            .add_systems(OnExit(LoadingScreen), exit_loading);
+
         app.register_type::<IsLoadingBarFill>().add_systems(
             Update,
             update_loading
                 .run_if(in_state(LoadingScreen))
                 .after(TrackedProgressSet),
         );
-
-        app.add_loading_state(LoadingState::new(LoadingScreen))
-            .add_collection_to_loading_state::<_, GameAssets>(LoadingScreen)
-            .add_plugins(ProgressPlugin::new(LoadingScreen).continue_to(Game))
-            .add_systems(OnEnter(LoadingScreen), enter_loading)
-            .add_systems(OnExit(LoadingScreen), exit_loading);
     }
 }
 
@@ -39,7 +41,7 @@ fn enter_loading(mut commands: Commands, root: Res<AppRoot>) {
     let screen = spawn_loading_screen(&mut commands);
     commands.entity(screen).set_parent(root.ui);
 
-    fade_in(&mut commands, FADE_IN_DURATION);
+    fade_in(&mut commands, FADE_IN_SECS);
 }
 
 fn exit_loading(mut commands: Commands, root: Res<AppRoot>) {
@@ -125,9 +127,10 @@ fn spawn_loading_screen(commands: &mut Commands) -> Entity {
 }
 
 fn update_loading(
-    mut loading_bar_query: Query<&mut Style, With<IsLoadingBarFill>>,
+    mut commands: Commands,
     progress: Res<ProgressCounter>,
     frame: Res<FrameCount>,
+    mut loading_bar_query: Query<&mut Style, With<IsLoadingBarFill>>,
     mut last_done: Local<u32>,
 ) {
     let Progress { done, total } = progress.progress();
@@ -136,6 +139,12 @@ fn update_loading(
     }
     *last_done = done;
 
+    // Continue to next state when ready
+    if done == total {
+        fade_out(&mut commands, FADE_OUT_SECS, Game);
+    }
+
+    // Update loading bar
     for mut style in &mut loading_bar_query {
         style.width = Percent(100.0 * done as f32 / total as f32);
     }

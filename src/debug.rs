@@ -14,6 +14,7 @@ use iyes_progress::prelude::*;
 use strum::IntoEnumIterator;
 
 use crate::state::AppState;
+use crate::util::wait;
 
 pub struct DebugPlugin {
     pub frame_time_diagnostics: bool,
@@ -102,21 +103,13 @@ impl Plugin for DebugPlugin {
 
         // Extend loading screen
         if self.extend_loading_screen > 0.0 {
-            let delay = self.extend_loading_screen;
-            let fake_task = move |mut start: Local<f32>, time: Res<Time>| -> Progress {
-                let elapsed = time.elapsed_seconds();
-                if *start == 0.0 {
-                    *start = elapsed;
-                }
-                (elapsed - *start >= delay).into()
-            };
             app.add_systems(
                 Update,
                 (
                     (|| Progress::from(false))
                         .track_progress()
                         .run_if(in_state(AppState::TitleScreen)),
-                    fake_task
+                    wait(self.extend_loading_screen)
                         .track_progress()
                         .run_if(in_state(AppState::LoadingScreen)),
                 ),

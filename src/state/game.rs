@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
 
 use crate::state::AppState::*;
-use crate::state::FADE_IN_DURATION;
+use crate::state::FADE_IN_SECS;
 use crate::ui::fade_in;
 use crate::AppRoot;
 
@@ -23,7 +23,7 @@ impl Plugin for GameStatePlugin {
 pub struct GameAssets {}
 
 fn enter_game(mut commands: Commands) {
-    fade_in(&mut commands, FADE_IN_DURATION);
+    fade_in(&mut commands, FADE_IN_SECS);
 }
 
 fn exit_game(root: Res<AppRoot>, mut transform_query: Query<&mut Transform>) {
