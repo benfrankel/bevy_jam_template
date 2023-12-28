@@ -89,6 +89,7 @@ impl Plugin for AppPlugin {
     }
 }
 
+/// Global system sets
 #[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum AppSet {
     /// (Update) Initialize start-of-frame values and tick timers

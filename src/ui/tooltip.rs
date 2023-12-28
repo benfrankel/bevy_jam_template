@@ -5,7 +5,9 @@ use serde::Deserialize;
 use serde::Serialize;
 
 use crate::config::Config;
+use crate::theme::ThemeBackgroundColor;
 use crate::theme::ThemeColor;
+use crate::theme::ThemeTextColors;
 use crate::ui::FontSize;
 use crate::ui::FONT_HANDLE;
 use crate::AppRoot;
@@ -36,7 +38,7 @@ fn spawn_tooltip(mut commands: Commands, mut root: ResMut<AppRoot>) {
                 z_index: ZIndex::Global(1000),
                 ..default()
             },
-            ThemeColor::Popup,
+            ThemeBackgroundColor(ThemeColor::Popup),
         ))
         .id();
 
@@ -52,7 +54,7 @@ fn spawn_tooltip(mut commands: Commands, mut root: ResMut<AppRoot>) {
             ),
             // TODO: Adjustable font sizes in ThemeConfig
             FontSize::new(Px(16.0)),
-            ThemeColor::BodyText,
+            ThemeTextColors(vec![ThemeColor::BodyText]),
         ))
         .set_parent(root.tooltip)
         .id();

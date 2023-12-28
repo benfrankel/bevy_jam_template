@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy::ui::Val::*;
 
 use crate::state::AppState;
+use crate::theme::ThemeBackgroundColor;
 use crate::theme::ThemeColor;
 use crate::util::DespawnSet;
 use crate::AppSet;
@@ -64,7 +65,7 @@ pub fn fade_in(commands: &mut Commands, duration: f32) -> Entity {
                 z_index: ZIndex::Global(i32::MAX),
                 ..default()
             },
-            ThemeColor::Body,
+            ThemeBackgroundColor(ThemeColor::Body),
             FadeIn::new(duration),
         ))
         .id()
@@ -120,7 +121,7 @@ pub fn fade_out(commands: &mut Commands, duration: f32, next_state: AppState) ->
                 z_index: ZIndex::Global(i32::MAX),
                 ..default()
             },
-            ThemeColor::Body,
+            ThemeBackgroundColor(ThemeColor::Body),
             FadeOut::new(duration, next_state),
         ))
         .id()

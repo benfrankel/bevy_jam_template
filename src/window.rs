@@ -36,17 +36,13 @@ pub struct WindowConfig {
 }
 
 impl WindowConfig {
-    fn apply_to_window(&self, window: &mut Window) {
-        window.title = self.title.clone();
-        window.mode = self.window_mode;
-        window.present_mode = self.present_mode;
-        window.visible = true;
-    }
-
     pub fn apply(&self, world: &mut World) {
         let window = world.resource::<AppRoot>().window;
         if let Some(mut window) = world.entity_mut(window).get_mut::<Window>() {
-            self.apply_to_window(&mut window);
+            window.title = self.title.clone();
+            window.mode = self.window_mode;
+            window.present_mode = self.present_mode;
+            window.visible = true;
         };
     }
 }

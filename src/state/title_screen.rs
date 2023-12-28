@@ -8,7 +8,9 @@ use crate::state::game::GameAssets;
 use crate::state::AppState::*;
 use crate::state::FADE_IN_SECS;
 use crate::state::FADE_OUT_SECS;
+use crate::theme::ThemeBackgroundColor;
 use crate::theme::ThemeColor;
+use crate::theme::ThemeTextColors;
 use crate::ui::fade_in;
 use crate::ui::fade_out;
 use crate::ui::FontSize;
@@ -39,10 +41,10 @@ const TITLE: &str = "bevy_jam_template";
 pub struct TitleScreenAssets {}
 
 fn enter_title_screen(mut commands: Commands, root: Res<AppRoot>) {
+    fade_in(&mut commands, FADE_IN_SECS);
+
     let screen = spawn_title_screen(&mut commands);
     commands.entity(screen).set_parent(root.ui);
-
-    fade_in(&mut commands, FADE_IN_SECS);
 }
 
 fn exit_title_screen(mut commands: Commands, root: Res<AppRoot>) {
@@ -81,7 +83,7 @@ fn spawn_title_screen(commands: &mut Commands) -> Entity {
                 ..default()
             }),
             FontSize::new(Vw(5.0)),
-            ThemeColor::BodyText,
+            ThemeTextColors(vec![ThemeColor::BodyText]),
         ))
         .set_parent(screen);
 
@@ -151,7 +153,7 @@ fn spawn_button(commands: &mut Commands, text: impl Into<String>) -> Entity {
                 },
                 ..default()
             },
-            ThemeColor::None,
+            ThemeBackgroundColor(ThemeColor::None),
             InteractionPalette {
                 normal: ThemeColor::Primary,
                 hovered: ThemeColor::PrimaryHovered,
@@ -172,7 +174,7 @@ fn spawn_button(commands: &mut Commands, text: impl Into<String>) -> Entity {
                 },
             ),
             FontSize::new(Vw(4.0)),
-            ThemeColor::PrimaryText,
+            ThemeTextColors(vec![ThemeColor::PrimaryText]),
         ))
         .set_parent(button);
 

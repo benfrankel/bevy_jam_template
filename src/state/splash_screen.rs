@@ -11,6 +11,7 @@ use crate::state::title_screen::TitleScreenAssets;
 use crate::state::AppState::*;
 use crate::state::FADE_IN_SECS;
 use crate::state::FADE_OUT_SECS;
+use crate::theme::ThemeBackgroundColor;
 use crate::theme::ThemeColor;
 use crate::ui::fade_in;
 use crate::ui::fade_out;
@@ -59,10 +60,10 @@ const SPLASH_SCREEN_IMAGE_HANDLE: Handle<Image> =
     Handle::weak_from_u128(145948501136218819748366695396142082634);
 
 fn enter_splash_screen(mut commands: Commands, root: Res<AppRoot>) {
+    fade_in(&mut commands, FADE_IN_SECS);
+
     let screen = spawn_splash_screen(&mut commands);
     commands.entity(screen).set_parent(root.ui);
-
-    fade_in(&mut commands, FADE_IN_SECS);
 }
 
 fn exit_splash_screen(mut commands: Commands, root: Res<AppRoot>) {
@@ -96,7 +97,7 @@ fn spawn_splash_screen(commands: &mut Commands) -> Entity {
                 image: UiImage::new(SPLASH_SCREEN_IMAGE_HANDLE),
                 ..default()
             },
-            ThemeColor::BodyText,
+            ThemeBackgroundColor(ThemeColor::BodyText),
         ))
         .set_parent(screen);
 

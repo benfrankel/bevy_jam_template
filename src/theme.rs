@@ -13,8 +13,23 @@ pub struct ThemePlugin;
 
 impl Plugin for ThemePlugin {
     fn build(&self, app: &mut App) {
-        app.register_type::<ThemeColor>()
-            .add_systems(PostUpdate, apply_theme_color.in_set(AppSet::AnimateSync));
+        app.register_type::<ThemeSpriteColor>()
+            .add_systems(Update, apply_theme_sprite_color.in_set(AppSet::End));
+
+        app.register_type::<ThemeTextureAtlasSpriteColor>()
+            .add_systems(
+                Update,
+                apply_theme_texture_atlas_sprite_color.in_set(AppSet::End),
+            );
+
+        app.register_type::<ThemeTextColors>()
+            .add_systems(Update, apply_theme_text_colors.in_set(AppSet::End));
+
+        app.register_type::<ThemeBackgroundColor>()
+            .add_systems(Update, apply_theme_background_color.in_set(AppSet::End));
+
+        app.register_type::<ThemeBorderColor>()
+            .add_systems(Update, apply_theme_border_color.in_set(AppSet::End));
     }
 }
 
@@ -27,9 +42,6 @@ pub struct ThemeConfig {
 impl ThemeConfig {
     pub fn apply(&self, world: &mut World) {
         world.resource_mut::<ClearColor>().0 = self.colors[ThemeColor::Body];
-        for mut color in world.query::<&mut ThemeColor>().iter_mut(world) {
-            color.set_changed();
-        }
     }
 }
 
@@ -51,7 +63,7 @@ impl Index<ThemeColor> for ThemeColorList {
 /// - BackgroundColor (only when there's no Text component)
 ///
 /// (see: https://getbootstrap.com/docs/5.3/customize/color/)
-#[derive(Component, Reflect, Clone, Copy, EnumCount)]
+#[derive(Reflect, Clone, Copy, EnumCount)]
 pub enum ThemeColor {
     None,
 
@@ -67,19 +79,13 @@ pub enum ThemeColor {
     Popup,
 }
 
-fn apply_theme_color(
+#[derive(Component, Reflect)]
+pub struct ThemeSpriteColor(pub ThemeColor);
+
+fn apply_theme_sprite_color(
     config_handle: Res<ConfigHandle>,
     config: Res<Assets<Config>>,
-    mut color_query: Query<
-        (
-            &ThemeColor,
-            Option<&mut Sprite>,
-            Option<&mut TextureAtlasSprite>,
-            Option<&mut Text>,
-            Option<&mut BackgroundColor>,
-        ),
-        Changed<ThemeColor>,
-    >,
+    mut theme_query: Query<(&ThemeSpriteColor, &mut Sprite)>,
 ) {
     let Some(palette) = &config
         .get(&config_handle.0)
@@ -88,20 +94,89 @@ fn apply_theme_color(
         return;
     };
 
-    for (&color, sprite, atlas_sprite, text, background_color) in &mut color_query {
-        let color = palette[color];
-        if let Some(mut sprite) = sprite {
-            sprite.color = color;
+    for (color, mut sprite) in &mut theme_query {
+        sprite.color = palette[color.0];
+    }
+}
+
+#[derive(Component, Reflect)]
+pub struct ThemeTextureAtlasSpriteColor(pub ThemeColor);
+
+fn apply_theme_texture_atlas_sprite_color(
+    config_handle: Res<ConfigHandle>,
+    config: Res<Assets<Config>>,
+    mut theme_query: Query<(&ThemeTextureAtlasSpriteColor, &mut TextureAtlasSprite)>,
+) {
+    let Some(palette) = &config
+        .get(&config_handle.0)
+        .map(|config| &config.theme.colors)
+    else {
+        return;
+    };
+
+    for (color, mut atlas_sprite) in &mut theme_query {
+        atlas_sprite.color = palette[color.0];
+    }
+}
+
+#[derive(Component, Reflect)]
+pub struct ThemeTextColors(pub Vec<ThemeColor>);
+
+fn apply_theme_text_colors(
+    config_handle: Res<ConfigHandle>,
+    config: Res<Assets<Config>>,
+    mut theme_query: Query<(&ThemeTextColors, &mut Text)>,
+) {
+    let Some(palette) = &config
+        .get(&config_handle.0)
+        .map(|config| &config.theme.colors)
+    else {
+        return;
+    };
+
+    for (colors, mut text) in &mut theme_query {
+        for (section, &color) in text.sections.iter_mut().zip(&colors.0) {
+            section.style.color = palette[color];
         }
-        if let Some(mut atlas_sprite) = atlas_sprite {
-            atlas_sprite.color = color;
-        }
-        if let Some(mut text) = text {
-            for section in &mut text.sections {
-                section.style.color = color;
-            }
-        } else if let Some(mut background_color) = background_color {
-            background_color.0 = color;
-        }
+    }
+}
+
+#[derive(Component, Reflect)]
+pub struct ThemeBackgroundColor(pub ThemeColor);
+
+fn apply_theme_background_color(
+    config_handle: Res<ConfigHandle>,
+    config: Res<Assets<Config>>,
+    mut theme_query: Query<(&ThemeBackgroundColor, &mut BackgroundColor)>,
+) {
+    let Some(palette) = &config
+        .get(&config_handle.0)
+        .map(|config| &config.theme.colors)
+    else {
+        return;
+    };
+
+    for (color, mut background) in &mut theme_query {
+        background.0 = palette[color.0];
+    }
+}
+
+#[derive(Component, Reflect)]
+pub struct ThemeBorderColor(pub ThemeColor);
+
+fn apply_theme_border_color(
+    config_handle: Res<ConfigHandle>,
+    config: Res<Assets<Config>>,
+    mut theme_query: Query<(&ThemeBorderColor, &mut BorderColor)>,
+) {
+    let Some(palette) = &config
+        .get(&config_handle.0)
+        .map(|config| &config.theme.colors)
+    else {
+        return;
+    };
+
+    for (color, mut border) in &mut theme_query {
+        border.0 = palette[color.0];
     }
 }

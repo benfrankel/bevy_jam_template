@@ -8,7 +8,10 @@ use crate::state::game::GameAssets;
 use crate::state::AppState::*;
 use crate::state::FADE_IN_SECS;
 use crate::state::FADE_OUT_SECS;
+use crate::theme::ThemeBackgroundColor;
+use crate::theme::ThemeBorderColor;
 use crate::theme::ThemeColor;
+use crate::theme::ThemeTextColors;
 use crate::ui::fade_in;
 use crate::ui::fade_out;
 use crate::ui::FontSize;
@@ -38,10 +41,10 @@ impl Plugin for LoadingScreenStatePlugin {
 struct IsLoadingBarFill;
 
 fn enter_loading(mut commands: Commands, root: Res<AppRoot>) {
+    fade_in(&mut commands, FADE_IN_SECS);
+
     let screen = spawn_loading_screen(&mut commands);
     commands.entity(screen).set_parent(root.ui);
-
-    fade_in(&mut commands, FADE_IN_SECS);
 }
 
 fn exit_loading(mut commands: Commands, root: Res<AppRoot>) {
@@ -84,7 +87,7 @@ fn spawn_loading_screen(commands: &mut Commands) -> Entity {
                 ..default()
             },
             FontSize::new(Vw(5.0)),
-            ThemeColor::BodyText,
+            ThemeTextColors(vec![ThemeColor::BodyText]),
         ))
         .set_parent(screen);
 
@@ -99,10 +102,9 @@ fn spawn_loading_screen(commands: &mut Commands) -> Entity {
                     border: UiRect::all(VMin(1.0)),
                     ..default()
                 },
-                // TODO: ThemeColor for border_color
-                border_color: Color::WHITE.into(),
                 ..default()
             },
+            ThemeBorderColor(ThemeColor::BodyText),
         ))
         .set_parent(screen)
         .id();
@@ -118,7 +120,7 @@ fn spawn_loading_screen(commands: &mut Commands) -> Entity {
                 },
                 ..default()
             },
-            ThemeColor::BodyText,
+            ThemeBackgroundColor(ThemeColor::BodyText),
             IsLoadingBarFill,
         ))
         .set_parent(loading_bar);

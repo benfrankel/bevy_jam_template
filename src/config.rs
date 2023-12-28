@@ -36,7 +36,7 @@ pub struct Config {
 }
 
 fn load_config(mut commands: Commands, ass: Res<AssetServer>) {
-    commands.insert_resource(ConfigHandle(ass.load("main.config.ron")));
+    commands.insert_resource(ConfigHandle(ass.load("default.config.ron")));
 }
 
 fn apply_config(world: &mut World, mut reader: Local<ManualEventReader<AssetEvent<Config>>>) {

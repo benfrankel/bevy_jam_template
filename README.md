@@ -34,6 +34,7 @@ TODO:
 - [ ] 9-slice UI via `bevy_nice_slice_ui`?
 - [ ] Audio settings, keybindings, and an in-game settings menu
 - [ ] In-game pause menu with restart and quit (to title screen) buttons
+- [ ] Debug mode cheats (e.g. type `/cmd`)
 
 # License
 

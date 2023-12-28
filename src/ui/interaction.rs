@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use bevy_mod_picking::prelude::*;
 
+use crate::theme::ThemeBackgroundColor;
 use crate::theme::ThemeColor;
 use crate::AppSet;
 
@@ -37,13 +38,13 @@ fn apply_interaction_palette(
             Option<&IsDisabled>,
             &Interaction,
             &InteractionPalette,
-            &mut ThemeColor,
+            &mut ThemeBackgroundColor,
         ),
         Or<(Changed<Interaction>, Changed<IsDisabled>)>,
     >,
 ) {
     for (is_disabled, interaction, palette, mut color) in &mut interaction_query {
-        *color = if matches!(is_disabled, Some(IsDisabled(true))) {
+        color.0 = if matches!(is_disabled, Some(IsDisabled(true))) {
             palette.disabled
         } else {
             match interaction {

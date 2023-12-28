@@ -21,9 +21,6 @@ impl Plugin for StatePlugin {
     }
 }
 
-const FADE_IN_SECS: f32 = 0.3;
-const FADE_OUT_SECS: f32 = 0.3;
-
 #[derive(States, Reflect, Default, Copy, Clone, Eq, PartialEq, Hash, Debug, EnumIter)]
 pub enum AppState {
     #[default]
@@ -33,3 +30,6 @@ pub enum AppState {
     Game,
     EndScreen,
 }
+
+const FADE_IN_SECS: f32 = 0.3;
+const FADE_OUT_SECS: f32 = 0.3;

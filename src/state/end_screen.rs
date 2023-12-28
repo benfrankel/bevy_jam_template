@@ -9,6 +9,7 @@ use crate::state::AppState::*;
 use crate::state::FADE_IN_SECS;
 use crate::state::FADE_OUT_SECS;
 use crate::theme::ThemeColor;
+use crate::theme::ThemeTextColors;
 use crate::ui::fade_in;
 use crate::ui::fade_out;
 use crate::ui::FontSize;
@@ -48,6 +49,8 @@ enum EndScreenAction {
 }
 
 fn enter_end_screen(mut commands: Commands, root: Res<AppRoot>) {
+    fade_in(&mut commands, FADE_IN_SECS);
+
     commands.insert_resource(
         InputMap::default()
             .insert(MouseButton::Left, EndScreenAction::Restart)
@@ -61,8 +64,6 @@ fn enter_end_screen(mut commands: Commands, root: Res<AppRoot>) {
 
     let screen = spawn_end_screen(&mut commands);
     commands.entity(screen).set_parent(root.ui);
-
-    fade_in(&mut commands, FADE_IN_SECS);
 }
 
 fn exit_end_screen(mut commands: Commands, root: Res<AppRoot>) {
@@ -104,7 +105,7 @@ fn spawn_end_screen(commands: &mut Commands) -> Entity {
                 ..default()
             },
             FontSize::new(Vw(5.0)),
-            ThemeColor::BodyText,
+            ThemeTextColors(vec![ThemeColor::BodyText]),
         ))
         .set_parent(screen);
 
