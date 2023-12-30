@@ -13,11 +13,10 @@ impl Plugin for DespawnPlugin {
                 Update,
                 (
                     // Flush queued commands first to prevent double despawn
-                    apply_deferred,
-                    apply_despawn_set,
+                    apply_deferred.in_set(AppSet::QueueCommands),
+                    apply_despawn_set.in_set(AppSet::QueueCommands),
                 )
-                    .chain()
-                    .in_set(AppSet::Despawn),
+                    .chain(),
             );
     }
 }

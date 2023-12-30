@@ -12,19 +12,21 @@ TODO:
     - CSS loading screen before the game starts
 - Github CI / CD workflows with itch.io upload
 - VSCode tasks
-- System ordering (`AppSet { Start, Update, Despawn, ApplyDeferred, End, AnimateSync, Animate }`)
-- State transitions (`AppState { SplashScreen, TitleScreen, LoadingScreen, Game, EndScreen }`)
-    - Screen fade in / out animation (`ui/transition.rs`)
+- System ordering (`enum AppSet { Start, Update, RecordIntents, ApplyIntents, HandleEvents, QueueCommands, FlushCommands, UpdateUi, End }`)
+- State sequence (`enum AppState { Boot, SplashScreen, TitleScreen, LoadingScreen, Game, EndScreen }`)
+    - Screen fade in / out transition animations
+    - Restart on R press in Game state
 - Config file with hot-reloading (`config.rs`, with values from `assets/main.config.ron`)
     - Window settings (`WindowConfig`)
     - Color palette (`ThemeConfig`)
 - UI utilities (`ui.rs`)
-    - Built-in pixel fonts with dynamic font size (`ui/font.rs`, with fonts in `assets/font`)
+    - Built-in pixel fonts (`assets/font`)
+    - Dynamic font size (`ui/font.rs`)
     - Basic "rich text" parsing (`ui/font.rs`)
     - Interactive buttons (`ui/interaction.rs`)
     - Tooltip on hover (`ui/tooltip.rs`)
 - Debug mode for dev builds (`debug.rs`)
-    - Editor (`bevy_editor_pls`)
+    - Editor window (`bevy_editor_pls`)
     - Hitbox wireframes and picking tooltip (press F3 to toggle)
     - Some helpful log messages
 

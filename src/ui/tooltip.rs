@@ -35,7 +35,7 @@ fn spawn_tooltip(mut commands: Commands, mut root: ResMut<AppRoot>) {
                     ..default()
                 },
                 visibility: Visibility::Hidden,
-                z_index: ZIndex::Global(1000),
+                z_index: ZIndex::Global(999),
                 ..default()
             },
             ThemeBackgroundColor(ThemeColor::Popup),

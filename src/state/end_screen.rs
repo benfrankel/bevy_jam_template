@@ -5,13 +5,11 @@ use bevy_asset_loader::prelude::*;
 use leafwing_input_manager::common_conditions::action_just_pressed;
 use leafwing_input_manager::prelude::*;
 
+use crate::state::fade_in;
+use crate::state::fade_out;
 use crate::state::AppState::*;
-use crate::state::FADE_IN_SECS;
-use crate::state::FADE_OUT_SECS;
 use crate::theme::ThemeColor;
 use crate::theme::ThemeTextColors;
-use crate::ui::fade_in;
-use crate::ui::fade_out;
 use crate::ui::FontSize;
 use crate::ui::BOLD_FONT_HANDLE;
 use crate::AppRoot;
@@ -42,14 +40,14 @@ impl Plugin for EndScreenStatePlugin {
 #[reflect(Resource)]
 pub struct EndScreenAssets {}
 
-#[derive(Actionlike, Reflect, Clone)]
+#[derive(Actionlike, Reflect, Clone, Hash, PartialEq, Eq)]
 enum EndScreenAction {
     Restart,
     Quit,
 }
 
 fn enter_end_screen(mut commands: Commands, root: Res<AppRoot>) {
-    fade_in(&mut commands, FADE_IN_SECS);
+    fade_in(&mut commands);
 
     commands.insert_resource(
         InputMap::default()
@@ -104,7 +102,7 @@ fn spawn_end_screen(commands: &mut Commands) -> Entity {
                 ),
                 ..default()
             },
-            FontSize::new(Vw(5.0)),
+            FontSize::new(Vw(5.0)).with_step(8.0),
             ThemeTextColors(vec![ThemeColor::BodyText]),
         ))
         .set_parent(screen);
@@ -113,7 +111,7 @@ fn spawn_end_screen(commands: &mut Commands) -> Entity {
 }
 
 fn restart(mut commands: Commands) {
-    fade_out(&mut commands, FADE_OUT_SECS, TitleScreen);
+    fade_out(&mut commands, TitleScreen);
 }
 
 fn quit(mut app_exit: EventWriter<AppExit>) {

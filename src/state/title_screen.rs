@@ -4,15 +4,13 @@ use bevy_asset_loader::prelude::*;
 use bevy_mod_picking::prelude::*;
 use iyes_progress::prelude::*;
 
+use crate::state::fade_in;
+use crate::state::fade_out;
 use crate::state::game::GameAssets;
 use crate::state::AppState::*;
-use crate::state::FADE_IN_SECS;
-use crate::state::FADE_OUT_SECS;
 use crate::theme::ThemeBackgroundColor;
 use crate::theme::ThemeColor;
 use crate::theme::ThemeTextColors;
-use crate::ui::fade_in;
-use crate::ui::fade_out;
 use crate::ui::FontSize;
 use crate::ui::InteractionPalette;
 use crate::ui::BOLD_FONT_HANDLE;
@@ -41,7 +39,7 @@ const TITLE: &str = "bevy_jam_template";
 pub struct TitleScreenAssets {}
 
 fn enter_title_screen(mut commands: Commands, root: Res<AppRoot>) {
-    fade_in(&mut commands, FADE_IN_SECS);
+    fade_in(&mut commands);
 
     let screen = spawn_title_screen(&mut commands);
     commands.entity(screen).set_parent(root.ui);
@@ -82,7 +80,7 @@ fn spawn_title_screen(commands: &mut Commands) -> Entity {
                 margin: UiRect::vertical(Vw(5.0)),
                 ..default()
             }),
-            FontSize::new(Vw(5.0)),
+            FontSize::new(Vw(5.0)).with_step(8.0),
             ThemeTextColors(vec![ThemeColor::BodyText]),
         ))
         .set_parent(screen);
@@ -114,7 +112,6 @@ fn spawn_title_screen(commands: &mut Commands) -> Entity {
                 let Progress { done, total } = progress.progress_complete();
                 fade_out(
                     &mut commands,
-                    FADE_OUT_SECS,
                     if done >= total { Game } else { LoadingScreen },
                 );
             },
@@ -173,7 +170,7 @@ fn spawn_button(commands: &mut Commands, text: impl Into<String>) -> Entity {
                     ..default()
                 },
             ),
-            FontSize::new(Vw(4.0)),
+            FontSize::new(Vw(4.0)).with_step(8.0),
             ThemeTextColors(vec![ThemeColor::PrimaryText]),
         ))
         .set_parent(button);

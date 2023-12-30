@@ -18,7 +18,6 @@ impl Plugin for WindowPlugin {
                 canvas: Some("#bevy".to_string()),
                 fit_canvas_to_parent: true,
                 prevent_default_event_handling: true,
-                visible: false,
                 ..default()
             }),
             exit_condition: ExitCondition::OnPrimaryClosed,
@@ -42,7 +41,6 @@ impl WindowConfig {
             window.title = self.title.clone();
             window.mode = self.window_mode;
             window.present_mode = self.present_mode;
-            window.visible = true;
         };
     }
 }

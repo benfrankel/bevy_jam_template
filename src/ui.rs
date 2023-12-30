@@ -4,7 +4,6 @@
 mod font;
 mod interaction;
 mod tooltip;
-mod transition;
 
 use bevy::prelude::*;
 
@@ -18,8 +17,6 @@ pub use crate::ui::interaction::InteractionPalette;
 pub use crate::ui::interaction::IsDisabled;
 pub use crate::ui::tooltip::Tooltip;
 pub use crate::ui::tooltip::TooltipSide;
-pub use crate::ui::transition::fade_in;
-pub use crate::ui::transition::fade_out;
 
 pub struct UiPlugin;
 
@@ -29,7 +26,6 @@ impl Plugin for UiPlugin {
             font::FontPlugin,
             interaction::InteractionPlugin,
             tooltip::TooltipPlugin,
-            transition::TransitionPlugin,
         ));
     }
 }

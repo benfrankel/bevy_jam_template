@@ -4,16 +4,14 @@ use bevy::ui::Val::*;
 use bevy_asset_loader::prelude::*;
 use iyes_progress::prelude::*;
 
+use crate::state::fade_in;
+use crate::state::fade_out;
 use crate::state::game::GameAssets;
 use crate::state::AppState::*;
-use crate::state::FADE_IN_SECS;
-use crate::state::FADE_OUT_SECS;
 use crate::theme::ThemeBackgroundColor;
 use crate::theme::ThemeBorderColor;
 use crate::theme::ThemeColor;
 use crate::theme::ThemeTextColors;
-use crate::ui::fade_in;
-use crate::ui::fade_out;
 use crate::ui::FontSize;
 use crate::ui::THICK_FONT_HANDLE;
 use crate::AppRoot;
@@ -41,7 +39,7 @@ impl Plugin for LoadingScreenStatePlugin {
 struct IsLoadingBarFill;
 
 fn enter_loading(mut commands: Commands, root: Res<AppRoot>) {
-    fade_in(&mut commands, FADE_IN_SECS);
+    fade_in(&mut commands);
 
     let screen = spawn_loading_screen(&mut commands);
     commands.entity(screen).set_parent(root.ui);
@@ -86,7 +84,7 @@ fn spawn_loading_screen(commands: &mut Commands) -> Entity {
                 ),
                 ..default()
             },
-            FontSize::new(Vw(5.0)),
+            FontSize::new(Vw(5.0)).with_step(8.0),
             ThemeTextColors(vec![ThemeColor::BodyText]),
         ))
         .set_parent(screen);
@@ -143,7 +141,7 @@ fn update_loading(
 
     // Continue to next state when ready
     if done == total {
-        fade_out(&mut commands, FADE_OUT_SECS, Game);
+        fade_out(&mut commands, Game);
     }
 
     // Update loading bar

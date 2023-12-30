@@ -1,5 +1,6 @@
 use bevy::asset::load_internal_binary_asset;
 use bevy::prelude::*;
+use bevy::text::Text2dBounds;
 use bevy::utils::HashMap;
 use lazy_regex::regex;
 
@@ -31,6 +32,8 @@ impl Plugin for FontPlugin {
 
         app.register_type::<FontSize>()
             .add_systems(Update, apply_font_size.in_set(AppSet::End));
+
+        app.add_systems(Update, scale_world_space_text.in_set(AppSet::End));
     }
 }
 
@@ -43,38 +46,81 @@ pub const THICK_FONT_HANDLE: Handle<Font> =
 
 #[derive(Component, Reflect)]
 pub struct FontSize {
-    size: Val,
-    cache: f32,
+    pub size: Val,
+    pub step: f32,
+    pub minimum: f32,
 }
 
 impl FontSize {
     pub fn new(size: Val) -> Self {
-        Self { size, cache: -1.0 }
+        Self {
+            size,
+            step: 0.0,
+            minimum: 0.0,
+        }
+    }
+
+    pub fn with_step(mut self, step: f32) -> Self {
+        self.step = step;
+        self.minimum = self.minimum.max(step);
+        self
+    }
+
+    pub fn with_minimum(mut self, minimum: f32) -> Self {
+        self.minimum = minimum;
+        self
     }
 }
 
 pub fn apply_font_size(
     root: Res<AppRoot>,
     window_query: Query<&Window>,
-    mut font_size_query: Query<(&mut FontSize, &Node, &mut Text)>,
+    mut text_query: Query<(&FontSize, &Node, &mut Text)>,
 ) {
     let Ok(window) = window_query.get(root.window) else {
         return;
     };
     let viewport_size = Vec2::new(window.resolution.width(), window.resolution.height());
 
-    for (mut font_size, node, mut text) in &mut font_size_query {
-        let Ok(resolved) = font_size.size.resolve(node.size().x, viewport_size) else {
+    for (font_size, node, mut text) in &mut text_query {
+        // Compute font size
+        let Ok(size) = font_size.size.resolve(node.size().x, viewport_size) else {
             continue;
         };
-        if font_size.cache == resolved {
-            continue;
-        }
-        font_size.cache = resolved;
+
+        // Round to nearest multiple of step
+        let resolved = if font_size.step > 0.0 {
+            (size / font_size.step).floor() * font_size.step
+        } else {
+            size
+        };
+        // Clamp above minimum
+        let size = resolved.max(font_size.minimum);
 
         for section in &mut text.sections {
-            section.style.font_size = resolved;
+            section.style.font_size = size;
         }
+    }
+}
+
+// Camera zoom-independent font size for world-space text
+// (workaround for https://github.com/bevyengine/bevy/issues/1890)
+fn scale_world_space_text(
+    root: Res<AppRoot>,
+    camera_query: Query<(&OrthographicProjection, &Camera)>,
+    mut text_query: Query<&mut Transform, With<Text2dBounds>>,
+) {
+    let Ok((camera_proj, camera)) = camera_query.get(root.camera) else {
+        return;
+    };
+    let Some(viewport_size) = camera.logical_viewport_size() else {
+        return;
+    };
+
+    let units_per_pixel = camera_proj.area.width() / viewport_size.x;
+    let scale = Vec2::splat(units_per_pixel).extend(1.0);
+    for mut transform in &mut text_query {
+        transform.scale = scale;
     }
 }
 

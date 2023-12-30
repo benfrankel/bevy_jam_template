@@ -7,14 +7,13 @@ use bevy::ui::Val::*;
 use bevy_asset_loader::prelude::*;
 use iyes_progress::prelude::*;
 
+use crate::state::fade_in;
+use crate::state::fade_out;
 use crate::state::title_screen::TitleScreenAssets;
 use crate::state::AppState::*;
 use crate::state::FADE_IN_SECS;
-use crate::state::FADE_OUT_SECS;
 use crate::theme::ThemeBackgroundColor;
 use crate::theme::ThemeColor;
-use crate::ui::fade_in;
-use crate::ui::fade_out;
 use crate::util::wait;
 use crate::AppRoot;
 
@@ -60,7 +59,7 @@ const SPLASH_SCREEN_IMAGE_HANDLE: Handle<Image> =
     Handle::weak_from_u128(145948501136218819748366695396142082634);
 
 fn enter_splash_screen(mut commands: Commands, root: Res<AppRoot>) {
-    fade_in(&mut commands, FADE_IN_SECS);
+    fade_in(&mut commands);
 
     let screen = spawn_splash_screen(&mut commands);
     commands.entity(screen).set_parent(root.ui);
@@ -118,7 +117,7 @@ fn update_splash(
 
     // Continue to next state when ready
     if done == total {
-        fade_out(&mut commands, FADE_OUT_SECS, TitleScreen);
+        fade_out(&mut commands, TitleScreen);
     }
 
     info!("[Frame {}] Booting: {done} / {total}", frame.0);

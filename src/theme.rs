@@ -63,8 +63,9 @@ impl Index<ThemeColor> for ThemeColorList {
 /// - BackgroundColor (only when there's no Text component)
 ///
 /// (see: https://getbootstrap.com/docs/5.3/customize/color/)
-#[derive(Reflect, Clone, Copy, EnumCount)]
+#[derive(Reflect, Clone, Copy, Default, EnumCount)]
 pub enum ThemeColor {
+    #[default]
     None,
 
     Body,
@@ -79,7 +80,7 @@ pub enum ThemeColor {
     Popup,
 }
 
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Default)]
 pub struct ThemeSpriteColor(pub ThemeColor);
 
 fn apply_theme_sprite_color(
@@ -99,7 +100,7 @@ fn apply_theme_sprite_color(
     }
 }
 
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Default)]
 pub struct ThemeTextureAtlasSpriteColor(pub ThemeColor);
 
 fn apply_theme_texture_atlas_sprite_color(
@@ -119,7 +120,7 @@ fn apply_theme_texture_atlas_sprite_color(
     }
 }
 
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Default)]
 pub struct ThemeTextColors(pub Vec<ThemeColor>);
 
 fn apply_theme_text_colors(
@@ -141,7 +142,7 @@ fn apply_theme_text_colors(
     }
 }
 
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Default)]
 pub struct ThemeBackgroundColor(pub ThemeColor);
 
 fn apply_theme_background_color(
@@ -161,7 +162,7 @@ fn apply_theme_background_color(
     }
 }
 
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Default)]
 pub struct ThemeBorderColor(pub ThemeColor);
 
 fn apply_theme_border_color(
