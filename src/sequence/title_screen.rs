@@ -122,7 +122,7 @@ fn spawn_title_screen(commands: &mut Commands) -> Entity {
         .entity(quit_button)
         .insert((
             #[cfg(feature = "web")]
-            crate::ui::IsDisabled(true),
+            crate::util::ui::IsDisabled(true),
             #[cfg(not(feature = "web"))]
             On::<Pointer<Click>>::run(|mut app_exit: EventWriter<_>| {
                 app_exit.send(bevy::app::AppExit);
