@@ -1,6 +1,7 @@
 use bevy::asset::load_internal_binary_asset;
 use bevy::core::FrameCount;
 use bevy::prelude::*;
+use bevy::render::render_asset::RenderAssetUsages;
 use bevy::render::texture::ImageSampler;
 use bevy::render::texture::ImageType;
 use bevy::ui::Val::*;
@@ -32,16 +33,18 @@ impl Plugin for SplashScreenStatePlugin {
                     default(),
                     true,
                     ImageSampler::linear(),
+                    RenderAssetUsages::RENDER_WORLD | RenderAssetUsages::MAIN_WORLD,
                 )
                 .unwrap()
             }
         );
 
-        app.add_loading_state(LoadingState::new(SplashScreen))
-            .add_collection_to_loading_state::<_, TitleScreenAssets>(SplashScreen)
-            .add_plugins(ProgressPlugin::new(SplashScreen))
-            .add_systems(OnEnter(SplashScreen), enter_splash_screen)
-            .add_systems(OnExit(SplashScreen), exit_splash_screen);
+        app.add_loading_state(
+            LoadingState::new(SplashScreen).load_collection::<TitleScreenAssets>(),
+        )
+        .add_plugins(ProgressPlugin::new(SplashScreen))
+        .add_systems(OnEnter(SplashScreen), enter_splash_screen)
+        .add_systems(OnExit(SplashScreen), exit_splash_screen);
 
         app.add_systems(
             Update,

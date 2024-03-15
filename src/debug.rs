@@ -79,13 +79,23 @@ impl Plugin for DebugPlugin {
         // Debug picking
         if self.debug_picking {
             use bevy_mod_picking::debug::DebugPickingMode::*;
-            app.insert_resource(State::new(Disabled)).add_systems(
+            // Setting this at startup instead of right now prevents a plugin ordering requirement
+            app.add_systems(Startup, |mut mode: ResMut<_>| {
+                *mode = Disabled;
+            })
+            .add_systems(
                 Update,
                 (
-                    (|mut next: ResMut<NextState<_>>| next.set(Normal))
-                        .run_if(in_state(Disabled).and_then(input_just_pressed(DEBUG_TOGGLE_KEY))),
-                    (|mut next: ResMut<NextState<_>>| next.set(Disabled))
-                        .run_if(in_state(Normal).and_then(input_just_pressed(DEBUG_TOGGLE_KEY))),
+                    (|mut mode: ResMut<_>| {
+                        *mode = Normal;
+                    })
+                    .run_if(
+                        resource_equals(Disabled).and_then(input_just_pressed(DEBUG_TOGGLE_KEY)),
+                    ),
+                    (|mut mode: ResMut<_>| {
+                        *mode = Disabled;
+                    })
+                    .run_if(resource_equals(Normal).and_then(input_just_pressed(DEBUG_TOGGLE_KEY))),
                 ),
             );
         }

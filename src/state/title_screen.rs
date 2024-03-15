@@ -24,8 +24,7 @@ impl Plugin for TitleScreenStatePlugin {
         app.register_type::<TitleScreenAssets>()
             .init_collection::<TitleScreenAssets>();
 
-        app.add_loading_state(LoadingState::new(TitleScreen))
-            .add_collection_to_loading_state::<_, GameAssets>(TitleScreen)
+        app.add_loading_state(LoadingState::new(TitleScreen).load_collection::<GameAssets>())
             .add_plugins(ProgressPlugin::new(TitleScreen))
             .add_systems(OnEnter(TitleScreen), enter_title_screen)
             .add_systems(OnExit(TitleScreen), exit_title_screen);

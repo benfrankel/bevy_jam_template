@@ -16,12 +16,6 @@ impl Plugin for ThemePlugin {
         app.register_type::<ThemeSpriteColor>()
             .add_systems(Update, apply_theme_sprite_color.in_set(AppSet::End));
 
-        app.register_type::<ThemeTextureAtlasSpriteColor>()
-            .add_systems(
-                Update,
-                apply_theme_texture_atlas_sprite_color.in_set(AppSet::End),
-            );
-
         app.register_type::<ThemeTextColors>()
             .add_systems(Update, apply_theme_text_colors.in_set(AppSet::End));
 
@@ -97,26 +91,6 @@ fn apply_theme_sprite_color(
 
     for (color, mut sprite) in &mut theme_query {
         sprite.color = palette[color.0];
-    }
-}
-
-#[derive(Component, Reflect, Default)]
-pub struct ThemeTextureAtlasSpriteColor(pub ThemeColor);
-
-fn apply_theme_texture_atlas_sprite_color(
-    config_handle: Res<ConfigHandle>,
-    config: Res<Assets<Config>>,
-    mut theme_query: Query<(&ThemeTextureAtlasSpriteColor, &mut TextureAtlasSprite)>,
-) {
-    let Some(palette) = &config
-        .get(&config_handle.0)
-        .map(|config| &config.theme.colors)
-    else {
-        return;
-    };
-
-    for (color, mut atlas_sprite) in &mut theme_query {
-        atlas_sprite.color = palette[color.0];
     }
 }
 

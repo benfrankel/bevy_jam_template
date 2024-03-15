@@ -19,7 +19,7 @@ pub struct StatePlugin;
 
 impl Plugin for StatePlugin {
     fn build(&self, app: &mut App) {
-        app.add_state::<AppState>().add_plugins((
+        app.init_state::<AppState>().add_plugins((
             boot::BootStatePlugin,
             splash_screen::SplashScreenStatePlugin,
             title_screen::TitleScreenStatePlugin,

@@ -40,7 +40,7 @@ fn enter_game_helper(commands: &mut Commands) {
     // Set up keybinds
     commands.insert_resource(
         InputMap::default()
-            .insert(KeyCode::R, GameAction::Restart)
+            .insert(GameAction::Restart, KeyCode::KeyR)
             .build(),
     );
 }

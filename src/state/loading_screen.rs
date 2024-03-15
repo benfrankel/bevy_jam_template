@@ -20,8 +20,7 @@ pub struct LoadingScreenStatePlugin;
 
 impl Plugin for LoadingScreenStatePlugin {
     fn build(&self, app: &mut App) {
-        app.add_loading_state(LoadingState::new(LoadingScreen))
-            .add_collection_to_loading_state::<_, GameAssets>(LoadingScreen)
+        app.add_loading_state(LoadingState::new(LoadingScreen).load_collection::<GameAssets>())
             .add_plugins(ProgressPlugin::new(LoadingScreen))
             .add_systems(OnEnter(LoadingScreen), enter_loading)
             .add_systems(OnExit(LoadingScreen), exit_loading);

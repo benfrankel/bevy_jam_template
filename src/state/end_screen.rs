@@ -51,12 +51,12 @@ fn enter_end_screen(mut commands: Commands, root: Res<AppRoot>) {
 
     commands.insert_resource(
         InputMap::default()
-            .insert(MouseButton::Left, EndScreenAction::Restart)
-            .insert(GamepadButtonType::Start, EndScreenAction::Restart)
-            .insert(KeyCode::Return, EndScreenAction::Restart)
-            .insert(KeyCode::Space, EndScreenAction::Restart)
-            .insert(KeyCode::Escape, EndScreenAction::Quit)
-            .insert(KeyCode::Q, EndScreenAction::Quit)
+            .insert(EndScreenAction::Restart, MouseButton::Left)
+            .insert(EndScreenAction::Restart, GamepadButtonType::Start)
+            .insert(EndScreenAction::Restart, KeyCode::Enter)
+            .insert(EndScreenAction::Restart, KeyCode::Space)
+            .insert(EndScreenAction::Quit, KeyCode::Escape)
+            .insert(EndScreenAction::Quit, KeyCode::KeyQ)
             .build(),
     );
 
