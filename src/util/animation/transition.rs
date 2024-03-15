@@ -1,22 +1,22 @@
 use bevy::prelude::*;
 use bevy::ui::Val::*;
 
+use crate::common::theme::ThemeBackgroundColor;
+use crate::common::theme::ThemeColor;
+use crate::common::PostColorSet;
 use crate::sequence::SequenceState;
-use crate::theme::ThemeBackgroundColor;
-use crate::theme::ThemeColor;
 use crate::util::animation::AnimationSet;
 use crate::util::DespawnSet;
-use crate::AppSet;
 
 pub struct TransitionPlugin;
 
 impl Plugin for TransitionPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<FadeIn>()
-            .add_systems(PostUpdate, apply_fade_in.in_set(AnimationSet::Update));
+            .add_systems(PostUpdate, apply_fade_in.in_set(PostColorSet::Blend));
 
         app.register_type::<FadeOut>()
-            .add_systems(PostUpdate, apply_fade_out.in_set(AnimationSet::Update));
+            .add_systems(PostUpdate, apply_fade_out.in_set(PostColorSet::Blend));
     }
 }
 

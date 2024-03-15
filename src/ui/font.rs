@@ -4,8 +4,8 @@ use bevy::text::Text2dBounds;
 use bevy::utils::HashMap;
 use lazy_regex::regex;
 
+use crate::common::UpdateSet;
 use crate::AppRoot;
-use crate::AppSet;
 
 pub struct FontPlugin;
 
@@ -31,9 +31,9 @@ impl Plugin for FontPlugin {
         );
 
         app.register_type::<FontSize>()
-            .add_systems(Update, apply_font_size.in_set(AppSet::End));
+            .add_systems(Update, apply_font_size.in_set(UpdateSet::End));
 
-        app.add_systems(Update, scale_world_space_text.in_set(AppSet::End));
+        app.add_systems(Update, scale_world_space_text.in_set(UpdateSet::End));
     }
 }
 

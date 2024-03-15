@@ -2,19 +2,11 @@
 #![allow(clippy::type_complexity)]
 #![allow(clippy::too_many_arguments)]
 
-mod audio;
-mod camera;
-mod config;
-#[cfg(feature = "dev")]
-mod debug;
-mod physics;
+mod common;
 mod sequence;
-mod theme;
 mod ui;
 mod util;
-mod window;
 
-use bevy::log::LogPlugin;
 use bevy::prelude::*;
 use bevy::ui::Val::*;
 use bevy_mod_picking::prelude::*;
@@ -28,80 +20,13 @@ impl Plugin for AppPlugin {
             .init_resource::<AppRoot>()
             .add_systems(Startup, spawn_logical_entities);
 
-        // Global system ordering
-        app.configure_sets(
-            Update,
-            (
-                AppSet::Start,
-                AppSet::Update,
-                AppSet::RecordIntents,
-                AppSet::ApplyIntents,
-                (AppSet::HandleEvents, AppSet::QueueCommands),
-                AppSet::FlushCommands,
-                AppSet::UpdateUi,
-                AppSet::End,
-            )
-                .chain(),
-        )
-        .add_systems(Update, apply_deferred.in_set(AppSet::FlushCommands));
-
-        // Work-around for https://github.com/bevyengine/bevy/issues/10157
-        #[cfg(feature = "web")]
-        app.insert_resource(bevy::asset::AssetMetaCheck::Never);
-
-        // Order-dependent plugins
         app.add_plugins((
-            LogPlugin::default(),
-            window::WindowPlugin,
-            DefaultPlugins
-                .build()
-                .disable::<LogPlugin>()
-                .disable::<WindowPlugin>()
-                .set(ImagePlugin::default_nearest()),
-        ));
-
-        // Other plugins
-        app.add_plugins((
-            audio::AudioPlugin,
-            camera::CameraPlugin,
-            config::ConfigPlugin,
-            physics::PhysicsPlugin,
+            common::CommonPlugin,
             sequence::SequencePlugin,
-            theme::ThemePlugin,
             ui::UiPlugin,
             util::UtilPlugin,
         ));
-
-        #[cfg(feature = "dev")]
-        app.add_plugins(debug::DebugPlugin {
-            ambiguity_detection: false,
-            //editor: false,
-            ..default()
-        });
     }
-}
-
-/// Global system sets
-#[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
-pub enum AppSet {
-    /// (Update) Initialize start-of-frame values and tick timers
-    Start,
-    /// (Update) Step game logic
-    Update,
-    /// (Update) Record player and AI intents
-    RecordIntents,
-    /// (Update) Apply player and AI intents
-    ApplyIntents,
-    /// (Update) Handle events emitted this frame
-    HandleEvents,
-    /// (Update) Queue spawn / despawn commands
-    QueueCommands,
-    /// (Update) Apply spawn / despawn and other commands
-    FlushCommands,
-    /// (Update) Update UI
-    UpdateUi,
-    /// (Update) Synchronize end-of-frame values
-    End,
 }
 
 // Global entities

@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy::utils::HashSet;
 
-use crate::AppSet;
+use crate::common::UpdateSet;
 
 pub struct DespawnPlugin;
 
@@ -13,8 +13,8 @@ impl Plugin for DespawnPlugin {
                 Update,
                 (
                     // Flush queued commands first to prevent double despawn
-                    apply_deferred.in_set(AppSet::QueueCommands),
-                    apply_despawn_set.in_set(AppSet::QueueCommands),
+                    apply_deferred.in_set(UpdateSet::QueueDespawn),
+                    apply_despawn_set.in_set(UpdateSet::QueueDespawn),
                 )
                     .chain(),
             );

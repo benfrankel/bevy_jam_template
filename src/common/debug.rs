@@ -17,13 +17,22 @@ use crate::sequence::SequenceState;
 use crate::util::wait;
 
 pub struct DebugPlugin {
+    // Diagnostics
     pub frame_time_diagnostics: bool,
     pub system_information_diagnostics: bool,
     pub entity_count_diagnostics: bool,
-    pub ambiguity_detection: bool,
+
+    // Logging
+    pub log_diagnostics: bool,
+    pub log_ambiguity_detection: bool,
+    pub log_sequence_state_transitions: bool,
+
+    // 3rd-party debug tools
     pub debug_picking: bool,
-    pub debug_render: bool,
+    pub debug_physics: bool,
     pub editor: bool,
+
+    // Sequence state
     pub start: SequenceState,
     pub extend_loading_screen: f32,
 }
@@ -34,10 +43,15 @@ impl Default for DebugPlugin {
             frame_time_diagnostics: true,
             system_information_diagnostics: true,
             entity_count_diagnostics: true,
-            ambiguity_detection: true,
+
+            log_diagnostics: true,
+            log_ambiguity_detection: true,
+            log_sequence_state_transitions: true,
+
             debug_picking: true,
-            debug_render: true,
+            debug_physics: true,
             editor: true,
+
             extend_loading_screen: 0.0,
             start: default(),
         }
@@ -57,9 +71,13 @@ impl Plugin for DebugPlugin {
             app.add_plugins(EntityCountDiagnosticsPlugin);
         }
 
-        // Logging
-        app.add_plugins(LogDiagnosticsPlugin::default());
-        if self.ambiguity_detection {
+        // Log the diagnostics
+        if self.log_diagnostics {
+            app.add_plugins(LogDiagnosticsPlugin::default());
+        }
+
+        // Log the ambiguity detection results
+        if self.log_ambiguity_detection {
             for (_, schedule) in app.world.resource_mut::<Schedules>().iter_mut() {
                 schedule.set_build_settings(ScheduleBuildSettings {
                     ambiguity_detection: LogLevel::Warn,
@@ -67,13 +85,17 @@ impl Plugin for DebugPlugin {
                 });
             }
         }
-        for state in SequenceState::iter() {
-            app.add_systems(OnEnter(state), move |frame: Res<FrameCount>| {
-                info!("[Frame {}] Entering {state:?}", frame.0)
-            })
-            .add_systems(OnExit(state), move |frame: Res<FrameCount>| {
-                info!("[Frame {}] Exiting {state:?}", frame.0)
-            });
+
+        // Log the sequence state transitions
+        if self.log_sequence_state_transitions {
+            for state in SequenceState::iter() {
+                app.add_systems(OnEnter(state), move |frame: Res<FrameCount>| {
+                    info!("[Frame {}] Entering {state:?}", frame.0)
+                })
+                .add_systems(OnExit(state), move |frame: Res<FrameCount>| {
+                    info!("[Frame {}] Exiting {state:?}", frame.0)
+                });
+            }
         }
 
         // Debug picking
@@ -101,7 +123,7 @@ impl Plugin for DebugPlugin {
         }
 
         // Debug render
-        if self.debug_render {
+        if self.debug_physics {
             app.add_plugins(RapierDebugRenderPlugin::default());
             app.world.resource_mut::<DebugRenderContext>().enabled = false;
             app.add_systems(
@@ -109,6 +131,15 @@ impl Plugin for DebugPlugin {
                 (|mut ctx: ResMut<DebugRenderContext>| ctx.enabled = !ctx.enabled)
                     .run_if(input_just_pressed(DEBUG_TOGGLE_KEY)),
             );
+        }
+
+        // Editor
+        if self.editor {
+            app.add_plugins(EditorPlugin::new().in_new_window(Window {
+                title: "bevy_editor_pls".to_string(),
+                focused: false,
+                ..default()
+            }));
         }
 
         // Extend loading screen
@@ -126,18 +157,16 @@ impl Plugin for DebugPlugin {
             );
         }
 
-        // Skip to custom start state
-        *app.world.resource_mut::<State<SequenceState>>() = State::new(self.start);
+        // Skip to custom start state in sequence
+        // Setting this at startup instead of right now prevents a plugin ordering requirement
+        app.add_systems(Startup, {
+            let start = self.start;
+            move |mut state: ResMut<State<_>>| {
+                *state = State::new(start);
+            }
+        });
 
-        // Editor
-        if self.editor {
-            app.add_plugins(EditorPlugin::new().in_new_window(Window {
-                title: "bevy_editor_pls".to_string(),
-                focused: false,
-                ..default()
-            }));
-        }
-
+        // Temporary ad hoc debugging
         app.add_systems(Update, debug_start);
         app.add_systems(Update, debug_end);
     }

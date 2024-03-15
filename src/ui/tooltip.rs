@@ -4,14 +4,14 @@ use bevy::window::PrimaryWindow;
 use serde::Deserialize;
 use serde::Serialize;
 
-use crate::config::Config;
-use crate::theme::ThemeBackgroundColor;
-use crate::theme::ThemeColor;
-use crate::theme::ThemeTextColors;
+use crate::common::config::Config;
+use crate::common::theme::ThemeBackgroundColor;
+use crate::common::theme::ThemeColor;
+use crate::common::theme::ThemeTextColors;
+use crate::common::UpdateSet;
 use crate::ui::FontSize;
 use crate::ui::FONT_HANDLE;
 use crate::AppRoot;
-use crate::AppSet;
 
 pub struct TooltipPlugin;
 
@@ -19,7 +19,7 @@ impl Plugin for TooltipPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<Tooltip>()
             .add_systems(Startup, spawn_tooltip)
-            .add_systems(Update, show_tooltip_on_hover.in_set(AppSet::Update));
+            .add_systems(Update, show_tooltip_on_hover.in_set(UpdateSet::Update));
     }
 }
 

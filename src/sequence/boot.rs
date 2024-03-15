@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use iyes_progress::prelude::*;
 
-use crate::config::ConfigHandle;
+use crate::common::config::ConfigHandle;
 use crate::sequence::SequenceState::*;
 use crate::AppRoot;
 

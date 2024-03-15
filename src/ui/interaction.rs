@@ -1,9 +1,9 @@
 use bevy::prelude::*;
 use bevy_mod_picking::prelude::*;
 
-use crate::theme::ThemeBackgroundColor;
-use crate::theme::ThemeColor;
-use crate::AppSet;
+use crate::common::theme::ThemeBackgroundColor;
+use crate::common::theme::ThemeColor;
+use crate::common::UpdateSet;
 
 pub struct InteractionPlugin;
 
@@ -14,7 +14,7 @@ impl Plugin for InteractionPlugin {
         app.register_type::<IsDisabled>();
 
         app.register_type::<InteractionPalette>()
-            .add_systems(Update, apply_interaction_palette.in_set(AppSet::End));
+            .add_systems(Update, apply_interaction_palette.in_set(UpdateSet::End));
     }
 }
 

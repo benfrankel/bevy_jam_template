@@ -5,25 +5,25 @@ use serde::Deserialize;
 use serde::Serialize;
 use strum::EnumCount;
 
-use crate::config::Config;
-use crate::config::ConfigHandle;
-use crate::AppSet;
+use crate::common::config::Config;
+use crate::common::config::ConfigHandle;
+use crate::common::UpdateSet;
 
 pub struct ThemePlugin;
 
 impl Plugin for ThemePlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<ThemeSpriteColor>()
-            .add_systems(Update, apply_theme_sprite_color.in_set(AppSet::End));
+            .add_systems(Update, apply_theme_sprite_color.in_set(UpdateSet::End));
 
         app.register_type::<ThemeTextColors>()
-            .add_systems(Update, apply_theme_text_colors.in_set(AppSet::End));
+            .add_systems(Update, apply_theme_text_colors.in_set(UpdateSet::End));
 
         app.register_type::<ThemeBackgroundColor>()
-            .add_systems(Update, apply_theme_background_color.in_set(AppSet::End));
+            .add_systems(Update, apply_theme_background_color.in_set(UpdateSet::End));
 
         app.register_type::<ThemeBorderColor>()
-            .add_systems(Update, apply_theme_border_color.in_set(AppSet::End));
+            .add_systems(Update, apply_theme_border_color.in_set(UpdateSet::End));
     }
 }
 
