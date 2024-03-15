@@ -3,6 +3,7 @@
 #![allow(clippy::too_many_arguments)]
 
 mod common;
+mod game;
 mod sequence;
 mod util;
 
@@ -21,6 +22,7 @@ impl Plugin for AppPlugin {
 
         app.add_plugins((
             common::CommonPlugin,
+            game::GamePlugin,
             sequence::SequencePlugin,
             util::UtilPlugin,
         ));
