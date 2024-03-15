@@ -4,8 +4,9 @@ use bevy::text::Text2dBounds;
 use bevy::utils::HashMap;
 use lazy_regex::regex;
 
+use crate::common::camera::CameraRoot;
+use crate::common::window::WindowRoot;
 use crate::common::UpdateSet;
-use crate::AppRoot;
 
 pub struct FontPlugin;
 
@@ -73,11 +74,11 @@ impl FontSize {
 }
 
 pub fn apply_font_size(
-    root: Res<AppRoot>,
+    window_root: Res<WindowRoot>,
     window_query: Query<&Window>,
     mut text_query: Query<(&FontSize, &Node, &mut Text)>,
 ) {
-    let Ok(window) = window_query.get(root.window) else {
+    let Ok(window) = window_query.get(window_root.primary) else {
         return;
     };
     let viewport_size = Vec2::new(window.resolution.width(), window.resolution.height());
@@ -106,11 +107,11 @@ pub fn apply_font_size(
 // Camera zoom-independent font size for world-space text
 // (workaround for https://github.com/bevyengine/bevy/issues/1890)
 fn scale_world_space_text(
-    root: Res<AppRoot>,
+    camera_root: Res<CameraRoot>,
     camera_query: Query<(&OrthographicProjection, &Camera)>,
     mut text_query: Query<&mut Transform, With<Text2dBounds>>,
 ) {
-    let Ok((camera_proj, camera)) = camera_query.get(root.camera) else {
+    let Ok((camera_proj, camera)) = camera_query.get(camera_root.primary) else {
         return;
     };
     let Some(viewport_size) = camera.logical_viewport_size() else {

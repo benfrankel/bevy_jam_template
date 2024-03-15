@@ -8,56 +8,70 @@ use crate::common::config::Config;
 use crate::common::theme::ThemeBackgroundColor;
 use crate::common::theme::ThemeColor;
 use crate::common::theme::ThemeTextColors;
+use crate::common::window::WindowRoot;
 use crate::common::UpdateSet;
 use crate::util::ui::FontSize;
 use crate::util::ui::FONT_HANDLE;
-use crate::AppRoot;
 
 pub struct TooltipPlugin;
 
 impl Plugin for TooltipPlugin {
     fn build(&self, app: &mut App) {
+        app.register_type::<TooltipRoot>()
+            .init_resource::<TooltipRoot>();
+
         app.register_type::<Tooltip>()
-            .add_systems(Startup, spawn_tooltip)
             .add_systems(Update, show_tooltip_on_hover.in_set(UpdateSet::Update));
     }
 }
 
-fn spawn_tooltip(mut commands: Commands, mut root: ResMut<AppRoot>) {
-    root.tooltip = commands
-        .spawn((
-            Name::new("Tooltip"),
-            NodeBundle {
-                style: Style {
-                    position_type: PositionType::Absolute,
-                    max_width: Vw(40.0),
-                    padding: UiRect::all(Px(8.0)),
-                    ..default()
-                },
-                visibility: Visibility::Hidden,
-                z_index: ZIndex::Global(999),
-                ..default()
-            },
-            ThemeBackgroundColor(ThemeColor::Popup),
-        ))
-        .id();
+#[derive(Resource, Reflect)]
+#[reflect(Resource)]
+pub struct TooltipRoot {
+    pub container: Entity,
+    pub text: Entity,
+}
 
-    root.tooltip_text = commands
-        .spawn((
-            Name::new("TooltipText"),
-            TextBundle::from_section(
-                "",
-                TextStyle {
-                    font: FONT_HANDLE,
+impl FromWorld for TooltipRoot {
+    fn from_world(world: &mut World) -> Self {
+        let container = world
+            .spawn((
+                Name::new("Tooltip"),
+                NodeBundle {
+                    style: Style {
+                        position_type: PositionType::Absolute,
+                        max_width: Vw(40.0),
+                        padding: UiRect::all(Px(8.0)),
+                        ..default()
+                    },
+                    visibility: Visibility::Hidden,
+                    z_index: ZIndex::Global(999),
                     ..default()
                 },
-            ),
-            // TODO: Adjustable font sizes in ThemeConfig
-            FontSize::new(Px(16.0)),
-            ThemeTextColors(vec![ThemeColor::BodyText]),
-        ))
-        .set_parent(root.tooltip)
-        .id();
+                ThemeBackgroundColor(ThemeColor::Popup),
+            ))
+            .id();
+
+        Self {
+            container,
+            text: world
+                .spawn((
+                    Name::new("TooltipText"),
+                    TextBundle::from_section(
+                        "",
+                        TextStyle {
+                            font: FONT_HANDLE,
+                            ..default()
+                        },
+                    ),
+                    // TODO: Adjustable font sizes in ThemeConfig
+                    FontSize::new(Px(16.0)),
+                    ThemeTextColors(vec![ThemeColor::BodyText]),
+                ))
+                .set_parent(container)
+                .id(),
+        }
+    }
 }
 
 #[derive(Reflect)]
@@ -77,19 +91,20 @@ pub struct Tooltip {
 }
 
 fn show_tooltip_on_hover(
-    root: Res<AppRoot>,
+    window_root: Res<WindowRoot>,
     window_query: Query<&Window>,
+    tooltip_root: Res<TooltipRoot>,
     mut container_query: Query<(&mut Visibility, &mut Style)>,
     mut text_query: Query<&mut Text>,
     interaction_query: Query<(&Interaction, &Tooltip, &GlobalTransform, &Node)>,
 ) {
-    let Ok(window) = window_query.get(root.window) else {
+    let Ok(window) = window_query.get(window_root.primary) else {
         return;
     };
-    let Ok((mut visibility, mut style)) = container_query.get_mut(root.tooltip) else {
+    let Ok((mut visibility, mut style)) = container_query.get_mut(tooltip_root.container) else {
         return;
     };
-    let Ok(mut text) = text_query.get_mut(root.tooltip_text) else {
+    let Ok(mut text) = text_query.get_mut(tooltip_root.text) else {
         return;
     };
 

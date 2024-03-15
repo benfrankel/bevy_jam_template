@@ -3,9 +3,10 @@ use bevy_asset_loader::prelude::*;
 use leafwing_input_manager::common_conditions::action_just_pressed;
 use leafwing_input_manager::prelude::*;
 
+use crate::common::camera::CameraRoot;
 use crate::sequence::fade_in;
 use crate::sequence::SequenceState::*;
-use crate::AppRoot;
+use crate::util::ui::UiRoot;
 
 pub struct GameStatePlugin;
 
@@ -47,15 +48,17 @@ fn enter_game_helper(commands: &mut Commands) {
 
 fn exit_game(
     mut commands: Commands,
-    root: Res<AppRoot>,
+    ui_root: Res<UiRoot>,
+    camera_root: Res<CameraRoot>,
     mut transform_query: Query<&mut Transform>,
 ) {
-    exit_game_helper(&mut commands, &root, &mut transform_query);
+    exit_game_helper(&mut commands, &ui_root, &camera_root, &mut transform_query);
 }
 
 fn exit_game_helper(
     commands: &mut Commands,
-    root: &AppRoot,
+    ui_root: &UiRoot,
+    camera_root: &CameraRoot,
     camera_query: &mut Query<&mut Transform>,
 ) {
     // Remove resources
@@ -64,16 +67,21 @@ fn exit_game_helper(
     // NOTE: Clear events
 
     // Despawn entities
-    commands.entity(root.ui).despawn_descendants();
+    commands.entity(ui_root.body).despawn_descendants();
 
     // Reset camera
-    if let Ok(mut transform) = camera_query.get_mut(root.camera) {
+    if let Ok(mut transform) = camera_query.get_mut(camera_root.primary) {
         transform.translation = Vec2::ZERO.extend(transform.translation.z);
     };
 }
 
-fn restart(mut commands: Commands, root: Res<AppRoot>, mut camera_query: Query<&mut Transform>) {
-    exit_game_helper(&mut commands, &root, &mut camera_query);
+fn restart(
+    mut commands: Commands,
+    ui_root: Res<UiRoot>,
+    camera_root: Res<CameraRoot>,
+    mut camera_query: Query<&mut Transform>,
+) {
+    exit_game_helper(&mut commands, &ui_root, &camera_root, &mut camera_query);
     enter_game_helper(&mut commands);
 }
 

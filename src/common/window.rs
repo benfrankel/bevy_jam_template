@@ -7,8 +7,6 @@ use bevy::window::WindowPlugin as BevyWindowPlugin;
 use serde::Deserialize;
 use serde::Serialize;
 
-use crate::AppRoot;
-
 pub struct WindowPlugin;
 
 impl Plugin for WindowPlugin {
@@ -21,8 +19,26 @@ impl Plugin for WindowPlugin {
             }),
             exit_condition: ExitCondition::OnPrimaryClosed,
             ..default()
-        })
-        .add_systems(Startup, register_window);
+        });
+
+        app.register_type::<WindowRoot>()
+            .init_resource::<WindowRoot>();
+    }
+}
+
+#[derive(Resource, Reflect)]
+#[reflect(Resource)]
+pub struct WindowRoot {
+    pub primary: Entity,
+}
+
+impl FromWorld for WindowRoot {
+    fn from_world(world: &mut World) -> Self {
+        Self {
+            primary: world
+                .query_filtered::<Entity, With<PrimaryWindow>>()
+                .single(world),
+        }
     }
 }
 
@@ -35,15 +51,13 @@ pub struct WindowConfig {
 
 impl WindowConfig {
     pub fn apply(&self, world: &mut World) {
-        let window = world.resource::<AppRoot>().window;
-        if let Some(mut window) = world.entity_mut(window).get_mut::<Window>() {
-            window.title.clone_from(&self.title);
-            window.mode = self.window_mode;
-            window.present_mode = self.present_mode;
+        let Some(mut window) = world.get_mut::<Window>(world.resource::<WindowRoot>().primary)
+        else {
+            return;
         };
-    }
-}
 
-fn register_window(mut root: ResMut<AppRoot>, window_query: Query<Entity, With<PrimaryWindow>>) {
-    root.window = window_query.single();
+        window.title.clone_from(&self.title);
+        window.mode = self.window_mode;
+        window.present_mode = self.present_mode;
+    }
 }

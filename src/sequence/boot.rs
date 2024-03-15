@@ -2,8 +2,8 @@ use bevy::prelude::*;
 use iyes_progress::prelude::*;
 
 use crate::common::config::ConfigHandle;
+use crate::common::window::WindowRoot;
 use crate::sequence::SequenceState::*;
-use crate::AppRoot;
 
 pub struct BootStatePlugin;
 
@@ -20,16 +20,16 @@ impl Plugin for BootStatePlugin {
     }
 }
 
-fn enter_boot(root: Res<AppRoot>, mut window_query: Query<&mut Window>) {
-    let Ok(mut window) = window_query.get_mut(root.window) else {
+fn enter_boot(window_root: Res<WindowRoot>, mut window_query: Query<&mut Window>) {
+    let Ok(mut window) = window_query.get_mut(window_root.primary) else {
         return;
     };
 
     window.visible = false;
 }
 
-fn exit_boot(root: Res<AppRoot>, mut window_query: Query<&mut Window>) {
-    let Ok(mut window) = window_query.get_mut(root.window) else {
+fn exit_boot(window_root: Res<WindowRoot>, mut window_query: Query<&mut Window>) {
+    let Ok(mut window) = window_query.get_mut(window_root.primary) else {
         return;
     };
 

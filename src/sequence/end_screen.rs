@@ -11,8 +11,8 @@ use crate::sequence::fade_in;
 use crate::sequence::fade_out;
 use crate::sequence::SequenceState::*;
 use crate::util::ui::FontSize;
+use crate::util::ui::UiRoot;
 use crate::util::ui::BOLD_FONT_HANDLE;
-use crate::AppRoot;
 
 pub struct EndScreenStatePlugin;
 
@@ -46,7 +46,7 @@ enum EndScreenAction {
     Quit,
 }
 
-fn enter_end_screen(mut commands: Commands, root: Res<AppRoot>) {
+fn enter_end_screen(mut commands: Commands, ui_root: Res<UiRoot>) {
     fade_in(&mut commands);
 
     commands.insert_resource(
@@ -61,12 +61,12 @@ fn enter_end_screen(mut commands: Commands, root: Res<AppRoot>) {
     );
 
     let screen = spawn_end_screen(&mut commands);
-    commands.entity(screen).set_parent(root.ui);
+    commands.entity(screen).set_parent(ui_root.body);
 }
 
-fn exit_end_screen(mut commands: Commands, root: Res<AppRoot>) {
+fn exit_end_screen(mut commands: Commands, ui_root: Res<UiRoot>) {
     commands.remove_resource::<InputMap<EndScreenAction>>();
-    commands.entity(root.ui).despawn_descendants();
+    commands.entity(ui_root.body).despawn_descendants();
 }
 
 fn spawn_end_screen(commands: &mut Commands) -> Entity {

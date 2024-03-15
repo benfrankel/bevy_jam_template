@@ -13,8 +13,8 @@ use crate::sequence::fade_out;
 use crate::sequence::game::GameAssets;
 use crate::sequence::SequenceState::*;
 use crate::util::ui::FontSize;
+use crate::util::ui::UiRoot;
 use crate::util::ui::THICK_FONT_HANDLE;
-use crate::AppRoot;
 
 pub struct LoadingScreenStatePlugin;
 
@@ -37,15 +37,15 @@ impl Plugin for LoadingScreenStatePlugin {
 #[derive(Component, Reflect)]
 struct IsLoadingBarFill;
 
-fn enter_loading(mut commands: Commands, root: Res<AppRoot>) {
+fn enter_loading(mut commands: Commands, ui_root: Res<UiRoot>) {
     fade_in(&mut commands);
 
     let screen = spawn_loading_screen(&mut commands);
-    commands.entity(screen).set_parent(root.ui);
+    commands.entity(screen).set_parent(ui_root.body);
 }
 
-fn exit_loading(mut commands: Commands, root: Res<AppRoot>) {
-    commands.entity(root.ui).despawn_descendants();
+fn exit_loading(mut commands: Commands, ui_root: Res<UiRoot>) {
+    commands.entity(ui_root.body).despawn_descendants();
 }
 
 fn spawn_loading_screen(commands: &mut Commands) -> Entity {

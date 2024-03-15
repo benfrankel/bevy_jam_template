@@ -15,8 +15,8 @@ use crate::sequence::fade_out;
 use crate::sequence::title_screen::TitleScreenAssets;
 use crate::sequence::SequenceState::*;
 use crate::sequence::FADE_IN_SECS;
+use crate::util::ui::UiRoot;
 use crate::util::wait;
-use crate::AppRoot;
 
 pub struct SplashScreenStatePlugin;
 
@@ -61,15 +61,15 @@ const SPLASH_SCREEN_MIN_SECS: f32 = 1.5;
 const SPLASH_SCREEN_IMAGE_HANDLE: Handle<Image> =
     Handle::weak_from_u128(145948501136218819748366695396142082634);
 
-fn enter_splash_screen(mut commands: Commands, root: Res<AppRoot>) {
+fn enter_splash_screen(mut commands: Commands, ui_root: Res<UiRoot>) {
     fade_in(&mut commands);
 
     let screen = spawn_splash_screen(&mut commands);
-    commands.entity(screen).set_parent(root.ui);
+    commands.entity(screen).set_parent(ui_root.body);
 }
 
-fn exit_splash_screen(mut commands: Commands, root: Res<AppRoot>) {
-    commands.entity(root.ui).despawn_descendants();
+fn exit_splash_screen(mut commands: Commands, ui_root: Res<UiRoot>) {
+    commands.entity(ui_root.body).despawn_descendants();
 }
 
 fn spawn_splash_screen(commands: &mut Commands) -> Entity {

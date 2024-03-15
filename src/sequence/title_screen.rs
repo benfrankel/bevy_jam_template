@@ -13,9 +13,9 @@ use crate::sequence::game::GameAssets;
 use crate::sequence::SequenceState::*;
 use crate::util::ui::FontSize;
 use crate::util::ui::InteractionPalette;
+use crate::util::ui::UiRoot;
 use crate::util::ui::BOLD_FONT_HANDLE;
 use crate::util::ui::FONT_HANDLE;
-use crate::AppRoot;
 
 pub struct TitleScreenStatePlugin;
 
@@ -37,15 +37,15 @@ const TITLE: &str = "bevy_jam_template";
 #[reflect(Resource)]
 pub struct TitleScreenAssets {}
 
-fn enter_title_screen(mut commands: Commands, root: Res<AppRoot>) {
+fn enter_title_screen(mut commands: Commands, ui_root: Res<UiRoot>) {
     fade_in(&mut commands);
 
     let screen = spawn_title_screen(&mut commands);
-    commands.entity(screen).set_parent(root.ui);
+    commands.entity(screen).set_parent(ui_root.body);
 }
 
-fn exit_title_screen(mut commands: Commands, root: Res<AppRoot>) {
-    commands.entity(root.ui).despawn_descendants();
+fn exit_title_screen(mut commands: Commands, ui_root: Res<UiRoot>) {
+    commands.entity(ui_root.body).despawn_descendants();
 }
 
 fn spawn_title_screen(commands: &mut Commands) -> Entity {
