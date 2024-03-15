@@ -4,10 +4,10 @@ use bevy_asset_loader::prelude::*;
 use bevy_mod_picking::prelude::*;
 use iyes_progress::prelude::*;
 
-use crate::state::fade_in;
-use crate::state::fade_out;
-use crate::state::game::GameAssets;
-use crate::state::AppState::*;
+use crate::sequence::fade_in;
+use crate::sequence::fade_out;
+use crate::sequence::game::GameAssets;
+use crate::sequence::SequenceState::*;
 use crate::theme::ThemeBackgroundColor;
 use crate::theme::ThemeColor;
 use crate::theme::ThemeTextColors;

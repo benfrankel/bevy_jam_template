@@ -15,11 +15,11 @@ use crate::theme::ThemeColor;
 use crate::util::animation::FadeIn;
 use crate::util::animation::FadeOut;
 
-pub struct StatePlugin;
+pub struct SequencePlugin;
 
-impl Plugin for StatePlugin {
+impl Plugin for SequencePlugin {
     fn build(&self, app: &mut App) {
-        app.init_state::<AppState>().add_plugins((
+        app.init_state::<SequenceState>().add_plugins((
             boot::BootStatePlugin,
             splash_screen::SplashScreenStatePlugin,
             title_screen::TitleScreenStatePlugin,
@@ -31,7 +31,7 @@ impl Plugin for StatePlugin {
 }
 
 #[derive(States, Reflect, Default, Copy, Clone, Eq, PartialEq, Hash, Debug, EnumIter)]
-pub enum AppState {
+pub enum SequenceState {
     #[default]
     Boot,
     SplashScreen,
@@ -42,7 +42,6 @@ pub enum AppState {
 }
 
 const FADE_IN_SECS: f32 = 0.3;
-const FADE_OUT_SECS: f32 = 0.3;
 
 fn fade_in(commands: &mut Commands) -> Entity {
     commands
@@ -65,7 +64,9 @@ fn fade_in(commands: &mut Commands) -> Entity {
         .id()
 }
 
-fn fade_out(commands: &mut Commands, next_state: AppState) -> Entity {
+const FADE_OUT_SECS: f32 = 0.3;
+
+fn fade_out(commands: &mut Commands, next_state: SequenceState) -> Entity {
     commands
         .spawn((
             Name::new("ScreenFadeOut"),

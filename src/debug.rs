@@ -13,7 +13,7 @@ use bevy_rapier2d::render::RapierDebugRenderPlugin;
 use iyes_progress::prelude::*;
 use strum::IntoEnumIterator;
 
-use crate::state::AppState;
+use crate::sequence::SequenceState;
 use crate::util::wait;
 
 pub struct DebugPlugin {
@@ -24,7 +24,7 @@ pub struct DebugPlugin {
     pub debug_picking: bool,
     pub debug_render: bool,
     pub editor: bool,
-    pub start: AppState,
+    pub start: SequenceState,
     pub extend_loading_screen: f32,
 }
 
@@ -67,7 +67,7 @@ impl Plugin for DebugPlugin {
                 });
             }
         }
-        for state in AppState::iter() {
+        for state in SequenceState::iter() {
             app.add_systems(OnEnter(state), move |frame: Res<FrameCount>| {
                 info!("[Frame {}] Entering {state:?}", frame.0)
             })
@@ -118,16 +118,16 @@ impl Plugin for DebugPlugin {
                 (
                     (|| Progress::from(false))
                         .track_progress()
-                        .run_if(in_state(AppState::TitleScreen)),
+                        .run_if(in_state(SequenceState::TitleScreen)),
                     wait(self.extend_loading_screen)
                         .track_progress()
-                        .run_if(in_state(AppState::LoadingScreen)),
+                        .run_if(in_state(SequenceState::LoadingScreen)),
                 ),
             );
         }
 
         // Skip to custom start state
-        *app.world.resource_mut::<State<AppState>>() = State::new(self.start);
+        *app.world.resource_mut::<State<SequenceState>>() = State::new(self.start);
 
         // Editor
         if self.editor {

@@ -8,11 +8,11 @@ use bevy::ui::Val::*;
 use bevy_asset_loader::prelude::*;
 use iyes_progress::prelude::*;
 
-use crate::state::fade_in;
-use crate::state::fade_out;
-use crate::state::title_screen::TitleScreenAssets;
-use crate::state::AppState::*;
-use crate::state::FADE_IN_SECS;
+use crate::sequence::fade_in;
+use crate::sequence::fade_out;
+use crate::sequence::title_screen::TitleScreenAssets;
+use crate::sequence::SequenceState::*;
+use crate::sequence::FADE_IN_SECS;
 use crate::theme::ThemeBackgroundColor;
 use crate::theme::ThemeColor;
 use crate::util::wait;

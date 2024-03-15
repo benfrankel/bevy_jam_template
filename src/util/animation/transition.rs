@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy::ui::Val::*;
 
-use crate::state::AppState;
+use crate::sequence::SequenceState;
 use crate::theme::ThemeBackgroundColor;
 use crate::theme::ThemeColor;
 use crate::util::animation::AnimationSet;
@@ -55,11 +55,11 @@ fn apply_fade_in(
 pub struct FadeOut {
     duration: f32,
     remaining: f32,
-    next_state: AppState,
+    next_state: SequenceState,
 }
 
 impl FadeOut {
-    pub fn new(duration: f32, next_state: AppState) -> Self {
+    pub fn new(duration: f32, next_state: SequenceState) -> Self {
         Self {
             duration,
             remaining: duration,
@@ -71,7 +71,7 @@ impl FadeOut {
 fn apply_fade_out(
     time: Res<Time>,
     mut despawn: ResMut<DespawnSet>,
-    mut next_state: ResMut<NextState<AppState>>,
+    mut next_state: ResMut<NextState<SequenceState>>,
     mut fade_query: Query<(Entity, &mut FadeOut, &mut BackgroundColor)>,
 ) {
     let dt = time.delta_seconds();

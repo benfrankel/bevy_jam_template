@@ -8,7 +8,7 @@ mod config;
 #[cfg(feature = "dev")]
 mod debug;
 mod physics;
-mod state;
+mod sequence;
 mod theme;
 mod ui;
 mod util;
@@ -66,7 +66,7 @@ impl Plugin for AppPlugin {
             camera::CameraPlugin,
             config::ConfigPlugin,
             physics::PhysicsPlugin,
-            state::StatePlugin,
+            sequence::SequencePlugin,
             theme::ThemePlugin,
             ui::UiPlugin,
             util::UtilPlugin,

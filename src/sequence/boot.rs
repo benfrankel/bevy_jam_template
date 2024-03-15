@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use iyes_progress::prelude::*;
 
 use crate::config::ConfigHandle;
-use crate::state::AppState::*;
+use crate::sequence::SequenceState::*;
 use crate::AppRoot;
 
 pub struct BootStatePlugin;

@@ -3,8 +3,8 @@ use bevy_asset_loader::prelude::*;
 use leafwing_input_manager::common_conditions::action_just_pressed;
 use leafwing_input_manager::prelude::*;
 
-use crate::state::fade_in;
-use crate::state::AppState::*;
+use crate::sequence::fade_in;
+use crate::sequence::SequenceState::*;
 use crate::AppRoot;
 
 pub struct GameStatePlugin;
