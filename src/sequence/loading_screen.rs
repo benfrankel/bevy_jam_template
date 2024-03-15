@@ -12,8 +12,8 @@ use crate::sequence::fade_in;
 use crate::sequence::fade_out;
 use crate::sequence::game::GameAssets;
 use crate::sequence::SequenceState::*;
-use crate::ui::FontSize;
-use crate::ui::THICK_FONT_HANDLE;
+use crate::util::ui::FontSize;
+use crate::util::ui::THICK_FONT_HANDLE;
 use crate::AppRoot;
 
 pub struct LoadingScreenStatePlugin;

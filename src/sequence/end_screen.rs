@@ -10,8 +10,8 @@ use crate::common::theme::ThemeTextColors;
 use crate::sequence::fade_in;
 use crate::sequence::fade_out;
 use crate::sequence::SequenceState::*;
-use crate::ui::FontSize;
-use crate::ui::BOLD_FONT_HANDLE;
+use crate::util::ui::FontSize;
+use crate::util::ui::BOLD_FONT_HANDLE;
 use crate::AppRoot;
 
 pub struct EndScreenStatePlugin;

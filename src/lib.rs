@@ -4,7 +4,6 @@
 
 mod common;
 mod sequence;
-mod ui;
 mod util;
 
 use bevy::prelude::*;
@@ -23,7 +22,6 @@ impl Plugin for AppPlugin {
         app.add_plugins((
             common::CommonPlugin,
             sequence::SequencePlugin,
-            ui::UiPlugin,
             util::UtilPlugin,
         ));
     }

@@ -1,12 +1,12 @@
+pub use crate::util::animation::transition::FadeIn;
+pub use crate::util::animation::transition::FadeOut;
+
 mod transition;
 
 use bevy::prelude::*;
 use bevy::transform::TransformSystem;
 use bevy::ui::UiSystem;
 use bevy_rapier2d::plugin::PhysicsSet;
-
-pub use crate::util::animation::transition::FadeIn;
-pub use crate::util::animation::transition::FadeOut;
 
 pub struct AnimationPlugin;
 

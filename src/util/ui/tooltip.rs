@@ -9,8 +9,8 @@ use crate::common::theme::ThemeBackgroundColor;
 use crate::common::theme::ThemeColor;
 use crate::common::theme::ThemeTextColors;
 use crate::common::UpdateSet;
-use crate::ui::FontSize;
-use crate::ui::FONT_HANDLE;
+use crate::util::ui::FontSize;
+use crate::util::ui::FONT_HANDLE;
 use crate::AppRoot;
 
 pub struct TooltipPlugin;
@@ -79,24 +79,23 @@ pub struct Tooltip {
 fn show_tooltip_on_hover(
     root: Res<AppRoot>,
     window_query: Query<&Window>,
-    mut tooltip_query: Query<(&mut Visibility, &mut Style)>,
-    mut tooltip_text_query: Query<&mut Text>,
+    mut container_query: Query<(&mut Visibility, &mut Style)>,
+    mut text_query: Query<&mut Text>,
     interaction_query: Query<(&Interaction, &Tooltip, &GlobalTransform, &Node)>,
 ) {
     let Ok(window) = window_query.get(root.window) else {
         return;
     };
-    let Ok((mut tooltip_visibility, mut tooltip_style)) = tooltip_query.get_mut(root.tooltip)
-    else {
+    let Ok((mut visibility, mut style)) = container_query.get_mut(root.tooltip) else {
         return;
     };
-    let Ok(mut tooltip_text) = tooltip_text_query.get_mut(root.tooltip_text) else {
+    let Ok(mut text) = text_query.get_mut(root.tooltip_text) else {
         return;
     };
 
     for (interaction, tooltip, gt, node) in &interaction_query {
         if matches!(interaction, Interaction::None) {
-            *tooltip_visibility = Visibility::Hidden;
+            *visibility = Visibility::Hidden;
             continue;
         }
 
@@ -111,14 +110,9 @@ fn show_tooltip_on_hover(
             rect.max.y + tooltip.offset.y,
         );
 
-        *tooltip_visibility = Visibility::Inherited;
-        tooltip_text.sections[0].value = tooltip.text.clone();
-        (
-            tooltip_style.left,
-            tooltip_style.right,
-            tooltip_style.top,
-            tooltip_style.bottom,
-        ) = match tooltip.side {
+        *visibility = Visibility::Inherited;
+        text.sections[0].value.clone_from(&tooltip.text);
+        (style.left, style.right, style.top, style.bottom) = match tooltip.side {
             TooltipSide::Left => (Auto, Px(width - left), Auto, Px(height - bottom)),
             TooltipSide::Right => (Px(right), Auto, Auto, Px(height - bottom)),
             TooltipSide::Top => (Px(left), Auto, Auto, Px(height - top)),

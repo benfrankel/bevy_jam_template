@@ -14,19 +14,19 @@ impl Plugin for FontPlugin {
         load_internal_binary_asset!(
             app,
             FONT_HANDLE,
-            "../../assets/font/pypx.ttf",
+            "../../../assets/font/pypx.ttf",
             |bytes: &[u8], _path: String| Font::try_from_bytes(bytes.to_vec()).unwrap()
         );
         load_internal_binary_asset!(
             app,
             BOLD_FONT_HANDLE,
-            "../../assets/font/pypx-B.ttf",
+            "../../../assets/font/pypx-B.ttf",
             |bytes: &[u8], _path: String| Font::try_from_bytes(bytes.to_vec()).unwrap()
         );
         load_internal_binary_asset!(
             app,
             THICK_FONT_HANDLE,
-            "../../assets/font/pypx-T.ttf",
+            "../../../assets/font/pypx-T.ttf",
             |bytes: &[u8], _path: String| Font::try_from_bytes(bytes.to_vec()).unwrap()
         );
 
@@ -208,8 +208,6 @@ pub fn parse_rich_custom(text: &str, styles: &HashMap<&str, TextStyle>, start_ta
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::ui::BOLD_FONT_HANDLE;
-    use crate::ui::FONT_HANDLE;
 
     fn get_styles() -> HashMap<&'static str, TextStyle> {
         let r = TextStyle {

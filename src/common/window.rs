@@ -37,7 +37,7 @@ impl WindowConfig {
     pub fn apply(&self, world: &mut World) {
         let window = world.resource::<AppRoot>().window;
         if let Some(mut window) = world.entity_mut(window).get_mut::<Window>() {
-            window.title = self.title.clone();
+            window.title.clone_from(&self.title);
             window.mode = self.window_mode;
             window.present_mode = self.present_mode;
         };

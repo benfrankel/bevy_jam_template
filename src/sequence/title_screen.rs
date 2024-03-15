@@ -11,10 +11,10 @@ use crate::sequence::fade_in;
 use crate::sequence::fade_out;
 use crate::sequence::game::GameAssets;
 use crate::sequence::SequenceState::*;
-use crate::ui::FontSize;
-use crate::ui::InteractionPalette;
-use crate::ui::BOLD_FONT_HANDLE;
-use crate::ui::FONT_HANDLE;
+use crate::util::ui::FontSize;
+use crate::util::ui::InteractionPalette;
+use crate::util::ui::BOLD_FONT_HANDLE;
+use crate::util::ui::FONT_HANDLE;
 use crate::AppRoot;
 
 pub struct TitleScreenStatePlugin;
