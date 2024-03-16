@@ -50,18 +50,14 @@ impl Index<ThemeColor> for ThemeColorList {
     }
 }
 
-/// Applies color to:
-/// - Sprite
-/// - TextureAtlasSprite
-/// - Text (all sections)
-/// - BackgroundColor (only when there's no Text component)
-///
-/// (see: https://getbootstrap.com/docs/5.3/customize/color/)
+/// See: https://getbootstrap.com/docs/5.3/customize/color/
 #[derive(Reflect, Clone, Copy, Default, EnumCount)]
 pub enum ThemeColor {
+    // Absolute colors
     #[default]
     None,
 
+    // Semantic colors
     Body,
     BodyText,
 
@@ -71,6 +67,7 @@ pub enum ThemeColor {
     PrimaryDisabled,
     PrimaryText,
 
+    // Misc UI colors
     Popup,
 }
 

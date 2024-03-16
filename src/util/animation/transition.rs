@@ -5,7 +5,6 @@ use crate::common::theme::ThemeBackgroundColor;
 use crate::common::theme::ThemeColor;
 use crate::common::PostColorSet;
 use crate::sequence::SequenceState;
-use crate::util::animation::AnimationSet;
 use crate::util::DespawnSet;
 
 pub struct TransitionPlugin;

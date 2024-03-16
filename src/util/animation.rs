@@ -12,28 +12,6 @@ pub struct AnimationPlugin;
 
 impl Plugin for AnimationPlugin {
     fn build(&self, app: &mut App) {
-        app.configure_sets(
-            PostUpdate,
-            (
-                (UiSystem::Layout, PhysicsSet::Writeback),
-                AnimationSet::Start,
-                AnimationSet::Update,
-                AnimationSet::End,
-                TransformSystem::TransformPropagate,
-            )
-                .chain(),
-        );
-
         app.add_plugins(transition::TransitionPlugin);
     }
-}
-
-#[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
-enum AnimationSet {
-    /// (PostUpdate) Initialize pre-animation values
-    Start,
-    /// (PostUpdate) Update animations
-    Update,
-    /// (PostUpdate) Finalize animation values
-    End,
 }

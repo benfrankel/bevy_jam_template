@@ -150,9 +150,7 @@ impl Plugin for DebugPlugin {
                     (|| Progress::from(false))
                         .track_progress()
                         .run_if(in_state(SequenceState::TitleScreen)),
-                    wait(self.extend_loading_screen)
-                        .track_progress()
-                        .run_if(in_state(SequenceState::LoadingScreen)),
+                    wait(self.extend_loading_screen).run_if(in_state(SequenceState::LoadingScreen)),
                 ),
             );
         }

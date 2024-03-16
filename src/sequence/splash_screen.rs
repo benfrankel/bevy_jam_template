@@ -49,7 +49,7 @@ impl Plugin for SplashScreenStatePlugin {
         app.add_systems(
             Update,
             (
-                wait(FADE_IN_SECS + SPLASH_SCREEN_MIN_SECS).track_progress(),
+                wait(FADE_IN_SECS + SPLASH_SCREEN_MIN_SECS),
                 update_splash.after(TrackedProgressSet),
             )
                 .run_if(in_state(SplashScreen)),
