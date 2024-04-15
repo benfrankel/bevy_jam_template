@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use crate::common::UpdateSet;
+
 pub struct CameraPlugin;
 
 impl Plugin for CameraPlugin {
@@ -8,6 +10,9 @@ impl Plugin for CameraPlugin {
 
         app.register_type::<CameraRoot>()
             .init_resource::<CameraRoot>();
+
+        app.register_type::<AbsoluteScale>()
+            .add_systems(Update, apply_absolute_scale.in_set(UpdateSet::End));
     }
 }
 
@@ -33,5 +38,35 @@ impl FromWorld for CameraRoot {
                 ))
                 .id(),
         }
+    }
+}
+
+// Camera zoom-independent scale
+// (workaround for https://github.com/bevyengine/bevy/issues/1890)
+#[derive(Component, Reflect)]
+pub struct AbsoluteScale(pub Vec3);
+
+impl Default for AbsoluteScale {
+    fn default() -> Self {
+        Self(Vec3::ONE)
+    }
+}
+
+fn apply_absolute_scale(
+    camera_root: Res<CameraRoot>,
+    camera_query: Query<(&OrthographicProjection, &Camera)>,
+    mut scale_query: Query<(&mut Transform, &AbsoluteScale)>,
+) {
+    let Ok((camera_proj, camera)) = camera_query.get(camera_root.primary) else {
+        return;
+    };
+    let Some(viewport_size) = camera.logical_viewport_size() else {
+        return;
+    };
+
+    let units_per_pixel = camera_proj.area.width() / viewport_size.x;
+    let camera_scale_inverse = Vec2::splat(units_per_pixel).extend(1.0);
+    for (mut transform, scale) in &mut scale_query {
+        transform.scale = camera_scale_inverse * scale.0;
     }
 }

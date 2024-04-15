@@ -33,8 +33,6 @@ impl Plugin for FontPlugin {
 
         app.register_type::<FontSize>()
             .add_systems(Update, apply_font_size.in_set(UpdateSet::End));
-
-        app.add_systems(Update, scale_world_space_text.in_set(UpdateSet::End));
     }
 }
 
@@ -101,27 +99,6 @@ pub fn apply_font_size(
         for section in &mut text.sections {
             section.style.font_size = size;
         }
-    }
-}
-
-// Camera zoom-independent font size for world-space text
-// (workaround for https://github.com/bevyengine/bevy/issues/1890)
-fn scale_world_space_text(
-    camera_root: Res<CameraRoot>,
-    camera_query: Query<(&OrthographicProjection, &Camera)>,
-    mut text_query: Query<&mut Transform, With<Text2dBounds>>,
-) {
-    let Ok((camera_proj, camera)) = camera_query.get(camera_root.primary) else {
-        return;
-    };
-    let Some(viewport_size) = camera.logical_viewport_size() else {
-        return;
-    };
-
-    let units_per_pixel = camera_proj.area.width() / viewport_size.x;
-    let scale = Vec2::splat(units_per_pixel).extend(1.0);
-    for mut transform in &mut text_query {
-        transform.scale = scale;
     }
 }
 

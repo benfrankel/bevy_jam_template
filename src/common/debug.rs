@@ -101,6 +101,7 @@ impl Plugin for DebugPlugin {
         // Debug picking
         if self.debug_picking {
             use bevy_mod_picking::debug::DebugPickingMode::*;
+
             // Setting this at startup instead of right now prevents a plugin ordering requirement
             app.add_systems(Startup, |mut mode: ResMut<_>| {
                 *mode = Disabled;

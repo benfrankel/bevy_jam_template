@@ -5,6 +5,9 @@ TODO:
 - How to build/run the project (cargo commands, `.vscode/tasks.json`)
 - How to use `build.sh`
 - How to use CD workflow (set up itch.io upload, push tag)
+    - Github repo Settings > General > Default branch = main
+    - Github repo Settings > Secrets and variables > Actions > New repository secret > BUTLER_CREDENTIALS (from itch.io API keys)
+    - Github repo Settings > Actions > General > Workflow permissions > Read and write permissions
 
 # Features
 
@@ -12,8 +15,8 @@ TODO:
     - CSS loading screen before the game starts
 - Github CI / CD workflows with itch.io upload
 - VSCode tasks
-- System ordering (`enum UpdateSet { HandleActions, HandleActionsFlush, Start, Update, React, RecordIntents, ApplyIntents, HandleEvents, QueueDespawn, ApplyDeferred, UpdateUi, End }`)
-- Main state sequence (`enum SequenceState { Boot, SplashScreen, TitleScreen, LoadingScreen, Game, EndScreen }`)
+- System ordering (`enum UpdateSet`)
+- Main state sequence (`enum SequenceState`)
     - Screen fade in / out transition animations
     - Restart on R press in Game state
 - Config file with hot-reloading (`common/config.rs`, with values from `assets/main.config.ron`)

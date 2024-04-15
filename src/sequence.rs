@@ -37,6 +37,8 @@ pub enum SequenceState {
     SplashScreen,
     TitleScreen,
     LoadingScreen,
+    // TODO: Workaround for https://github.com/bevyengine/bevy/issues/9130
+    RestartGame,
     Game,
     EndScreen,
 }

@@ -1,6 +1,3 @@
-#![allow(unused_imports)]
-#![allow(dead_code)]
-
 pub use font::parse_rich;
 pub use font::parse_rich_custom;
 pub use font::FontSize;

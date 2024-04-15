@@ -4,7 +4,9 @@ use leafwing_input_manager::common_conditions::action_just_pressed;
 use leafwing_input_manager::prelude::*;
 
 use crate::common::camera::CameraRoot;
+use crate::common::UpdateSet;
 use crate::sequence::fade_in;
+use crate::sequence::SequenceState;
 use crate::sequence::SequenceState::*;
 use crate::util::ui::UiRoot;
 
@@ -16,13 +18,23 @@ impl Plugin for GameStatePlugin {
             .init_collection::<GameAssets>();
 
         app.add_systems(OnEnter(Game), enter_game)
-            .add_systems(OnExit(Game), exit_game);
+            .add_systems(OnExit(Game), exit_game)
+            .add_systems(OnEnter(RestartGame), |mut state: ResMut<NextState<_>>| {
+                state.set(Game);
+            });
 
         app.init_resource::<ActionState<GameAction>>()
+            .insert_resource(
+                InputMap::default()
+                    .insert(GameAction::Restart, KeyCode::KeyR)
+                    .build(),
+            )
             .add_plugins(InputManagerPlugin::<GameAction>::default())
             .add_systems(
-                PreUpdate,
-                restart.run_if(action_just_pressed(GameAction::Restart)),
+                Update,
+                restart
+                    .in_set(UpdateSet::HandleActions)
+                    .run_if(in_state(Game).and_then(action_just_pressed(GameAction::Restart))),
             );
     }
 }
@@ -32,39 +44,18 @@ impl Plugin for GameStatePlugin {
 pub struct GameAssets {}
 
 fn enter_game(mut commands: Commands) {
-    enter_game_helper(&mut commands);
-}
-
-fn enter_game_helper(commands: &mut Commands) {
-    fade_in(commands);
-
-    // Set up keybinds
-    commands.insert_resource(
-        InputMap::default()
-            .insert(GameAction::Restart, KeyCode::KeyR)
-            .build(),
-    );
+    fade_in(&mut commands);
 }
 
 fn exit_game(
     mut commands: Commands,
     ui_root: Res<UiRoot>,
     camera_root: Res<CameraRoot>,
-    mut transform_query: Query<&mut Transform>,
+    mut camera_query: Query<&mut Transform>,
 ) {
-    exit_game_helper(&mut commands, &ui_root, &camera_root, &mut transform_query);
-}
+    // Reset resources
 
-fn exit_game_helper(
-    commands: &mut Commands,
-    ui_root: &UiRoot,
-    camera_root: &CameraRoot,
-    camera_query: &mut Query<&mut Transform>,
-) {
-    // Remove resources
-    commands.remove_resource::<InputMap<GameAction>>();
-
-    // NOTE: Clear events
+    // Clear events
 
     // Despawn entities
     commands.entity(ui_root.body).despawn_descendants();
@@ -75,18 +66,12 @@ fn exit_game_helper(
     };
 }
 
-fn restart(
-    mut commands: Commands,
-    ui_root: Res<UiRoot>,
-    camera_root: Res<CameraRoot>,
-    mut camera_query: Query<&mut Transform>,
-) {
-    exit_game_helper(&mut commands, &ui_root, &camera_root, &mut camera_query);
-    enter_game_helper(&mut commands);
-}
-
 #[derive(Actionlike, Reflect, Clone, Hash, PartialEq, Eq)]
 pub enum GameAction {
     Restart,
     // TODO: Pause
+}
+
+fn restart(mut state: ResMut<NextState<SequenceState>>) {
+    state.set(RestartGame);
 }
