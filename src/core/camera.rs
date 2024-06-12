@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::common::UpdateSet;
+use crate::core::UpdateSet;
 
 pub struct CameraPlugin;
 

@@ -4,8 +4,8 @@ use bevy_common_assets::ron::RonAssetPlugin;
 use serde::Deserialize;
 use serde::Serialize;
 
-use crate::common::theme::ThemeConfig;
-use crate::common::window::WindowConfig;
+use crate::core::theme::ThemeConfig;
+use crate::core::window::WindowConfig;
 
 pub struct ConfigPlugin;
 

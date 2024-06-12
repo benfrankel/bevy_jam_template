@@ -1,9 +1,9 @@
 use bevy::prelude::*;
 use bevy_mod_picking::prelude::*;
 
-use crate::common::theme::ThemeBackgroundColor;
-use crate::common::theme::ThemeColor;
-use crate::common::UpdateSet;
+use crate::core::theme::ThemeBackgroundColor;
+use crate::core::theme::ThemeColor;
+use crate::core::UpdateSet;
 
 pub struct InteractionPlugin;
 

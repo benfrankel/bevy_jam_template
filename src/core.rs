@@ -15,9 +15,9 @@ use bevy::ui::UiSystem;
 use bevy::window::WindowPlugin as BevyWindowPlugin;
 use bevy_rapier2d::plugin::PhysicsSet;
 
-pub struct CommonPlugin;
+pub struct CorePlugin;
 
-impl Plugin for CommonPlugin {
+impl Plugin for CorePlugin {
     fn build(&self, app: &mut App) {
         // Game logic system ordering
         app.configure_sets(

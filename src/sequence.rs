@@ -10,8 +10,8 @@ use bevy::ui::FocusPolicy;
 use bevy::ui::Val::*;
 use strum::EnumIter;
 
-use crate::common::theme::ThemeBackgroundColor;
-use crate::common::theme::ThemeColor;
+use crate::core::theme::ThemeBackgroundColor;
+use crate::core::theme::ThemeColor;
 use crate::util::animation::FadeIn;
 use crate::util::animation::FadeOut;
 

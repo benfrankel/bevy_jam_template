@@ -4,10 +4,10 @@ use bevy::ui::Val::*;
 use bevy_asset_loader::prelude::*;
 use iyes_progress::prelude::*;
 
-use crate::common::theme::ThemeBackgroundColor;
-use crate::common::theme::ThemeBorderColor;
-use crate::common::theme::ThemeColor;
-use crate::common::theme::ThemeTextColors;
+use crate::core::theme::ThemeBackgroundColor;
+use crate::core::theme::ThemeBorderColor;
+use crate::core::theme::ThemeColor;
+use crate::core::theme::ThemeTextColors;
 use crate::sequence::fade_in;
 use crate::sequence::fade_out;
 use crate::sequence::game::GameAssets;

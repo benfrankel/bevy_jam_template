@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy::utils::HashSet;
 
-use crate::common::UpdateSet;
+use crate::core::UpdateSet;
 
 pub struct DespawnPlugin;
 

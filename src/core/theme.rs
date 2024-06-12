@@ -5,9 +5,9 @@ use serde::Deserialize;
 use serde::Serialize;
 use strum::EnumCount;
 
-use crate::common::config::Config;
-use crate::common::config::ConfigHandle;
-use crate::common::UpdateSet;
+use crate::core::config::Config;
+use crate::core::config::ConfigHandle;
+use crate::core::UpdateSet;
 
 pub struct ThemePlugin;
 

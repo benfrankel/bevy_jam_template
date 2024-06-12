@@ -2,7 +2,7 @@
 #![allow(clippy::type_complexity)]
 #![allow(clippy::too_many_arguments)]
 
-mod common;
+mod core;
 mod game;
 mod sequence;
 mod util;
@@ -14,7 +14,7 @@ pub struct AppPlugin;
 impl Plugin for AppPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins((
-            common::CommonPlugin,
+            core::CorePlugin,
             game::GamePlugin,
             sequence::SequencePlugin,
             util::UtilPlugin,

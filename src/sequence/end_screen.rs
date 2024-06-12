@@ -5,8 +5,8 @@ use bevy_asset_loader::prelude::*;
 use leafwing_input_manager::common_conditions::action_just_pressed;
 use leafwing_input_manager::prelude::*;
 
-use crate::common::theme::ThemeColor;
-use crate::common::theme::ThemeTextColors;
+use crate::core::theme::ThemeColor;
+use crate::core::theme::ThemeTextColors;
 use crate::sequence::fade_in;
 use crate::sequence::fade_out;
 use crate::sequence::SequenceState::*;

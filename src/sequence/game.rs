@@ -3,8 +3,8 @@ use bevy_asset_loader::prelude::*;
 use leafwing_input_manager::common_conditions::action_just_pressed;
 use leafwing_input_manager::prelude::*;
 
-use crate::common::camera::CameraRoot;
-use crate::common::UpdateSet;
+use crate::core::camera::CameraRoot;
+use crate::core::UpdateSet;
 use crate::sequence::fade_in;
 use crate::sequence::SequenceState;
 use crate::sequence::SequenceState::*;

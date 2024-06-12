@@ -1,9 +1,9 @@
 use bevy::prelude::*;
 use bevy::ui::Val::*;
 
-use crate::common::theme::ThemeBackgroundColor;
-use crate::common::theme::ThemeColor;
-use crate::common::PostColorSet;
+use crate::core::theme::ThemeBackgroundColor;
+use crate::core::theme::ThemeColor;
+use crate::core::PostColorSet;
 use crate::sequence::SequenceState;
 use crate::util::DespawnSet;
 

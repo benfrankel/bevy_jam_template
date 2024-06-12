@@ -1,8 +1,8 @@
 use bevy::prelude::*;
 use iyes_progress::prelude::*;
 
-use crate::common::config::ConfigHandle;
-use crate::common::window::WindowRoot;
+use crate::core::config::ConfigHandle;
+use crate::core::window::WindowRoot;
 use crate::sequence::SequenceState::*;
 
 pub struct BootStatePlugin;

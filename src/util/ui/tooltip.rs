@@ -4,12 +4,12 @@ use bevy::window::PrimaryWindow;
 use serde::Deserialize;
 use serde::Serialize;
 
-use crate::common::config::Config;
-use crate::common::theme::ThemeBackgroundColor;
-use crate::common::theme::ThemeColor;
-use crate::common::theme::ThemeTextColors;
-use crate::common::window::WindowRoot;
-use crate::common::UpdateSet;
+use crate::core::config::Config;
+use crate::core::theme::ThemeBackgroundColor;
+use crate::core::theme::ThemeColor;
+use crate::core::theme::ThemeTextColors;
+use crate::core::window::WindowRoot;
+use crate::core::UpdateSet;
 use crate::util::ui::FontSize;
 use crate::util::ui::FONT_HANDLE;
 

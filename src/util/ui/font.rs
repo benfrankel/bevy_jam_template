@@ -4,9 +4,9 @@ use bevy::text::Text2dBounds;
 use bevy::utils::HashMap;
 use lazy_regex::regex;
 
-use crate::common::camera::CameraRoot;
-use crate::common::window::WindowRoot;
-use crate::common::UpdateSet;
+use crate::core::camera::CameraRoot;
+use crate::core::window::WindowRoot;
+use crate::core::UpdateSet;
 
 pub struct FontPlugin;
 
