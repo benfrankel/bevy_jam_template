@@ -7,16 +7,16 @@ use leafwing_input_manager::prelude::*;
 
 use crate::core::theme::ThemeColor;
 use crate::core::theme::ThemeTextColors;
-use crate::sequence::fade_in;
-use crate::sequence::fade_out;
-use crate::sequence::SequenceState::*;
+use crate::screen::fade_in;
+use crate::screen::fade_out;
+use crate::screen::Screen;
 use crate::util::ui::FontSize;
 use crate::util::ui::UiRoot;
 use crate::util::ui::BOLD_FONT_HANDLE;
 
-pub struct EndScreenStatePlugin;
+pub struct EndScreenPlugin;
 
-impl Plugin for EndScreenStatePlugin {
+impl Plugin for EndScreenPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<EndScreenAssets>()
             .init_collection::<EndScreenAssets>();
@@ -31,8 +31,8 @@ impl Plugin for EndScreenStatePlugin {
                 ),
             );
 
-        app.add_systems(OnEnter(EndScreen), enter_end_screen)
-            .add_systems(OnExit(EndScreen), exit_end_screen);
+        app.add_systems(OnEnter(Screen::End), enter_end_screen)
+            .add_systems(OnExit(Screen::End), exit_end_screen);
     }
 }
 
@@ -111,7 +111,7 @@ fn spawn_end_screen(commands: &mut Commands) -> Entity {
 }
 
 fn restart(mut commands: Commands) {
-    fade_out(&mut commands, TitleScreen);
+    fade_out(&mut commands, Screen::Title);
 }
 
 fn quit(mut app_exit: EventWriter<AppExit>) {

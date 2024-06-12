@@ -4,7 +4,7 @@
 
 mod core;
 mod game;
-mod sequence;
+mod screen;
 mod util;
 
 use bevy::prelude::*;
@@ -16,7 +16,7 @@ impl Plugin for AppPlugin {
         app.add_plugins((
             core::CorePlugin,
             game::GamePlugin,
-            sequence::SequencePlugin,
+            screen::ScreenPlugin,
             util::UtilPlugin,
         ));
     }

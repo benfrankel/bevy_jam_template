@@ -4,7 +4,7 @@ use bevy::ui::Val::*;
 use crate::core::theme::ThemeBackgroundColor;
 use crate::core::theme::ThemeColor;
 use crate::core::PostColorSet;
-use crate::sequence::SequenceState;
+use crate::screen::Screen;
 use crate::util::DespawnSet;
 
 pub struct TransitionPlugin;
@@ -54,11 +54,11 @@ fn apply_fade_in(
 pub struct FadeOut {
     duration: f32,
     remaining: f32,
-    next_state: SequenceState,
+    next_state: Screen,
 }
 
 impl FadeOut {
-    pub fn new(duration: f32, next_state: SequenceState) -> Self {
+    pub fn new(duration: f32, next_state: Screen) -> Self {
         Self {
             duration,
             remaining: duration,
@@ -70,7 +70,7 @@ impl FadeOut {
 fn apply_fade_out(
     time: Res<Time>,
     mut despawn: ResMut<DespawnSet>,
-    mut next_state: ResMut<NextState<SequenceState>>,
+    mut next_state: ResMut<NextState<Screen>>,
     mut fade_query: Query<(Entity, &mut FadeOut, &mut BackgroundColor)>,
 ) {
     let dt = time.delta_seconds();

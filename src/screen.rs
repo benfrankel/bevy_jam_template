@@ -1,9 +1,9 @@
 mod boot;
-mod end_screen;
-mod game;
-mod loading_screen;
-mod splash_screen;
-mod title_screen;
+mod end;
+mod loading;
+mod playing;
+mod splash;
+mod title;
 
 use bevy::prelude::*;
 use bevy::ui::FocusPolicy;
@@ -15,32 +15,32 @@ use crate::core::theme::ThemeColor;
 use crate::util::animation::FadeIn;
 use crate::util::animation::FadeOut;
 
-pub struct SequencePlugin;
+pub struct ScreenPlugin;
 
-impl Plugin for SequencePlugin {
+impl Plugin for ScreenPlugin {
     fn build(&self, app: &mut App) {
-        app.init_state::<SequenceState>().add_plugins((
-            boot::BootStatePlugin,
-            splash_screen::SplashScreenStatePlugin,
-            title_screen::TitleScreenStatePlugin,
-            loading_screen::LoadingScreenStatePlugin,
-            game::GameStatePlugin,
-            end_screen::EndScreenStatePlugin,
+        app.init_state::<Screen>().add_plugins((
+            boot::BootScreenPlugin,
+            splash::SplashScreenplugin,
+            title::TitleScreenPlugin,
+            loading::LoadingScreenPlugin,
+            playing::PlayingScreenPlugin,
+            end::EndScreenPlugin,
         ));
     }
 }
 
 #[derive(States, Reflect, Default, Copy, Clone, Eq, PartialEq, Hash, Debug, EnumIter)]
-pub enum SequenceState {
+pub enum Screen {
     #[default]
     Boot,
-    SplashScreen,
-    TitleScreen,
-    LoadingScreen,
+    Splash,
+    Title,
+    Loading,
+    Playing,
     // TODO: Workaround for https://github.com/bevyengine/bevy/issues/9130
-    RestartGame,
-    Game,
-    EndScreen,
+    PlayingRestart,
+    End,
 }
 
 const FADE_IN_SECS: f32 = 0.3;
@@ -68,7 +68,7 @@ fn fade_in(commands: &mut Commands) -> Entity {
 
 const FADE_OUT_SECS: f32 = 0.3;
 
-fn fade_out(commands: &mut Commands, next_state: SequenceState) -> Entity {
+fn fade_out(commands: &mut Commands, to_screen: Screen) -> Entity {
     commands
         .spawn((
             Name::new("ScreenFadeOut"),
@@ -84,7 +84,7 @@ fn fade_out(commands: &mut Commands, next_state: SequenceState) -> Entity {
                 ..default()
             },
             ThemeBackgroundColor(ThemeColor::Body),
-            FadeOut::new(FADE_OUT_SECS, next_state),
+            FadeOut::new(FADE_OUT_SECS, to_screen),
         ))
         .id()
 }

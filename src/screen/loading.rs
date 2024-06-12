@@ -8,27 +8,27 @@ use crate::core::theme::ThemeBackgroundColor;
 use crate::core::theme::ThemeBorderColor;
 use crate::core::theme::ThemeColor;
 use crate::core::theme::ThemeTextColors;
-use crate::sequence::fade_in;
-use crate::sequence::fade_out;
-use crate::sequence::game::GameAssets;
-use crate::sequence::SequenceState::*;
+use crate::screen::fade_in;
+use crate::screen::fade_out;
+use crate::screen::playing::GameAssets;
+use crate::screen::Screen;
 use crate::util::ui::FontSize;
 use crate::util::ui::UiRoot;
 use crate::util::ui::THICK_FONT_HANDLE;
 
-pub struct LoadingScreenStatePlugin;
+pub struct LoadingScreenPlugin;
 
-impl Plugin for LoadingScreenStatePlugin {
+impl Plugin for LoadingScreenPlugin {
     fn build(&self, app: &mut App) {
-        app.add_loading_state(LoadingState::new(LoadingScreen).load_collection::<GameAssets>())
-            .add_plugins(ProgressPlugin::new(LoadingScreen))
-            .add_systems(OnEnter(LoadingScreen), enter_loading)
-            .add_systems(OnExit(LoadingScreen), exit_loading);
+        app.add_loading_state(LoadingState::new(Screen::Loading).load_collection::<GameAssets>())
+            .add_plugins(ProgressPlugin::new(Screen::Loading))
+            .add_systems(OnEnter(Screen::Loading), enter_loading)
+            .add_systems(OnExit(Screen::Loading), exit_loading);
 
         app.register_type::<IsLoadingBarFill>().add_systems(
             Update,
             update_loading
-                .run_if(in_state(LoadingScreen))
+                .run_if(in_state(Screen::Loading))
                 .after(TrackedProgressSet),
         );
     }
@@ -138,9 +138,9 @@ fn update_loading(
     }
     *last_done = done;
 
-    // Continue to next state when ready
+    // Continue to next screen when ready
     if done == total {
-        fade_out(&mut commands, Game);
+        fade_out(&mut commands, Screen::Playing);
     }
 
     // Update loading bar

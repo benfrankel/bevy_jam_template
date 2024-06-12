@@ -5,23 +5,25 @@ use leafwing_input_manager::prelude::*;
 
 use crate::core::camera::CameraRoot;
 use crate::core::UpdateSet;
-use crate::sequence::fade_in;
-use crate::sequence::SequenceState;
-use crate::sequence::SequenceState::*;
+use crate::screen::fade_in;
+use crate::screen::Screen;
 use crate::util::ui::UiRoot;
 
-pub struct GameStatePlugin;
+pub struct PlayingScreenPlugin;
 
-impl Plugin for GameStatePlugin {
+impl Plugin for PlayingScreenPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<GameAssets>()
             .init_collection::<GameAssets>();
 
-        app.add_systems(OnEnter(Game), enter_game)
-            .add_systems(OnExit(Game), exit_game)
-            .add_systems(OnEnter(RestartGame), |mut state: ResMut<NextState<_>>| {
-                state.set(Game);
-            });
+        app.add_systems(OnEnter(Screen::Playing), enter_game)
+            .add_systems(OnExit(Screen::Playing), exit_game)
+            .add_systems(
+                OnEnter(Screen::PlayingRestart),
+                |mut screen: ResMut<NextState<_>>| {
+                    screen.set(Screen::Playing);
+                },
+            );
 
         app.init_resource::<ActionState<GameAction>>()
             .insert_resource(
@@ -32,9 +34,9 @@ impl Plugin for GameStatePlugin {
             .add_plugins(InputManagerPlugin::<GameAction>::default())
             .add_systems(
                 Update,
-                restart
-                    .in_set(UpdateSet::HandleActions)
-                    .run_if(in_state(Game).and_then(action_just_pressed(GameAction::Restart))),
+                restart.in_set(UpdateSet::HandleActions).run_if(
+                    in_state(Screen::Playing).and_then(action_just_pressed(GameAction::Restart)),
+                ),
             );
     }
 }
@@ -72,6 +74,6 @@ pub enum GameAction {
     // TODO: Pause
 }
 
-fn restart(mut state: ResMut<NextState<SequenceState>>) {
-    state.set(RestartGame);
+fn restart(mut screen: ResMut<NextState<Screen>>) {
+    screen.set(Screen::PlayingRestart);
 }

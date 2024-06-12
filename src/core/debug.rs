@@ -13,7 +13,7 @@ use bevy_rapier2d::render::RapierDebugRenderPlugin;
 use iyes_progress::prelude::*;
 use strum::IntoEnumIterator;
 
-use crate::sequence::SequenceState;
+use crate::screen::Screen;
 use crate::util::wait;
 
 pub struct DebugPlugin {
@@ -25,15 +25,15 @@ pub struct DebugPlugin {
     // Logging
     pub log_diagnostics: bool,
     pub log_ambiguity_detection: bool,
-    pub log_sequence_state_transitions: bool,
+    pub log_screen_transitions: bool,
 
     // 3rd-party debug tools
     pub debug_picking: bool,
     pub debug_physics: bool,
     pub editor: bool,
 
-    // Sequence state
-    pub start: SequenceState,
+    // Screen settings
+    pub start_screen: Screen,
     pub extend_loading_screen: f32,
 }
 
@@ -46,14 +46,14 @@ impl Default for DebugPlugin {
 
             log_diagnostics: true,
             log_ambiguity_detection: true,
-            log_sequence_state_transitions: true,
+            log_screen_transitions: true,
 
             debug_picking: true,
             debug_physics: true,
             editor: true,
 
             extend_loading_screen: 0.0,
-            start: default(),
+            start_screen: default(),
         }
     }
 }
@@ -86,14 +86,14 @@ impl Plugin for DebugPlugin {
             }
         }
 
-        // Log the sequence state transitions
-        if self.log_sequence_state_transitions {
-            for state in SequenceState::iter() {
-                app.add_systems(OnEnter(state), move |frame: Res<FrameCount>| {
-                    info!("[Frame {}] Entering {state:?}", frame.0)
+        // Log the screen transitions
+        if self.log_screen_transitions {
+            for screen in Screen::iter() {
+                app.add_systems(OnEnter(screen), move |frame: Res<FrameCount>| {
+                    info!("[Frame {}] Entering {screen:?}", frame.0)
                 })
-                .add_systems(OnExit(state), move |frame: Res<FrameCount>| {
-                    info!("[Frame {}] Exiting {state:?}", frame.0)
+                .add_systems(OnExit(screen), move |frame: Res<FrameCount>| {
+                    info!("[Frame {}] Exiting {screen:?}", frame.0)
                 });
             }
         }
@@ -150,18 +150,18 @@ impl Plugin for DebugPlugin {
                 (
                     (|| Progress::from(false))
                         .track_progress()
-                        .run_if(in_state(SequenceState::TitleScreen)),
-                    wait(self.extend_loading_screen).run_if(in_state(SequenceState::LoadingScreen)),
+                        .run_if(in_state(Screen::Title)),
+                    wait(self.extend_loading_screen).run_if(in_state(Screen::Loading)),
                 ),
             );
         }
 
-        // Skip to custom start state in sequence
+        // Skip to custom start screen
         // Setting this at startup instead of right now prevents a plugin ordering requirement
         app.add_systems(Startup, {
-            let start = self.start;
-            move |mut state: ResMut<State<_>>| {
-                *state = State::new(start);
+            let start = self.start_screen;
+            move |mut screen: ResMut<State<_>>| {
+                *screen = State::new(start);
             }
         });
 

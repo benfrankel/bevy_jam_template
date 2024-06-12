@@ -7,27 +7,27 @@ use iyes_progress::prelude::*;
 use crate::core::theme::ThemeBackgroundColor;
 use crate::core::theme::ThemeColor;
 use crate::core::theme::ThemeTextColors;
-use crate::sequence::fade_in;
-use crate::sequence::fade_out;
-use crate::sequence::game::GameAssets;
-use crate::sequence::SequenceState::*;
+use crate::screen::fade_in;
+use crate::screen::fade_out;
+use crate::screen::playing::GameAssets;
+use crate::screen::Screen;
 use crate::util::ui::FontSize;
 use crate::util::ui::InteractionPalette;
 use crate::util::ui::UiRoot;
 use crate::util::ui::BOLD_FONT_HANDLE;
 use crate::util::ui::FONT_HANDLE;
 
-pub struct TitleScreenStatePlugin;
+pub struct TitleScreenPlugin;
 
-impl Plugin for TitleScreenStatePlugin {
+impl Plugin for TitleScreenPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<TitleScreenAssets>()
             .init_collection::<TitleScreenAssets>();
 
-        app.add_loading_state(LoadingState::new(TitleScreen).load_collection::<GameAssets>())
-            .add_plugins(ProgressPlugin::new(TitleScreen))
-            .add_systems(OnEnter(TitleScreen), enter_title_screen)
-            .add_systems(OnExit(TitleScreen), exit_title_screen);
+        app.add_loading_state(LoadingState::new(Screen::Title).load_collection::<GameAssets>())
+            .add_plugins(ProgressPlugin::new(Screen::Title))
+            .add_systems(OnEnter(Screen::Title), enter_title_screen)
+            .add_systems(OnExit(Screen::Title), exit_title_screen);
     }
 }
 
@@ -111,7 +111,11 @@ fn spawn_title_screen(commands: &mut Commands) -> Entity {
                 let Progress { done, total } = progress.progress_complete();
                 fade_out(
                     &mut commands,
-                    if done >= total { Game } else { LoadingScreen },
+                    if done >= total {
+                        Screen::Playing
+                    } else {
+                        Screen::Loading
+                    },
                 );
             },
         ))

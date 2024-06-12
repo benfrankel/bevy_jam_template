@@ -2,11 +2,11 @@ use bevy::ecs::schedule::SystemConfigs;
 use bevy::prelude::*;
 use iyes_progress::prelude::*;
 
-use crate::sequence::SequenceState;
+use crate::screen::Screen;
 
 pub fn wait(duration: f32) -> SystemConfigs {
     (move |time: Res<Time>,
-           next_state: Res<NextState<SequenceState>>,
+           next_state: Res<NextState<Screen>>,
            mut start: Local<f32>|
           -> Progress {
         let elapsed = time.elapsed_seconds();

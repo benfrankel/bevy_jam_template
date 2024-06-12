@@ -16,9 +16,9 @@ TODO:
 - Github CI / CD workflows with itch.io upload
 - VSCode tasks
 - System ordering (`enum UpdateSet`)
-- Main state sequence (`enum SequenceState`)
-    - Screen fade in / out transition animations
-    - Restart on R press in Game state
+- Screen state sequence (`enum Screen`)
+    - Fade in / out transition animations
+    - Restart on R press in `Screen::Playing`
 - Config file with hot-reloading (`common/config.rs`, with values from `assets/main.config.ron`)
     - Window settings (`WindowConfig`)
     - Color palette (`ThemeConfig`)

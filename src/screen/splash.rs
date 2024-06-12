@@ -10,17 +10,17 @@ use iyes_progress::prelude::*;
 
 use crate::core::theme::ThemeBackgroundColor;
 use crate::core::theme::ThemeColor;
-use crate::sequence::fade_in;
-use crate::sequence::fade_out;
-use crate::sequence::title_screen::TitleScreenAssets;
-use crate::sequence::SequenceState::*;
-use crate::sequence::FADE_IN_SECS;
+use crate::screen::fade_in;
+use crate::screen::fade_out;
+use crate::screen::title::TitleScreenAssets;
+use crate::screen::Screen;
+use crate::screen::FADE_IN_SECS;
 use crate::util::ui::UiRoot;
 use crate::util::wait;
 
-pub struct SplashScreenStatePlugin;
+pub struct SplashScreenplugin;
 
-impl Plugin for SplashScreenStatePlugin {
+impl Plugin for SplashScreenplugin {
     fn build(&self, app: &mut App) {
         load_internal_binary_asset!(
             app,
@@ -40,11 +40,11 @@ impl Plugin for SplashScreenStatePlugin {
         );
 
         app.add_loading_state(
-            LoadingState::new(SplashScreen).load_collection::<TitleScreenAssets>(),
+            LoadingState::new(Screen::Splash).load_collection::<TitleScreenAssets>(),
         )
-        .add_plugins(ProgressPlugin::new(SplashScreen))
-        .add_systems(OnEnter(SplashScreen), enter_splash_screen)
-        .add_systems(OnExit(SplashScreen), exit_splash_screen);
+        .add_plugins(ProgressPlugin::new(Screen::Splash))
+        .add_systems(OnEnter(Screen::Splash), enter_splash_screen)
+        .add_systems(OnExit(Screen::Splash), exit_splash_screen);
 
         app.add_systems(
             Update,
@@ -52,7 +52,7 @@ impl Plugin for SplashScreenStatePlugin {
                 wait(FADE_IN_SECS + SPLASH_SCREEN_MIN_SECS),
                 update_splash.after(TrackedProgressSet),
             )
-                .run_if(in_state(SplashScreen)),
+                .run_if(in_state(Screen::Splash)),
         );
     }
 }
@@ -118,9 +118,9 @@ fn update_splash(
     }
     *last_done = done;
 
-    // Continue to next state when ready
+    // Continue to next screen when ready
     if done == total {
-        fade_out(&mut commands, TitleScreen);
+        fade_out(&mut commands, Screen::Title);
     }
 
     info!("[Frame {}] Booting: {done} / {total}", frame.0);
