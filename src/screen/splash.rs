@@ -43,8 +43,8 @@ impl Plugin for SplashScreenplugin {
             LoadingState::new(Screen::Splash).load_collection::<TitleScreenAssets>(),
         )
         .add_plugins(ProgressPlugin::new(Screen::Splash))
-        .add_systems(OnEnter(Screen::Splash), enter_splash_screen)
-        .add_systems(OnExit(Screen::Splash), exit_splash_screen);
+        .add_systems(OnEnter(Screen::Splash), enter_splash)
+        .add_systems(OnExit(Screen::Splash), exit_splash);
 
         app.add_systems(
             Update,
@@ -61,14 +61,14 @@ const SPLASH_SCREEN_MIN_SECS: f32 = 1.5;
 const SPLASH_SCREEN_IMAGE_HANDLE: Handle<Image> =
     Handle::weak_from_u128(145948501136218819748366695396142082634);
 
-fn enter_splash_screen(mut commands: Commands, ui_root: Res<UiRoot>) {
+fn enter_splash(mut commands: Commands, ui_root: Res<UiRoot>) {
     fade_in(&mut commands);
 
     let screen = spawn_splash_screen(&mut commands);
     commands.entity(screen).set_parent(ui_root.body);
 }
 
-fn exit_splash_screen(mut commands: Commands, ui_root: Res<UiRoot>) {
+fn exit_splash(mut commands: Commands, ui_root: Res<UiRoot>) {
     commands.entity(ui_root.body).despawn_descendants();
 }
 

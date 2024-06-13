@@ -31,8 +31,8 @@ impl Plugin for EndScreenPlugin {
                 ),
             );
 
-        app.add_systems(OnEnter(Screen::End), enter_end_screen)
-            .add_systems(OnExit(Screen::End), exit_end_screen);
+        app.add_systems(OnEnter(Screen::End), enter_end)
+            .add_systems(OnExit(Screen::End), exit_end);
     }
 }
 
@@ -46,7 +46,7 @@ enum EndScreenAction {
     Quit,
 }
 
-fn enter_end_screen(mut commands: Commands, ui_root: Res<UiRoot>) {
+fn enter_end(mut commands: Commands, ui_root: Res<UiRoot>) {
     fade_in(&mut commands);
 
     commands.insert_resource(
@@ -64,7 +64,7 @@ fn enter_end_screen(mut commands: Commands, ui_root: Res<UiRoot>) {
     commands.entity(screen).set_parent(ui_root.body);
 }
 
-fn exit_end_screen(mut commands: Commands, ui_root: Res<UiRoot>) {
+fn exit_end(mut commands: Commands, ui_root: Res<UiRoot>) {
     commands.remove_resource::<InputMap<EndScreenAction>>();
     commands.entity(ui_root.body).despawn_descendants();
 }

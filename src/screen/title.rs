@@ -9,7 +9,7 @@ use crate::core::theme::ThemeColor;
 use crate::core::theme::ThemeTextColors;
 use crate::screen::fade_in;
 use crate::screen::fade_out;
-use crate::screen::playing::GameAssets;
+use crate::screen::playing::PlayingAssets;
 use crate::screen::Screen;
 use crate::util::ui::FontSize;
 use crate::util::ui::InteractionPalette;
@@ -24,10 +24,10 @@ impl Plugin for TitleScreenPlugin {
         app.register_type::<TitleScreenAssets>()
             .init_collection::<TitleScreenAssets>();
 
-        app.add_loading_state(LoadingState::new(Screen::Title).load_collection::<GameAssets>())
+        app.add_loading_state(LoadingState::new(Screen::Title).load_collection::<PlayingAssets>())
             .add_plugins(ProgressPlugin::new(Screen::Title))
-            .add_systems(OnEnter(Screen::Title), enter_title_screen)
-            .add_systems(OnExit(Screen::Title), exit_title_screen);
+            .add_systems(OnEnter(Screen::Title), enter_title)
+            .add_systems(OnExit(Screen::Title), exit_title);
     }
 }
 
@@ -37,14 +37,14 @@ const TITLE: &str = "bevy_jam_template";
 #[reflect(Resource)]
 pub struct TitleScreenAssets {}
 
-fn enter_title_screen(mut commands: Commands, ui_root: Res<UiRoot>) {
+fn enter_title(mut commands: Commands, ui_root: Res<UiRoot>) {
     fade_in(&mut commands);
 
     let screen = spawn_title_screen(&mut commands);
     commands.entity(screen).set_parent(ui_root.body);
 }
 
-fn exit_title_screen(mut commands: Commands, ui_root: Res<UiRoot>) {
+fn exit_title(mut commands: Commands, ui_root: Res<UiRoot>) {
     commands.entity(ui_root.body).despawn_descendants();
 }
 

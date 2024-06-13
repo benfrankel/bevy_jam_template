@@ -10,7 +10,7 @@ use crate::core::theme::ThemeColor;
 use crate::core::theme::ThemeTextColors;
 use crate::screen::fade_in;
 use crate::screen::fade_out;
-use crate::screen::playing::GameAssets;
+use crate::screen::playing::PlayingAssets;
 use crate::screen::Screen;
 use crate::util::ui::FontSize;
 use crate::util::ui::UiRoot;
@@ -20,10 +20,12 @@ pub struct LoadingScreenPlugin;
 
 impl Plugin for LoadingScreenPlugin {
     fn build(&self, app: &mut App) {
-        app.add_loading_state(LoadingState::new(Screen::Loading).load_collection::<GameAssets>())
-            .add_plugins(ProgressPlugin::new(Screen::Loading))
-            .add_systems(OnEnter(Screen::Loading), enter_loading)
-            .add_systems(OnExit(Screen::Loading), exit_loading);
+        app.add_loading_state(
+            LoadingState::new(Screen::Loading).load_collection::<PlayingAssets>(),
+        )
+        .add_plugins(ProgressPlugin::new(Screen::Loading))
+        .add_systems(OnEnter(Screen::Loading), enter_loading)
+        .add_systems(OnExit(Screen::Loading), exit_loading);
 
         app.register_type::<IsLoadingBarFill>().add_systems(
             Update,

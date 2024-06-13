@@ -13,11 +13,11 @@ pub struct PlayingScreenPlugin;
 
 impl Plugin for PlayingScreenPlugin {
     fn build(&self, app: &mut App) {
-        app.register_type::<GameAssets>()
-            .init_collection::<GameAssets>();
+        app.register_type::<PlayingAssets>()
+            .init_collection::<PlayingAssets>();
 
-        app.add_systems(OnEnter(Screen::Playing), enter_game)
-            .add_systems(OnExit(Screen::Playing), exit_game)
+        app.add_systems(OnEnter(Screen::Playing), enter_playing)
+            .add_systems(OnExit(Screen::Playing), exit_playing)
             .add_systems(
                 OnEnter(Screen::PlayingRestart),
                 |mut screen: ResMut<NextState<_>>| {
@@ -25,17 +25,17 @@ impl Plugin for PlayingScreenPlugin {
                 },
             );
 
-        app.init_resource::<ActionState<GameAction>>()
+        app.init_resource::<ActionState<PlayingAction>>()
             .insert_resource(
                 InputMap::default()
-                    .insert(GameAction::Restart, KeyCode::KeyR)
+                    .insert(PlayingAction::Restart, KeyCode::KeyR)
                     .build(),
             )
-            .add_plugins(InputManagerPlugin::<GameAction>::default())
+            .add_plugins(InputManagerPlugin::<PlayingAction>::default())
             .add_systems(
                 Update,
                 restart.in_set(UpdateSet::HandleActions).run_if(
-                    in_state(Screen::Playing).and_then(action_just_pressed(GameAction::Restart)),
+                    in_state(Screen::Playing).and_then(action_just_pressed(PlayingAction::Restart)),
                 ),
             );
     }
@@ -43,13 +43,13 @@ impl Plugin for PlayingScreenPlugin {
 
 #[derive(AssetCollection, Resource, Reflect, Default)]
 #[reflect(Resource)]
-pub struct GameAssets {}
+pub struct PlayingAssets {}
 
-fn enter_game(mut commands: Commands) {
+fn enter_playing(mut commands: Commands) {
     fade_in(&mut commands);
 }
 
-fn exit_game(
+fn exit_playing(
     mut commands: Commands,
     ui_root: Res<UiRoot>,
     camera_root: Res<CameraRoot>,
@@ -69,7 +69,7 @@ fn exit_game(
 }
 
 #[derive(Actionlike, Reflect, Clone, Hash, PartialEq, Eq)]
-pub enum GameAction {
+pub enum PlayingAction {
     Restart,
     // TODO: Pause
 }
