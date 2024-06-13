@@ -47,4 +47,4 @@ TODO:
 - The splash screen image belongs to Bevy and is not covered by any of the licenses in this repository.
 - The CSS loader / spinner is MIT (https://github.com/vineethtrv/css-loader).
 - The CSS background pattern is MIT (https://github.com/Afif13/CSS-Pattern).
-- The remaining code in this template is licensed under any of CC0, MIT, or Apache 2.0 at your choice.
+- The remaining code in this template is licensed under either of [CC0-1.0](LICENSE-CC0-1.0) or [0BSD](LICENSE-0BSD) at your choice.
