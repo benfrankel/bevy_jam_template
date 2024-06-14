@@ -35,27 +35,27 @@
 
 # Features
 
-- Web release (WASM)
-    - CSS spinner before the game starts
-- Github CI / CD workflows, including itch.io upload
-- VSCode tasks
-- Game logic system ordering (`enum UpdateSet`)
-- Main screen sequence (`enum Screen`)
+- [Web release (WASM)](https://pyrious.itch.io/bevy-jam-template) support
+    - [CSS spinner](web/style.css) before the game starts
+- [Github CI / CD workflows](.github/workflows/), including itch.io upload
+- [VS Code tasks](.vscode/tasks.json)
+- [Game logic system ordering](src/core.rs) (via `UpdateSet` system set)
+- [Main screen sequence](src/screen.rs) (via `Screen` state)
     - Screen fade in / out animations on transition
-    - Restart on R press during `Screen::Playing`
-- Config file with hot-reloading (`common/config.rs`, with values from `assets/main.config.ron`)
-    - Window settings (`WindowConfig`)
-    - Color palette (`ThemeConfig`)
-- UI utilities (`ui.rs`)
-    - Built-in pixel fonts (`assets/font`)
-    - Dynamic font size (`ui/font.rs`)
-    - Basic "rich text" parsing (`ui/font.rs`)
-    - Interactive buttons (`ui/interaction.rs`)
-    - Tooltip on hover (`ui/tooltip.rs`)
-- Debug mode for dev builds (`common/debug.rs`)
-    - Editor window (`bevy_editor_pls`)
-    - Hitbox wireframes and picking tooltip (press F3 to toggle)
-    - Some helpful log messages
+    - Restart game on R press
+- [Config file](assets/default.config.ron) with [hot-reloading](src/core/config.rs) (via `apply_config` system)
+    - [Window settings](src/core/window.rs)
+    - [Color palette](src/core/theme.rs) (via `ThemeSpriteColor`, ... components)
+- [UI utilities](src/util/ui.rs)
+    - [Built-in pixel fonts](assets/font/)
+    - [Dynamic font size](src/util/ui/font.rs) (via `FontSize` component)
+    - [Basic "rich text" parsing](src/util/ui/font.rs) (via `parse_rich`)
+    - [Interactive buttons](src/util/ui/interaction.rs) (via [`bevy_mod_picking`](https://github.com/aevyrie/bevy_mod_picking) and `InteractionPalette` component)
+    - [Tooltip on hover](src/util/ui/tooltip.rs) (via `Tooltip` component)
+- [Debug mode](src/core/debug.rs) for dev builds
+    - Live inspector window (via [`bevy_editor_pls`](https://github.com/jakobhellermann/bevy_editor_pls))
+    - Physics wireframes and picking tooltips (F3 to toggle)
+    - Some helpful logging
 
 ## Planned
 
@@ -65,10 +65,10 @@
 - [ ] In-game pause menu with restart and quit (to title screen) buttons
 - [ ] Debug mode cheats (e.g. type `/cmd`)
 
-# License
+# Credit
 
-- The fonts are [CC0](LICENSE-CC0-1.0) by [Pyrious](https://github.com/benfrankel).
-- The splash screen image belongs to Bevy and is not covered by any of the licenses in this repository.
-- The CSS spinner is MIT (https://github.com/vineethtrv/css-loader).
-- The CSS background pattern is MIT (https://github.com/Afif13/CSS-Pattern).
-- The remaining code in this template is available under either [CC0](LICENSE-CC0-1.0) or [0BSD](LICENSE-0BSD) at your choice.
+- The [splash screen image](https://github.com/bevyengine/bevy/blob/main/assets/branding/bevy_logo_dark.png) belongs to Bevy and is not covered by any of the licenses in this repository.
+- The [CSS background pattern](https://github.com/Afif13/CSS-Pattern) is MIT-licensed.
+- The [CSS spinner](https://github.com/vineethtrv/css-loader) is MIT-licensed.
+- The [pixel fonts](https://pyrious.itch.io/pypx-fonts) are CC0-licensed.
+- The remainder of this template is made available under [CC0](LICENSE-CC0-1.0) or [0BSD](LICENSE-0BSD) at your choice.
