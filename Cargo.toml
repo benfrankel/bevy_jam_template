@@ -24,7 +24,6 @@ ron = "0.8"
 serde = "1"
 strum = { version = "0.26", features = ["derive"] }
 tap = "1"
-wasm-bindgen = { version = "0.2", optional = true }
 
 [features]
 default = ["native_dev"]
@@ -59,7 +58,7 @@ dev = [
 ]
 native = ["core", "bevy_rapier2d/parallel"]
 native_dev = ["native", "dev", "bevy/file_watcher", "bevy/embedded_watcher"]
-web = ["core", "dep:wasm-bindgen", "bevy_rapier2d/wasm-bindgen"]
+web = ["core", "bevy_rapier2d/wasm-bindgen"]
 web_dev = ["web", "dev"]
 trace = ["bevy/trace", "bevy/wgpu_trace", "bevy/trace_tracy"]
 debug_dump = ["dep:bevy_mod_debugdump"]
