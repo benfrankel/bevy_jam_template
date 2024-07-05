@@ -47,39 +47,38 @@ strum = { version = "0.26", features = ["derive"] }
 tap = "1"
 
 [features]
-default = [
-    "native_dev",
-]
+default = ["native_dev"]
 dev = [
     "dep:bevy_editor_pls",
     "bevy/dynamic_linking",
     "bevy_mod_picking/debug",
     "bevy_rapier2d/debug-render-2d",
 ]
-native = [
-    "bevy_rapier2d/parallel",
-]
-native_dev = [
-    "native",
-    "dev",
-    "bevy/file_watcher",
-    "bevy/embedded_watcher",
-]
-web = [
-    "bevy_rapier2d/wasm-bindgen",
-]
-web_dev = [
-    "web",
-    "dev",
-]
-trace = [
-    "bevy/trace",
-    "bevy/wgpu_trace",
-    "bevy/trace_tracy",
-]
-debug_dump = [
-    "dep:bevy_mod_debugdump",
-]
+native = ["bevy_rapier2d/parallel"]
+native_dev = ["native", "dev", "bevy/file_watcher", "bevy/embedded_watcher"]
+web = ["bevy_rapier2d/wasm-bindgen"]
+web_dev = ["web", "dev"]
+trace = ["bevy/trace", "bevy/wgpu_trace", "bevy/trace_tracy"]
+debug_dump = ["dep:bevy_mod_debugdump"]
+
+# Enable a small amount of optimization in debug mode.
+[profile.dev]
+opt-level = 1
+
+# Enable a large amount of optimization in debug mode for dependencies.
+[profile.dev.package."*"]
+opt-level = 3
+
+# Enable additional optimization in release mode at the cost of compile time.
+[profile.release]
+lto = "thin"
+codegen-units = 1
+
+# Optimize for size in wasm-release mode.
+[profile.wasm-release]
+inherits = "release"
+opt-level = "z"
+strip = "debuginfo"
 
 [[bin]]
 name = "debug"
