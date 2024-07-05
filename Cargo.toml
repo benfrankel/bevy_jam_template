@@ -5,7 +5,28 @@ edition = "2021"
 default-run = "run"
 
 [dependencies]
-bevy = { version = "0.13", default-features = false }
+bevy = { version = "0.13", default-features = false, features = [
+    # Core functionality
+    "bevy_core_pipeline",
+    "bevy_winit",
+    "x11",
+    "bevy_render",
+    "bevy_asset",
+    "bevy_sprite",
+    "bevy_text",
+    "bevy_ui",
+    "multi-threaded",
+    "webgl2",
+
+    # Extra functionality
+    #bevy_gilrs",
+    #serialize",
+    "subpixel_glyph_atlas",
+    #"bevy/tonemapping_luts",
+
+    # File formats
+    "png",
+] }
 bevy_asset_loader = { version = "0.20", features = ["2d", "progress_tracking"] }
 bevy_common_assets = { version = "0.10", features = ["ron"] }
 bevy_editor_pls = { version = "0.8", optional = true }
@@ -26,42 +47,39 @@ strum = { version = "0.26", features = ["derive"] }
 tap = "1"
 
 [features]
-default = ["native_dev"]
-core = [
-    # Core functionality
-    "bevy/bevy_core_pipeline",
-    "bevy/bevy_winit",
-    "bevy/x11",
-    "bevy/bevy_render",
-    "bevy/bevy_asset",
-    "bevy/bevy_sprite",
-    "bevy/bevy_text",
-    "bevy/bevy_ui",
-    "bevy/multi-threaded",
-    "bevy/webgl2",
-
-    # Extra functionality
-    #"bevy/bevy_gilrs",
-    #"bevy/serialize",
-    "bevy/subpixel_glyph_atlas",
-    #"bevy/tonemapping_luts",
-
-    # File formats
-    "bevy/png",
+default = [
+    "native_dev",
 ]
 dev = [
-    "core",
     "dep:bevy_editor_pls",
     "bevy/dynamic_linking",
     "bevy_mod_picking/debug",
     "bevy_rapier2d/debug-render-2d",
 ]
-native = ["core", "bevy_rapier2d/parallel"]
-native_dev = ["native", "dev", "bevy/file_watcher", "bevy/embedded_watcher"]
-web = ["core", "bevy_rapier2d/wasm-bindgen"]
-web_dev = ["web", "dev"]
-trace = ["bevy/trace", "bevy/wgpu_trace", "bevy/trace_tracy"]
-debug_dump = ["dep:bevy_mod_debugdump"]
+native = [
+    "bevy_rapier2d/parallel",
+]
+native_dev = [
+    "native",
+    "dev",
+    "bevy/file_watcher",
+    "bevy/embedded_watcher",
+]
+web = [
+    "bevy_rapier2d/wasm-bindgen",
+]
+web_dev = [
+    "web",
+    "dev",
+]
+trace = [
+    "bevy/trace",
+    "bevy/wgpu_trace",
+    "bevy/trace_tracy",
+]
+debug_dump = [
+    "dep:bevy_mod_debugdump",
+]
 
 [[bin]]
 name = "debug"
