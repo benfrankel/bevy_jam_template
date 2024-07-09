@@ -8,8 +8,8 @@ use bevy::ui::Val::*;
 use bevy_asset_loader::prelude::*;
 use iyes_progress::prelude::*;
 
-use crate::core::theme::ThemeBackgroundColor;
 use crate::core::theme::ThemeColor;
+use crate::core::theme::ThemeUiImageColor;
 use crate::screen::fade_in;
 use crate::screen::fade_out;
 use crate::screen::title::TitleScreenAssets;
@@ -99,7 +99,7 @@ fn spawn_splash_screen(commands: &mut Commands) -> Entity {
                 image: UiImage::new(SPLASH_SCREEN_IMAGE_HANDLE),
                 ..default()
             },
-            ThemeBackgroundColor(ThemeColor::BodyText),
+            ThemeUiImageColor(ThemeColor::BodyText),
         ))
         .set_parent(screen);
 

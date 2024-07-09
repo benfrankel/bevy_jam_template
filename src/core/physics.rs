@@ -7,7 +7,7 @@ impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(RapierConfiguration {
             gravity: Vec2::ZERO,
-            ..default()
+            ..RapierConfiguration::new(1.0)
         });
         app.add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(
             PIXELS_PER_METER,

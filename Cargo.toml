@@ -5,17 +5,19 @@ edition = "2021"
 default-run = "run"
 
 [dependencies]
-bevy = { version = "0.13", default-features = false, features = [
+bevy = { version = "0.14", default-features = false, features = [
     # Core functionality
-    "bevy_core_pipeline",
-    "bevy_winit",
-    "x11",
-    "bevy_render",
     "bevy_asset",
+    "bevy_state",
+    "bevy_color",
+    "bevy_render",
+    "bevy_winit",
+    "bevy_core_pipeline",
     "bevy_sprite",
     "bevy_text",
     "bevy_ui",
-    "multi-threaded",
+    "multi_threaded",
+    "x11",
     "webgl2",
 
     # Extra functionality
@@ -27,18 +29,19 @@ bevy = { version = "0.13", default-features = false, features = [
     # File formats
     "png",
 ] }
-bevy_asset_loader = { version = "0.20", features = ["2d", "progress_tracking"] }
-bevy_common_assets = { version = "0.10", features = ["ron"] }
-bevy_editor_pls = { version = "0.8", optional = true }
-bevy_kira_audio = "0.19"
-bevy_mod_debugdump = { version = "0.10", optional = true }
-bevy_mod_picking = { version = "0.18", default-features = false, features = [
+bevy_asset_loader = { version = "0.21", features = ["2d", "progress_tracking"] }
+bevy_common_assets = { version = "0.11", features = ["ron"] }
+#bevy_editor_pls = { version = "0.9", optional = true }
+bevy_kira_audio = "0.20"
+bevy_mod_debugdump = { version = "0.11", optional = true }
+bevy_mod_picking = { version = "0.20", default-features = false, features = [
     "backend_bevy_ui",
 ] }
-bevy_rapier2d = "0.25"
-iyes_progress = "0.11"
+# TODO: Switch to avian2d :)
+bevy_rapier2d = "0.27"
+iyes_progress = "0.12"
 lazy-regex = { version = "3", features = ["lite"] }
-leafwing-input-manager = "0.13"
+leafwing-input-manager = "0.14"
 #noise = "0.8"
 #rand = { version = "0.8", features = ["small_rng"] }
 ron = "0.8"
@@ -49,7 +52,7 @@ tap = "1"
 [features]
 default = ["native_dev"]
 dev = [
-    "dep:bevy_editor_pls",
+    #"dep:bevy_editor_pls",
     "bevy/dynamic_linking",
     "bevy_mod_picking/debug",
     "bevy_rapier2d/debug-render-2d",

@@ -115,5 +115,5 @@ fn restart(mut commands: Commands) {
 }
 
 fn quit(mut app_exit: EventWriter<AppExit>) {
-    app_exit.send(AppExit);
+    app_exit.send(AppExit::Success);
 }

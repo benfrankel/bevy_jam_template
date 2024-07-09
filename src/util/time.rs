@@ -18,7 +18,7 @@ pub fn wait(duration: f32) -> SystemConfigs {
         // Reset timer on any upcoming state change
         // NOTE: What if next_state == Some(current_state)? Or next_state changes
         //   again this frame after this system runs?
-        if next_state.0.is_some() {
+        if matches!(*next_state, NextState::Pending(_)) {
             *start = 0.0;
         }
 

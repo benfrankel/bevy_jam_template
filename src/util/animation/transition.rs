@@ -42,7 +42,7 @@ fn apply_fade_in(
     let dt = time.delta_seconds();
     for (entity, mut fade, mut color) in &mut fade_query {
         // TODO: Non-linear alpha?
-        color.0.set_a((fade.remaining / fade.duration).max(0.0));
+        color.0.set_alpha((fade.remaining / fade.duration).max(0.0));
         if fade.remaining <= 0.0 {
             despawn.recursive(entity);
         }
@@ -78,7 +78,7 @@ fn apply_fade_out(
         // TODO: Non-linear alpha?
         color
             .0
-            .set_a(1.0 - (fade.remaining / fade.duration).max(0.0));
+            .set_alpha(1.0 - (fade.remaining / fade.duration).max(0.0));
         if fade.remaining <= 0.0 {
             next_state.set(fade.next_state);
             despawn.recursive(entity);

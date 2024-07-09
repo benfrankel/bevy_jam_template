@@ -3,8 +3,8 @@
 pub mod audio;
 pub mod camera;
 pub mod config;
-#[cfg(feature = "dev")]
-pub mod debug;
+//#[cfg(feature = "dev")]
+//pub mod debug;
 pub mod physics;
 pub mod theme;
 pub mod window;
@@ -87,13 +87,13 @@ impl Plugin for CorePlugin {
         ));
 
         // Debugging tools for dev builds
-        #[cfg(feature = "dev")]
+        /*#[cfg(feature = "dev")]
         app.add_plugins(debug::DebugPlugin {
             log_diagnostics: false,
             log_ambiguity_detection: false,
             //editor: false,
             ..default()
-        });
+        });*/
     }
 }
 
