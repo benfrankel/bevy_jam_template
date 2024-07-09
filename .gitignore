@@ -1,3 +1,8 @@
-/target/
-/build/
+# Personal Cargo settings
 .cargo/config.toml
+
+# Cargo build artifacts
+/target/
+
+# Local packaged releases
+/build/
