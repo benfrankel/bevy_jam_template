@@ -78,7 +78,7 @@ impl Plugin for DebugPlugin {
 
         // Log the ambiguity detection results
         if self.log_ambiguity_detection {
-            for (_, schedule) in app.world.resource_mut::<Schedules>().iter_mut() {
+            for (_, schedule) in app.world().resource_mut::<Schedules>().iter_mut() {
                 schedule.set_build_settings(ScheduleBuildSettings {
                     ambiguity_detection: LogLevel::Warn,
                     ..default()
@@ -126,7 +126,7 @@ impl Plugin for DebugPlugin {
         // Debug render
         if self.debug_physics {
             app.add_plugins(RapierDebugRenderPlugin::default());
-            app.world.resource_mut::<DebugRenderContext>().enabled = false;
+            app.world().resource_mut::<DebugRenderContext>().enabled = false;
             app.add_systems(
                 Update,
                 (|mut ctx: ResMut<DebugRenderContext>| ctx.enabled = !ctx.enabled)

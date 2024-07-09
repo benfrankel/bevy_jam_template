@@ -13,7 +13,7 @@ fn main() {
     app.add_plugins(bevy_jam_template::plugin);
 
     let mut labels = app
-        .world
+        .world()
         .resource::<Schedules>()
         .iter()
         .map(|(label, _)| format!("{:?}", label))
@@ -22,7 +22,7 @@ fn main() {
     println!("All schedules: {}\n", labels.join(", "));
 
     let main_labels = app
-        .world
+        .world()
         .resource::<MainScheduleOrder>()
         .labels
         .iter()
@@ -44,7 +44,7 @@ fn print_schedule_graph(app: &mut App, label: impl ScheduleLabel) {
 }
 
 fn print_schedule(app: &mut App, label: impl ScheduleLabel + Clone) {
-    app.world
+    app.world()
         .resource_scope::<Schedules, _>(|world, mut schedules| {
             let schedule = schedules.get_mut(label.clone()).unwrap();
             let graph = schedule.graph_mut();
