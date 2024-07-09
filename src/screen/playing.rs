@@ -9,36 +9,32 @@ use crate::screen::fade_in;
 use crate::screen::Screen;
 use crate::util::ui::UiRoot;
 
-pub struct PlayingScreenPlugin;
+pub(super) fn plugin(app: &mut App) {
+    app.register_type::<PlayingAssets>();
+    app.init_collection::<PlayingAssets>();
 
-impl Plugin for PlayingScreenPlugin {
-    fn build(&self, app: &mut App) {
-        app.register_type::<PlayingAssets>();
-        app.init_collection::<PlayingAssets>();
+    app.add_systems(OnEnter(Screen::Playing), enter_playing);
+    app.add_systems(OnExit(Screen::Playing), exit_playing);
+    app.add_systems(
+        OnEnter(Screen::PlayingRestart),
+        |mut screen: ResMut<NextState<_>>| {
+            screen.set(Screen::Playing);
+        },
+    );
 
-        app.add_systems(OnEnter(Screen::Playing), enter_playing);
-        app.add_systems(OnExit(Screen::Playing), exit_playing);
-        app.add_systems(
-            OnEnter(Screen::PlayingRestart),
-            |mut screen: ResMut<NextState<_>>| {
-                screen.set(Screen::Playing);
-            },
-        );
-
-        app.init_resource::<ActionState<PlayingAction>>();
-        app.insert_resource(
-            InputMap::default()
-                .insert(PlayingAction::Restart, KeyCode::KeyR)
-                .build(),
-        );
-        app.add_plugins(InputManagerPlugin::<PlayingAction>::default());
-        app.add_systems(
-            Update,
-            restart.in_set(UpdateSet::HandleActions).run_if(
-                in_state(Screen::Playing).and_then(action_just_pressed(PlayingAction::Restart)),
-            ),
-        );
-    }
+    app.init_resource::<ActionState<PlayingAction>>();
+    app.insert_resource(
+        InputMap::default()
+            .insert(PlayingAction::Restart, KeyCode::KeyR)
+            .build(),
+    );
+    app.add_plugins(InputManagerPlugin::<PlayingAction>::default());
+    app.add_systems(
+        Update,
+        restart.in_set(UpdateSet::HandleActions).run_if(
+            in_state(Screen::Playing).and_then(action_just_pressed(PlayingAction::Restart)),
+        ),
+    );
 }
 
 #[derive(AssetCollection, Resource, Reflect, Default)]

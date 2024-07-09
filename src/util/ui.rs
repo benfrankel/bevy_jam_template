@@ -17,18 +17,10 @@ use bevy::prelude::*;
 use bevy::ui::Val::*;
 use bevy_mod_picking::prelude::*;
 
-pub struct UiPlugin;
+pub(super) fn plugin(app: &mut App) {
+    app.register_type::<UiRoot>().init_resource::<UiRoot>();
 
-impl Plugin for UiPlugin {
-    fn build(&self, app: &mut App) {
-        app.register_type::<UiRoot>().init_resource::<UiRoot>();
-
-        app.add_plugins((
-            font::FontPlugin,
-            interaction::InteractionPlugin,
-            tooltip::TooltipPlugin,
-        ));
-    }
+    app.add_plugins((font::plugin, interaction::plugin, tooltip::plugin));
 }
 
 #[derive(Resource, Reflect)]

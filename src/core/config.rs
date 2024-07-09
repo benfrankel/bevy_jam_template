@@ -7,18 +7,14 @@ use serde::Serialize;
 use crate::core::theme::ThemeConfig;
 use crate::core::window::WindowConfig;
 
-pub struct ConfigPlugin;
-
-impl Plugin for ConfigPlugin {
-    fn build(&self, app: &mut App) {
-        app.register_type::<Config>();
-        app.add_plugins(RonAssetPlugin::<Config>::new(&["config.ron"]));
-        app.add_systems(Startup, load_config);
-        app.add_systems(
-            PreUpdate,
-            apply_config.run_if(on_event::<AssetEvent<Config>>()),
-        );
-    }
+pub(super) fn plugin(app: &mut App) {
+    app.register_type::<Config>();
+    app.add_plugins(RonAssetPlugin::<Config>::new(&["config.ron"]));
+    app.add_systems(Startup, load_config);
+    app.add_systems(
+        PreUpdate,
+        apply_config.run_if(on_event::<AssetEvent<Config>>()),
+    );
 }
 
 #[derive(Resource)]

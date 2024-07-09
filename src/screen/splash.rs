@@ -17,28 +17,22 @@ use crate::screen::FADE_IN_SECS;
 use crate::util::ui::UiRoot;
 use crate::util::wait;
 
-pub struct SplashScreenplugin;
+pub(super) fn plugin(app: &mut App) {
+    embedded_asset!(app, "splash/splash.png");
 
-impl Plugin for SplashScreenplugin {
-    fn build(&self, app: &mut App) {
-        embedded_asset!(app, "splash/splash.png");
+    app.add_loading_state(LoadingState::new(Screen::Splash).load_collection::<TitleScreenAssets>());
+    app.add_plugins(ProgressPlugin::new(Screen::Splash));
+    app.add_systems(OnEnter(Screen::Splash), enter_splash);
+    app.add_systems(OnExit(Screen::Splash), exit_splash);
 
-        app.add_loading_state(
-            LoadingState::new(Screen::Splash).load_collection::<TitleScreenAssets>(),
-        );
-        app.add_plugins(ProgressPlugin::new(Screen::Splash));
-        app.add_systems(OnEnter(Screen::Splash), enter_splash);
-        app.add_systems(OnExit(Screen::Splash), exit_splash);
-
-        app.add_systems(
-            Update,
-            (
-                wait(FADE_IN_SECS + SPLASH_SCREEN_MIN_SECS),
-                update_splash.after(TrackedProgressSet),
-            )
-                .run_if(in_state(Screen::Splash)),
-        );
-    }
+    app.add_systems(
+        Update,
+        (
+            wait(FADE_IN_SECS + SPLASH_SCREEN_MIN_SECS),
+            update_splash.after(TrackedProgressSet),
+        )
+            .run_if(in_state(Screen::Splash)),
+    );
 }
 
 const SPLASH_SCREEN_MIN_SECS: f32 = 1.5;

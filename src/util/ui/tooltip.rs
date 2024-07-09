@@ -13,16 +13,12 @@ use crate::core::UpdateSet;
 use crate::util::ui::FontSize;
 use crate::util::ui::FONT_HANDLE;
 
-pub struct TooltipPlugin;
+pub(super) fn plugin(app: &mut App) {
+    app.register_type::<TooltipRoot>();
+    app.init_resource::<TooltipRoot>();
 
-impl Plugin for TooltipPlugin {
-    fn build(&self, app: &mut App) {
-        app.register_type::<TooltipRoot>();
-        app.init_resource::<TooltipRoot>();
-
-        app.register_type::<Tooltip>();
-        app.add_systems(Update, show_tooltip_on_hover.in_set(UpdateSet::Update));
-    }
+    app.register_type::<Tooltip>();
+    app.add_systems(Update, show_tooltip_on_hover.in_set(UpdateSet::Update));
 }
 
 #[derive(Resource, Reflect)]

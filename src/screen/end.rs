@@ -14,26 +14,22 @@ use crate::util::ui::FontSize;
 use crate::util::ui::UiRoot;
 use crate::util::ui::BOLD_FONT_HANDLE;
 
-pub struct EndScreenPlugin;
+pub(super) fn plugin(app: &mut App) {
+    app.register_type::<EndScreenAssets>();
+    app.init_collection::<EndScreenAssets>();
 
-impl Plugin for EndScreenPlugin {
-    fn build(&self, app: &mut App) {
-        app.register_type::<EndScreenAssets>();
-        app.init_collection::<EndScreenAssets>();
+    app.init_resource::<ActionState<EndScreenAction>>();
+    app.add_plugins(InputManagerPlugin::<EndScreenAction>::default());
+    app.add_systems(
+        Update,
+        (
+            restart.run_if(action_just_pressed(EndScreenAction::Restart)),
+            quit.run_if(action_just_pressed(EndScreenAction::Quit)),
+        ),
+    );
 
-        app.init_resource::<ActionState<EndScreenAction>>();
-        app.add_plugins(InputManagerPlugin::<EndScreenAction>::default());
-        app.add_systems(
-            Update,
-            (
-                restart.run_if(action_just_pressed(EndScreenAction::Restart)),
-                quit.run_if(action_just_pressed(EndScreenAction::Quit)),
-            ),
-        );
-
-        app.add_systems(OnEnter(Screen::End), enter_end);
-        app.add_systems(OnExit(Screen::End), exit_end);
-    }
+    app.add_systems(OnEnter(Screen::End), enter_end);
+    app.add_systems(OnExit(Screen::End), exit_end);
 }
 
 #[derive(AssetCollection, Resource, Reflect, Default)]

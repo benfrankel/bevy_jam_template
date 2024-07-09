@@ -7,24 +7,20 @@ use bevy::window::WindowPlugin as BevyWindowPlugin;
 use serde::Deserialize;
 use serde::Serialize;
 
-pub struct WindowPlugin;
-
-impl Plugin for WindowPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_plugins(BevyWindowPlugin {
-            primary_window: Some(Window {
-                canvas: Some("#bevy".to_string()),
-                fit_canvas_to_parent: true,
-                prevent_default_event_handling: true,
-                ..default()
-            }),
-            exit_condition: ExitCondition::OnPrimaryClosed,
+pub(super) fn plugin(app: &mut App) {
+    app.add_plugins(BevyWindowPlugin {
+        primary_window: Some(Window {
+            canvas: Some("#bevy".to_string()),
+            fit_canvas_to_parent: true,
+            prevent_default_event_handling: true,
             ..default()
-        });
+        }),
+        exit_condition: ExitCondition::OnPrimaryClosed,
+        ..default()
+    });
 
-        app.register_type::<WindowRoot>();
-        app.init_resource::<WindowRoot>();
-    }
+    app.register_type::<WindowRoot>();
+    app.init_resource::<WindowRoot>();
 }
 
 #[derive(Resource, Reflect)]

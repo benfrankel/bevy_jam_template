@@ -2,14 +2,10 @@
 
 use bevy::prelude::*;
 
-pub struct GamePlugin;
+pub(super) fn plugin(app: &mut App) {
+    app.register_type::<GameRoot>().init_resource::<GameRoot>();
 
-impl Plugin for GamePlugin {
-    fn build(&self, app: &mut App) {
-        app.register_type::<GameRoot>().init_resource::<GameRoot>();
-
-        app.add_plugins(());
-    }
+    app.add_plugins(());
 }
 
 #[derive(Resource, Reflect)]

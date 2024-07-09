@@ -8,32 +8,28 @@ use crate::core::camera::CameraRoot;
 use crate::core::window::WindowRoot;
 use crate::core::UpdateSet;
 
-pub struct FontPlugin;
+pub(super) fn plugin(app: &mut App) {
+    load_internal_binary_asset!(
+        app,
+        FONT_HANDLE,
+        "../../../assets/font/pypx.ttf",
+        |bytes: &[u8], _path: String| Font::try_from_bytes(bytes.to_vec()).unwrap()
+    );
+    load_internal_binary_asset!(
+        app,
+        BOLD_FONT_HANDLE,
+        "../../../assets/font/pypx-B.ttf",
+        |bytes: &[u8], _path: String| Font::try_from_bytes(bytes.to_vec()).unwrap()
+    );
+    load_internal_binary_asset!(
+        app,
+        THICK_FONT_HANDLE,
+        "../../../assets/font/pypx-T.ttf",
+        |bytes: &[u8], _path: String| Font::try_from_bytes(bytes.to_vec()).unwrap()
+    );
 
-impl Plugin for FontPlugin {
-    fn build(&self, app: &mut App) {
-        load_internal_binary_asset!(
-            app,
-            FONT_HANDLE,
-            "../../../assets/font/pypx.ttf",
-            |bytes: &[u8], _path: String| Font::try_from_bytes(bytes.to_vec()).unwrap()
-        );
-        load_internal_binary_asset!(
-            app,
-            BOLD_FONT_HANDLE,
-            "../../../assets/font/pypx-B.ttf",
-            |bytes: &[u8], _path: String| Font::try_from_bytes(bytes.to_vec()).unwrap()
-        );
-        load_internal_binary_asset!(
-            app,
-            THICK_FONT_HANDLE,
-            "../../../assets/font/pypx-T.ttf",
-            |bytes: &[u8], _path: String| Font::try_from_bytes(bytes.to_vec()).unwrap()
-        );
-
-        app.register_type::<FontSize>();
-        app.add_systems(Update, apply_font_size.in_set(UpdateSet::End));
-    }
+    app.register_type::<FontSize>();
+    app.add_systems(Update, apply_font_size.in_set(UpdateSet::End));
 }
 
 pub const FONT_HANDLE: Handle<Font> =

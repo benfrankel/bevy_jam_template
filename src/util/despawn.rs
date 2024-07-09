@@ -3,22 +3,18 @@ use bevy::utils::HashSet;
 
 use crate::core::UpdateSet;
 
-pub struct DespawnPlugin;
-
-impl Plugin for DespawnPlugin {
-    fn build(&self, app: &mut App) {
-        app.register_type::<DespawnSet>();
-        app.init_resource::<DespawnSet>();
-        app.add_systems(
-            Update,
-            (
-                // Flush queued commands first to prevent double despawn
-                apply_deferred.in_set(UpdateSet::QueueDespawn),
-                apply_despawn_set.in_set(UpdateSet::QueueDespawn),
-            )
-                .chain(),
-        );
-    }
+pub(super) fn plugin(app: &mut App) {
+    app.register_type::<DespawnSet>();
+    app.init_resource::<DespawnSet>();
+    app.add_systems(
+        Update,
+        (
+            // Flush queued commands first to prevent double despawn
+            apply_deferred.in_set(UpdateSet::QueueDespawn),
+            apply_despawn_set.in_set(UpdateSet::QueueDespawn),
+        )
+            .chain(),
+    );
 }
 
 #[derive(Resource, Reflect, Default)]

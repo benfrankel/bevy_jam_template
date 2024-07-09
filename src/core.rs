@@ -12,89 +12,84 @@ pub mod window;
 use bevy::prelude::*;
 use bevy::transform::TransformSystem;
 use bevy::ui::UiSystem;
-use bevy::window::WindowPlugin as BevyWindowPlugin;
 use bevy_rapier2d::plugin::PhysicsSet;
 
-pub struct CorePlugin;
+pub(super) fn plugin(app: &mut App) {
+    // Game logic system ordering
+    app.configure_sets(
+        Update,
+        (
+            UpdateSet::HandleActions,
+            UpdateSet::HandleActionsFlush,
+            UpdateSet::Start,
+            UpdateSet::Update,
+            UpdateSet::React,
+            UpdateSet::RecordIntents,
+            UpdateSet::ApplyIntents,
+            UpdateSet::HandleEvents,
+            UpdateSet::QueueDespawn,
+            UpdateSet::ApplyDeferred,
+            UpdateSet::UpdateUi,
+            UpdateSet::End,
+        )
+            .chain(),
+    );
+    app.add_systems(
+        Update,
+        (
+            apply_deferred.in_set(UpdateSet::HandleActionsFlush),
+            apply_deferred.in_set(UpdateSet::ApplyDeferred),
+        ),
+    );
 
-impl Plugin for CorePlugin {
-    fn build(&self, app: &mut App) {
-        // Game logic system ordering
-        app.configure_sets(
-            Update,
+    // Post-processing system ordering
+    app.configure_sets(
+        PostUpdate,
+        (
             (
-                UpdateSet::HandleActions,
-                UpdateSet::HandleActionsFlush,
-                UpdateSet::Start,
-                UpdateSet::Update,
-                UpdateSet::React,
-                UpdateSet::RecordIntents,
-                UpdateSet::ApplyIntents,
-                UpdateSet::HandleEvents,
-                UpdateSet::QueueDespawn,
-                UpdateSet::ApplyDeferred,
-                UpdateSet::UpdateUi,
-                UpdateSet::End,
+                (UiSystem::Layout, PhysicsSet::Writeback),
+                PostTransformSet::Save,
+                PostTransformSet::Blend,
+                PostTransformSet::ApplyFacing,
+                TransformSystem::TransformPropagate,
+                PostTransformSet::Finish,
+                // GlobalTransform may be slightly out of sync with Transform at this point...
             )
                 .chain(),
-        );
-        app.add_systems(
-            Update,
-            (
-                apply_deferred.in_set(UpdateSet::HandleActionsFlush),
-                apply_deferred.in_set(UpdateSet::ApplyDeferred),
-            ),
-        );
+            (PostColorSet::Save, PostColorSet::Blend).chain(),
+        ),
+    );
 
-        // Post-processing system ordering
-        app.configure_sets(
-            PostUpdate,
-            (
-                (
-                    (UiSystem::Layout, PhysicsSet::Writeback),
-                    PostTransformSet::Save,
-                    PostTransformSet::Blend,
-                    PostTransformSet::ApplyFacing,
-                    TransformSystem::TransformPropagate,
-                    PostTransformSet::Finish,
-                    // GlobalTransform may be slightly out of sync with Transform at this point...
-                )
-                    .chain(),
-                (PostColorSet::Save, PostColorSet::Blend).chain(),
-            ),
-        );
+    // TODO: Workaround for https://github.com/bevyengine/bevy/issues/10157
+    #[cfg(feature = "web")]
+    app.insert_resource(bevy::asset::AssetMetaCheck::Never);
 
-        // TODO: Workaround for https://github.com/bevyengine/bevy/issues/10157
-        #[cfg(feature = "web")]
-        app.insert_resource(bevy::asset::AssetMetaCheck::Never);
+    // Bevy plugins
+    app.add_plugins(
+        DefaultPlugins
+            .build()
+            .disable::<WindowPlugin>()
+            .add_after::<WindowPlugin, _>(window::plugin)
+            .set(ImagePlugin::default_nearest()),
+    );
 
-        // Bevy plugins
-        app.add_plugins(
-            DefaultPlugins
-                .build()
-                .disable::<BevyWindowPlugin>()
-                .add_after::<BevyWindowPlugin, _>(window::WindowPlugin)
-                .set(ImagePlugin::default_nearest()),
-        );
+    // Other plugins
+    app.add_plugins((
+        audio::plugin,
+        camera::plugin,
+        config::plugin,
+        theme::plugin,
+        physics::plugin,
+    ));
 
-        // Other plugins
-        app.add_plugins((
-            audio::AudioPlugin,
-            camera::CameraPlugin,
-            config::ConfigPlugin,
-            theme::ThemePlugin,
-            physics::PhysicsPlugin,
-        ));
-
-        // Debugging tools for dev builds
-        /*#[cfg(feature = "dev")]
-        app.add_plugins(debug::DebugPlugin {
-            log_diagnostics: false,
-            log_ambiguity_detection: false,
-            //editor: false,
-            ..default()
-        });*/
-    }
+    // Debugging tools for dev builds
+    /*#[cfg(feature = "dev")]
+    app.add_plugins(debug::DebugPlugin {
+        log_diagnostics: false,
+        log_ambiguity_detection: false,
+        //editor: false,
+        ..default()
+    });*/
 }
 
 /// (Update) Game logic system ordering

@@ -13,14 +13,6 @@ pub mod ui;
 
 use bevy::prelude::*;
 
-pub struct UtilPlugin;
-
-impl Plugin for UtilPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_plugins((
-            animation::AnimationPlugin,
-            despawn::DespawnPlugin,
-            ui::UiPlugin,
-        ));
-    }
+pub(super) fn plugin(app: &mut App) {
+    app.add_plugins((animation::plugin, despawn::plugin, ui::plugin));
 }

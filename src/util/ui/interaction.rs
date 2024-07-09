@@ -5,17 +5,13 @@ use crate::core::theme::ThemeBackgroundColor;
 use crate::core::theme::ThemeColor;
 use crate::core::UpdateSet;
 
-pub struct InteractionPlugin;
+pub(super) fn plugin(app: &mut App) {
+    app.add_plugins(DefaultPickingPlugins);
 
-impl Plugin for InteractionPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_plugins(DefaultPickingPlugins);
+    app.register_type::<IsDisabled>();
 
-        app.register_type::<IsDisabled>();
-
-        app.register_type::<InteractionPalette>();
-        app.add_systems(Update, apply_interaction_palette.in_set(UpdateSet::End));
-    }
+    app.register_type::<InteractionPalette>();
+    app.add_systems(Update, apply_interaction_palette.in_set(UpdateSet::End));
 }
 
 #[derive(Component, Reflect)]

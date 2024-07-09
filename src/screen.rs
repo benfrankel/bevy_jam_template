@@ -15,20 +15,16 @@ use crate::core::theme::ThemeColor;
 use crate::util::animation::FadeIn;
 use crate::util::animation::FadeOut;
 
-pub struct ScreenPlugin;
-
-impl Plugin for ScreenPlugin {
-    fn build(&self, app: &mut App) {
-        app.init_state::<Screen>();
-        app.add_plugins((
-            boot::BootScreenPlugin,
-            splash::SplashScreenplugin,
-            title::TitleScreenPlugin,
-            loading::LoadingScreenPlugin,
-            playing::PlayingScreenPlugin,
-            end::EndScreenPlugin,
-        ));
-    }
+pub fn plugin(app: &mut App) {
+    app.init_state::<Screen>();
+    app.add_plugins((
+        boot::plugin,
+        splash::plugin,
+        title::plugin,
+        loading::plugin,
+        playing::plugin,
+        end::plugin,
+    ));
 }
 
 #[derive(States, Reflect, Default, Copy, Clone, Eq, PartialEq, Hash, Debug, EnumIter)]

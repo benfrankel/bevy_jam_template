@@ -9,15 +9,6 @@ mod util;
 
 use bevy::prelude::*;
 
-pub struct AppPlugin;
-
-impl Plugin for AppPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_plugins((
-            core::CorePlugin,
-            game::GamePlugin,
-            screen::ScreenPlugin,
-            util::UtilPlugin,
-        ));
-    }
+pub fn plugin(app: &mut App) {
+    app.add_plugins((core::plugin, game::plugin, screen::plugin, util::plugin));
 }

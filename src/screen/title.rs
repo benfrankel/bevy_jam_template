@@ -17,18 +17,14 @@ use crate::util::ui::UiRoot;
 use crate::util::ui::BOLD_FONT_HANDLE;
 use crate::util::ui::FONT_HANDLE;
 
-pub struct TitleScreenPlugin;
+pub(super) fn plugin(app: &mut App) {
+    app.register_type::<TitleScreenAssets>();
+    app.init_collection::<TitleScreenAssets>();
 
-impl Plugin for TitleScreenPlugin {
-    fn build(&self, app: &mut App) {
-        app.register_type::<TitleScreenAssets>();
-        app.init_collection::<TitleScreenAssets>();
-
-        app.add_loading_state(LoadingState::new(Screen::Title).load_collection::<PlayingAssets>());
-        app.add_plugins(ProgressPlugin::new(Screen::Title));
-        app.add_systems(OnEnter(Screen::Title), enter_title);
-        app.add_systems(OnExit(Screen::Title), exit_title);
-    }
+    app.add_loading_state(LoadingState::new(Screen::Title).load_collection::<PlayingAssets>());
+    app.add_plugins(ProgressPlugin::new(Screen::Title));
+    app.add_systems(OnEnter(Screen::Title), enter_title);
+    app.add_systems(OnExit(Screen::Title), exit_title);
 }
 
 const TITLE: &str = "bevy_jam_template";

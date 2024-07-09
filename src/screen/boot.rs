@@ -5,21 +5,17 @@ use crate::core::config::ConfigHandle;
 use crate::core::window::WindowRoot;
 use crate::screen::Screen;
 
-pub struct BootScreenPlugin;
+pub(super) fn plugin(app: &mut App) {
+    app.add_plugins(ProgressPlugin::new(Screen::Boot).continue_to(Screen::Splash));
+    app.add_systems(OnEnter(Screen::Boot), enter_boot);
+    app.add_systems(OnExit(Screen::Boot), exit_boot);
 
-impl Plugin for BootScreenPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_plugins(ProgressPlugin::new(Screen::Boot).continue_to(Screen::Splash));
-        app.add_systems(OnEnter(Screen::Boot), enter_boot);
-        app.add_systems(OnExit(Screen::Boot), exit_boot);
-
-        app.add_systems(
-            Update,
-            wait_for_config
-                .track_progress()
-                .run_if(in_state(Screen::Boot)),
-        );
-    }
+    app.add_systems(
+        Update,
+        wait_for_config
+            .track_progress()
+            .run_if(in_state(Screen::Boot)),
+    );
 }
 
 fn enter_boot(window_root: Res<WindowRoot>, mut window_query: Query<&mut Window>) {

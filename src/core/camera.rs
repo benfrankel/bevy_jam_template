@@ -2,18 +2,14 @@ use bevy::prelude::*;
 
 use crate::core::UpdateSet;
 
-pub struct CameraPlugin;
+pub(super) fn plugin(app: &mut App) {
+    app.insert_resource(Msaa::Off);
 
-impl Plugin for CameraPlugin {
-    fn build(&self, app: &mut App) {
-        app.insert_resource(Msaa::Off);
+    app.register_type::<CameraRoot>();
+    app.init_resource::<CameraRoot>();
 
-        app.register_type::<CameraRoot>();
-        app.init_resource::<CameraRoot>();
-
-        app.register_type::<AbsoluteScale>();
-        app.add_systems(Update, apply_absolute_scale.in_set(UpdateSet::End));
-    }
+    app.register_type::<AbsoluteScale>();
+    app.add_systems(Update, apply_absolute_scale.in_set(UpdateSet::End));
 }
 
 #[derive(Resource, Reflect)]

@@ -16,24 +16,18 @@ use crate::util::ui::FontSize;
 use crate::util::ui::UiRoot;
 use crate::util::ui::THICK_FONT_HANDLE;
 
-pub struct LoadingScreenPlugin;
+pub(super) fn plugin(app: &mut App) {
+    app.add_loading_state(LoadingState::new(Screen::Loading).load_collection::<PlayingAssets>());
+    app.add_plugins(ProgressPlugin::new(Screen::Loading));
+    app.add_systems(OnEnter(Screen::Loading), enter_loading);
+    app.add_systems(OnExit(Screen::Loading), exit_loading);
 
-impl Plugin for LoadingScreenPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_loading_state(
-            LoadingState::new(Screen::Loading).load_collection::<PlayingAssets>(),
-        );
-        app.add_plugins(ProgressPlugin::new(Screen::Loading));
-        app.add_systems(OnEnter(Screen::Loading), enter_loading);
-        app.add_systems(OnExit(Screen::Loading), exit_loading);
-
-        app.register_type::<IsLoadingBarFill>().add_systems(
-            Update,
-            update_loading
-                .run_if(in_state(Screen::Loading))
-                .after(TrackedProgressSet),
-        );
-    }
+    app.register_type::<IsLoadingBarFill>().add_systems(
+        Update,
+        update_loading
+            .run_if(in_state(Screen::Loading))
+            .after(TrackedProgressSet),
+    );
 }
 
 #[derive(Component, Reflect)]

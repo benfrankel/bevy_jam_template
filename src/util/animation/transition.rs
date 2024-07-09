@@ -7,16 +7,12 @@ use crate::core::PostColorSet;
 use crate::screen::Screen;
 use crate::util::DespawnSet;
 
-pub struct TransitionPlugin;
+pub(super) fn plugin(app: &mut App) {
+    app.register_type::<FadeIn>();
+    app.add_systems(PostUpdate, apply_fade_in.in_set(PostColorSet::Blend));
 
-impl Plugin for TransitionPlugin {
-    fn build(&self, app: &mut App) {
-        app.register_type::<FadeIn>();
-        app.add_systems(PostUpdate, apply_fade_in.in_set(PostColorSet::Blend));
-
-        app.register_type::<FadeOut>();
-        app.add_systems(PostUpdate, apply_fade_out.in_set(PostColorSet::Blend));
-    }
+    app.register_type::<FadeOut>();
+    app.add_systems(PostUpdate, apply_fade_out.in_set(PostColorSet::Blend));
 }
 
 #[derive(Component, Reflect)]

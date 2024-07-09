@@ -16,7 +16,7 @@ use strum::IntoEnumIterator;
 use crate::screen::Screen;
 use crate::util::wait;
 
-pub struct DebugPlugin {
+pub(super) struct DebugPlugin {
     // Diagnostics
     pub frame_time_diagnostics: bool,
     pub system_information_diagnostics: bool,

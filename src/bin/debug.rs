@@ -3,7 +3,6 @@
 use bevy::app::MainScheduleOrder;
 use bevy::ecs::schedule::ScheduleLabel;
 use bevy::prelude::*;
-use bevy_jam_template::AppPlugin;
 use bevy_mod_debugdump::schedule_graph::Settings;
 use bevy_mod_debugdump::schedule_graph_dot;
 
@@ -11,7 +10,7 @@ use bevy_mod_debugdump::schedule_graph_dot;
 // Example: `RUST_LOG=off cargo run --release --bin debug_dump | dot -Tsvg | feh -`
 fn main() {
     let mut app = App::new();
-    app.add_plugins(AppPlugin);
+    app.add_plugins(bevy_jam_template::plugin);
 
     let mut labels = app
         .world
