@@ -22,8 +22,8 @@ impl Plugin for WindowPlugin {
             ..default()
         });
 
-        app.register_type::<WindowRoot>()
-            .init_resource::<WindowRoot>();
+        app.register_type::<WindowRoot>();
+        app.init_resource::<WindowRoot>();
     }
 }
 

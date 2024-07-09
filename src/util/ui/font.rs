@@ -31,8 +31,8 @@ impl Plugin for FontPlugin {
             |bytes: &[u8], _path: String| Font::try_from_bytes(bytes.to_vec()).unwrap()
         );
 
-        app.register_type::<FontSize>()
-            .add_systems(Update, apply_font_size.in_set(UpdateSet::End));
+        app.register_type::<FontSize>();
+        app.add_systems(Update, apply_font_size.in_set(UpdateSet::End));
     }
 }
 

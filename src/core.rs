@@ -37,8 +37,8 @@ impl Plugin for CorePlugin {
                 UpdateSet::End,
             )
                 .chain(),
-        )
-        .add_systems(
+        );
+        app.add_systems(
             Update,
             (
                 apply_deferred.in_set(UpdateSet::HandleActionsFlush),

@@ -9,9 +9,9 @@ pub struct BootScreenPlugin;
 
 impl Plugin for BootScreenPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(ProgressPlugin::new(Screen::Boot).continue_to(Screen::Splash))
-            .add_systems(OnEnter(Screen::Boot), enter_boot)
-            .add_systems(OnExit(Screen::Boot), exit_boot);
+        app.add_plugins(ProgressPlugin::new(Screen::Boot).continue_to(Screen::Splash));
+        app.add_systems(OnEnter(Screen::Boot), enter_boot);
+        app.add_systems(OnExit(Screen::Boot), exit_boot);
 
         app.add_systems(
             Update,

@@ -17,11 +17,11 @@ pub struct TooltipPlugin;
 
 impl Plugin for TooltipPlugin {
     fn build(&self, app: &mut App) {
-        app.register_type::<TooltipRoot>()
-            .init_resource::<TooltipRoot>();
+        app.register_type::<TooltipRoot>();
+        app.init_resource::<TooltipRoot>();
 
-        app.register_type::<Tooltip>()
-            .add_systems(Update, show_tooltip_on_hover.in_set(UpdateSet::Update));
+        app.register_type::<Tooltip>();
+        app.add_systems(Update, show_tooltip_on_hover.in_set(UpdateSet::Update));
     }
 }
 

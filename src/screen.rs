@@ -19,7 +19,8 @@ pub struct ScreenPlugin;
 
 impl Plugin for ScreenPlugin {
     fn build(&self, app: &mut App) {
-        app.init_state::<Screen>().add_plugins((
+        app.init_state::<Screen>();
+        app.add_plugins((
             boot::BootScreenPlugin,
             splash::SplashScreenplugin,
             title::TitleScreenPlugin,

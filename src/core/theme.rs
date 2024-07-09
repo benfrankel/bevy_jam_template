@@ -13,20 +13,20 @@ pub struct ThemePlugin;
 
 impl Plugin for ThemePlugin {
     fn build(&self, app: &mut App) {
-        app.register_type::<ThemeSpriteColor>()
-            .add_systems(Update, apply_theme_sprite_color.in_set(UpdateSet::End));
+        app.register_type::<ThemeSpriteColor>();
+        app.add_systems(Update, apply_theme_sprite_color.in_set(UpdateSet::End));
 
-        app.register_type::<ThemeUiImageColor>()
-            .add_systems(Update, apply_theme_ui_image_color.in_set(UpdateSet::End));
+        app.register_type::<ThemeUiImageColor>();
+        app.add_systems(Update, apply_theme_ui_image_color.in_set(UpdateSet::End));
 
-        app.register_type::<ThemeTextColors>()
-            .add_systems(Update, apply_theme_text_colors.in_set(UpdateSet::End));
+        app.register_type::<ThemeTextColors>();
+        app.add_systems(Update, apply_theme_text_colors.in_set(UpdateSet::End));
 
-        app.register_type::<ThemeBackgroundColor>()
-            .add_systems(Update, apply_theme_background_color.in_set(UpdateSet::End));
+        app.register_type::<ThemeBackgroundColor>();
+        app.add_systems(Update, apply_theme_background_color.in_set(UpdateSet::End));
 
-        app.register_type::<ThemeBorderColor>()
-            .add_systems(Update, apply_theme_border_color.in_set(UpdateSet::End));
+        app.register_type::<ThemeBorderColor>();
+        app.add_systems(Update, apply_theme_border_color.in_set(UpdateSet::End));
     }
 }
 

@@ -18,21 +18,21 @@ pub struct EndScreenPlugin;
 
 impl Plugin for EndScreenPlugin {
     fn build(&self, app: &mut App) {
-        app.register_type::<EndScreenAssets>()
-            .init_collection::<EndScreenAssets>();
+        app.register_type::<EndScreenAssets>();
+        app.init_collection::<EndScreenAssets>();
 
-        app.init_resource::<ActionState<EndScreenAction>>()
-            .add_plugins(InputManagerPlugin::<EndScreenAction>::default())
-            .add_systems(
-                Update,
-                (
-                    restart.run_if(action_just_pressed(EndScreenAction::Restart)),
-                    quit.run_if(action_just_pressed(EndScreenAction::Quit)),
-                ),
-            );
+        app.init_resource::<ActionState<EndScreenAction>>();
+        app.add_plugins(InputManagerPlugin::<EndScreenAction>::default());
+        app.add_systems(
+            Update,
+            (
+                restart.run_if(action_just_pressed(EndScreenAction::Restart)),
+                quit.run_if(action_just_pressed(EndScreenAction::Quit)),
+            ),
+        );
 
-        app.add_systems(OnEnter(Screen::End), enter_end)
-            .add_systems(OnExit(Screen::End), exit_end);
+        app.add_systems(OnEnter(Screen::End), enter_end);
+        app.add_systems(OnExit(Screen::End), exit_end);
     }
 }
 

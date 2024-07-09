@@ -91,8 +91,8 @@ impl Plugin for DebugPlugin {
             for screen in Screen::iter() {
                 app.add_systems(OnEnter(screen), move |frame: Res<FrameCount>| {
                     info!("[Frame {}] Entering {screen:?}", frame.0)
-                })
-                .add_systems(OnExit(screen), move |frame: Res<FrameCount>| {
+                });
+                app.add_systems(OnExit(screen), move |frame: Res<FrameCount>| {
                     info!("[Frame {}] Exiting {screen:?}", frame.0)
                 });
             }
@@ -105,8 +105,8 @@ impl Plugin for DebugPlugin {
             // Setting this at startup instead of right now prevents a plugin ordering requirement
             app.add_systems(Startup, |mut mode: ResMut<_>| {
                 *mode = Disabled;
-            })
-            .add_systems(
+            });
+            app.add_systems(
                 Update,
                 (
                     (|mut mode: ResMut<_>| {

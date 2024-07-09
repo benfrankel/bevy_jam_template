@@ -13,8 +13,8 @@ impl Plugin for InteractionPlugin {
 
         app.register_type::<IsDisabled>();
 
-        app.register_type::<InteractionPalette>()
-            .add_systems(Update, apply_interaction_palette.in_set(UpdateSet::End));
+        app.register_type::<InteractionPalette>();
+        app.add_systems(Update, apply_interaction_palette.in_set(UpdateSet::End));
     }
 }
 

@@ -22,10 +22,10 @@ impl Plugin for LoadingScreenPlugin {
     fn build(&self, app: &mut App) {
         app.add_loading_state(
             LoadingState::new(Screen::Loading).load_collection::<PlayingAssets>(),
-        )
-        .add_plugins(ProgressPlugin::new(Screen::Loading))
-        .add_systems(OnEnter(Screen::Loading), enter_loading)
-        .add_systems(OnExit(Screen::Loading), exit_loading);
+        );
+        app.add_plugins(ProgressPlugin::new(Screen::Loading));
+        app.add_systems(OnEnter(Screen::Loading), enter_loading);
+        app.add_systems(OnExit(Screen::Loading), exit_loading);
 
         app.register_type::<IsLoadingBarFill>().add_systems(
             Update,

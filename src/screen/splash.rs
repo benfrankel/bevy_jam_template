@@ -25,10 +25,10 @@ impl Plugin for SplashScreenplugin {
 
         app.add_loading_state(
             LoadingState::new(Screen::Splash).load_collection::<TitleScreenAssets>(),
-        )
-        .add_plugins(ProgressPlugin::new(Screen::Splash))
-        .add_systems(OnEnter(Screen::Splash), enter_splash)
-        .add_systems(OnExit(Screen::Splash), exit_splash);
+        );
+        app.add_plugins(ProgressPlugin::new(Screen::Splash));
+        app.add_systems(OnEnter(Screen::Splash), enter_splash);
+        app.add_systems(OnExit(Screen::Splash), exit_splash);
 
         app.add_systems(
             Update,

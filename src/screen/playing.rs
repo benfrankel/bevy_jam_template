@@ -13,31 +13,31 @@ pub struct PlayingScreenPlugin;
 
 impl Plugin for PlayingScreenPlugin {
     fn build(&self, app: &mut App) {
-        app.register_type::<PlayingAssets>()
-            .init_collection::<PlayingAssets>();
+        app.register_type::<PlayingAssets>();
+        app.init_collection::<PlayingAssets>();
 
-        app.add_systems(OnEnter(Screen::Playing), enter_playing)
-            .add_systems(OnExit(Screen::Playing), exit_playing)
-            .add_systems(
-                OnEnter(Screen::PlayingRestart),
-                |mut screen: ResMut<NextState<_>>| {
-                    screen.set(Screen::Playing);
-                },
-            );
+        app.add_systems(OnEnter(Screen::Playing), enter_playing);
+        app.add_systems(OnExit(Screen::Playing), exit_playing);
+        app.add_systems(
+            OnEnter(Screen::PlayingRestart),
+            |mut screen: ResMut<NextState<_>>| {
+                screen.set(Screen::Playing);
+            },
+        );
 
-        app.init_resource::<ActionState<PlayingAction>>()
-            .insert_resource(
-                InputMap::default()
-                    .insert(PlayingAction::Restart, KeyCode::KeyR)
-                    .build(),
-            )
-            .add_plugins(InputManagerPlugin::<PlayingAction>::default())
-            .add_systems(
-                Update,
-                restart.in_set(UpdateSet::HandleActions).run_if(
-                    in_state(Screen::Playing).and_then(action_just_pressed(PlayingAction::Restart)),
-                ),
-            );
+        app.init_resource::<ActionState<PlayingAction>>();
+        app.insert_resource(
+            InputMap::default()
+                .insert(PlayingAction::Restart, KeyCode::KeyR)
+                .build(),
+        );
+        app.add_plugins(InputManagerPlugin::<PlayingAction>::default());
+        app.add_systems(
+            Update,
+            restart.in_set(UpdateSet::HandleActions).run_if(
+                in_state(Screen::Playing).and_then(action_just_pressed(PlayingAction::Restart)),
+            ),
+        );
     }
 }
 

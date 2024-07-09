@@ -7,17 +7,17 @@ pub struct DespawnPlugin;
 
 impl Plugin for DespawnPlugin {
     fn build(&self, app: &mut App) {
-        app.register_type::<DespawnSet>()
-            .init_resource::<DespawnSet>()
-            .add_systems(
-                Update,
-                (
-                    // Flush queued commands first to prevent double despawn
-                    apply_deferred.in_set(UpdateSet::QueueDespawn),
-                    apply_despawn_set.in_set(UpdateSet::QueueDespawn),
-                )
-                    .chain(),
-            );
+        app.register_type::<DespawnSet>();
+        app.init_resource::<DespawnSet>();
+        app.add_systems(
+            Update,
+            (
+                // Flush queued commands first to prevent double despawn
+                apply_deferred.in_set(UpdateSet::QueueDespawn),
+                apply_despawn_set.in_set(UpdateSet::QueueDespawn),
+            )
+                .chain(),
+        );
     }
 }
 

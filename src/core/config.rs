@@ -11,13 +11,13 @@ pub struct ConfigPlugin;
 
 impl Plugin for ConfigPlugin {
     fn build(&self, app: &mut App) {
-        app.register_type::<Config>()
-            .add_plugins(RonAssetPlugin::<Config>::new(&["config.ron"]))
-            .add_systems(Startup, load_config)
-            .add_systems(
-                PreUpdate,
-                apply_config.run_if(on_event::<AssetEvent<Config>>()),
-            );
+        app.register_type::<Config>();
+        app.add_plugins(RonAssetPlugin::<Config>::new(&["config.ron"]));
+        app.add_systems(Startup, load_config);
+        app.add_systems(
+            PreUpdate,
+            apply_config.run_if(on_event::<AssetEvent<Config>>()),
+        );
     }
 }
 
