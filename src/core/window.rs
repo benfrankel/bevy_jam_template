@@ -14,6 +14,7 @@ impl Plugin for WindowPlugin {
         app.add_plugins(BevyWindowPlugin {
             primary_window: Some(Window {
                 canvas: Some("#bevy".to_string()),
+                fit_canvas_to_parent: true,
                 prevent_default_event_handling: true,
                 ..default()
             }),

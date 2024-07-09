@@ -8,13 +8,14 @@
 </head>
 
 <body>
-    <div class="game-container">
+    <div id="game" class="center">
+        <div id="loading-screen" class="center">
+            <span class="spinner"></span>
+        </div>
+
         <canvas id="bevy">
             Javascript and canvas support is required
         </canvas>
-        <div id="loading">
-            <span class="loader"></span>
-        </div>
     </div>
 
     <script type="module">
@@ -26,15 +27,16 @@
             }
         });
 
-        // Hide loading screen when the game starts
+        // Hide loading screen when the game starts.
+        const loading_screen = document.getElementById('loading-screen');
         const bevy = document.getElementById('bevy');
-        const loading = document.getElementById('loading');
         const observer = new MutationObserver(() => {
             if (bevy.height > 1) {
-                loading.style.display = 'none';
+                loading_screen.style.display = 'none';
+                observer.disconnect();
             }
         });
-        observer.observe(bevy, { attributes: true });
+        observer.observe(bevy, { attributeFilter: ['height'] });
     </script>
 </body>
 

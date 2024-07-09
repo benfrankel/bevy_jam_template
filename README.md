@@ -68,7 +68,5 @@
 # Credit
 
 - The [splash screen image](https://github.com/bevyengine/bevy/blob/main/assets/branding/bevy_logo_dark.png) belongs to Bevy and is not covered by any of the licenses in this repository.
-- The [CSS background pattern](https://github.com/Afif13/CSS-Pattern) is MIT-licensed.
-- The [CSS spinner](https://github.com/vineethtrv/css-loader) is MIT-licensed.
 - The [pixel fonts](https://pyrious.itch.io/pypx-fonts) are CC0-licensed.
 - The remainder of this template is made available under [CC0](LICENSE-CC0-1.0) or [0BSD](LICENSE-0BSD) at your choice.
