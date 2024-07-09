@@ -1,5 +1,6 @@
 //! Foundational features and cross-cutting concerns
 
+pub mod asset;
 pub mod audio;
 pub mod camera;
 pub mod config;
@@ -60,16 +61,14 @@ pub(super) fn plugin(app: &mut App) {
         ),
     );
 
-    // TODO: Workaround for https://github.com/bevyengine/bevy/issues/10157
-    #[cfg(feature = "web")]
-    app.insert_resource(bevy::asset::AssetMetaCheck::Never);
-
     // Bevy plugins
     app.add_plugins(
         DefaultPlugins
             .build()
             .disable::<WindowPlugin>()
             .add_after::<WindowPlugin, _>(window::plugin)
+            .disable::<AssetPlugin>()
+            .add_after::<AssetPlugin, _>(asset::plugin)
             .set(ImagePlugin::default_nearest()),
     );
 
