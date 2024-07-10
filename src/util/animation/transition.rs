@@ -5,7 +5,7 @@ use crate::core::theme::ThemeBackgroundColor;
 use crate::core::theme::ThemeColor;
 use crate::core::PostColorSet;
 use crate::screen::Screen;
-use crate::util::DespawnSet;
+use crate::util::despawn::DespawnSet;
 
 pub(super) fn plugin(app: &mut App) {
     app.register_type::<FadeIn>();

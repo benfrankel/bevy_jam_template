@@ -3,13 +3,23 @@
 #![allow(dead_code)]
 #![allow(unused_imports)]
 
-pub use crate::util::despawn::DespawnSet;
-pub use crate::util::time::wait;
-
 pub mod animation;
-mod despawn;
-mod time;
+pub mod configure;
+pub mod despawn;
+pub mod time;
 pub mod ui;
+
+pub mod prelude {
+    pub use configure::AppExtConfigure as _;
+    pub use configure::Configure as _;
+    pub use despawn::DespawnSet;
+    pub use ui::UiRoot;
+    pub use ui::BOLD_FONT_HANDLE;
+    pub use ui::FONT_HANDLE;
+    pub use ui::THICK_FONT_HANDLE;
+
+    use super::*;
+}
 
 use bevy::prelude::*;
 

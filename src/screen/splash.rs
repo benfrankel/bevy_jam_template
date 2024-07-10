@@ -14,8 +14,8 @@ use crate::screen::fade_out;
 use crate::screen::title::TitleScreenAssets;
 use crate::screen::Screen;
 use crate::screen::FADE_IN_SECS;
+use crate::util::time::wait;
 use crate::util::ui::UiRoot;
-use crate::util::wait;
 
 pub(super) fn plugin(app: &mut App) {
     embedded_asset!(app, "splash/splash.png");
