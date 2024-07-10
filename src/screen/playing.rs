@@ -7,12 +7,10 @@ use crate::core::camera::CameraRoot;
 use crate::core::UpdateSet;
 use crate::screen::fade_in;
 use crate::screen::Screen;
+use crate::util::prelude::*;
 use crate::util::ui::UiRoot;
 
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<PlayingAssets>();
-    app.init_collection::<PlayingAssets>();
-
     app.add_systems(OnEnter(Screen::Playing), enter_playing);
     app.add_systems(OnExit(Screen::Playing), exit_playing);
     app.add_systems(
@@ -22,24 +20,19 @@ pub(super) fn plugin(app: &mut App) {
         },
     );
 
-    app.init_resource::<ActionState<PlayingAction>>();
-    app.insert_resource(
-        InputMap::default()
-            .insert(PlayingAction::Restart, KeyCode::KeyR)
-            .build(),
-    );
-    app.add_plugins(InputManagerPlugin::<PlayingAction>::default());
-    app.add_systems(
-        Update,
-        restart.in_set(UpdateSet::HandleActions).run_if(
-            in_state(Screen::Playing).and_then(action_just_pressed(PlayingAction::Restart)),
-        ),
-    );
+    app.configure::<(PlayingAssets, PlayingAction)>();
 }
 
 #[derive(AssetCollection, Resource, Reflect, Default)]
 #[reflect(Resource)]
 pub struct PlayingAssets {}
+
+impl Configure for PlayingAssets {
+    fn configure(app: &mut App) {
+        app.register_type::<PlayingAssets>();
+        app.init_collection::<PlayingAssets>();
+    }
+}
 
 fn enter_playing(mut commands: Commands) {
     fade_in(&mut commands);
@@ -68,6 +61,24 @@ fn exit_playing(
 pub enum PlayingAction {
     Restart,
     // TODO: Pause
+}
+
+impl Configure for PlayingAction {
+    fn configure(app: &mut App) {
+        app.init_resource::<ActionState<PlayingAction>>();
+        app.insert_resource(
+            InputMap::default()
+                .insert(PlayingAction::Restart, KeyCode::KeyR)
+                .build(),
+        );
+        app.add_plugins(InputManagerPlugin::<PlayingAction>::default());
+        app.add_systems(
+            Update,
+            restart.in_set(UpdateSet::HandleActions).run_if(
+                in_state(Screen::Playing).and_then(action_just_pressed(PlayingAction::Restart)),
+            ),
+        );
+    }
 }
 
 fn restart(mut next_screen: ResMut<NextState<Screen>>) {

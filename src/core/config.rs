@@ -31,8 +31,8 @@ pub struct Config {
     // TODO: Keybindings
 }
 
-fn load_config(mut commands: Commands, ass: Res<AssetServer>) {
-    commands.insert_resource(ConfigHandle(ass.load("default.config.ron")));
+fn load_config(mut commands: Commands, asset_server: Res<AssetServer>) {
+    commands.insert_resource(ConfigHandle(asset_server.load("default.config.ron")));
 }
 
 fn apply_config(world: &mut World, mut reader: Local<ManualEventReader<AssetEvent<Config>>>) {

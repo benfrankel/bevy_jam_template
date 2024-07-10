@@ -7,6 +7,7 @@ use lazy_regex::regex;
 use crate::core::camera::CameraRoot;
 use crate::core::window::WindowRoot;
 use crate::core::UpdateSet;
+use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     load_internal_binary_asset!(
@@ -28,8 +29,7 @@ pub(super) fn plugin(app: &mut App) {
         |bytes: &[u8], _path: String| Font::try_from_bytes(bytes.to_vec()).unwrap()
     );
 
-    app.register_type::<FontSize>();
-    app.add_systems(Update, apply_font_size.in_set(UpdateSet::End));
+    app.configure::<FontSize>();
 }
 
 pub const FONT_HANDLE: Handle<Font> =
@@ -44,6 +44,13 @@ pub struct FontSize {
     pub size: Val,
     pub step: f32,
     pub minimum: f32,
+}
+
+impl Configure for FontSize {
+    fn configure(app: &mut App) {
+        app.register_type::<FontSize>();
+        app.add_systems(Update, apply_font_size.in_set(UpdateSet::End));
+    }
 }
 
 impl FontSize {

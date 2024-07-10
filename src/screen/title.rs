@@ -11,6 +11,7 @@ use crate::screen::fade_in;
 use crate::screen::fade_out;
 use crate::screen::playing::PlayingAssets;
 use crate::screen::Screen;
+use crate::util::prelude::*;
 use crate::util::ui::FontSize;
 use crate::util::ui::InteractionPalette;
 use crate::util::ui::UiRoot;
@@ -18,13 +19,12 @@ use crate::util::ui::BOLD_FONT_HANDLE;
 use crate::util::ui::FONT_HANDLE;
 
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<TitleScreenAssets>();
-    app.init_collection::<TitleScreenAssets>();
-
     app.add_loading_state(LoadingState::new(Screen::Title).load_collection::<PlayingAssets>());
     app.add_plugins(ProgressPlugin::new(Screen::Title));
     app.add_systems(OnEnter(Screen::Title), enter_title);
     app.add_systems(OnExit(Screen::Title), exit_title);
+
+    app.configure::<TitleScreenAssets>();
 }
 
 const TITLE: &str = "bevy_jam_template";
@@ -32,6 +32,13 @@ const TITLE: &str = "bevy_jam_template";
 #[derive(AssetCollection, Resource, Reflect, Default)]
 #[reflect(Resource)]
 pub struct TitleScreenAssets {}
+
+impl Configure for TitleScreenAssets {
+    fn configure(app: &mut App) {
+        app.register_type::<TitleScreenAssets>();
+        app.init_collection::<TitleScreenAssets>();
+    }
+}
 
 fn enter_title(mut commands: Commands, ui_root: Res<UiRoot>) {
     fade_in(&mut commands);

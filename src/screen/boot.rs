@@ -34,6 +34,8 @@ fn exit_boot(window_root: Res<WindowRoot>, mut window_query: Query<&mut Window>)
     window.visible = true;
 }
 
-fn wait_for_config(ass: Res<AssetServer>, config_handle: Res<ConfigHandle>) -> Progress {
-    ass.is_loaded_with_dependencies(&config_handle.0).into()
+fn wait_for_config(asset_server: Res<AssetServer>, config_handle: Res<ConfigHandle>) -> Progress {
+    asset_server
+        .is_loaded_with_dependencies(&config_handle.0)
+        .into()
 }

@@ -7,6 +7,8 @@ use bevy::window::WindowPlugin as BevyWindowPlugin;
 use serde::Deserialize;
 use serde::Serialize;
 
+use crate::util::prelude::*;
+
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(BevyWindowPlugin {
         primary_window: Some(Window {
@@ -19,14 +21,20 @@ pub(super) fn plugin(app: &mut App) {
         ..default()
     });
 
-    app.register_type::<WindowRoot>();
-    app.init_resource::<WindowRoot>();
+    app.configure::<WindowRoot>();
 }
 
 #[derive(Resource, Reflect)]
 #[reflect(Resource)]
 pub struct WindowRoot {
     pub primary: Entity,
+}
+
+impl Configure for WindowRoot {
+    fn configure(app: &mut App) {
+        app.register_type::<WindowRoot>();
+        app.init_resource::<WindowRoot>();
+    }
 }
 
 impl FromWorld for WindowRoot {

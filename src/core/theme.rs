@@ -8,22 +8,16 @@ use strum::EnumCount;
 use crate::core::config::Config;
 use crate::core::config::ConfigHandle;
 use crate::core::UpdateSet;
+use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<ThemeSpriteColor>();
-    app.add_systems(Update, apply_theme_sprite_color.in_set(UpdateSet::End));
-
-    app.register_type::<ThemeUiImageColor>();
-    app.add_systems(Update, apply_theme_ui_image_color.in_set(UpdateSet::End));
-
-    app.register_type::<ThemeTextColors>();
-    app.add_systems(Update, apply_theme_text_colors.in_set(UpdateSet::End));
-
-    app.register_type::<ThemeBackgroundColor>();
-    app.add_systems(Update, apply_theme_background_color.in_set(UpdateSet::End));
-
-    app.register_type::<ThemeBorderColor>();
-    app.add_systems(Update, apply_theme_border_color.in_set(UpdateSet::End));
+    app.configure::<(
+        ThemeSpriteColor,
+        ThemeUiImageColor,
+        ThemeTextColors,
+        ThemeBackgroundColor,
+        ThemeBorderColor,
+    )>();
 }
 
 #[derive(Reflect, Serialize, Deserialize)]
@@ -73,6 +67,13 @@ pub enum ThemeColor {
 #[derive(Component, Reflect, Default)]
 pub struct ThemeSpriteColor(pub ThemeColor);
 
+impl Configure for ThemeSpriteColor {
+    fn configure(app: &mut App) {
+        app.register_type::<ThemeSpriteColor>();
+        app.add_systems(Update, apply_theme_sprite_color.in_set(UpdateSet::End));
+    }
+}
+
 fn apply_theme_sprite_color(
     config_handle: Res<ConfigHandle>,
     config: Res<Assets<Config>>,
@@ -93,6 +94,13 @@ fn apply_theme_sprite_color(
 #[derive(Component, Reflect, Default)]
 pub struct ThemeUiImageColor(pub ThemeColor);
 
+impl Configure for ThemeUiImageColor {
+    fn configure(app: &mut App) {
+        app.register_type::<ThemeUiImageColor>();
+        app.add_systems(Update, apply_theme_ui_image_color.in_set(UpdateSet::End));
+    }
+}
+
 fn apply_theme_ui_image_color(
     config_handle: Res<ConfigHandle>,
     config: Res<Assets<Config>>,
@@ -112,6 +120,13 @@ fn apply_theme_ui_image_color(
 
 #[derive(Component, Reflect, Default)]
 pub struct ThemeTextColors(pub Vec<ThemeColor>);
+
+impl Configure for ThemeTextColors {
+    fn configure(app: &mut App) {
+        app.register_type::<ThemeTextColors>();
+        app.add_systems(Update, apply_theme_text_colors.in_set(UpdateSet::End));
+    }
+}
 
 fn apply_theme_text_colors(
     config_handle: Res<ConfigHandle>,
@@ -135,6 +150,13 @@ fn apply_theme_text_colors(
 #[derive(Component, Reflect, Default)]
 pub struct ThemeBackgroundColor(pub ThemeColor);
 
+impl Configure for ThemeBackgroundColor {
+    fn configure(app: &mut App) {
+        app.register_type::<ThemeBackgroundColor>();
+        app.add_systems(Update, apply_theme_background_color.in_set(UpdateSet::End));
+    }
+}
+
 fn apply_theme_background_color(
     config_handle: Res<ConfigHandle>,
     config: Res<Assets<Config>>,
@@ -154,6 +176,13 @@ fn apply_theme_background_color(
 
 #[derive(Component, Reflect, Default)]
 pub struct ThemeBorderColor(pub ThemeColor);
+
+impl Configure for ThemeBorderColor {
+    fn configure(app: &mut App) {
+        app.register_type::<ThemeBorderColor>();
+        app.add_systems(Update, apply_theme_border_color.in_set(UpdateSet::End));
+    }
+}
 
 fn apply_theme_border_color(
     config_handle: Res<ConfigHandle>,

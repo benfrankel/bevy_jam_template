@@ -18,11 +18,12 @@ macro_rules! impl_configure {
 bevy::utils::all_tuples!(impl_configure, 0, 15, T);
 
 pub trait AppExtConfigure {
-    fn configure<T: Configure>(&mut self);
+    fn configure<T: Configure>(&mut self) -> &mut Self;
 }
 
 impl AppExtConfigure for App {
-    fn configure<T: Configure>(&mut self) {
+    fn configure<T: Configure>(&mut self) -> &mut Self {
         T::configure(self);
+        self
     }
 }

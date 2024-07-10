@@ -10,15 +10,11 @@ use crate::core::theme::ThemeColor;
 use crate::core::theme::ThemeTextColors;
 use crate::core::window::WindowRoot;
 use crate::core::UpdateSet;
+use crate::util::prelude::*;
 use crate::util::ui::FontSize;
-use crate::util::ui::FONT_HANDLE;
 
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<TooltipRoot>();
-    app.init_resource::<TooltipRoot>();
-
-    app.register_type::<Tooltip>();
-    app.add_systems(Update, show_tooltip_on_hover.in_set(UpdateSet::Update));
+    app.configure::<(TooltipRoot, Tooltip)>();
 }
 
 #[derive(Resource, Reflect)]
@@ -26,6 +22,13 @@ pub(super) fn plugin(app: &mut App) {
 pub struct TooltipRoot {
     pub container: Entity,
     pub text: Entity,
+}
+
+impl Configure for TooltipRoot {
+    fn configure(app: &mut App) {
+        app.register_type::<TooltipRoot>();
+        app.init_resource::<TooltipRoot>();
+    }
 }
 
 impl FromWorld for TooltipRoot {
@@ -84,6 +87,13 @@ pub struct Tooltip {
     pub side: TooltipSide,
     // TODO: Val
     pub offset: Vec2,
+}
+
+impl Configure for Tooltip {
+    fn configure(app: &mut App) {
+        app.register_type::<Tooltip>();
+        app.add_systems(Update, show_tooltip_on_hover.in_set(UpdateSet::Update));
+    }
 }
 
 fn show_tooltip_on_hover(

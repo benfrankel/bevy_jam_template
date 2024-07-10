@@ -1,21 +1,25 @@
 use bevy::prelude::*;
 
 use crate::core::UpdateSet;
+use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(Msaa::Off);
 
-    app.register_type::<CameraRoot>();
-    app.init_resource::<CameraRoot>();
-
-    app.register_type::<AbsoluteScale>();
-    app.add_systems(Update, apply_absolute_scale.in_set(UpdateSet::End));
+    app.configure::<(CameraRoot, AbsoluteScale)>();
 }
 
 #[derive(Resource, Reflect)]
 #[reflect(Resource)]
 pub struct CameraRoot {
     pub primary: Entity,
+}
+
+impl Configure for CameraRoot {
+    fn configure(app: &mut App) {
+        app.register_type::<CameraRoot>();
+        app.init_resource::<CameraRoot>();
+    }
 }
 
 impl FromWorld for CameraRoot {
@@ -41,6 +45,13 @@ impl FromWorld for CameraRoot {
 // (workaround for https://github.com/bevyengine/bevy/issues/1890)
 #[derive(Component, Reflect)]
 pub struct AbsoluteScale(pub Vec3);
+
+impl Configure for AbsoluteScale {
+    fn configure(app: &mut App) {
+        app.register_type::<AbsoluteScale>();
+        app.add_systems(Update, apply_absolute_scale.in_set(UpdateSet::End));
+    }
+}
 
 impl Default for AbsoluteScale {
     fn default() -> Self {

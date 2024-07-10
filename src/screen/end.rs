@@ -10,36 +10,47 @@ use crate::core::theme::ThemeTextColors;
 use crate::screen::fade_in;
 use crate::screen::fade_out;
 use crate::screen::Screen;
+use crate::util::prelude::*;
 use crate::util::ui::FontSize;
 use crate::util::ui::UiRoot;
 use crate::util::ui::BOLD_FONT_HANDLE;
 
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<EndScreenAssets>();
-    app.init_collection::<EndScreenAssets>();
-
-    app.init_resource::<ActionState<EndScreenAction>>();
-    app.add_plugins(InputManagerPlugin::<EndScreenAction>::default());
-    app.add_systems(
-        Update,
-        (
-            restart.run_if(action_just_pressed(EndScreenAction::Restart)),
-            quit.run_if(action_just_pressed(EndScreenAction::Quit)),
-        ),
-    );
-
     app.add_systems(OnEnter(Screen::End), enter_end);
     app.add_systems(OnExit(Screen::End), exit_end);
+
+    app.configure::<(EndScreenAssets, EndScreenAction)>();
 }
 
 #[derive(AssetCollection, Resource, Reflect, Default)]
 #[reflect(Resource)]
 pub struct EndScreenAssets {}
 
+impl Configure for EndScreenAssets {
+    fn configure(app: &mut App) {
+        app.register_type::<EndScreenAssets>();
+        app.init_collection::<EndScreenAssets>();
+    }
+}
+
 #[derive(Actionlike, Reflect, Clone, Hash, PartialEq, Eq)]
 enum EndScreenAction {
     Restart,
     Quit,
+}
+
+impl Configure for EndScreenAction {
+    fn configure(app: &mut App) {
+        app.init_resource::<ActionState<EndScreenAction>>();
+        app.add_plugins(InputManagerPlugin::<EndScreenAction>::default());
+        app.add_systems(
+            Update,
+            (
+                restart.run_if(action_just_pressed(EndScreenAction::Restart)),
+                quit.run_if(action_just_pressed(EndScreenAction::Quit)),
+            ),
+        );
+    }
 }
 
 fn enter_end(mut commands: Commands, ui_root: Res<UiRoot>) {

@@ -2,24 +2,31 @@ use bevy::prelude::*;
 use bevy::utils::HashSet;
 
 use crate::core::UpdateSet;
+use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<DespawnSet>();
-    app.init_resource::<DespawnSet>();
-    app.add_systems(
-        Update,
-        (
-            // Flush queued commands first to prevent double despawn
-            apply_deferred.in_set(UpdateSet::QueueDespawn),
-            apply_despawn_set.in_set(UpdateSet::QueueDespawn),
-        )
-            .chain(),
-    );
+    app.configure::<DespawnSet>();
 }
 
 #[derive(Resource, Reflect, Default)]
 #[reflect(Resource)]
 pub struct DespawnSet(HashSet<Entity>);
+
+impl Configure for DespawnSet {
+    fn configure(app: &mut App) {
+        app.register_type::<DespawnSet>();
+        app.init_resource::<DespawnSet>();
+        app.add_systems(
+            Update,
+            (
+                // Flush queued commands first to prevent double despawn
+                apply_deferred.in_set(UpdateSet::QueueDespawn),
+                apply_despawn_set.in_set(UpdateSet::QueueDespawn),
+            )
+                .chain(),
+        );
+    }
+}
 
 #[allow(dead_code)]
 impl DespawnSet {

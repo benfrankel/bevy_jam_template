@@ -17,8 +17,10 @@ use bevy::prelude::*;
 use bevy::ui::Val::*;
 use bevy_mod_picking::prelude::*;
 
+use crate::util::prelude::*;
+
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<UiRoot>().init_resource::<UiRoot>();
+    app.configure::<UiRoot>();
 
     app.add_plugins((font::plugin, interaction::plugin, tooltip::plugin));
 }
@@ -27,6 +29,13 @@ pub(super) fn plugin(app: &mut App) {
 #[reflect(Resource)]
 pub struct UiRoot {
     pub body: Entity,
+}
+
+impl Configure for UiRoot {
+    fn configure(app: &mut App) {
+        app.register_type::<UiRoot>();
+        app.init_resource::<UiRoot>();
+    }
 }
 
 impl FromWorld for UiRoot {

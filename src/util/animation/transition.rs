@@ -6,19 +6,23 @@ use crate::core::theme::ThemeColor;
 use crate::core::PostColorSet;
 use crate::screen::Screen;
 use crate::util::despawn::DespawnSet;
+use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<FadeIn>();
-    app.add_systems(PostUpdate, apply_fade_in.in_set(PostColorSet::Blend));
-
-    app.register_type::<FadeOut>();
-    app.add_systems(PostUpdate, apply_fade_out.in_set(PostColorSet::Blend));
+    app.configure::<(FadeIn, FadeOut)>();
 }
 
 #[derive(Component, Reflect)]
 pub struct FadeIn {
     duration: f32,
     remaining: f32,
+}
+
+impl Configure for FadeIn {
+    fn configure(app: &mut App) {
+        app.register_type::<FadeIn>();
+        app.add_systems(PostUpdate, apply_fade_in.in_set(PostColorSet::Blend));
+    }
 }
 
 impl FadeIn {
@@ -51,6 +55,13 @@ pub struct FadeOut {
     duration: f32,
     remaining: f32,
     next_screen: Screen,
+}
+
+impl Configure for FadeOut {
+    fn configure(app: &mut App) {
+        app.register_type::<FadeOut>();
+        app.add_systems(PostUpdate, apply_fade_out.in_set(PostColorSet::Blend));
+    }
 }
 
 impl FadeOut {

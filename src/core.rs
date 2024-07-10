@@ -15,51 +15,10 @@ use bevy::transform::TransformSystem;
 use bevy::ui::UiSystem;
 use bevy_rapier2d::plugin::PhysicsSet;
 
-pub(super) fn plugin(app: &mut App) {
-    // Game logic system ordering
-    app.configure_sets(
-        Update,
-        (
-            UpdateSet::HandleActions,
-            UpdateSet::HandleActionsFlush,
-            UpdateSet::Start,
-            UpdateSet::Update,
-            UpdateSet::React,
-            UpdateSet::RecordIntents,
-            UpdateSet::ApplyIntents,
-            UpdateSet::HandleEvents,
-            UpdateSet::QueueDespawn,
-            UpdateSet::ApplyDeferred,
-            UpdateSet::UpdateUi,
-            UpdateSet::End,
-        )
-            .chain(),
-    );
-    app.add_systems(
-        Update,
-        (
-            apply_deferred.in_set(UpdateSet::HandleActionsFlush),
-            apply_deferred.in_set(UpdateSet::ApplyDeferred),
-        ),
-    );
+use crate::util::prelude::*;
 
-    // Post-processing system ordering
-    app.configure_sets(
-        PostUpdate,
-        (
-            (
-                (UiSystem::Layout, PhysicsSet::Writeback),
-                PostTransformSet::Save,
-                PostTransformSet::Blend,
-                PostTransformSet::ApplyFacing,
-                TransformSystem::TransformPropagate,
-                PostTransformSet::Finish,
-                // GlobalTransform may be slightly out of sync with Transform at this point...
-            )
-                .chain(),
-            (PostColorSet::Save, PostColorSet::Blend).chain(),
-        ),
-    );
+pub(super) fn plugin(app: &mut App) {
+    app.configure::<(UpdateSet, PostTransformSet, PostColorSet)>();
 
     // Bevy plugins
     app.add_plugins(
@@ -120,6 +79,36 @@ pub enum UpdateSet {
     End,
 }
 
+impl Configure for UpdateSet {
+    fn configure(app: &mut App) {
+        app.configure_sets(
+            Update,
+            (
+                UpdateSet::HandleActions,
+                UpdateSet::HandleActionsFlush,
+                UpdateSet::Start,
+                UpdateSet::Update,
+                UpdateSet::React,
+                UpdateSet::RecordIntents,
+                UpdateSet::ApplyIntents,
+                UpdateSet::HandleEvents,
+                UpdateSet::QueueDespawn,
+                UpdateSet::ApplyDeferred,
+                UpdateSet::UpdateUi,
+                UpdateSet::End,
+            )
+                .chain(),
+        );
+        app.add_systems(
+            Update,
+            (
+                apply_deferred.in_set(UpdateSet::HandleActionsFlush),
+                apply_deferred.in_set(UpdateSet::ApplyDeferred),
+            ),
+        );
+    }
+}
+
 /// (PostUpdate) Transform post-processing system ordering
 #[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum PostTransformSet {
@@ -133,6 +122,24 @@ pub enum PostTransformSet {
     Finish,
 }
 
+impl Configure for PostTransformSet {
+    fn configure(app: &mut App) {
+        app.configure_sets(
+            PostUpdate,
+            (
+                (UiSystem::Layout, PhysicsSet::Writeback),
+                PostTransformSet::Save,
+                PostTransformSet::Blend,
+                PostTransformSet::ApplyFacing,
+                TransformSystem::TransformPropagate,
+                PostTransformSet::Finish,
+                // GlobalTransform may be slightly out of sync with Transform at this point...
+            )
+                .chain(),
+        );
+    }
+}
+
 /// (PostUpdate) Color post-processing system ordering
 #[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum PostColorSet {
@@ -140,4 +147,13 @@ pub enum PostColorSet {
     Save,
     /// Blend via color multiplication (multiply RGBA)
     Blend,
+}
+
+impl Configure for PostColorSet {
+    fn configure(app: &mut App) {
+        app.configure_sets(
+            PostUpdate,
+            (PostColorSet::Save, PostColorSet::Blend).chain(),
+        );
+    }
 }

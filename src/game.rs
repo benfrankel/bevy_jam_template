@@ -2,8 +2,10 @@
 
 use bevy::prelude::*;
 
+use crate::util::prelude::*;
+
 pub(super) fn plugin(app: &mut App) {
-    app.register_type::<GameRoot>().init_resource::<GameRoot>();
+    app.configure::<GameRoot>();
 
     app.add_plugins(());
 }
@@ -12,6 +14,13 @@ pub(super) fn plugin(app: &mut App) {
 #[reflect(Resource)]
 pub struct GameRoot {
     pub game: Entity,
+}
+
+impl Configure for GameRoot {
+    fn configure(app: &mut App) {
+        app.register_type::<GameRoot>();
+        app.init_resource::<GameRoot>();
+    }
 }
 
 impl FromWorld for GameRoot {

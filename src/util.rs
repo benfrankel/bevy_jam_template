@@ -11,7 +11,7 @@ pub mod ui;
 
 pub mod prelude {
     pub use configure::AppExtConfigure as _;
-    pub use configure::Configure as _;
+    pub use configure::Configure;
     pub use despawn::DespawnSet;
     pub use ui::UiRoot;
     pub use ui::BOLD_FONT_HANDLE;

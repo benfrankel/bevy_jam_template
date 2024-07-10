@@ -22,7 +22,8 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Loading), enter_loading);
     app.add_systems(OnExit(Screen::Loading), exit_loading);
 
-    app.register_type::<IsLoadingBarFill>().add_systems(
+    app.register_type::<IsLoadingBarFill>();
+    app.add_systems(
         Update,
         update_loading
             .run_if(in_state(Screen::Loading))
