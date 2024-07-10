@@ -6,7 +6,7 @@ use crate::screen::Screen;
 
 pub fn wait(duration: f32) -> SystemConfigs {
     (move |time: Res<Time>,
-           next_state: Res<NextState<Screen>>,
+           next_screen: Res<NextState<Screen>>,
            mut start: Local<f32>|
           -> Progress {
         let elapsed = time.elapsed_seconds();
@@ -16,9 +16,9 @@ pub fn wait(duration: f32) -> SystemConfigs {
         let done = elapsed - *start >= duration;
 
         // Reset timer on any upcoming state change
-        // NOTE: What if next_state == Some(current_state)? Or next_state changes
+        // NOTE: What if next_screen == Pending(current_screen)? Or next_screen changes
         //   again this frame after this system runs?
-        if matches!(*next_state, NextState::Pending(_)) {
+        if matches!(*next_screen, NextState::Pending(_)) {
             *start = 0.0;
         }
 

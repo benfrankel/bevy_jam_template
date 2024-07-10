@@ -70,6 +70,6 @@ pub enum PlayingAction {
     // TODO: Pause
 }
 
-fn restart(mut screen: ResMut<NextState<Screen>>) {
-    screen.set(Screen::PlayingRestart);
+fn restart(mut next_screen: ResMut<NextState<Screen>>) {
+    next_screen.set(Screen::PlayingRestart);
 }

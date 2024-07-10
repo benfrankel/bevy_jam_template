@@ -50,15 +50,15 @@ fn apply_fade_in(
 pub struct FadeOut {
     duration: f32,
     remaining: f32,
-    next_state: Screen,
+    next_screen: Screen,
 }
 
 impl FadeOut {
-    pub fn new(duration: f32, next_state: Screen) -> Self {
+    pub fn new(duration: f32, next_screen: Screen) -> Self {
         Self {
             duration,
             remaining: duration,
-            next_state,
+            next_screen,
         }
     }
 }
@@ -66,7 +66,7 @@ impl FadeOut {
 fn apply_fade_out(
     time: Res<Time>,
     mut despawn: ResMut<DespawnSet>,
-    mut next_state: ResMut<NextState<Screen>>,
+    mut next_screen: ResMut<NextState<Screen>>,
     mut fade_query: Query<(Entity, &mut FadeOut, &mut BackgroundColor)>,
 ) {
     let dt = time.delta_seconds();
@@ -76,7 +76,7 @@ fn apply_fade_out(
             .0
             .set_alpha(1.0 - (fade.remaining / fade.duration).max(0.0));
         if fade.remaining <= 0.0 {
-            next_state.set(fade.next_state);
+            next_screen.set(fade.next_screen);
             despawn.recursive(entity);
         }
         fade.remaining -= dt;
