@@ -44,7 +44,7 @@ fn print_schedule_graph(app: &mut App, label: impl ScheduleLabel) {
 }
 
 fn print_schedule(app: &mut App, label: impl ScheduleLabel + Clone) {
-    app.world()
+    app.world_mut()
         .resource_scope::<Schedules, _>(|world, mut schedules| {
             let schedule = schedules.get_mut(label.clone()).unwrap();
             let graph = schedule.graph_mut();
