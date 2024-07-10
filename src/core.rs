@@ -4,16 +4,16 @@ pub mod asset;
 pub mod audio;
 pub mod camera;
 pub mod config;
-//#[cfg(feature = "dev")]
-//pub mod debug;
+#[cfg(feature = "dev")]
+pub mod debug;
 pub mod physics;
 pub mod theme;
 pub mod window;
 
+use avian2d::prelude::*;
 use bevy::prelude::*;
 use bevy::transform::TransformSystem;
 use bevy::ui::UiSystem;
-use bevy_rapier2d::plugin::PhysicsSet;
 
 use crate::util::prelude::*;
 
@@ -41,13 +41,13 @@ pub(super) fn plugin(app: &mut App) {
     ));
 
     // Debugging tools for dev builds
-    /*#[cfg(feature = "dev")]
+    #[cfg(feature = "dev")]
     app.add_plugins(debug::DebugPlugin {
         log_diagnostics: false,
         log_ambiguity_detection: false,
         //editor: false,
         ..default()
-    });*/
+    });
 }
 
 /// (Update) Game logic system ordering
@@ -127,7 +127,7 @@ impl Configure for PostTransformSet {
         app.configure_sets(
             PostUpdate,
             (
-                (UiSystem::Layout, PhysicsSet::Writeback),
+                (UiSystem::Layout, PhysicsSet::Sync),
                 PostTransformSet::Save,
                 PostTransformSet::Blend,
                 PostTransformSet::ApplyFacing,

@@ -1,3 +1,4 @@
+use avian2d::prelude::*;
 use bevy::core::FrameCount;
 use bevy::diagnostic::EntityCountDiagnosticsPlugin;
 use bevy::diagnostic::FrameTimeDiagnosticsPlugin;
@@ -7,14 +8,13 @@ use bevy::ecs::schedule::LogLevel;
 use bevy::ecs::schedule::ScheduleBuildSettings;
 use bevy::input::common_conditions::input_just_pressed;
 use bevy::prelude::*;
-use bevy_editor_pls::EditorPlugin;
-use bevy_rapier2d::render::DebugRenderContext;
-use bevy_rapier2d::render::RapierDebugRenderPlugin;
+use bevy_mod_picking::debug::DebugPickingMode;
+//use bevy_editor_pls::EditorPlugin;
 use iyes_progress::prelude::*;
 use strum::IntoEnumIterator;
 
 use crate::screen::Screen;
-use crate::util::wait;
+use crate::util::time::wait;
 
 pub(super) struct DebugPlugin {
     // Diagnostics
@@ -30,7 +30,7 @@ pub(super) struct DebugPlugin {
     // 3rd-party debug tools
     pub debug_picking: bool,
     pub debug_physics: bool,
-    pub editor: bool,
+    //pub editor: bool,
 
     // Screen settings
     pub start_screen: Screen,
@@ -50,8 +50,8 @@ impl Default for DebugPlugin {
 
             debug_picking: true,
             debug_physics: true,
-            editor: true,
-
+            //editor: true,
+            //
             extend_loading_screen: 0.0,
             start_screen: default(),
         }
@@ -60,7 +60,7 @@ impl Default for DebugPlugin {
 
 impl Plugin for DebugPlugin {
     fn build(&self, app: &mut App) {
-        // Diagnostics
+        // Collect diagnostics.
         if self.frame_time_diagnostics {
             app.add_plugins(FrameTimeDiagnosticsPlugin);
         }
@@ -71,14 +71,14 @@ impl Plugin for DebugPlugin {
             app.add_plugins(EntityCountDiagnosticsPlugin);
         }
 
-        // Log the diagnostics
+        // Log diagnostics.
         if self.log_diagnostics {
             app.add_plugins(LogDiagnosticsPlugin::default());
         }
 
-        // Log the ambiguity detection results
+        // Log ambiguity detection results.
         if self.log_ambiguity_detection {
-            for (_, schedule) in app.world().resource_mut::<Schedules>().iter_mut() {
+            for (_, schedule) in app.world_mut().resource_mut::<Schedules>().iter_mut() {
                 schedule.set_build_settings(ScheduleBuildSettings {
                     ambiguity_detection: LogLevel::Warn,
                     ..default()
@@ -86,7 +86,7 @@ impl Plugin for DebugPlugin {
             }
         }
 
-        // Log the screen transitions
+        // Log screen transitions.
         if self.log_screen_transitions {
             for screen in Screen::iter() {
                 app.add_systems(OnEnter(screen), move |frame: Res<FrameCount>| {
@@ -98,52 +98,47 @@ impl Plugin for DebugPlugin {
             }
         }
 
-        // Debug picking
+        // Debug picking.
         if self.debug_picking {
-            use bevy_mod_picking::debug::DebugPickingMode::*;
-
-            // Setting this at startup instead of right now prevents a plugin ordering requirement
-            app.add_systems(Startup, |mut mode: ResMut<_>| {
-                *mode = Disabled;
-            });
             app.add_systems(
                 Update,
-                (
-                    (|mut mode: ResMut<_>| {
-                        *mode = Normal;
-                    })
-                    .run_if(
-                        resource_equals(Disabled).and_then(input_just_pressed(DEBUG_TOGGLE_KEY)),
-                    ),
-                    (|mut mode: ResMut<_>| {
-                        *mode = Disabled;
-                    })
-                    .run_if(resource_equals(Normal).and_then(input_just_pressed(DEBUG_TOGGLE_KEY))),
-                ),
+                (|mut mode: ResMut<_>| {
+                    *mode = match *mode {
+                        DebugPickingMode::Disabled => DebugPickingMode::Normal,
+                        _ => DebugPickingMode::Disabled,
+                    };
+                })
+                .run_if(input_just_pressed(DEBUG_TOGGLE_KEY)),
             );
         }
 
-        // Debug render
+        // Debug physics.
         if self.debug_physics {
-            app.add_plugins(RapierDebugRenderPlugin::default());
-            app.world().resource_mut::<DebugRenderContext>().enabled = false;
+            app.add_plugins(PhysicsDebugPlugin::default());
+            app.world_mut()
+                .resource_mut::<GizmoConfigStore>()
+                .config_mut::<PhysicsGizmos>()
+                .0
+                .enabled = false;
             app.add_systems(
                 Update,
-                (|mut ctx: ResMut<DebugRenderContext>| ctx.enabled = !ctx.enabled)
-                    .run_if(input_just_pressed(DEBUG_TOGGLE_KEY)),
+                (|mut gizmos: ResMut<GizmoConfigStore>| {
+                    gizmos.config_mut::<PhysicsGizmos>().0.enabled ^= true;
+                })
+                .run_if(input_just_pressed(DEBUG_TOGGLE_KEY)),
             );
         }
 
-        // Editor
-        if self.editor {
+        // Enable editor.
+        /*if self.editor {
             app.add_plugins(EditorPlugin::new().in_new_window(Window {
                 title: "bevy_editor_pls".to_string(),
                 focused: false,
                 ..default()
             }));
-        }
+        }*/
 
-        // Extend loading screen
+        // Extend loading screen.
         if self.extend_loading_screen > 0.0 {
             app.add_systems(
                 Update,
@@ -156,7 +151,7 @@ impl Plugin for DebugPlugin {
             );
         }
 
-        // Skip to custom start screen
+        // Skip to a custom starting screen.
         // Setting this at startup instead of right now prevents a plugin ordering requirement
         app.add_systems(Startup, {
             let start = self.start_screen;
@@ -165,7 +160,7 @@ impl Plugin for DebugPlugin {
             }
         });
 
-        // Temporary ad hoc debugging
+        // Set up ad hoc debugging.
         app.add_systems(Update, debug_start);
         app.add_systems(Update, debug_end);
     }

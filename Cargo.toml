@@ -38,7 +38,11 @@ bevy_mod_picking = { version = "0.20", default-features = false, features = [
     "backend_bevy_ui",
 ] }
 # TODO: Switch to avian2d :)
-bevy_rapier2d = "0.27"
+avian2d = { version = "0.1", default-features = false, features = [
+    "2d",
+    "f32",
+    "parry-f32",
+] }
 iyes_progress = "0.12"
 lazy-regex = { version = "3", features = ["lite"] }
 leafwing-input-manager = "0.14"
@@ -53,13 +57,14 @@ tap = "1"
 default = ["native_dev"]
 dev = [
     #"dep:bevy_editor_pls",
+    "avian2d/debug-plugin",
     "bevy/dynamic_linking",
+    "bevy/sysinfo_plugin",
     "bevy_mod_picking/debug",
-    "bevy_rapier2d/debug-render-2d",
 ]
-native = ["bevy_rapier2d/parallel"]
+native = ["avian2d/parallel"]
 native_dev = ["native", "dev", "bevy/file_watcher", "bevy/embedded_watcher"]
-web = ["bevy_rapier2d/wasm-bindgen"]
+web = []
 web_dev = ["web", "dev"]
 trace = ["bevy/trace", "bevy/wgpu_trace", "bevy/trace_tracy"]
 debug_dump = ["dep:bevy_mod_debugdump"]
