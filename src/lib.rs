@@ -5,10 +5,17 @@
 mod core;
 mod game;
 mod screen;
+mod ui;
 mod util;
 
 use bevy::prelude::*;
 
 pub fn plugin(app: &mut App) {
-    app.add_plugins((core::plugin, game::plugin, screen::plugin, util::plugin));
+    app.add_plugins((
+        core::plugin,
+        game::plugin,
+        screen::plugin,
+        ui::plugin,
+        util::plugin,
+    ));
 }

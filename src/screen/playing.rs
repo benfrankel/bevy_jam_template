@@ -7,8 +7,8 @@ use crate::core::camera::CameraRoot;
 use crate::core::UpdateSet;
 use crate::screen::fade_in;
 use crate::screen::Screen;
+use crate::ui::prelude::*;
 use crate::util::prelude::*;
-use crate::util::ui::UiRoot;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(OnEnter(Screen::Playing), enter_playing);

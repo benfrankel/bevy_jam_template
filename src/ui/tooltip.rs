@@ -1,17 +1,14 @@
 use bevy::prelude::*;
 use bevy::ui::Val::*;
-use bevy::window::PrimaryWindow;
-use serde::Deserialize;
-use serde::Serialize;
 
-use crate::core::config::Config;
 use crate::core::theme::ThemeBackgroundColor;
 use crate::core::theme::ThemeColor;
 use crate::core::theme::ThemeTextColors;
 use crate::core::window::WindowRoot;
 use crate::core::UpdateSet;
+use crate::ui::font::FontSize;
+use crate::ui::font::FONT_HANDLE;
 use crate::util::prelude::*;
-use crate::util::ui::FontSize;
 
 pub(super) fn plugin(app: &mut App) {
     app.configure::<(TooltipRoot, Tooltip)>();

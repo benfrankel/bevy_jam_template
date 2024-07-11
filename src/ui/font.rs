@@ -1,10 +1,8 @@
 use bevy::asset::load_internal_binary_asset;
 use bevy::prelude::*;
-use bevy::text::Text2dBounds;
 use bevy::utils::HashMap;
 use lazy_regex::regex;
 
-use crate::core::camera::CameraRoot;
 use crate::core::window::WindowRoot;
 use crate::core::UpdateSet;
 use crate::util::prelude::*;
@@ -13,19 +11,19 @@ pub(super) fn plugin(app: &mut App) {
     load_internal_binary_asset!(
         app,
         FONT_HANDLE,
-        "../../../assets/font/pypx.ttf",
+        "../../assets/font/pypx.ttf",
         |bytes: &[u8], _path: String| Font::try_from_bytes(bytes.to_vec()).unwrap()
     );
     load_internal_binary_asset!(
         app,
         BOLD_FONT_HANDLE,
-        "../../../assets/font/pypx-B.ttf",
+        "../../assets/font/pypx-B.ttf",
         |bytes: &[u8], _path: String| Font::try_from_bytes(bytes.to_vec()).unwrap()
     );
     load_internal_binary_asset!(
         app,
         THICK_FONT_HANDLE,
-        "../../../assets/font/pypx-T.ttf",
+        "../../assets/font/pypx-T.ttf",
         |bytes: &[u8], _path: String| Font::try_from_bytes(bytes.to_vec()).unwrap()
     );
 

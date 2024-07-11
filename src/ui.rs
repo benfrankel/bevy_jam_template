@@ -1,17 +1,19 @@
-pub use font::parse_rich;
-pub use font::parse_rich_custom;
-pub use font::FontSize;
-pub use font::BOLD_FONT_HANDLE;
-pub use font::FONT_HANDLE;
-pub use font::THICK_FONT_HANDLE;
-pub use interaction::InteractionPalette;
-pub use interaction::IsDisabled;
-pub use tooltip::Tooltip;
-pub use tooltip::TooltipSide;
+//! Custom UI tools.
 
-mod font;
-mod interaction;
-mod tooltip;
+#![allow(dead_code, unused_imports)]
+
+pub mod font;
+pub mod interaction;
+pub mod tooltip;
+
+pub mod prelude {
+    pub use super::font::FontSize;
+    pub use super::font::BOLD_FONT_HANDLE;
+    pub use super::font::FONT_HANDLE;
+    pub use super::font::THICK_FONT_HANDLE;
+    pub use super::interaction::InteractionPalette;
+    pub use super::UiRoot;
+}
 
 use bevy::prelude::*;
 use bevy::ui::Val::*;

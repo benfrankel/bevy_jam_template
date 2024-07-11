@@ -12,9 +12,7 @@ use crate::screen::fade_in;
 use crate::screen::fade_out;
 use crate::screen::playing::PlayingAssets;
 use crate::screen::Screen;
-use crate::util::ui::FontSize;
-use crate::util::ui::UiRoot;
-use crate::util::ui::THICK_FONT_HANDLE;
+use crate::ui::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_loading_state(LoadingState::new(Screen::Loading).load_collection::<PlayingAssets>());
