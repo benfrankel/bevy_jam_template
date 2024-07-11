@@ -6,7 +6,6 @@ mod splash;
 mod title;
 
 use bevy::prelude::*;
-use bevy::ui::FocusPolicy;
 use strum::EnumIter;
 
 use crate::core::theme::ThemeBackgroundColor;
@@ -44,19 +43,10 @@ const FADE_IN_SECS: f32 = 0.3;
 
 fn fade_in(commands: &mut Commands) -> Entity {
     commands
-        .spawn((
+        .spawn_empty()
+        .add(ui_overlay)
+        .insert((
             Name::new("ScreenFadeIn"),
-            NodeBundle {
-                style: Style {
-                    position_type: PositionType::Absolute,
-                    width: Percent(100.0),
-                    height: Percent(100.0),
-                    ..default()
-                },
-                focus_policy: FocusPolicy::Block,
-                z_index: ZIndex::Global(1000),
-                ..default()
-            },
             ThemeBackgroundColor(ThemeColor::Body),
             FadeIn::new(FADE_IN_SECS),
         ))
@@ -67,19 +57,10 @@ const FADE_OUT_SECS: f32 = 0.3;
 
 fn fade_out(commands: &mut Commands, to_screen: Screen) -> Entity {
     commands
-        .spawn((
+        .spawn_empty()
+        .add(ui_overlay)
+        .insert((
             Name::new("ScreenFadeOut"),
-            NodeBundle {
-                style: Style {
-                    position_type: PositionType::Absolute,
-                    width: Percent(100.0),
-                    height: Percent(100.0),
-                    ..default()
-                },
-                focus_policy: FocusPolicy::Block,
-                z_index: ZIndex::Global(1000),
-                ..default()
-            },
             ThemeBackgroundColor(ThemeColor::Body),
             FadeOut::new(FADE_OUT_SECS, to_screen),
         ))

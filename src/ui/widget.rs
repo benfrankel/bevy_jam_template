@@ -1,5 +1,6 @@
 use bevy::ecs::system::EntityCommand;
 use bevy::prelude::*;
+use bevy::ui::FocusPolicy;
 
 use crate::core::theme::ThemeBackgroundColor;
 use crate::core::theme::ThemeColor;
@@ -16,6 +17,20 @@ pub fn ui_root(mut entity: EntityWorldMut) {
             flex_direction: FlexDirection::Column,
             ..default()
         },
+        ..default()
+    });
+}
+
+pub fn ui_overlay(mut entity: EntityWorldMut) {
+    entity.insert(NodeBundle {
+        style: Style {
+            position_type: PositionType::Absolute,
+            width: Percent(100.0),
+            height: Percent(100.0),
+            ..default()
+        },
+        focus_policy: FocusPolicy::Block,
+        z_index: ZIndex::Global(1000),
         ..default()
     });
 }
