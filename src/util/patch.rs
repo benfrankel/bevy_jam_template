@@ -45,12 +45,40 @@ impl AppExtConfigure for App {
 }
 
 // TODO: Workaround for https://github.com/bevyengine/bevy/issues/14231#issuecomment-2216321086.
-pub trait CommandsExtSpawnWith {
+pub trait SpawnWithExt {
     fn spawn_with<M: 'static>(&mut self, command: impl EntityCommand<M>) -> EntityCommands;
 }
 
-impl CommandsExtSpawnWith for Commands<'_, '_> {
+impl SpawnWithExt for Commands<'_, '_> {
     fn spawn_with<M: 'static>(&mut self, command: impl EntityCommand<M>) -> EntityCommands {
+        let mut e = self.spawn_empty();
+        e.add(command);
+        e
+    }
+}
+
+impl SpawnWithExt for ChildBuilder<'_> {
+    fn spawn_with<M: 'static>(&mut self, command: impl EntityCommand<M>) -> EntityCommands {
+        let mut e = self.spawn_empty();
+        e.add(command);
+        e
+    }
+}
+
+pub trait WorldSpawnWithExt {
+    fn spawn_with<M: 'static>(&mut self, command: impl EntityCommand<M>) -> EntityWorldMut;
+}
+
+impl WorldSpawnWithExt for World {
+    fn spawn_with<M: 'static>(&mut self, command: impl EntityCommand<M>) -> EntityWorldMut {
+        let mut e = self.spawn_empty();
+        e.add(command);
+        e
+    }
+}
+
+impl WorldSpawnWithExt for WorldChildBuilder<'_> {
+    fn spawn_with<M: 'static>(&mut self, command: impl EntityCommand<M>) -> EntityWorldMut {
         let mut e = self.spawn_empty();
         e.add(command);
         e

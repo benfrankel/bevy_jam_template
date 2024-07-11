@@ -14,8 +14,9 @@ pub mod prelude {
     pub use super::interaction::*;
     pub use super::widget::*;
     pub use super::*;
-    pub use crate::util::patch::CommandsExtSpawnWith as _;
     pub use crate::util::patch::EntityWorldMutExtAdd as _;
+    pub use crate::util::patch::SpawnWithExt as _;
+    pub use crate::util::patch::WorldSpawnWithExt as _;
 }
 
 use bevy::prelude::*;

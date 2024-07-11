@@ -37,41 +37,45 @@ impl Configure for TitleScreenAssets {
 fn enter_title(mut commands: Commands, ui_root: Res<UiRoot>) {
     commands.spawn_with(fade_in);
 
-    let screen = spawn_title_screen(&mut commands);
-    commands.entity(screen).set_parent(ui_root.body);
+    commands.spawn_with(title_screen).set_parent(ui_root.body);
 }
 
 fn exit_title(mut commands: Commands, ui_root: Res<UiRoot>) {
     commands.entity(ui_root.body).despawn_descendants();
 }
 
-fn spawn_title_screen(commands: &mut Commands) -> Entity {
-    let screen = commands
-        .spawn_with(ui_root)
+fn title_screen(mut entity: EntityWorldMut) {
+    entity
+        .add(ui_root)
         .insert(Name::new("TitleScreen"))
-        .id();
+        .with_children(|children| {
+            children.spawn_with(title);
+            children.spawn_with(button_container);
+        });
+}
 
-    commands
-        .spawn((
-            Name::new("Title"),
-            TextBundle::from_section(
-                TITLE,
-                TextStyle {
-                    font: BOLD_FONT_HANDLE,
-                    ..default()
-                },
-            )
-            .with_style(Style {
-                margin: UiRect::vertical(Vw(5.0)),
+fn title(mut entity: EntityWorldMut) {
+    entity.insert((
+        Name::new("Title"),
+        TextBundle::from_section(
+            TITLE,
+            TextStyle {
+                font: BOLD_FONT_HANDLE,
                 ..default()
-            }),
-            FontSize::new(Vw(5.0)).with_step(8.0),
-            ThemeTextColors(vec![ThemeColor::BodyText]),
-        ))
-        .set_parent(screen);
+            },
+        )
+        .with_style(Style {
+            margin: UiRect::vertical(Vw(5.0)),
+            ..default()
+        }),
+        FontSize::new(Vw(5.0)).with_step(8.0),
+        ThemeTextColors(vec![ThemeColor::BodyText]),
+    ));
+}
 
-    let button_container = commands
-        .spawn((
+fn button_container(mut entity: EntityWorldMut) {
+    entity
+        .insert((
             Name::new("ButtonContainer"),
             NodeBundle {
                 style: Style {
@@ -86,12 +90,15 @@ fn spawn_title_screen(commands: &mut Commands) -> Entity {
                 ..default()
             },
         ))
-        .set_parent(screen)
-        .id();
+        .with_children(|children| {
+            children.spawn_with(play_button);
+            children.spawn_with(quit_button);
+        });
+}
 
-    // Spawn play button.
-    commands
-        .spawn_with(menu_button("Play"))
+fn play_button(mut entity: EntityWorldMut) {
+    entity
+        .add(menu_button("Play"))
         .insert(On::<Pointer<Click>>::run(
             |mut commands: Commands, progress: Res<ProgressCounter>| {
                 let Progress { done, total } = progress.progress_complete();
@@ -101,21 +108,16 @@ fn spawn_title_screen(commands: &mut Commands) -> Entity {
                     Screen::Loading
                 }));
             },
-        ))
-        .set_parent(button_container);
+        ));
+}
 
-    // Spawn quit button.
-    commands
-        .spawn_with(menu_button("Quit"))
-        .insert((
-            #[cfg(feature = "web")]
-            IsDisabled(true),
-            #[cfg(not(feature = "web"))]
-            On::<Pointer<Click>>::run(|mut app_exit: EventWriter<_>| {
-                app_exit.send(bevy::app::AppExit::Success);
-            }),
-        ))
-        .set_parent(button_container);
-
-    screen
+fn quit_button(mut entity: EntityWorldMut) {
+    entity.add(menu_button("Quit")).insert((
+        #[cfg(feature = "web")]
+        IsDisabled(true),
+        #[cfg(not(feature = "web"))]
+        On::<Pointer<Click>>::run(|mut app_exit: EventWriter<_>| {
+            app_exit.send(bevy::app::AppExit::Success);
+        }),
+    ));
 }
