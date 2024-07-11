@@ -23,10 +23,8 @@ pub(super) fn plugin(app: &mut App) {
     app.add_plugins(
         DefaultPlugins
             .build()
-            .disable::<WindowPlugin>()
-            .add_after::<WindowPlugin, _>(window::plugin)
-            .disable::<AssetPlugin>()
-            .add_after::<AssetPlugin, _>(asset::plugin)
+            .replace::<WindowPlugin>(window::plugin)
+            .replace::<AssetPlugin>(asset::plugin)
             .set(ImagePlugin::default_nearest()),
     );
 

@@ -1,3 +1,4 @@
+use bevy::app::PluginGroupBuilder;
 use bevy::ecs::system::EntityCommand;
 use bevy::ecs::system::EntityCommands;
 use bevy::prelude::*;
@@ -82,5 +83,16 @@ impl WorldSpawnWithExt for WorldChildBuilder<'_> {
         let mut e = self.spawn_empty();
         e.add(command);
         e
+    }
+}
+
+// TODO: Workaround for https://github.com/bevyengine/bevy/issues/14262.
+pub trait PluginGroupBuilderExtReplace {
+    fn replace<Target: Plugin>(self, plugin: impl Plugin) -> Self;
+}
+
+impl PluginGroupBuilderExtReplace for PluginGroupBuilder {
+    fn replace<Target: Plugin>(self, plugin: impl Plugin) -> Self {
+        self.disable::<Target>().add_after::<Target, _>(plugin)
     }
 }
