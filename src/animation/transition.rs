@@ -1,7 +1,5 @@
 use bevy::prelude::*;
 
-use crate::core::theme::ThemeBackgroundColor;
-use crate::core::theme::ThemeColor;
 use crate::core::PostColorSet;
 use crate::screen::Screen;
 use crate::util::despawn::DespawnSet;

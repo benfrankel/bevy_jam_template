@@ -2,7 +2,6 @@
 
 #![allow(dead_code, unused_imports)]
 
-pub mod animation;
 pub mod despawn;
 pub mod patch;
 pub mod time;
@@ -20,5 +19,5 @@ pub mod prelude {
 use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_plugins((animation::plugin, despawn::plugin));
+    app.add_plugins(despawn::plugin);
 }

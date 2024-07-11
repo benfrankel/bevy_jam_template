@@ -9,11 +9,11 @@ use bevy::ecs::system::EntityCommand;
 use bevy::prelude::*;
 use strum::EnumIter;
 
+use crate::animation::FadeIn;
+use crate::animation::FadeOut;
 use crate::core::theme::ThemeBackgroundColor;
 use crate::core::theme::ThemeColor;
 use crate::ui::prelude::*;
-use crate::util::animation::FadeIn;
-use crate::util::animation::FadeOut;
 
 pub fn plugin(app: &mut App) {
     app.init_state::<Screen>();

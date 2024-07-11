@@ -1,5 +1,5 @@
-pub use crate::util::animation::transition::FadeIn;
-pub use crate::util::animation::transition::FadeOut;
+pub use crate::animation::transition::FadeIn;
+pub use crate::animation::transition::FadeOut;
 
 mod transition;
 
