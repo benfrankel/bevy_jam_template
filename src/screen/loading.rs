@@ -32,7 +32,7 @@ pub(super) fn plugin(app: &mut App) {
 struct IsLoadingBarFill;
 
 fn enter_loading(mut commands: Commands, ui_root: Res<UiRoot>) {
-    commands.spawn_empty().add(fade_in);
+    commands.spawn_with(fade_in);
 
     let screen = spawn_loading_screen(&mut commands);
     commands.entity(screen).set_parent(ui_root.body);
@@ -44,8 +44,7 @@ fn exit_loading(mut commands: Commands, ui_root: Res<UiRoot>) {
 
 fn spawn_loading_screen(commands: &mut Commands) -> Entity {
     let screen = commands
-        .spawn_empty()
-        .add(ui_root)
+        .spawn_with(ui_root)
         .insert(Name::new("LoadingScreen"))
         .id();
 
@@ -123,7 +122,7 @@ fn update_loading(
 
     // Continue to next screen when ready
     if done == total {
-        commands.spawn_empty().add(fade_out(Screen::Playing));
+        commands.spawn_with(fade_out(Screen::Playing));
     }
 
     // Update loading bar

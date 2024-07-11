@@ -10,6 +10,7 @@ pub mod time;
 pub mod prelude {
     pub use super::despawn::DespawnSet;
     pub use super::patch::AppExtConfigure as _;
+    pub use super::patch::CommandsExtSpawnWith as _;
     pub use super::patch::Configure;
     pub use super::patch::EntityWorldMutExtAdd as _;
 }

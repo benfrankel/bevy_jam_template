@@ -35,7 +35,7 @@ impl Configure for TitleScreenAssets {
 }
 
 fn enter_title(mut commands: Commands, ui_root: Res<UiRoot>) {
-    commands.spawn_empty().add(fade_in);
+    commands.spawn_with(fade_in);
 
     let screen = spawn_title_screen(&mut commands);
     commands.entity(screen).set_parent(ui_root.body);
@@ -47,8 +47,7 @@ fn exit_title(mut commands: Commands, ui_root: Res<UiRoot>) {
 
 fn spawn_title_screen(commands: &mut Commands) -> Entity {
     let screen = commands
-        .spawn_empty()
-        .add(ui_root)
+        .spawn_with(ui_root)
         .insert(Name::new("TitleScreen"))
         .id();
 
@@ -92,12 +91,11 @@ fn spawn_title_screen(commands: &mut Commands) -> Entity {
 
     // Spawn play button.
     commands
-        .spawn_empty()
-        .add(menu_button("Play"))
+        .spawn_with(menu_button("Play"))
         .insert(On::<Pointer<Click>>::run(
             |mut commands: Commands, progress: Res<ProgressCounter>| {
                 let Progress { done, total } = progress.progress_complete();
-                commands.spawn_empty().add(fade_out(if done >= total {
+                commands.spawn_with(fade_out(if done >= total {
                     Screen::Playing
                 } else {
                     Screen::Loading
@@ -108,8 +106,7 @@ fn spawn_title_screen(commands: &mut Commands) -> Entity {
 
     // Spawn quit button.
     commands
-        .spawn_empty()
-        .add(menu_button("Quit"))
+        .spawn_with(menu_button("Quit"))
         .insert((
             #[cfg(feature = "web")]
             IsDisabled(true),

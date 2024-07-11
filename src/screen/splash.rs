@@ -37,7 +37,7 @@ pub(super) fn plugin(app: &mut App) {
 const SPLASH_SCREEN_MIN_SECS: f32 = 1.5;
 
 fn enter_splash(mut commands: Commands, ui_root: Res<UiRoot>, asset_server: Res<AssetServer>) {
-    commands.spawn_empty().add(fade_in);
+    commands.spawn_with(fade_in);
 
     let screen = spawn_splash_screen(&mut commands, &asset_server);
     commands.entity(screen).set_parent(ui_root.body);
@@ -49,8 +49,7 @@ fn exit_splash(mut commands: Commands, ui_root: Res<UiRoot>) {
 
 fn spawn_splash_screen(commands: &mut Commands, asset_server: &AssetServer) -> Entity {
     let screen = commands
-        .spawn_empty()
-        .add(ui_root)
+        .spawn_with(ui_root)
         .insert(Name::new("SplashScreen"))
         .id();
 
@@ -92,7 +91,7 @@ fn update_splash(
 
     // Continue to next screen when ready
     if done == total {
-        commands.spawn_empty().add(fade_out(Screen::Title));
+        commands.spawn_with(fade_out(Screen::Title));
     }
 
     info!("[Frame {}] Booting: {done} / {total}", frame.0);

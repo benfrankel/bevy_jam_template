@@ -43,3 +43,16 @@ impl AppExtConfigure for App {
         self
     }
 }
+
+// TODO: Workaround for https://github.com/bevyengine/bevy/issues/14231#issuecomment-2216321086.
+pub trait CommandsExtSpawnWith {
+    fn spawn_with<M: 'static>(&mut self, command: impl EntityCommand<M>) -> EntityCommands;
+}
+
+impl CommandsExtSpawnWith for Commands<'_, '_> {
+    fn spawn_with<M: 'static>(&mut self, command: impl EntityCommand<M>) -> EntityCommands {
+        let mut e = self.spawn_empty();
+        e.add(command);
+        e
+    }
+}

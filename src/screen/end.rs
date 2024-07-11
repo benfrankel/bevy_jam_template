@@ -51,7 +51,7 @@ impl Configure for EndScreenAction {
 }
 
 fn enter_end(mut commands: Commands, ui_root: Res<UiRoot>) {
-    commands.spawn_empty().add(fade_in);
+    commands.spawn_with(fade_in);
 
     commands.insert_resource(
         InputMap::default()
@@ -75,8 +75,7 @@ fn exit_end(mut commands: Commands, ui_root: Res<UiRoot>) {
 
 fn spawn_end_screen(commands: &mut Commands) -> Entity {
     let screen = commands
-        .spawn_empty()
-        .add(ui_root)
+        .spawn_with(ui_root)
         .insert(Name::new("EndScreen"))
         .id();
 
@@ -107,7 +106,7 @@ fn spawn_end_screen(commands: &mut Commands) -> Entity {
 }
 
 fn restart(mut commands: Commands) {
-    commands.spawn_empty().add(fade_out(Screen::Title));
+    commands.spawn_with(fade_out(Screen::Title));
 }
 
 fn quit(mut app_exit: EventWriter<AppExit>) {
