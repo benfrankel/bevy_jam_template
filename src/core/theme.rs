@@ -11,6 +11,9 @@ use crate::core::UpdateSet;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
+    // Default to Bevy logo grey instead of Bevy website code block grey.
+    app.insert_resource(ClearColor(Color::srgb(0.157, 0.157, 0.157)));
+
     app.configure::<(
         ThemeSpriteColor,
         ThemeUiImageColor,
@@ -48,7 +51,8 @@ impl Index<ThemeColor> for ThemeColorList {
 pub enum ThemeColor {
     // Absolute colors
     #[default]
-    None,
+    White,
+    Invisible,
 
     // Semantic colors
     Body,

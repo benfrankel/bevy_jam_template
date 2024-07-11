@@ -1,6 +1,6 @@
 :root {
     /* Consider adjusting this color to match your splash screen! */
-    --loading-screen-bg-color: #282828;
+    --web-bg-color: #282828;
 }
 
 * {
@@ -24,8 +24,8 @@ body {
     flex-direction: column;
 }
 
-#loading-screen {
-    background-color: var(--loading-screen-bg-color);
+#game {
+    background-color: var(--web-bg-color);
 }
 
 .spinner {

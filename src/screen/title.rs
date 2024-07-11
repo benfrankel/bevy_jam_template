@@ -156,7 +156,7 @@ fn spawn_button(commands: &mut Commands, text: impl Into<String>) -> Entity {
                 },
                 ..default()
             },
-            ThemeBackgroundColor(ThemeColor::None),
+            ThemeBackgroundColor(ThemeColor::Invisible),
             InteractionPalette {
                 normal: ThemeColor::Primary,
                 hovered: ThemeColor::PrimaryHovered,
