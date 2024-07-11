@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use bevy::ui::Val::*;
 use bevy_asset_loader::prelude::*;
 use bevy_mod_picking::prelude::*;
 use iyes_progress::prelude::*;

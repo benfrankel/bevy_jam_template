@@ -12,7 +12,6 @@ pub mod window;
 
 use avian2d::prelude::*;
 use bevy::prelude::*;
-use bevy::transform::TransformSystem;
 use bevy::ui::UiSystem;
 
 use crate::util::prelude::*;

@@ -7,6 +7,8 @@ pub mod interaction;
 pub mod tooltip;
 
 pub mod prelude {
+    pub use bevy::ui::Val::*;
+
     pub use super::font::FontSize;
     pub use super::font::BOLD_FONT_HANDLE;
     pub use super::font::FONT_HANDLE;

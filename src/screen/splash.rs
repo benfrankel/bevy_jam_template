@@ -3,7 +3,6 @@ use bevy::core::FrameCount;
 use bevy::prelude::*;
 use bevy::render::texture::ImageLoaderSettings;
 use bevy::render::texture::ImageSampler;
-use bevy::ui::Val::*;
 use bevy_asset_loader::prelude::*;
 use iyes_progress::prelude::*;
 

@@ -7,11 +7,11 @@ mod title;
 
 use bevy::prelude::*;
 use bevy::ui::FocusPolicy;
-use bevy::ui::Val::*;
 use strum::EnumIter;
 
 use crate::core::theme::ThemeBackgroundColor;
 use crate::core::theme::ThemeColor;
+use crate::ui::prelude::*;
 use crate::util::animation::FadeIn;
 use crate::util::animation::FadeOut;
 
