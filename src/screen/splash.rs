@@ -36,45 +36,45 @@ pub(super) fn plugin(app: &mut App) {
 
 const SPLASH_SCREEN_MIN_SECS: f32 = 1.5;
 
-fn enter_splash(mut commands: Commands, ui_root: Res<UiRoot>, asset_server: Res<AssetServer>) {
+fn enter_splash(mut commands: Commands, ui_root: Res<UiRoot>) {
     commands.spawn_with(fade_in);
-
-    let screen = spawn_splash_screen(&mut commands, &asset_server);
-    commands.entity(screen).set_parent(ui_root.body);
+    commands.spawn_with(splash_screen).set_parent(ui_root.body);
 }
 
 fn exit_splash(mut commands: Commands, ui_root: Res<UiRoot>) {
     commands.entity(ui_root.body).despawn_descendants();
 }
 
-fn spawn_splash_screen(commands: &mut Commands, asset_server: &AssetServer) -> Entity {
-    let screen = commands
-        .spawn_with(ui_root)
+fn splash_screen(mut entity: EntityWorldMut) {
+    entity
+        .add(ui_root)
         .insert(Name::new("SplashScreen"))
-        .id();
+        .with_children(|children| {
+            children.spawn_with(splash_image);
+        });
+}
 
-    commands
-        .spawn((
-            Name::new("SplashImage"),
-            ImageBundle {
-                style: Style {
-                    margin: UiRect::all(Auto),
-                    width: Percent(70.0),
-                    ..default()
-                },
-                image: UiImage::new(asset_server.load_with_settings(
-                    "embedded://bevy_jam_template/screen/splash/splash.png",
-                    |settings: &mut ImageLoaderSettings| {
-                        settings.sampler = ImageSampler::linear();
-                    },
-                )),
+fn splash_image(mut entity: EntityWorldMut) {
+    let asset_server = entity.world().resource::<AssetServer>();
+
+    entity.insert((
+        Name::new("SplashImage"),
+        ImageBundle {
+            style: Style {
+                margin: UiRect::all(Auto),
+                width: Percent(70.0),
                 ..default()
             },
-            ThemeUiImageColor(ThemeColor::BodyText),
-        ))
-        .set_parent(screen);
-
-    screen
+            image: UiImage::new(asset_server.load_with_settings(
+                "embedded://bevy_jam_template/screen/splash/splash.png",
+                |settings: &mut ImageLoaderSettings| {
+                    settings.sampler = ImageSampler::linear();
+                },
+            )),
+            ..default()
+        },
+        ThemeUiImageColor(ThemeColor::BodyText),
+    ));
 }
 
 fn update_splash(

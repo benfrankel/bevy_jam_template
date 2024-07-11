@@ -36,7 +36,6 @@ impl Configure for TitleScreenAssets {
 
 fn enter_title(mut commands: Commands, ui_root: Res<UiRoot>) {
     commands.spawn_with(fade_in);
-
     commands.spawn_with(title_screen).set_parent(ui_root.body);
 }
 

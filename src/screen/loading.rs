@@ -33,45 +33,48 @@ struct IsLoadingBarFill;
 
 fn enter_loading(mut commands: Commands, ui_root: Res<UiRoot>) {
     commands.spawn_with(fade_in);
-
-    let screen = spawn_loading_screen(&mut commands);
-    commands.entity(screen).set_parent(ui_root.body);
+    commands.spawn_with(loading_screen).set_parent(ui_root.body);
 }
 
 fn exit_loading(mut commands: Commands, ui_root: Res<UiRoot>) {
     commands.entity(ui_root.body).despawn_descendants();
 }
 
-fn spawn_loading_screen(commands: &mut Commands) -> Entity {
-    let screen = commands
-        .spawn_with(ui_root)
+fn loading_screen(mut entity: EntityWorldMut) {
+    entity
+        .add(ui_root)
         .insert(Name::new("LoadingScreen"))
-        .id();
+        .with_children(|children| {
+            children.spawn_with(loading_text);
+            children.spawn_with(loading_bar);
+        });
+}
 
-    commands
-        .spawn((
-            Name::new("LoadingText"),
-            TextBundle {
-                style: Style {
-                    margin: UiRect::all(Percent(1.0)),
-                    ..default()
-                },
-                text: Text::from_section(
-                    "Loading...",
-                    TextStyle {
-                        font: THICK_FONT_HANDLE,
-                        ..default()
-                    },
-                ),
+fn loading_text(mut entity: EntityWorldMut) {
+    entity.insert((
+        Name::new("LoadingText"),
+        TextBundle {
+            style: Style {
+                margin: UiRect::all(Percent(1.0)),
                 ..default()
             },
-            FontSize::new(Vw(5.0)).with_step(8.0),
-            ThemeTextColors(vec![ThemeColor::BodyText]),
-        ))
-        .set_parent(screen);
+            text: Text::from_section(
+                "Loading...",
+                TextStyle {
+                    font: THICK_FONT_HANDLE,
+                    ..default()
+                },
+            ),
+            ..default()
+        },
+        FontSize::new(Vw(5.0)).with_step(8.0),
+        ThemeTextColors(vec![ThemeColor::BodyText]),
+    ));
+}
 
-    let loading_bar = commands
-        .spawn((
+fn loading_bar(mut entity: EntityWorldMut) {
+    entity
+        .insert((
             Name::new("LoadingBar"),
             NodeBundle {
                 style: Style {
@@ -85,26 +88,25 @@ fn spawn_loading_screen(commands: &mut Commands) -> Entity {
             },
             ThemeBorderColor(ThemeColor::BodyText),
         ))
-        .set_parent(screen)
-        .id();
+        .with_children(|children| {
+            children.spawn_with(loading_bar_fill);
+        });
+}
 
-    commands
-        .spawn((
-            Name::new("LoadingBarFill"),
-            NodeBundle {
-                style: Style {
-                    width: Percent(0.0),
-                    height: Percent(100.0),
-                    ..default()
-                },
+fn loading_bar_fill(mut entity: EntityWorldMut) {
+    entity.insert((
+        Name::new("LoadingBarFill"),
+        NodeBundle {
+            style: Style {
+                width: Percent(0.0),
+                height: Percent(100.0),
                 ..default()
             },
-            ThemeBackgroundColor(ThemeColor::BodyText),
-            IsLoadingBarFill,
-        ))
-        .set_parent(loading_bar);
-
-    screen
+            ..default()
+        },
+        ThemeBackgroundColor(ThemeColor::BodyText),
+        IsLoadingBarFill,
+    ));
 }
 
 fn update_loading(

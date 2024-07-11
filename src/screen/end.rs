@@ -52,6 +52,7 @@ impl Configure for EndScreenAction {
 
 fn enter_end(mut commands: Commands, ui_root: Res<UiRoot>) {
     commands.spawn_with(fade_in);
+    commands.spawn_with(end_screen).set_parent(ui_root.body);
 
     commands.insert_resource(
         InputMap::default()
@@ -63,9 +64,6 @@ fn enter_end(mut commands: Commands, ui_root: Res<UiRoot>) {
             .insert(EndScreenAction::Quit, KeyCode::KeyQ)
             .build(),
     );
-
-    let screen = spawn_end_screen(&mut commands);
-    commands.entity(screen).set_parent(ui_root.body);
 }
 
 fn exit_end(mut commands: Commands, ui_root: Res<UiRoot>) {
@@ -73,36 +71,36 @@ fn exit_end(mut commands: Commands, ui_root: Res<UiRoot>) {
     commands.entity(ui_root.body).despawn_descendants();
 }
 
-fn spawn_end_screen(commands: &mut Commands) -> Entity {
-    let screen = commands
-        .spawn_with(ui_root)
+fn end_screen(mut entity: EntityWorldMut) {
+    entity
+        .add(ui_root)
         .insert(Name::new("EndScreen"))
-        .id();
+        .with_children(|children| {
+            children.spawn_with(end_text);
+        });
+}
 
-    commands
-        .spawn((
-            Name::new("EndText"),
-            TextBundle {
-                style: Style {
-                    margin: UiRect::top(Percent(5.0)),
-                    height: Percent(8.0),
-                    ..default()
-                },
-                text: Text::from_section(
-                    "The End",
-                    TextStyle {
-                        font: BOLD_FONT_HANDLE,
-                        ..default()
-                    },
-                ),
+fn end_text(mut entity: EntityWorldMut) {
+    entity.insert((
+        Name::new("EndText"),
+        TextBundle {
+            style: Style {
+                margin: UiRect::top(Percent(5.0)),
+                height: Percent(8.0),
                 ..default()
             },
-            FontSize::new(Vw(5.0)).with_step(8.0),
-            ThemeTextColors(vec![ThemeColor::BodyText]),
-        ))
-        .set_parent(screen);
-
-    screen
+            text: Text::from_section(
+                "The End",
+                TextStyle {
+                    font: BOLD_FONT_HANDLE,
+                    ..default()
+                },
+            ),
+            ..default()
+        },
+        FontSize::new(Vw(5.0)).with_step(8.0),
+        ThemeTextColors(vec![ThemeColor::BodyText]),
+    ));
 }
 
 fn restart(mut commands: Commands) {
