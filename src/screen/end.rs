@@ -73,7 +73,7 @@ fn exit_end(mut commands: Commands, ui_root: Res<UiRoot>) {
 
 fn end_screen(mut entity: EntityWorldMut) {
     entity
-        .add(ui_root)
+        .add(widget::ui_root)
         .insert(Name::new("EndScreen"))
         .with_children(|children| {
             children.spawn_with(end_text);

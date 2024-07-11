@@ -43,7 +43,7 @@ pub enum Screen {
 const FADE_IN_SECS: f32 = 0.3;
 
 fn fade_in(mut entity: EntityWorldMut) {
-    entity.add(ui_overlay).insert((
+    entity.add(widget::ui_overlay).insert((
         Name::new("ScreenFadeIn"),
         ThemeBackgroundColor(ThemeColor::Body),
         FadeIn::new(FADE_IN_SECS),
@@ -54,7 +54,7 @@ const FADE_OUT_SECS: f32 = 0.3;
 
 fn fade_out(next_screen: Screen) -> impl EntityCommand<World> {
     move |mut entity: EntityWorldMut| {
-        entity.add(ui_overlay).insert((
+        entity.add(widget::ui_overlay).insert((
             Name::new("ScreenFadeOut"),
             ThemeBackgroundColor(ThemeColor::Body),
             FadeOut::new(FADE_OUT_SECS, next_screen),

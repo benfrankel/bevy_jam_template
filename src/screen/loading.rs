@@ -42,7 +42,7 @@ fn exit_loading(mut commands: Commands, ui_root: Res<UiRoot>) {
 
 fn loading_screen(mut entity: EntityWorldMut) {
     entity
-        .add(ui_root)
+        .add(widget::ui_root)
         .insert(Name::new("LoadingScreen"))
         .with_children(|children| {
             children.spawn_with(loading_text);

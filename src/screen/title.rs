@@ -45,7 +45,7 @@ fn exit_title(mut commands: Commands, ui_root: Res<UiRoot>) {
 
 fn title_screen(mut entity: EntityWorldMut) {
     entity
-        .add(ui_root)
+        .add(widget::ui_root)
         .insert(Name::new("TitleScreen"))
         .with_children(|children| {
             children.spawn_with(title);
@@ -97,7 +97,7 @@ fn button_container(mut entity: EntityWorldMut) {
 
 fn play_button(mut entity: EntityWorldMut) {
     entity
-        .add(menu_button("Play"))
+        .add(widget::menu_button("Play"))
         .insert(On::<Pointer<Click>>::run(
             |mut commands: Commands, progress: Res<ProgressCounter>| {
                 let Progress { done, total } = progress.progress_complete();
@@ -111,7 +111,7 @@ fn play_button(mut entity: EntityWorldMut) {
 }
 
 fn quit_button(mut entity: EntityWorldMut) {
-    entity.add(menu_button("Quit")).insert((
+    entity.add(widget::menu_button("Quit")).insert((
         #[cfg(feature = "web")]
         IsDisabled(true),
         #[cfg(not(feature = "web"))]
