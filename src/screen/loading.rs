@@ -44,20 +44,9 @@ fn exit_loading(mut commands: Commands, ui_root: Res<UiRoot>) {
 
 fn spawn_loading_screen(commands: &mut Commands) -> Entity {
     let screen = commands
-        .spawn((
-            Name::new("LoadingScreen"),
-            NodeBundle {
-                style: Style {
-                    width: Percent(100.0),
-                    height: Percent(100.0),
-                    align_items: AlignItems::Center,
-                    justify_content: JustifyContent::Center,
-                    flex_direction: FlexDirection::Column,
-                    ..default()
-                },
-                ..default()
-            },
-        ))
+        .spawn_empty()
+        .add(ui_root)
+        .insert(Name::new("LoadingScreen"))
         .id();
 
     commands

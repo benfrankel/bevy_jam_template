@@ -49,17 +49,9 @@ fn exit_splash(mut commands: Commands, ui_root: Res<UiRoot>) {
 
 fn spawn_splash_screen(commands: &mut Commands, asset_server: &AssetServer) -> Entity {
     let screen = commands
-        .spawn((
-            Name::new("SplashScreen"),
-            NodeBundle {
-                style: Style {
-                    width: Percent(100.0),
-                    height: Percent(100.0),
-                    ..default()
-                },
-                ..default()
-            },
-        ))
+        .spawn_empty()
+        .add(ui_root)
+        .insert(Name::new("SplashScreen"))
         .id();
 
     commands

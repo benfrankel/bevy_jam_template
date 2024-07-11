@@ -6,6 +6,20 @@ use crate::core::theme::ThemeColor;
 use crate::core::theme::ThemeTextColors;
 use crate::ui::prelude::*;
 
+pub fn ui_root(mut entity: EntityWorldMut) {
+    entity.insert(NodeBundle {
+        style: Style {
+            width: Percent(100.0),
+            height: Percent(100.0),
+            align_items: AlignItems::Center,
+            justify_content: JustifyContent::Center,
+            flex_direction: FlexDirection::Column,
+            ..default()
+        },
+        ..default()
+    });
+}
+
 pub fn menu_button(text: impl Into<String>) -> impl EntityCommand<World> {
     let text = text.into();
     move |mut entity: EntityWorldMut| {
@@ -16,8 +30,8 @@ pub fn menu_button(text: impl Into<String>) -> impl EntityCommand<World> {
                     style: Style {
                         height: Vw(8.0),
                         width: Vw(30.0),
-                        justify_content: JustifyContent::Center,
                         align_items: AlignItems::Center,
+                        justify_content: JustifyContent::Center,
                         ..default()
                     },
                     border_radius: BorderRadius::MAX,

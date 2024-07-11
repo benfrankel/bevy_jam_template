@@ -75,17 +75,9 @@ fn exit_end(mut commands: Commands, ui_root: Res<UiRoot>) {
 
 fn spawn_end_screen(commands: &mut Commands) -> Entity {
     let screen = commands
-        .spawn((
-            Name::new("EndScreen"),
-            NodeBundle {
-                style: Style {
-                    width: Percent(100.0),
-                    height: Percent(100.0),
-                    ..default()
-                },
-                ..default()
-            },
-        ))
+        .spawn_empty()
+        .add(ui_root)
+        .insert(Name::new("EndScreen"))
         .id();
 
     commands

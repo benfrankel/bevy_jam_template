@@ -47,19 +47,9 @@ fn exit_title(mut commands: Commands, ui_root: Res<UiRoot>) {
 
 fn spawn_title_screen(commands: &mut Commands) -> Entity {
     let screen = commands
-        .spawn((
-            Name::new("TitleScreen"),
-            NodeBundle {
-                style: Style {
-                    width: Percent(100.0),
-                    height: Percent(100.0),
-                    align_items: AlignItems::Center,
-                    flex_direction: FlexDirection::Column,
-                    ..default()
-                },
-                ..default()
-            },
-        ))
+        .spawn_empty()
+        .add(ui_root)
+        .insert(Name::new("TitleScreen"))
         .id();
 
     commands
