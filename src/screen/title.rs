@@ -3,7 +3,6 @@ use bevy_asset_loader::prelude::*;
 use bevy_mod_picking::prelude::*;
 use iyes_progress::prelude::*;
 
-use crate::core::theme::ThemeBackgroundColor;
 use crate::core::theme::ThemeColor;
 use crate::core::theme::ThemeTextColors;
 use crate::screen::fade_in;
@@ -101,9 +100,10 @@ fn spawn_title_screen(commands: &mut Commands) -> Entity {
         .set_parent(screen)
         .id();
 
-    let play_button = spawn_button(commands, "Play");
+    // Spawn play button.
     commands
-        .entity(play_button)
+        .spawn_empty()
+        .add(menu_button("Play"))
         .insert(On::<Pointer<Click>>::run(
             |mut commands: Commands, progress: Res<ProgressCounter>| {
                 let Progress { done, total } = progress.progress_complete();
@@ -119,12 +119,13 @@ fn spawn_title_screen(commands: &mut Commands) -> Entity {
         ))
         .set_parent(button_container);
 
-    let quit_button = spawn_button(commands, "Quit");
+    // Spawn quit button.
     commands
-        .entity(quit_button)
+        .spawn_empty()
+        .add(menu_button("Quit"))
         .insert((
             #[cfg(feature = "web")]
-            crate::util::ui::IsDisabled(true),
+            IsDisabled(true),
             #[cfg(not(feature = "web"))]
             On::<Pointer<Click>>::run(|mut app_exit: EventWriter<_>| {
                 app_exit.send(bevy::app::AppExit::Success);
@@ -133,49 +134,4 @@ fn spawn_title_screen(commands: &mut Commands) -> Entity {
         .set_parent(button_container);
 
     screen
-}
-
-fn spawn_button(commands: &mut Commands, text: impl Into<String>) -> Entity {
-    let text = text.into();
-
-    let button = commands
-        .spawn((
-            Name::new(format!("{}Button", text.replace(' ', ""))),
-            ButtonBundle {
-                style: Style {
-                    height: Vw(8.0),
-                    width: Vw(30.0),
-                    justify_content: JustifyContent::Center,
-                    align_items: AlignItems::Center,
-                    ..default()
-                },
-                border_radius: BorderRadius::MAX,
-                ..default()
-            },
-            ThemeBackgroundColor(ThemeColor::Invisible),
-            InteractionPalette {
-                normal: ThemeColor::Primary,
-                hovered: ThemeColor::PrimaryHovered,
-                pressed: ThemeColor::PrimaryPressed,
-                disabled: ThemeColor::PrimaryDisabled,
-            },
-        ))
-        .id();
-
-    commands
-        .spawn((
-            Name::new("ButtonText"),
-            TextBundle::from_section(
-                text,
-                TextStyle {
-                    font: FONT_HANDLE,
-                    ..default()
-                },
-            ),
-            FontSize::new(Vw(4.0)).with_step(8.0),
-            ThemeTextColors(vec![ThemeColor::PrimaryText]),
-        ))
-        .set_parent(button);
-
-    button
 }

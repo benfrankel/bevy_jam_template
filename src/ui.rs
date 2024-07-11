@@ -5,16 +5,15 @@
 pub mod font;
 pub mod interaction;
 pub mod tooltip;
+pub mod widget;
 
 pub mod prelude {
     pub use bevy::ui::Val::*;
 
-    pub use super::font::FontSize;
-    pub use super::font::BOLD_FONT_HANDLE;
-    pub use super::font::FONT_HANDLE;
-    pub use super::font::THICK_FONT_HANDLE;
-    pub use super::interaction::InteractionPalette;
-    pub use super::UiRoot;
+    pub use super::font::*;
+    pub use super::interaction::*;
+    pub use super::widget::*;
+    pub use super::*;
 }
 
 use bevy::prelude::*;

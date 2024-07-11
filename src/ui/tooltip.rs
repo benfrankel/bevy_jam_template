@@ -1,13 +1,11 @@
 use bevy::prelude::*;
-use bevy::ui::Val::*;
 
 use crate::core::theme::ThemeBackgroundColor;
 use crate::core::theme::ThemeColor;
 use crate::core::theme::ThemeTextColors;
 use crate::core::window::WindowRoot;
 use crate::core::UpdateSet;
-use crate::ui::font::FontSize;
-use crate::ui::font::FONT_HANDLE;
+use crate::ui::prelude::*;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
