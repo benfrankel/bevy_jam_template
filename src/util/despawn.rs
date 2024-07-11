@@ -14,8 +14,8 @@ pub struct DespawnSet(HashSet<Entity>);
 
 impl Configure for DespawnSet {
     fn configure(app: &mut App) {
-        app.register_type::<DespawnSet>();
-        app.init_resource::<DespawnSet>();
+        app.register_type::<Self>();
+        app.init_resource::<Self>();
         app.add_systems(
             Update,
             (

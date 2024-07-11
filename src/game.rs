@@ -18,8 +18,8 @@ pub struct GameRoot {
 
 impl Configure for GameRoot {
     fn configure(app: &mut App) {
-        app.register_type::<GameRoot>();
-        app.init_resource::<GameRoot>();
+        app.register_type::<Self>();
+        app.init_resource::<Self>();
     }
 }
 

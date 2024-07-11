@@ -20,7 +20,7 @@ pub struct FadeIn {
 
 impl Configure for FadeIn {
     fn configure(app: &mut App) {
-        app.register_type::<FadeIn>();
+        app.register_type::<Self>();
         app.add_systems(PostUpdate, apply_fade_in.in_set(PostColorSet::Blend));
     }
 }
@@ -59,7 +59,7 @@ pub struct FadeOut {
 
 impl Configure for FadeOut {
     fn configure(app: &mut App) {
-        app.register_type::<FadeOut>();
+        app.register_type::<Self>();
         app.add_systems(PostUpdate, apply_fade_out.in_set(PostColorSet::Blend));
     }
 }

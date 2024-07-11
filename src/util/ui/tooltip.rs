@@ -26,8 +26,8 @@ pub struct TooltipRoot {
 
 impl Configure for TooltipRoot {
     fn configure(app: &mut App) {
-        app.register_type::<TooltipRoot>();
-        app.init_resource::<TooltipRoot>();
+        app.register_type::<Self>();
+        app.init_resource::<Self>();
     }
 }
 
@@ -91,7 +91,7 @@ pub struct Tooltip {
 
 impl Configure for Tooltip {
     fn configure(app: &mut App) {
-        app.register_type::<Tooltip>();
+        app.register_type::<Self>();
         app.add_systems(Update, show_tooltip_on_hover.in_set(UpdateSet::Update));
     }
 }

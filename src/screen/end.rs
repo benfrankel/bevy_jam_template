@@ -28,8 +28,8 @@ pub struct EndScreenAssets {}
 
 impl Configure for EndScreenAssets {
     fn configure(app: &mut App) {
-        app.register_type::<EndScreenAssets>();
-        app.init_collection::<EndScreenAssets>();
+        app.register_type::<Self>();
+        app.init_collection::<Self>();
     }
 }
 
@@ -41,13 +41,13 @@ enum EndScreenAction {
 
 impl Configure for EndScreenAction {
     fn configure(app: &mut App) {
-        app.init_resource::<ActionState<EndScreenAction>>();
-        app.add_plugins(InputManagerPlugin::<EndScreenAction>::default());
+        app.init_resource::<ActionState<Self>>();
+        app.add_plugins(InputManagerPlugin::<Self>::default());
         app.add_systems(
             Update,
             (
-                restart.run_if(action_just_pressed(EndScreenAction::Restart)),
-                quit.run_if(action_just_pressed(EndScreenAction::Quit)),
+                restart.run_if(action_just_pressed(Self::Restart)),
+                quit.run_if(action_just_pressed(Self::Quit)),
             ),
         );
     }

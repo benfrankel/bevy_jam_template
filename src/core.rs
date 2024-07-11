@@ -84,26 +84,26 @@ impl Configure for UpdateSet {
         app.configure_sets(
             Update,
             (
-                UpdateSet::HandleActions,
-                UpdateSet::HandleActionsFlush,
-                UpdateSet::Start,
-                UpdateSet::Update,
-                UpdateSet::React,
-                UpdateSet::RecordIntents,
-                UpdateSet::ApplyIntents,
-                UpdateSet::HandleEvents,
-                UpdateSet::QueueDespawn,
-                UpdateSet::ApplyDeferred,
-                UpdateSet::UpdateUi,
-                UpdateSet::End,
+                Self::HandleActions,
+                Self::HandleActionsFlush,
+                Self::Start,
+                Self::Update,
+                Self::React,
+                Self::RecordIntents,
+                Self::ApplyIntents,
+                Self::HandleEvents,
+                Self::QueueDespawn,
+                Self::ApplyDeferred,
+                Self::UpdateUi,
+                Self::End,
             )
                 .chain(),
         );
         app.add_systems(
             Update,
             (
-                apply_deferred.in_set(UpdateSet::HandleActionsFlush),
-                apply_deferred.in_set(UpdateSet::ApplyDeferred),
+                apply_deferred.in_set(Self::HandleActionsFlush),
+                apply_deferred.in_set(Self::ApplyDeferred),
             ),
         );
     }
@@ -128,11 +128,11 @@ impl Configure for PostTransformSet {
             PostUpdate,
             (
                 (UiSystem::Layout, PhysicsSet::Sync),
-                PostTransformSet::Save,
-                PostTransformSet::Blend,
-                PostTransformSet::ApplyFacing,
+                Self::Save,
+                Self::Blend,
+                Self::ApplyFacing,
                 TransformSystem::TransformPropagate,
-                PostTransformSet::Finish,
+                Self::Finish,
                 // GlobalTransform may be slightly out of sync with Transform at this point...
             )
                 .chain(),
@@ -151,9 +151,6 @@ pub enum PostColorSet {
 
 impl Configure for PostColorSet {
     fn configure(app: &mut App) {
-        app.configure_sets(
-            PostUpdate,
-            (PostColorSet::Save, PostColorSet::Blend).chain(),
-        );
+        app.configure_sets(PostUpdate, (Self::Save, Self::Blend).chain());
     }
 }

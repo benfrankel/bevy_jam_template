@@ -17,8 +17,8 @@ pub struct CameraRoot {
 
 impl Configure for CameraRoot {
     fn configure(app: &mut App) {
-        app.register_type::<CameraRoot>();
-        app.init_resource::<CameraRoot>();
+        app.register_type::<Self>();
+        app.init_resource::<Self>();
     }
 }
 
@@ -48,7 +48,7 @@ pub struct AbsoluteScale(pub Vec3);
 
 impl Configure for AbsoluteScale {
     fn configure(app: &mut App) {
-        app.register_type::<AbsoluteScale>();
+        app.register_type::<Self>();
         app.add_systems(Update, apply_absolute_scale.in_set(UpdateSet::End));
     }
 }

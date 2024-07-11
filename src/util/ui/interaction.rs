@@ -17,7 +17,7 @@ pub struct IsDisabled(pub bool);
 
 impl Configure for IsDisabled {
     fn configure(app: &mut App) {
-        app.register_type::<IsDisabled>();
+        app.register_type::<Self>();
     }
 }
 
@@ -34,7 +34,7 @@ pub struct InteractionPalette {
 
 impl Configure for InteractionPalette {
     fn configure(app: &mut App) {
-        app.register_type::<InteractionPalette>();
+        app.register_type::<Self>();
         app.add_systems(Update, apply_interaction_palette.in_set(UpdateSet::End));
     }
 }

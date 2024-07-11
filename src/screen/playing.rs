@@ -29,8 +29,8 @@ pub struct PlayingAssets {}
 
 impl Configure for PlayingAssets {
     fn configure(app: &mut App) {
-        app.register_type::<PlayingAssets>();
-        app.init_collection::<PlayingAssets>();
+        app.register_type::<Self>();
+        app.init_collection::<Self>();
     }
 }
 
@@ -65,18 +65,18 @@ pub enum PlayingAction {
 
 impl Configure for PlayingAction {
     fn configure(app: &mut App) {
-        app.init_resource::<ActionState<PlayingAction>>();
+        app.init_resource::<ActionState<Self>>();
         app.insert_resource(
             InputMap::default()
-                .insert(PlayingAction::Restart, KeyCode::KeyR)
+                .insert(Self::Restart, KeyCode::KeyR)
                 .build(),
         );
-        app.add_plugins(InputManagerPlugin::<PlayingAction>::default());
+        app.add_plugins(InputManagerPlugin::<Self>::default());
         app.add_systems(
             Update,
-            restart.in_set(UpdateSet::HandleActions).run_if(
-                in_state(Screen::Playing).and_then(action_just_pressed(PlayingAction::Restart)),
-            ),
+            restart
+                .in_set(UpdateSet::HandleActions)
+                .run_if(in_state(Screen::Playing).and_then(action_just_pressed(Self::Restart))),
         );
     }
 }

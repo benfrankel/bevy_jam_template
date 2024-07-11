@@ -32,8 +32,8 @@ pub struct WindowRoot {
 
 impl Configure for WindowRoot {
     fn configure(app: &mut App) {
-        app.register_type::<WindowRoot>();
-        app.init_resource::<WindowRoot>();
+        app.register_type::<Self>();
+        app.init_resource::<Self>();
     }
 }
 

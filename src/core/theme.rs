@@ -73,7 +73,7 @@ pub struct ThemeSpriteColor(pub ThemeColor);
 
 impl Configure for ThemeSpriteColor {
     fn configure(app: &mut App) {
-        app.register_type::<ThemeSpriteColor>();
+        app.register_type::<Self>();
         app.add_systems(Update, apply_theme_sprite_color.in_set(UpdateSet::End));
     }
 }
@@ -100,7 +100,7 @@ pub struct ThemeUiImageColor(pub ThemeColor);
 
 impl Configure for ThemeUiImageColor {
     fn configure(app: &mut App) {
-        app.register_type::<ThemeUiImageColor>();
+        app.register_type::<Self>();
         app.add_systems(Update, apply_theme_ui_image_color.in_set(UpdateSet::End));
     }
 }
@@ -127,7 +127,7 @@ pub struct ThemeTextColors(pub Vec<ThemeColor>);
 
 impl Configure for ThemeTextColors {
     fn configure(app: &mut App) {
-        app.register_type::<ThemeTextColors>();
+        app.register_type::<Self>();
         app.add_systems(Update, apply_theme_text_colors.in_set(UpdateSet::End));
     }
 }
@@ -156,7 +156,7 @@ pub struct ThemeBackgroundColor(pub ThemeColor);
 
 impl Configure for ThemeBackgroundColor {
     fn configure(app: &mut App) {
-        app.register_type::<ThemeBackgroundColor>();
+        app.register_type::<Self>();
         app.add_systems(Update, apply_theme_background_color.in_set(UpdateSet::End));
     }
 }
@@ -183,7 +183,7 @@ pub struct ThemeBorderColor(pub ThemeColor);
 
 impl Configure for ThemeBorderColor {
     fn configure(app: &mut App) {
-        app.register_type::<ThemeBorderColor>();
+        app.register_type::<Self>();
         app.add_systems(Update, apply_theme_border_color.in_set(UpdateSet::End));
     }
 }

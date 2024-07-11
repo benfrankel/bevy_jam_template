@@ -33,8 +33,8 @@ pub struct UiRoot {
 
 impl Configure for UiRoot {
     fn configure(app: &mut App) {
-        app.register_type::<UiRoot>();
-        app.init_resource::<UiRoot>();
+        app.register_type::<Self>();
+        app.init_resource::<Self>();
     }
 }
 

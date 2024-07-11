@@ -35,8 +35,8 @@ pub struct TitleScreenAssets {}
 
 impl Configure for TitleScreenAssets {
     fn configure(app: &mut App) {
-        app.register_type::<TitleScreenAssets>();
-        app.init_collection::<TitleScreenAssets>();
+        app.register_type::<Self>();
+        app.init_collection::<Self>();
     }
 }
 

@@ -48,7 +48,7 @@ pub struct FontSize {
 
 impl Configure for FontSize {
     fn configure(app: &mut App) {
-        app.register_type::<FontSize>();
+        app.register_type::<Self>();
         app.add_systems(Update, apply_font_size.in_set(UpdateSet::End));
     }
 }
