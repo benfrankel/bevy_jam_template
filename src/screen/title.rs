@@ -154,6 +154,7 @@ fn spawn_button(commands: &mut Commands, text: impl Into<String>) -> Entity {
                     align_items: AlignItems::Center,
                     ..default()
                 },
+                border_radius: BorderRadius::MAX,
                 ..default()
             },
             ThemeBackgroundColor(ThemeColor::Invisible),
