@@ -1,9 +1,8 @@
 use bevy::prelude::*;
 use bevy_mod_picking::prelude::*;
 
-use crate::core::theme::ThemeBackgroundColor;
-use crate::core::theme::ThemeColor;
 use crate::core::UpdateSet;
+use crate::ui::prelude::*;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {

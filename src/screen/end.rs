@@ -4,8 +4,6 @@ use bevy_asset_loader::prelude::*;
 use leafwing_input_manager::common_conditions::action_just_pressed;
 use leafwing_input_manager::prelude::*;
 
-use crate::core::theme::ThemeColor;
-use crate::core::theme::ThemeTextColors;
 use crate::screen::fade_in;
 use crate::screen::fade_out;
 use crate::screen::Screen;

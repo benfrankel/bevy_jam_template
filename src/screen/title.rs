@@ -3,8 +3,6 @@ use bevy_asset_loader::prelude::*;
 use bevy_mod_picking::prelude::*;
 use iyes_progress::prelude::*;
 
-use crate::core::theme::ThemeColor;
-use crate::core::theme::ThemeTextColors;
 use crate::screen::fade_in;
 use crate::screen::fade_out;
 use crate::screen::playing::PlayingAssets;

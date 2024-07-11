@@ -11,9 +11,8 @@ use strum::EnumIter;
 
 use crate::animation::FadeIn;
 use crate::animation::FadeOut;
-use crate::core::theme::ThemeBackgroundColor;
-use crate::core::theme::ThemeColor;
 use crate::ui::prelude::*;
+use crate::util::prelude::*;
 
 pub fn plugin(app: &mut App) {
     app.init_state::<Screen>();

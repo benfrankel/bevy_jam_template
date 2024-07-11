@@ -14,9 +14,12 @@ pub mod prelude {
     pub use super::interaction::*;
     pub use super::widget;
     pub use super::UiRoot;
-    pub use crate::util::patch::EntityWorldMutExtAdd as _;
-    pub use crate::util::patch::SpawnWithExt as _;
-    pub use crate::util::patch::WorldSpawnWithExt as _;
+    pub use crate::core::theme::ThemeBackgroundColor;
+    pub use crate::core::theme::ThemeBorderColor;
+    pub use crate::core::theme::ThemeColor;
+    pub use crate::core::theme::ThemeSpriteColor;
+    pub use crate::core::theme::ThemeTextColors;
+    pub use crate::core::theme::ThemeUiImageColor;
 }
 
 use bevy::prelude::*;

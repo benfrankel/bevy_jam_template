@@ -1,8 +1,5 @@
 use bevy::prelude::*;
 
-use crate::core::theme::ThemeBackgroundColor;
-use crate::core::theme::ThemeColor;
-use crate::core::theme::ThemeTextColors;
 use crate::core::window::WindowRoot;
 use crate::core::UpdateSet;
 use crate::ui::prelude::*;

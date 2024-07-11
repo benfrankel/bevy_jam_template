@@ -3,15 +3,12 @@ use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
 use iyes_progress::prelude::*;
 
-use crate::core::theme::ThemeBackgroundColor;
-use crate::core::theme::ThemeBorderColor;
-use crate::core::theme::ThemeColor;
-use crate::core::theme::ThemeTextColors;
 use crate::screen::fade_in;
 use crate::screen::fade_out;
 use crate::screen::playing::PlayingAssets;
 use crate::screen::Screen;
 use crate::ui::prelude::*;
+use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_loading_state(LoadingState::new(Screen::Loading).load_collection::<PlayingAssets>());

@@ -6,14 +6,13 @@ use bevy::render::texture::ImageSampler;
 use bevy_asset_loader::prelude::*;
 use iyes_progress::prelude::*;
 
-use crate::core::theme::ThemeColor;
-use crate::core::theme::ThemeUiImageColor;
 use crate::screen::fade_in;
 use crate::screen::fade_out;
 use crate::screen::title::TitleScreenAssets;
 use crate::screen::Screen;
 use crate::screen::FADE_IN_SECS;
 use crate::ui::prelude::*;
+use crate::util::prelude::*;
 use crate::util::time::wait;
 
 pub(super) fn plugin(app: &mut App) {

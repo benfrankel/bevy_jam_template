@@ -2,9 +2,6 @@ use bevy::ecs::system::EntityCommand;
 use bevy::prelude::*;
 use bevy::ui::FocusPolicy;
 
-use crate::core::theme::ThemeBackgroundColor;
-use crate::core::theme::ThemeColor;
-use crate::core::theme::ThemeTextColors;
 use crate::ui::prelude::*;
 
 pub fn ui_root(mut entity: EntityWorldMut) {
