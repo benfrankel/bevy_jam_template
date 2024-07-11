@@ -51,7 +51,7 @@ impl Configure for EndScreenAction {
 }
 
 fn enter_end(mut commands: Commands, ui_root: Res<UiRoot>) {
-    fade_in(&mut commands);
+    commands.spawn_empty().add(fade_in);
 
     commands.insert_resource(
         InputMap::default()
@@ -107,7 +107,7 @@ fn spawn_end_screen(commands: &mut Commands) -> Entity {
 }
 
 fn restart(mut commands: Commands) {
-    fade_out(&mut commands, Screen::Title);
+    commands.spawn_empty().add(fade_out(Screen::Title));
 }
 
 fn quit(mut app_exit: EventWriter<AppExit>) {

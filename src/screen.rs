@@ -5,6 +5,7 @@ mod playing;
 mod splash;
 mod title;
 
+use bevy::ecs::system::EntityCommand;
 use bevy::prelude::*;
 use strum::EnumIter;
 
@@ -41,28 +42,22 @@ pub enum Screen {
 
 const FADE_IN_SECS: f32 = 0.3;
 
-fn fade_in(commands: &mut Commands) -> Entity {
-    commands
-        .spawn_empty()
-        .add(ui_overlay)
-        .insert((
-            Name::new("ScreenFadeIn"),
-            ThemeBackgroundColor(ThemeColor::Body),
-            FadeIn::new(FADE_IN_SECS),
-        ))
-        .id()
+fn fade_in(mut entity: EntityWorldMut) {
+    entity.add(ui_overlay).insert((
+        Name::new("ScreenFadeIn"),
+        ThemeBackgroundColor(ThemeColor::Body),
+        FadeIn::new(FADE_IN_SECS),
+    ));
 }
 
 const FADE_OUT_SECS: f32 = 0.3;
 
-fn fade_out(commands: &mut Commands, to_screen: Screen) -> Entity {
-    commands
-        .spawn_empty()
-        .add(ui_overlay)
-        .insert((
+fn fade_out(next_screen: Screen) -> impl EntityCommand<World> {
+    move |mut entity: EntityWorldMut| {
+        entity.add(ui_overlay).insert((
             Name::new("ScreenFadeOut"),
             ThemeBackgroundColor(ThemeColor::Body),
-            FadeOut::new(FADE_OUT_SECS, to_screen),
-        ))
-        .id()
+            FadeOut::new(FADE_OUT_SECS, next_screen),
+        ));
+    }
 }

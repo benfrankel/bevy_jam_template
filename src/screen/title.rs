@@ -35,7 +35,7 @@ impl Configure for TitleScreenAssets {
 }
 
 fn enter_title(mut commands: Commands, ui_root: Res<UiRoot>) {
-    fade_in(&mut commands);
+    commands.spawn_empty().add(fade_in);
 
     let screen = spawn_title_screen(&mut commands);
     commands.entity(screen).set_parent(ui_root.body);
@@ -97,14 +97,11 @@ fn spawn_title_screen(commands: &mut Commands) -> Entity {
         .insert(On::<Pointer<Click>>::run(
             |mut commands: Commands, progress: Res<ProgressCounter>| {
                 let Progress { done, total } = progress.progress_complete();
-                fade_out(
-                    &mut commands,
-                    if done >= total {
-                        Screen::Playing
-                    } else {
-                        Screen::Loading
-                    },
-                );
+                commands.spawn_empty().add(fade_out(if done >= total {
+                    Screen::Playing
+                } else {
+                    Screen::Loading
+                }));
             },
         ))
         .set_parent(button_container);

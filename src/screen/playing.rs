@@ -35,7 +35,7 @@ impl Configure for PlayingAssets {
 }
 
 fn enter_playing(mut commands: Commands) {
-    fade_in(&mut commands);
+    commands.spawn_empty().add(fade_in);
 }
 
 fn exit_playing(

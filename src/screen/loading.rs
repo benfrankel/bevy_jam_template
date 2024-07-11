@@ -32,7 +32,7 @@ pub(super) fn plugin(app: &mut App) {
 struct IsLoadingBarFill;
 
 fn enter_loading(mut commands: Commands, ui_root: Res<UiRoot>) {
-    fade_in(&mut commands);
+    commands.spawn_empty().add(fade_in);
 
     let screen = spawn_loading_screen(&mut commands);
     commands.entity(screen).set_parent(ui_root.body);
@@ -123,7 +123,7 @@ fn update_loading(
 
     // Continue to next screen when ready
     if done == total {
-        fade_out(&mut commands, Screen::Playing);
+        commands.spawn_empty().add(fade_out(Screen::Playing));
     }
 
     // Update loading bar
