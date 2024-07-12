@@ -46,8 +46,8 @@ jobs:
     outputs:
       version: ${{ inputs.version || steps.tag.outputs.tag }}
 
-  # Build for web.
-  build-for-web:
+  # Build package for web.
+  build-package-for-web:
     runs-on: ubuntu-latest
     needs: get-version
     env:
@@ -127,8 +127,8 @@ jobs:
           tag: ${{ env.VERSION }}
           overwrite: true
 
-  # Build for Linux.
-  build-for-linux:
+  # Build package for Linux.
+  build-package-for-linux:
     runs-on: ubuntu-latest
     needs: get-version
     env:
@@ -197,8 +197,8 @@ jobs:
           tag: ${{ env.VERSION }}
           overwrite: true
 
-  # Build for Windows.
-  build-for-windows:
+  # Build package for Windows.
+  build-package-for-windows:
     runs-on: windows-latest
     needs: get-version
     env:
@@ -263,18 +263,76 @@ jobs:
           tag: ${{ env.VERSION }}
           overwrite: true
 
-  # Build for MacOS x86_64 and Apple Silicon.
-  build-for-macos:
+  # Build binary for MacOS x86_64.
+  build-binary-for-macos-intel:
     runs-on: macos-latest
     needs: get-version
     env:
-        # macOS 11.0 Big Sur is the first version to support universal binaries.
-        MACOSX_DEPLOYMENT_TARGET: 11.0
-        TARGET_1: aarch64-apple-darwin
-        TARGET_2: x86_64-apple-darwin
-        PROFILE: release
-        PLATFORM: macos
-        VERSION: ${{ needs.get-version.outputs.version }}
+      TARGET: x86_64-apple-darwin
+      PROFILE: release
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: ${{ env.USE_GIT_LFS }}
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+            targets: ${{ env.TARGET }}
+
+      - name: Build binary
+        run: |
+          SDKROOT="$(xcrun -sdk macosx --show-sdk-path)" cargo build \
+            --profile='${{ env.PROFILE }}' \
+            --target='${{ env.TARGET }}' \
+            --no-default-features \
+            --features=native
+
+  # Build binary for MacOS Apple Silicon.
+  build-binary-for-macos-silicon:
+    runs-on: macos-latest
+    needs: get-version
+    env:
+      TARGET: aarch64-apple-darwin
+      PROFILE: release
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: ${{ env.USE_GIT_LFS }}
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+            targets: ${{ env.TARGET }}
+
+      - name: Build binary
+        run: |
+          SDKROOT="$(xcrun -sdk macosx --show-sdk-path)" cargo build \
+            --profile='${{ env.PROFILE }}' \
+            --target='${{ env.TARGET }}' \
+            --no-default-features \
+            --features=native
+
+  # Build package for MacOS (x86_64 and Apple Silicon).
+  build-package-for-macos:
+    runs-on: macos-latest
+    needs:
+      - get-version
+      - build-binary-for-macos-intel
+      - build-binary-for-macos-silicon
+    env:
+      # TODO: What happened to 10.9? Also, what command is this needed for? `cargo build`?
+      # MacOS 11.0 Big Sur is the first version to support universal binaries.
+      MACOSX_DEPLOYMENT_TARGET: 11.0
+      TARGET_1: aarch64-apple-darwin
+      TARGET_2: x86_64-apple-darwin
+      PROFILE: release
+      PLATFORM: macos
+      VERSION: ${{ needs.get-version.outputs.version }}
 
     steps:
       - name: Set PACKAGE environment variable
@@ -290,43 +348,14 @@ jobs:
         with:
           lfs: ${{ env.USE_GIT_LFS }}
 
-      - name: Install Rust toolchain for Apple Silicon
-        uses: dtolnay/rust-toolchain@stable
-        with:
-            targets: ${{ env.TARGET_1 }}
-
-      - name: Build binary for Apple Silicon
-        run: |
-          SDKROOT="$(xcrun -sdk macosx --show-sdk-path)" cargo build \
-            --profile='${{ env.PROFILE }}' \
-            --target='${{ env.TARGET_1 }}' \
-            --no-default-features \
-            --features=native
-
-      - name: Install Rust toolchain for Apple x86_64
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ env.TARGET_2 }}
-
-      - name: Build binary for Apple x86_64
-        run: |
-          SDKROOT="$(xcrun -sdk macosx --show-sdk-path)" cargo build \
-            --profile='${{ env.PROFILE }}' \
-            --target='${{ env.TARGET_2 }}' \
-            --no-default-features \
-            --features=native
-
-      - name: Create Universal Binary
-        run: |
-          lipo \
-            -create \
-            -output 'target/${{ env.PROFILE }}/${{ env.BINARY }}' \
-            'target/${{ env.TARGET_1 }}/${{ env.PROFILE }}/${{ env.BINARY }}' \
-            'target/${{ env.TARGET_2 }}/${{ env.PROFILE }}/${{ env.BINARY }}'
-
       - name: Gather package contents
         run: |
           mkdir -p '${{ env.OUT_DIR }}'
+          lipo \
+            -create \
+            -output '${{ env.OUT_DIR }}/${{ env.BINARY }}' \
+            'target/${{ env.TARGET_1 }}/${{ env.PROFILE }}/${{ env.BINARY }}' \
+            'target/${{ env.TARGET_2 }}/${{ env.PROFILE }}/${{ env.BINARY }}'
           cat > '${{ env.OUT_DIR }}/../Info.plist' << EOF
             <?xml version="1.0" encoding="UTF-8"?>
             <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -358,8 +387,6 @@ jobs:
             </plist>
           EOF
           cp -r '${{ env.ASSETS_DIR }}' '${{ env.OUT_DIR }}' || true # Ignore error if assets folder does not exist
-          cp 'target/${{ env.PROFILE }}/${{ env.BINARY }}' '${{ env.OUT_DIR }}'
-          ln -s /Applications build/
 
       - name: Build package
         working-directory: ./build/${{ env.PACKAGE }}
@@ -405,10 +432,10 @@ jobs:
     needs:
       - get-version
       - check-if-upload-to-itch-is-configured
-      - build-for-web
-      - build-for-linux
-      - build-for-windows
-      - build-for-macos
+      - build-package-for-web
+      - build-package-for-linux
+      - build-package-for-windows
+      - build-package-for-macos
     env:
       VERSION: ${{ needs.get-version.outputs.version }}
     if: ${{ needs.check-if-upload-to-itch-is-configured.outputs.should-upload == 'yes' }}
