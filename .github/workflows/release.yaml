@@ -1,15 +1,16 @@
 name: Release
 
-# Only trigger this workflow when a tag is pushed in the format `vA.B.C`.
 on:
+  # Trigger this workflow when a tag is pushed in the format `v1.2.3`.
   push:
-    # Syntax: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet
     tags:
+      # Pattern syntax: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet
       - "v[0-9]+.[0-9]+.[0-9]+*"
+  # Trigger this workflow manually via workflow dispatch.
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version - in the form of v1.2.3'
+        description: 'Version number in the format `v1.2.3`'
         required: true
         type: string
 
@@ -17,10 +18,10 @@ on:
 env:
   # TODO: This may become unnecessary: https://github.com/rust-lang/cargo/issues/6790
   # The base filename of the binary produced by `cargo build`.
-  BINARY: bevy_jam_template
+  BINARY: run
   # The name to use for the packaged application produced by this workflow.
   PACKAGE_NAME: bevy-jam-template
-  # The itch.io page to upload to, in the format: `user-name/project-name`.
+  # The itch.io page to upload to in the format `user-name/project-name`.
   # Comment this out to disable.
   ITCH_TARGET: pyrious/bevy-jam-template
   # The organization or author that owns the rights to the game.
@@ -225,10 +226,10 @@ jobs:
 
       - name: Build binary
         run: |
-          cargo build \
-            --profile='${{ env.PROFILE }}' \
-            --target='${{ env.TARGET }}' \
-            --no-default-features \
+          cargo build `
+            --profile='${{ env.PROFILE }}' `
+            --target='${{ env.TARGET }}' `
+            --no-default-features `
             --features=native
 
       - name: Gather package contents
@@ -303,7 +304,6 @@ jobs:
       - name: Install rust toolchain for Apple x86_64
         uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
           targets: ${{ env.TARGET_2 }}
 
       - name: Build binary for Apple x86_64
