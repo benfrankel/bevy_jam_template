@@ -84,6 +84,12 @@ jobs:
     runs-on: ${{ matrix.runner || 'ubuntu-latest' }}
 
     steps:
+      - name: Set up environment (MacOS)
+        if: ${{ matrix.platform == 'macos' }}
+        run: |
+          echo 'MACOSX_DEPLOYMENT_TARGET=11.0' >> "${GITHUB_ENV}" # MacOS 11.0 Big Sur is the first version to support universal binaries.
+          echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> "${GITHUB_ENV}"
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -99,11 +105,8 @@ jobs:
         run: |
           sudo apt-get update; sudo apt-get install libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
-      - name: Set up environment (MacOS)
-        if: ${{ matrix.platform == 'macos' }}
-        run: |
-          echo 'MACOSX_DEPLOYMENT_TARGET=11.0' >> "${GITHUB_ENV}" # MacOS 11.0 Big Sur is the first version to support universal binaries.
-          echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> "${GITHUB_ENV}"
+      - name: Populate target directory from cache
+        uses: Leafwing-Studios/cargo-cache@v1
 
       - name: Build binary
         run: |
