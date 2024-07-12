@@ -20,7 +20,7 @@ env:
   # The base filename of the binary produced by `cargo build`.
   BINARY: run
   # The name to use for the packaged application produced by this workflow.
-  PACKAGE_NAME: bevy-jam-template
+  PACKAGE_NAME: bevy_jam_template
   # The itch.io page to upload to in the format `user-name/project-name`.
   # Comment this out to disable.
   ITCH_TARGET: pyrious/bevy-jam-template
@@ -46,25 +46,44 @@ jobs:
     outputs:
       version: ${{ inputs.version || steps.tag.outputs.tag }}
 
-  # Build package for web.
-  build-package-for-web:
-    runs-on: ubuntu-latest
-    needs: get-version
-    env:
-      TARGET: wasm32-unknown-unknown
-      PROFILE: wasm-release
-      PLATFORM: web
-      VERSION: ${{ needs.get-version.outputs.version }}
+  # Build a binary for each target.
+  build:
+    strategy:
+      matrix:
+        include:
+          # Web:
+          - platform: web
+            target: wasm32-unknown-unknown
+            profile: wasm-release
+            features: web
+            binary_ext: .wasm
+          # Linux:
+          - platform: linux
+            target: x86_64-unknown-linux-gnu
+            profile: release
+            features: native,bevy/wayland
+          # Windows:
+          - platform: windows
+            target: x86_64-pc-windows-msvc
+            profile: release
+            features: native
+            runner: windows-latest
+            binary_ext: .exe
+          # MacOS x86_64:
+          - platform: macos
+            target: x86_64-apple-darwin
+            profile: release
+            features: native
+            runner: macos-latest
+          # MacOS Apple Silicon:
+          - platform: macos
+            target: aarch64-apple-darwin
+            profile: release
+            features: native
+            runner: macos-latest
+    runs-on: ${{ matrix.runner || 'ubuntu-latest' }}
 
     steps:
-      - name: Set PACKAGE environment variable
-        run: |
-          echo 'PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}' >> "${GITHUB_ENV}"
-
-      - name: Set OUT_DIR environment variable
-        run: |
-          echo 'OUT_DIR=build/${{ env.PACKAGE }}/${{ env.PACKAGE_NAME }}' >> "${GITHUB_ENV}"
-
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -73,289 +92,127 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ env.TARGET }}
+          targets: ${{ matrix.target }}
 
-      - name: Install dependencies
-        run: |
-          cargo install wasm-bindgen-cli
-
-      - name: Build binary
-        run: |
-          cargo build \
-            --profile='${{ env.PROFILE }}' \
-            --target='${{ env.TARGET }}' \
-            --no-default-features \
-            --features=web
-
-      - name: Gather package contents
-        run: |
-          mkdir -p '${{ env.OUT_DIR }}'
-          wasm-bindgen \
-            'target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}.wasm' \
-            --out-dir '${{ env.OUT_DIR }}' \
-            --out-name '${{ env.BINARY }}' \
-            --no-typescript \
-            --target web
-          cp -r web/* '${{ env.OUT_DIR }}'
-          cp -r '${{ env.ASSETS_DIR }}' '${{ env.OUT_DIR }}' || true # Ignore error if assets folder does not exist
-
-      - name: Optimize Wasm
-        uses: NiklasEi/wasm-opt-action@v2
-        with:
-          file: ${{ env.OUT_DIR }}/*.wasm
-
-      - name: Build package
-        working-directory: ./build/${{ env.PACKAGE }}
-        run: |
-          zip --recurse-paths '../${{ env.PACKAGE }}.zip' '${{ env.PACKAGE_NAME }}'
-
-      - name: Upload package to artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          path: build/${{ env.PACKAGE }}.zip
-          name: ${{ env.PLATFORM }}
-          retention-days: 1
-
-      - name: Upload package to Github release
-        if: ${{ env.UPLOAD_PACKAGES_TO_GITHUB_RELEASE == 'true' }}
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/${{ env.PACKAGE }}.zip
-          asset_name: ${{ env.PACKAGE }}.zip
-          release_name: ${{ env.VERSION }}
-          tag: ${{ env.VERSION }}
-          overwrite: true
-
-  # Build package for Linux.
-  build-package-for-linux:
-    runs-on: ubuntu-latest
-    needs: get-version
-    env:
-      TARGET: x86_64-unknown-linux-gnu
-      PROFILE: release
-      PLATFORM: linux
-      VERSION: ${{ needs.get-version.outputs.version }}
-
-    steps:
-      - name: Set PACKAGE environment variable
-        run: |
-          echo 'PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}' >> "${GITHUB_ENV}"
-
-      - name: Set OUT_DIR environment variable
-        run: |
-          echo 'OUT_DIR=build/${{ env.PACKAGE }}/${{ env.PACKAGE_NAME }}' >> "${GITHUB_ENV}"
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          lfs: ${{ env.USE_GIT_LFS }}
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ env.TARGET }}
-
-      - name: Install dependencies
+      - name: Install dependencies (Linux)
+        if: ${{ matrix.platform == 'linux' }}
         run: |
           sudo apt-get update; sudo apt-get install libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
+      - name: Set up environment (MacOS)
+        if: ${{ matrix.platform == 'macos' }}
+        run: |
+          echo 'MACOSX_DEPLOYMENT_TARGET=11.0' >> "${GITHUB_ENV}" # MacOS 11.0 Big Sur is the first version to support universal binaries.
+          echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> "${GITHUB_ENV}"
+
       - name: Build binary
         run: |
-          cargo build \
-            --profile='${{ env.PROFILE }}' \
-            --target='${{ env.TARGET }}' \
-            --no-default-features \
-            --features=native,bevy/wayland
+          cargo build --profile='${{ matrix.profile }}' --target='${{ matrix.target }}' --no-default-features --features='${{ matrix.features }}'
+          mkdir -p tmp
+          mv 'target/${{ matrix.target }}/${{ matrix.profile }}/${{ env.BINARY }}${{ matrix.binary_ext }}' 'tmp/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
 
-      - name: Gather package contents
+      - name: Install cargo-binstall (Web)
+        if: ${{ matrix.platform == 'web' }}
+        uses: cargo-bins/cargo-binstall@v1.7.4
+
+      - name: Run wasm-bindgen (Web)
+        if: ${{ matrix.platform == 'web' }}
         run: |
-          mkdir -p '${{ env.OUT_DIR }}'
-          cp 'target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}' '${{ env.OUT_DIR }}'
-          cp -r '${{ env.ASSETS_DIR }}' '${{ env.OUT_DIR }}' || true # Ignore error if assets folder does not exist
+          cargo binstall --no-confirm wasm-bindgen-cli
+          wasm-bindgen tmp/* --out-dir tmp --out-name '${{ env.PACKAGE_NAME }}' --no-typescript --target web
+          rm 'tmp/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
 
-      - name: Build package
-        working-directory: ./build/${{ env.PACKAGE }}
-        run: |
-          zip --recurse-paths '../${{ env.PACKAGE }}.zip' '${{ env.PACKAGE_NAME }}'
+      - name: Optimize Wasm (Web)
+        if: ${{ matrix.platform == 'web' }}
+        uses: NiklasEi/wasm-opt-action@v2
+        with:
+          file: tmp/*${{ matrix.binary_ext }}
 
-      - name: Upload package to artifacts
+      - name: Upload binary to artifacts
         uses: actions/upload-artifact@v4
         with:
-          path: build/${{ env.PACKAGE }}.zip
-          name: ${{ env.PLATFORM }}
+          path: tmp/*
+          name: binary-${{ matrix.platform }}-${{ matrix.target }}
           retention-days: 1
 
-      - name: Upload package to Github release
-        if: ${{ env.UPLOAD_PACKAGES_TO_GITHUB_RELEASE == 'true' }}
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/${{ env.PACKAGE }}.zip
-          asset_name: ${{ env.PACKAGE }}.zip
-          release_name: ${{ env.VERSION }}
-          tag: ${{ env.VERSION }}
-          overwrite: true
-
-  # Build package for Windows.
-  build-package-for-windows:
-    runs-on: windows-latest
-    needs: get-version
-    env:
-      TARGET: x86_64-pc-windows-msvc
-      PROFILE: release
-      PLATFORM: windows
-      VERSION: ${{ needs.get-version.outputs.version }}
-
-    steps:
-      - name: Set PACKAGE environment variable
-        run: |
-          'PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}' | Out-File -FilePath "${Env:GITHUB_ENV}" -Append
-
-      - name: Set OUT_DIR environment variable
-        run: |
-          'OUT_DIR=build/${{ env.PACKAGE }}/${{ env.PACKAGE_NAME }}' | Out-File -FilePath "${Env:GITHUB_ENV}" -Append
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          lfs: ${{ env.USE_GIT_LFS }}
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ env.TARGET }}
-
-      - name: Build binary
-        run: |
-          cargo build `
-            --profile='${{ env.PROFILE }}' `
-            --target='${{ env.TARGET }}' `
-            --no-default-features `
-            --features=native
-
-      - name: Gather package contents
-        run: |
-          mkdir -p '${{ env.OUT_DIR }}'
-          cp 'target/${{ env.TARGET }}/${{ env.PROFILE }}/${{ env.BINARY }}.exe' '${{ env.OUT_DIR }}'
-          cp -r '${{ env.ASSETS_DIR }}' '${{ env.OUT_DIR }}' || true # Ignore error if assets folder does not exist
-
-      - name: Build package
-        working-directory: ./build/${{ env.PACKAGE }}
-        run: |
-          Compress-Archive -Path '${{ env.PACKAGE_NAME }}' -DestinationPath '../${{ env.PACKAGE }}.zip'
-
-      - name: Upload package to artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          path: build/${{ env.PACKAGE }}.zip
-          name: ${{ env.PLATFORM }}
-          retention-days: 1
-
-      - name: Upload package to Github release
-        if: ${{ env.UPLOAD_PACKAGES_TO_GITHUB_RELEASE == 'true' }}
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/${{ env.PACKAGE }}.zip
-          asset_name: ${{ env.PACKAGE }}.zip
-          release_name: ${{ env.VERSION }}
-          tag: ${{ env.VERSION }}
-          overwrite: true
-
-  # Build binary for MacOS x86_64.
-  build-binary-for-macos-intel:
-    runs-on: macos-latest
-    needs: get-version
-    env:
-      TARGET: x86_64-apple-darwin
-      PROFILE: release
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          lfs: ${{ env.USE_GIT_LFS }}
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-            targets: ${{ env.TARGET }}
-
-      - name: Build binary
-        run: |
-          SDKROOT="$(xcrun -sdk macosx --show-sdk-path)" cargo build \
-            --profile='${{ env.PROFILE }}' \
-            --target='${{ env.TARGET }}' \
-            --no-default-features \
-            --features=native
-
-  # Build binary for MacOS Apple Silicon.
-  build-binary-for-macos-silicon:
-    runs-on: macos-latest
-    needs: get-version
-    env:
-      TARGET: aarch64-apple-darwin
-      PROFILE: release
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          lfs: ${{ env.USE_GIT_LFS }}
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-            targets: ${{ env.TARGET }}
-
-      - name: Build binary
-        run: |
-          SDKROOT="$(xcrun -sdk macosx --show-sdk-path)" cargo build \
-            --profile='${{ env.PROFILE }}' \
-            --target='${{ env.TARGET }}' \
-            --no-default-features \
-            --features=native
-
-  # Build package for MacOS (x86_64 and Apple Silicon).
-  build-package-for-macos:
-    runs-on: macos-latest
+  # Package a release for each platform.
+  package:
     needs:
       - get-version
-      - build-binary-for-macos-intel
-      - build-binary-for-macos-silicon
+      - build
     env:
-      # TODO: What happened to 10.9? Also, what command is this needed for? `cargo build`?
-      # MacOS 11.0 Big Sur is the first version to support universal binaries.
-      MACOSX_DEPLOYMENT_TARGET: 11.0
-      TARGET_1: aarch64-apple-darwin
-      TARGET_2: x86_64-apple-darwin
-      PROFILE: release
-      PLATFORM: macos
       VERSION: ${{ needs.get-version.outputs.version }}
+    strategy:
+      matrix:
+        include:
+          # Web:
+          - platform: web
+            package_ext: .zip
+            binary_ext: .wasm
+          # Linux:
+          - platform: linux
+            package_ext: .zip
+          # Windows:
+          - platform: windows
+            package_ext: .zip
+            binary_ext: .exe
+          # MacOS:
+          - platform: macos
+            package_ext: .dmg
+            out_dir_suffix: .app/Contents/MacOS
+            runner: macos-latest # Already has `lipo` and `hdiutil` installed.
+    runs-on: ${{ matrix.runner || 'ubuntu-latest' }}
 
     steps:
-      - name: Set PACKAGE environment variable
+      - name: Set up environment
         run: |
-          echo 'PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}' >> "${GITHUB_ENV}"
-
-      - name: Set OUT_DIR environment variable
-        run: |
-          echo 'OUT_DIR=build/${{ env.PACKAGE }}/${{ env.PACKAGE_NAME }}.app/Contents/MacOS' >> "${GITHUB_ENV}"
+          echo 'PACKAGE=${{ env.PACKAGE_NAME }}-${{ matrix.platform }}' >> "${GITHUB_ENV}"
+          echo 'OUT_DIR=tmp/package/${{ env.PACKAGE_NAME }}${{ matrix.out_dir_suffix }}' >> "${GITHUB_ENV}"
 
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           lfs: ${{ env.USE_GIT_LFS }}
 
-      - name: Gather package contents
+      - name: Create output directory
         run: |
+          rm -rf '${{ env.OUT_DIR }}'
           mkdir -p '${{ env.OUT_DIR }}'
-          lipo \
-            -create \
-            -output '${{ env.OUT_DIR }}/${{ env.BINARY }}' \
-            'target/${{ env.TARGET_1 }}/${{ env.PROFILE }}/${{ env.BINARY }}' \
-            'target/${{ env.TARGET_2 }}/${{ env.PROFILE }}/${{ env.BINARY }}'
+
+      - name: Download binary from artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: binary-${{ matrix.platform }}-*
+          path: tmp
+
+      # TODO: Workaround for https://github.com/actions/upload-artifact/issues/38.
+      - name: Fix file permissions of binary (non-Web)
+        if: ${{ matrix.platform != 'web' }}
+        run: |
+          chmod +x tmp/binary-*/*${{ matrix.binary_ext }}
+
+      - name: Add binary to package (non-MacOS)
+        if: ${{ matrix.platform != 'macos' }}
+        run: |
+          mv tmp/binary-*/* '${{ env.OUT_DIR }}'
+
+      - name: Create universal binary (MacOS)
+        if: ${{ matrix.platform == 'macos' }}
+        run: |
+          lipo tmp/binary-*/* -create -output '${{ env.OUT_DIR }}/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
+
+      - name: Add assets to package
+        run: |
+          cp -r '${{ env.ASSETS_DIR }}' '${{ env.OUT_DIR }}' || true # Ignore error if assets folder does not exist
+
+      - name: Add web content to package (Web)
+        if: ${{ matrix.platform == 'web' }}
+        run: |
+          cp -r web/* '${{ env.OUT_DIR }}'
+
+      - name: Add app metadata to package (MacOS)
+        if: ${{ matrix.platform == 'macos' }}
+        run: |
           cat > '${{ env.OUT_DIR }}/../Info.plist' << EOF
             <?xml version="1.0" encoding="UTF-8"?>
             <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -366,9 +223,9 @@ jobs:
                     <key>CFBundleDisplayName</key>
                     <string>${{ env.PACKAGE_NAME }}</string>
                     <key>CFBundleExecutable</key>
-                    <string>${{ env.BINARY }}</string>
+                    <string>${{ env.PACKAGE_NAME }}</string>
                     <key>CFBundleIdentifier</key>
-                    <string>${{ env.OWNER }}.${{ env.PACKAGE_NAME}}</string>
+                    <string>${{ env.OWNER }}.${{ env.PACKAGE_NAME }}</string>
                     <key>CFBundleName</key>
                     <string>${{ env.PACKAGE_NAME }}</string>
                     <key>CFBundleShortVersionString</key>
@@ -386,18 +243,25 @@ jobs:
                 </dict>
             </plist>
           EOF
-          cp -r '${{ env.ASSETS_DIR }}' '${{ env.OUT_DIR }}' || true # Ignore error if assets folder does not exist
 
-      - name: Build package
-        working-directory: ./build/${{ env.PACKAGE }}
+      - name: Build package (non-MacOS)
+        if: ${{ matrix.platform != 'macos' }}
+        working-directory: tmp/package
         run: |
-          hdiutil create -fs HFS+ -volname '${{ env.PACKAGE_NAME }}' -srcfolder . '../${{ env.PACKAGE }}.dmg'
+          zip --recurse-paths '${{ env.PACKAGE }}${{ matrix.package_ext }}' '${{ env.PACKAGE_NAME }}'
+
+      - name: Build package (MacOS)
+        if: ${{ matrix.platform == 'macos' }}
+        working-directory: tmp/package
+        run: |
+          ln -s /Applications .
+          hdiutil create -fs HFS+ -volname '${{ env.PACKAGE_NAME }}' -srcfolder . '${{ env.PACKAGE }}${{ matrix.package_ext }}'
 
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v4
         with:
-          path: build/${{ env.PACKAGE }}.dmg
-          name: ${{ env.PLATFORM }}
+          path: tmp/package/${{ env.PACKAGE }}${{ matrix.package_ext }}
+          name: package-${{ matrix.platform }}
           retention-days: 1
 
       - name: Upload package to Github release
@@ -405,46 +269,39 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/${{ env.PACKAGE }}.dmg
-          asset_name: ${{ env.PACKAGE }}.dmg
+          file: tmp/package/${{ env.PACKAGE }}${{ matrix.package_ext }}
+          asset_name: ${{ env.PACKAGE }}${{ matrix.package_ext }}
           release_name: ${{ env.VERSION }}
           tag: ${{ env.VERSION }}
           overwrite: true
 
-  # Check if upload to itch.io is configured.
-  check-if-upload-to-itch-is-configured:
+  # Get itch.io target from env, because the `env` context can't be used in the `if:` condition of a job.
+  # See: https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
+  get-itch-target:
     runs-on: ubuntu-latest
     steps:
-      - name: Check ITCH_TARGET environment variable
-        id: check-env
-        run: |
-          if [[ -z "${ITCH_TARGET}" ]]; then
-            echo 'has-itch-target=no' >> "${GITHUB_OUTPUT}"
-          else
-            echo 'has-itch-target=yes' >> "${GITHUB_OUTPUT}"
-          fi
+      - name: No-op
+        run: true
     outputs:
-      should-upload: ${{ steps.check-env.outputs.has-itch-target }}
+      itch-target: ${{ env.ITCH_TARGET }}
 
-  # Upload artifacts to itch.io.
+  # Upload all packages to itch.io.
   upload-to-itch:
     runs-on: ubuntu-latest
     needs:
       - get-version
-      - check-if-upload-to-itch-is-configured
-      - build-package-for-web
-      - build-package-for-linux
-      - build-package-for-windows
-      - build-package-for-macos
+      - get-itch-target
+      - package
     env:
       VERSION: ${{ needs.get-version.outputs.version }}
-    if: ${{ needs.check-if-upload-to-itch-is-configured.outputs.should-upload == 'yes' }}
+    if: ${{ needs.get-itch-target.outputs.itch-target != '' }}
 
     steps:
-      - name: Download artifacts
+      - name: Download all packages
         uses: actions/download-artifact@v4
         with:
-          path: ./builds
+          pattern: package-*
+          path: tmp
 
       - name: Install butler
         run: |
@@ -453,14 +310,14 @@ jobs:
           chmod +x butler
           ./butler -V
 
-      - name: Upload artifacts to itch.io
+      - name: Upload all packages to itch.io
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIALS }}
         run: |
-          for channel in $(ls builds); do
+          for channel in $(ls tmp); do
             ./butler push \
-                --fix-permissions \
-                --userversion='${{ env.VERSION }}' \
-                builds/"${channel}"/* \
-                '${{ env.ITCH_TARGET }}':"${channel}"
+              --fix-permissions \
+              --userversion='${{ env.VERSION }}' \
+              tmp/"${channel}"/* \
+              '${{ env.ITCH_TARGET }}':"${channel#package-}"
           done
