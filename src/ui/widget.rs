@@ -10,7 +10,6 @@ pub fn ui_root(mut entity: EntityWorldMut) {
             width: Percent(100.0),
             height: Percent(100.0),
             align_items: AlignItems::Center,
-            justify_content: JustifyContent::Center,
             flex_direction: FlexDirection::Column,
             ..default()
         },
@@ -40,8 +39,8 @@ pub fn menu_button(text: impl Into<String>) -> impl EntityCommand<World> {
                 Name::new(format!("{}Button", text.replace(' ', ""))),
                 ButtonBundle {
                     style: Style {
-                        height: Vw(8.0),
-                        width: Vw(30.0),
+                        height: Vw(11.0),
+                        width: Vw(38.0),
                         align_items: AlignItems::Center,
                         justify_content: JustifyContent::Center,
                         ..default()

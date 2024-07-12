@@ -46,14 +46,14 @@ fn title_screen(mut entity: EntityWorldMut) {
         .add(widget::ui_root)
         .insert(Name::new("TitleScreen"))
         .with_children(|children| {
-            children.spawn_with(title);
+            children.spawn_with(title_text);
             children.spawn_with(button_container);
         });
 }
 
-fn title(mut entity: EntityWorldMut) {
+fn title_text(mut entity: EntityWorldMut) {
     entity.insert((
-        Name::new("Title"),
+        Name::new("TitleText"),
         TextBundle::from_section(
             TITLE,
             TextStyle {
@@ -77,10 +77,9 @@ fn button_container(mut entity: EntityWorldMut) {
             NodeBundle {
                 style: Style {
                     width: Percent(100.0),
-                    height: Vw(40.0),
                     align_items: AlignItems::Center,
-                    justify_content: JustifyContent::Center,
                     flex_direction: FlexDirection::Column,
+                    margin: UiRect::vertical(VMin(9.0)),
                     row_gap: Vw(2.5),
                     ..default()
                 },
