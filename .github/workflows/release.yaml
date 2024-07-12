@@ -59,7 +59,7 @@ jobs:
     steps:
       - name: Set PACKAGE environment variable
         run: |
-          echo 'PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}' >> "${GITHUB_ENV}"
+          echo 'PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}' >> "${GITHUB_ENV}"
 
       - name: Set OUT_DIR environment variable
         run: |
@@ -140,7 +140,7 @@ jobs:
     steps:
       - name: Set PACKAGE environment variable
         run: |
-          echo 'PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}' >> "${GITHUB_ENV}"
+          echo 'PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}' >> "${GITHUB_ENV}"
 
       - name: Set OUT_DIR environment variable
         run: |
@@ -210,7 +210,7 @@ jobs:
     steps:
       - name: Set PACKAGE environment variable
         run: |
-          'PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}' | Out-File -FilePath "${Env:GITHUB_ENV}" -Append
+          'PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}' | Out-File -FilePath "${Env:GITHUB_ENV}" -Append
 
       - name: Set OUT_DIR environment variable
         run: |
@@ -279,7 +279,7 @@ jobs:
     steps:
       - name: Set PACKAGE environment variable
         run: |
-          echo 'PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.VERSION }}-${{ env.PLATFORM }}' >> "${GITHUB_ENV}"
+          echo 'PACKAGE=${{ env.PACKAGE_NAME }}-${{ env.PLATFORM }}' >> "${GITHUB_ENV}"
 
       - name: Set OUT_DIR environment variable
         run: |
@@ -303,7 +303,7 @@ jobs:
             --no-default-features \
             --features=native
 
-      - name: Install rust toolchain for Apple x86_64
+      - name: Install Rust toolchain for Apple x86_64
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ env.TARGET_2 }}
