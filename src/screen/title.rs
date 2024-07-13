@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
 use bevy_mod_picking::prelude::*;
 use iyes_progress::prelude::*;
+use pyri_state::prelude::*;
 
 use crate::screen::fade_in;
 use crate::screen::fade_out;
@@ -11,10 +12,12 @@ use crate::ui::prelude::*;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_loading_state(LoadingState::new(Screen::Title).load_collection::<PlayingAssets>());
-    app.add_plugins(ProgressPlugin::new(Screen::Title));
-    app.add_systems(OnEnter(Screen::Title), enter_title);
-    app.add_systems(OnExit(Screen::Title), exit_title);
+    // TODO: Add a patch for like `Screen::Title.bevy()`
+    app.add_loading_state(
+        LoadingState::new(BevyState(Some(Screen::Title))).load_collection::<PlayingAssets>(),
+    );
+    app.add_plugins(ProgressPlugin::new(BevyState(Some(Screen::Title))));
+    app.add_systems(StateFlush, Screen::Title.on_edge(exit_title, enter_title));
 
     app.configure::<TitleScreenAssets>();
 }

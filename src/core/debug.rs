@@ -11,7 +11,7 @@ use bevy::prelude::*;
 use bevy_mod_picking::debug::DebugPickingMode;
 //use bevy_editor_pls::EditorPlugin;
 use iyes_progress::prelude::*;
-use strum::IntoEnumIterator;
+use pyri_state::prelude::*;
 
 use crate::screen::Screen;
 use crate::util::time::wait;
@@ -25,7 +25,7 @@ pub(super) struct DebugPlugin {
     // Logging
     pub log_diagnostics: bool,
     pub log_ambiguity_detection: bool,
-    pub log_screen_transitions: bool,
+    pub log_state_transitions: bool,
 
     // 3rd-party debug tools
     pub debug_picking: bool,
@@ -46,7 +46,7 @@ impl Default for DebugPlugin {
 
             log_diagnostics: true,
             log_ambiguity_detection: true,
-            log_screen_transitions: true,
+            log_state_transitions: true,
 
             debug_picking: true,
             debug_physics: true,
@@ -86,16 +86,12 @@ impl Plugin for DebugPlugin {
             }
         }
 
-        // Log screen transitions.
-        if self.log_screen_transitions {
-            for screen in Screen::iter() {
-                app.add_systems(OnEnter(screen), move |frame: Res<FrameCount>| {
-                    info!("[Frame {}] Entering {screen:?}", frame.0)
-                });
-                app.add_systems(OnExit(screen), move |frame: Res<FrameCount>| {
-                    info!("[Frame {}] Exiting {screen:?}", frame.0)
-                });
-            }
+        // Log state transitions.
+        if self.log_state_transitions {
+            app.insert_resource(StateDebugSettings {
+                log_flush: true,
+                ..default()
+            });
         }
 
         // Debug picking.
@@ -143,22 +139,15 @@ impl Plugin for DebugPlugin {
             app.add_systems(
                 Update,
                 (
-                    (|| Progress::from(false))
-                        .track_progress()
-                        .run_if(in_state(Screen::Title)),
-                    wait(self.extend_loading_screen).run_if(in_state(Screen::Loading)),
+                    Screen::Title.on_update((|| Progress::from(false)).track_progress()),
+                    Screen::Loading.on_update(wait(self.extend_loading_screen)),
                 ),
             );
         }
 
         // Skip to a custom starting screen.
-        // Setting this at startup instead of right now prevents a plugin ordering requirement
-        app.add_systems(Startup, {
-            let start = self.start_screen;
-            move |mut screen: ResMut<State<_>>| {
-                *screen = State::new(start);
-            }
-        });
+        // Setting this at startup instead of right now avoids a plugin ordering requirement.
+        app.add_systems(Startup, self.start_screen.enter());
 
         // Set up ad hoc debugging.
         app.add_systems(Update, debug_start);

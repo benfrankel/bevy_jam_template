@@ -1,20 +1,20 @@
 use bevy::prelude::*;
 use iyes_progress::prelude::*;
+use pyri_state::prelude::*;
 
 use crate::core::config::ConfigHandle;
 use crate::core::window::WindowRoot;
 use crate::screen::Screen;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_plugins(ProgressPlugin::new(Screen::Boot).continue_to(Screen::Splash));
-    app.add_systems(OnEnter(Screen::Boot), enter_boot);
-    app.add_systems(OnExit(Screen::Boot), exit_boot);
+    app.add_plugins(ProgressPlugin::new(Screen::Boot.bevy()).continue_to(Screen::Splash.bevy()));
+    app.add_systems(StateFlush, Screen::Boot.on_edge(exit_boot, enter_boot));
 
     app.add_systems(
         Update,
         wait_for_config
             .track_progress()
-            .run_if(in_state(Screen::Boot)),
+            .run_if(bevy_state::condition::in_state(Screen::Boot.bevy())),
     );
 }
 

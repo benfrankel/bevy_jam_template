@@ -2,6 +2,7 @@ use bevy::core::FrameCount;
 use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
 use iyes_progress::prelude::*;
+use pyri_state::prelude::*;
 
 use crate::screen::fade_in;
 use crate::screen::fade_out;
@@ -11,17 +12,19 @@ use crate::ui::prelude::*;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_loading_state(LoadingState::new(Screen::Loading).load_collection::<PlayingAssets>());
-    app.add_plugins(ProgressPlugin::new(Screen::Loading));
-    app.add_systems(OnEnter(Screen::Loading), enter_loading);
-    app.add_systems(OnExit(Screen::Loading), exit_loading);
+    app.add_loading_state(
+        LoadingState::new(Screen::Loading.bevy()).load_collection::<PlayingAssets>(),
+    );
+    app.add_plugins(ProgressPlugin::new(Screen::Loading.bevy()));
+    app.add_systems(
+        StateFlush,
+        Screen::Loading.on_edge(exit_loading, enter_loading),
+    );
 
     app.register_type::<IsLoadingBarFill>();
     app.add_systems(
         Update,
-        update_loading
-            .run_if(in_state(Screen::Loading))
-            .after(TrackedProgressSet),
+        Screen::Loading.on_update(update_loading.after(TrackedProgressSet)),
     );
 }
 

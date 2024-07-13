@@ -5,10 +5,14 @@ edition = "2021"
 default-run = "run"
 
 [dependencies]
+avian2d = { version = "0.1", default-features = false, features = [
+    "2d",
+    "f32",
+    "parry-f32",
+] }
 bevy = { version = "0.14", default-features = false, features = [
     # Core functionality
     "bevy_asset",
-    "bevy_state",
     "bevy_color",
     "bevy_render",
     "bevy_winit",
@@ -37,21 +41,23 @@ bevy_mod_debugdump = { version = "0.11", optional = true }
 bevy_mod_picking = { version = "0.20", default-features = false, features = [
     "backend_bevy_ui",
 ] }
-# TODO: Switch to avian2d :)
-avian2d = { version = "0.1", default-features = false, features = [
-    "2d",
-    "f32",
-    "parry-f32",
-] }
+bevy_state = "0.14"
 iyes_progress = "0.12"
 lazy-regex = { version = "3", features = ["lite"] }
 leafwing-input-manager = "0.14"
 #noise = "0.8"
+pyri_state = "0.2"
 #rand = { version = "0.8", features = ["small_rng"] }
 ron = "0.8"
 serde = "1"
 strum = { version = "0.26", features = ["derive"] }
 tap = "1"
+
+[patch.crates-io]
+# TODO: Workaround for https://github.com/NiklasEi/bevy_asset_loader/issues/219.
+bevy_asset_loader = { git = 'https://github.com/benfrankel/bevy_asset_loader.git', branch = 'direct-depend' }
+# TODO: Needs a patch release.
+pyri_state = { git = 'https://github.com/benfrankel/pyri_state.git', branch = 'main' }
 
 [features]
 default = ["native_dev"]

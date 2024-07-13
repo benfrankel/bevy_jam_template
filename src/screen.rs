@@ -7,7 +7,7 @@ mod title;
 
 use bevy::ecs::system::EntityCommand;
 use bevy::prelude::*;
-use strum::EnumIter;
+use pyri_state::prelude::*;
 
 use crate::animation::FadeIn;
 use crate::animation::FadeOut;
@@ -26,7 +26,8 @@ pub fn plugin(app: &mut App) {
     ));
 }
 
-#[derive(States, Reflect, Default, Copy, Clone, Eq, PartialEq, Hash, Debug, EnumIter)]
+#[derive(State, Copy, Clone, Eq, PartialEq, Hash, Debug, Reflect, Default)]
+#[state(bevy_state, log_flush)]
 pub enum Screen {
     #[default]
     Boot,
@@ -34,8 +35,6 @@ pub enum Screen {
     Title,
     Loading,
     Playing,
-    // TODO: Workaround for https://github.com/bevyengine/bevy/issues/9130
-    PlayingRestart,
     End,
 }
 
@@ -51,12 +50,12 @@ fn fade_in(mut entity: EntityWorldMut) {
 
 const FADE_OUT_SECS: f32 = 0.3;
 
-fn fade_out(next_screen: Screen) -> impl EntityCommand<World> {
+fn fade_out(to_screen: Screen) -> impl EntityCommand<World> {
     move |mut entity: EntityWorldMut| {
         entity.add(widget::ui_overlay).insert((
             Name::new("ScreenFadeOut"),
             ThemeBackgroundColor(ThemeColor::Body),
-            FadeOut::new(FADE_OUT_SECS, next_screen),
+            FadeOut::new(FADE_OUT_SECS, to_screen),
         ));
     }
 }

@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use pyri_state::prelude::*;
 
 use crate::core::PostColorSet;
 use crate::screen::Screen;
@@ -51,7 +52,7 @@ fn apply_fade_in(
 pub struct FadeOut {
     duration: f32,
     remaining: f32,
-    next_screen: Screen,
+    to_screen: Screen,
 }
 
 impl Configure for FadeOut {
@@ -62,11 +63,11 @@ impl Configure for FadeOut {
 }
 
 impl FadeOut {
-    pub fn new(duration: f32, next_screen: Screen) -> Self {
+    pub fn new(duration: f32, to_screen: Screen) -> Self {
         Self {
             duration,
             remaining: duration,
-            next_screen,
+            to_screen,
         }
     }
 }
@@ -74,7 +75,7 @@ impl FadeOut {
 fn apply_fade_out(
     time: Res<Time>,
     mut despawn: ResMut<DespawnSet>,
-    mut next_screen: ResMut<NextState<Screen>>,
+    mut screen: NextMut<Screen>,
     mut fade_query: Query<(Entity, &mut FadeOut, &mut BackgroundColor)>,
 ) {
     let dt = time.delta_seconds();
@@ -84,7 +85,7 @@ fn apply_fade_out(
             .0
             .set_alpha(1.0 - (fade.remaining / fade.duration).max(0.0));
         if fade.remaining <= 0.0 {
-            next_screen.set(fade.next_screen);
+            screen.enter(fade.to_screen);
             despawn.recursive(entity);
         }
         fade.remaining -= dt;

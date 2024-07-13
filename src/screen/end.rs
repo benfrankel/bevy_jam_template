@@ -3,6 +3,7 @@ use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
 use leafwing_input_manager::common_conditions::action_just_pressed;
 use leafwing_input_manager::prelude::*;
+use pyri_state::prelude::*;
 
 use crate::screen::fade_in;
 use crate::screen::fade_out;
@@ -11,8 +12,7 @@ use crate::ui::prelude::*;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::End), enter_end);
-    app.add_systems(OnExit(Screen::End), exit_end);
+    app.add_systems(StateFlush, Screen::End.on_edge(exit_end, enter_end));
 
     app.configure::<(EndScreenAssets, EndScreenAction)>();
 }

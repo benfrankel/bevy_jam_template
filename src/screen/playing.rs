@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
 use leafwing_input_manager::common_conditions::action_just_pressed;
 use leafwing_input_manager::prelude::*;
+use pyri_state::prelude::*;
 
 use crate::core::camera::CameraRoot;
 use crate::core::UpdateSet;
@@ -11,13 +12,9 @@ use crate::ui::prelude::*;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(OnEnter(Screen::Playing), enter_playing);
-    app.add_systems(OnExit(Screen::Playing), exit_playing);
     app.add_systems(
-        OnEnter(Screen::PlayingRestart),
-        |mut screen: ResMut<NextState<_>>| {
-            screen.set(Screen::Playing);
-        },
+        StateFlush,
+        Screen::Playing.on_edge(exit_playing, enter_playing),
     );
 
     app.configure::<(PlayingAssets, PlayingAction)>();
@@ -74,13 +71,11 @@ impl Configure for PlayingAction {
         app.add_plugins(InputManagerPlugin::<Self>::default());
         app.add_systems(
             Update,
-            restart
-                .in_set(UpdateSet::HandleActions)
-                .run_if(in_state(Screen::Playing).and_then(action_just_pressed(Self::Restart))),
+            Screen::Playing.on_update(
+                Screen::refresh
+                    .in_set(UpdateSet::HandleActions)
+                    .run_if(action_just_pressed(Self::Restart)),
+            ),
         );
     }
-}
-
-fn restart(mut next_screen: ResMut<NextState<Screen>>) {
-    next_screen.set(Screen::PlayingRestart);
 }

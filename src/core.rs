@@ -7,6 +7,7 @@ pub mod config;
 #[cfg(feature = "dev")]
 pub mod debug;
 pub mod physics;
+pub mod state;
 pub mod theme;
 pub mod window;
 
@@ -33,6 +34,7 @@ pub(super) fn plugin(app: &mut App) {
         audio::plugin,
         camera::plugin,
         config::plugin,
+        state::plugin,
         theme::plugin,
         physics::plugin,
     ));
