@@ -41,8 +41,7 @@ jobs:
     steps:
       - name: Get version number from tag
         id: tag
-        run: |
-          echo "tag=${GITHUB_REF#refs/tags/}" >> "${GITHUB_OUTPUT}"
+        run: echo "tag=${GITHUB_REF#refs/tags/}" >> "${GITHUB_OUTPUT}"
     outputs:
       version: ${{ inputs.version || steps.tag.outputs.tag }}
 
@@ -100,13 +99,12 @@ jobs:
         with:
           targets: ${{ matrix.target }}
 
-      - name: Install dependencies (Linux)
-        if: ${{ matrix.platform == 'linux' }}
-        run: |
-          sudo apt-get update; sudo apt-get install libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
-
       - name: Populate target directory from cache
         uses: Leafwing-Studios/cargo-cache@v1
+
+      - name: Install dependencies (Linux)
+        if: ${{ matrix.platform == 'linux' }}
+        run: sudo apt-get update; sudo apt-get install libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
       - name: Build binary
         run: |
@@ -177,7 +175,7 @@ jobs:
         with:
           lfs: ${{ env.USE_GIT_LFS }}
 
-      - name: Create output directory
+      - name: Prepare output directory
         run: |
           rm -rf '${{ env.OUT_DIR }}'
           mkdir -p '${{ env.OUT_DIR }}'
@@ -191,27 +189,22 @@ jobs:
       # TODO: Workaround for https://github.com/actions/upload-artifact/issues/38.
       - name: Fix file permissions of binary (non-Web)
         if: ${{ matrix.platform != 'web' }}
-        run: |
-          chmod +x tmp/binary-*/*${{ matrix.binary_ext }}
+        run: chmod +x tmp/binary-*/*'${{ matrix.binary_ext }}'
 
-      - name: Add binary to package (non-MacOS)
-        if: ${{ matrix.platform != 'macos' }}
+      - name: Add binary to package
         run: |
-          mv tmp/binary-*/* '${{ env.OUT_DIR }}'
-
-      - name: Create universal binary (MacOS)
-        if: ${{ matrix.platform == 'macos' }}
-        run: |
-          lipo tmp/binary-*/* -create -output '${{ env.OUT_DIR }}/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
+          if [ '${{ matrix.platform }}' == 'macos' ]; then
+            lipo tmp/binary-*/* -create -output '${{ env.OUT_DIR }}/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
+          else
+            mv tmp/binary-*/* '${{ env.OUT_DIR }}'
+          fi
 
       - name: Add assets to package
-        run: |
-          cp -r '${{ env.ASSETS_DIR }}' '${{ env.OUT_DIR }}' || true # Ignore error if assets folder does not exist
+        run: cp -r '${{ env.ASSETS_DIR }}' '${{ env.OUT_DIR }}' || true # Ignore error if assets folder does not exist
 
       - name: Add web content to package (Web)
         if: ${{ matrix.platform == 'web' }}
-        run: |
-          cp -r web/* '${{ env.OUT_DIR }}'
+        run: cp -r web/* '${{ env.OUT_DIR }}'
 
       - name: Add app metadata to package (MacOS)
         if: ${{ matrix.platform == 'macos' }}
@@ -247,18 +240,15 @@ jobs:
             </plist>
           EOF
 
-      - name: Build package (non-MacOS)
-        if: ${{ matrix.platform != 'macos' }}
+      - name: Finish package
         working-directory: tmp/package
         run: |
-          zip --recurse-paths '${{ env.PACKAGE }}${{ matrix.package_ext }}' '${{ env.PACKAGE_NAME }}'
-
-      - name: Build package (MacOS)
-        if: ${{ matrix.platform == 'macos' }}
-        working-directory: tmp/package
-        run: |
-          ln -s /Applications .
-          hdiutil create -fs HFS+ -volname '${{ env.PACKAGE_NAME }}' -srcfolder . '${{ env.PACKAGE }}${{ matrix.package_ext }}'
+          if [ '${{ matrix.platform }}' == 'macos' ]; then
+            ln -s /Applications .
+            hdiutil create -fs HFS+ -volname '${{ env.PACKAGE_NAME }}' -srcfolder . '${{ env.PACKAGE }}${{ matrix.package_ext }}'
+          else
+            zip --recurse-paths '${{ env.PACKAGE }}${{ matrix.package_ext }}' '${{ env.PACKAGE_NAME }}'
+          fi
 
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v4
@@ -283,8 +273,8 @@ jobs:
   get-itch-target:
     runs-on: ubuntu-latest
     steps:
-      - name: No-op
-        run: true
+      - name: Do nothing
+        run: 'true'
     outputs:
       itch-target: ${{ env.ITCH_TARGET }}
 
