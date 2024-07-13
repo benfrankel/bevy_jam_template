@@ -35,7 +35,7 @@ env:
   USE_GIT_LFS: false
 
 jobs:
-  # Extract the version number from the pushed tag.
+  # Determine the version number for this workflow.
   get-version:
     runs-on: ubuntu-latest
     steps:
@@ -45,49 +45,56 @@ jobs:
     outputs:
       version: ${{ inputs.version || steps.tag.outputs.tag }}
 
-  # Build a binary for each target.
+  # Build and package a release for each platform.
   build:
+    needs:
+      - get-version
+    env:
+      VERSION: ${{ needs.get-version.outputs.version }}
     strategy:
       matrix:
         include:
-          # Web:
           - platform: web
-            target: wasm32-unknown-unknown
+            targets: wasm32-unknown-unknown
             profile: wasm-release
             features: web
             binary_ext: .wasm
-          # Linux:
+            package_ext: .zip
+
           - platform: linux
-            target: x86_64-unknown-linux-gnu
+            targets: x86_64-unknown-linux-gnu
             profile: release
             features: native,bevy/wayland
-          # Windows:
+            package_ext: .zip
+
           - platform: windows
-            target: x86_64-pc-windows-msvc
+            targets: x86_64-pc-windows-msvc
             profile: release
             features: native
-            runner: windows-latest
             binary_ext: .exe
-          # MacOS x86_64:
+            package_ext: .zip
+            runner: windows-latest
+
           - platform: macos
-            target: x86_64-apple-darwin
+            targets: x86_64-apple-darwin aarch64-apple-darwin
             profile: release
             features: native
-            runner: macos-latest
-          # MacOS Apple Silicon:
-          - platform: macos
-            target: aarch64-apple-darwin
-            profile: release
-            features: native
+            out_dir_suffix: .app/Contents/MacOS
+            package_ext: .dmg
             runner: macos-latest
     runs-on: ${{ matrix.runner || 'ubuntu-latest' }}
-
+    defaults:
+      run:
+        shell: bash
     steps:
-      - name: Set up environment (MacOS)
-        if: ${{ matrix.platform == 'macos' }}
+      - name: Set up environment
         run: |
-          echo 'MACOSX_DEPLOYMENT_TARGET=11.0' >> "${GITHUB_ENV}" # MacOS 11.0 Big Sur is the first version to support universal binaries.
-          echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> "${GITHUB_ENV}"
+          echo 'PACKAGE=${{ env.PACKAGE_NAME }}-${{ matrix.platform }}' >> "${GITHUB_ENV}"
+          echo 'OUT_DIR=tmp/package/${{ env.PACKAGE_NAME }}${{ matrix.out_dir_suffix }}' >> "${GITHUB_ENV}"
+          if [ '${{ matrix.platform }}' == 'macos' ]; then
+            echo 'MACOSX_DEPLOYMENT_TARGET=11.0' >> "${GITHUB_ENV}" # MacOS 11.0 Big Sur is the first version to support universal binaries.
+            echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> "${GITHUB_ENV}"
+          fi
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -97,7 +104,7 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.target }}
+          targets: ${{ matrix.targets }}
 
       - name: Populate target directory from cache
         uses: Leafwing-Studios/cargo-cache@v1
@@ -106,11 +113,15 @@ jobs:
         if: ${{ matrix.platform == 'linux' }}
         run: sudo apt-get update; sudo apt-get install libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
-      - name: Build binary
+      - name: Prepare output directories
+        run: rm -rf tmp; mkdir -p tmp/binary '${{ env.OUT_DIR }}'
+
+      - name: Build binaries
         run: |
-          cargo build --profile='${{ matrix.profile }}' --target='${{ matrix.target }}' --no-default-features --features='${{ matrix.features }}'
-          mkdir -p tmp
-          mv 'target/${{ matrix.target }}/${{ matrix.profile }}/${{ env.BINARY }}${{ matrix.binary_ext }}' 'tmp/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
+          for target in ${{ matrix.targets }}; do
+            cargo build --profile='${{ matrix.profile }}' --target="${target}" --no-default-features --features='${{ matrix.features }}'
+            mv target/"${target}"/'${{ matrix.profile }}/${{ env.BINARY }}${{ matrix.binary_ext }}' tmp/binary/"${target}"'${{ matrix.binary_ext }}'
+          done
 
       - name: Install cargo-binstall (Web)
         if: ${{ matrix.platform == 'web' }}
@@ -120,83 +131,22 @@ jobs:
         if: ${{ matrix.platform == 'web' }}
         run: |
           cargo binstall --no-confirm wasm-bindgen-cli
-          wasm-bindgen tmp/* --out-dir tmp --out-name '${{ env.PACKAGE_NAME }}' --no-typescript --target web
-          rm 'tmp/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
+          mkdir -p tmp/bindgen
+          wasm-bindgen tmp/binary/* --out-dir tmp/bindgen --out-name '${{ env.PACKAGE_NAME }}' --no-typescript --target web
+          rm -rf tmp/binary; mv tmp/bindgen tmp/binary
 
       - name: Optimize Wasm (Web)
         if: ${{ matrix.platform == 'web' }}
         uses: NiklasEi/wasm-opt-action@v2
         with:
-          file: tmp/*${{ matrix.binary_ext }}
+          file: tmp/binary/*${{ matrix.binary_ext }}
 
-      - name: Upload binary to artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          path: tmp/*
-          name: binary-${{ matrix.platform }}-${{ matrix.target }}
-          retention-days: 1
-
-  # Package a release for each platform.
-  package:
-    needs:
-      - get-version
-      - build
-    env:
-      VERSION: ${{ needs.get-version.outputs.version }}
-    strategy:
-      matrix:
-        include:
-          # Web:
-          - platform: web
-            package_ext: .zip
-            binary_ext: .wasm
-          # Linux:
-          - platform: linux
-            package_ext: .zip
-          # Windows:
-          - platform: windows
-            package_ext: .zip
-            binary_ext: .exe
-          # MacOS:
-          - platform: macos
-            package_ext: .dmg
-            out_dir_suffix: .app/Contents/MacOS
-            runner: macos-latest # Already has `lipo` and `hdiutil` installed.
-    runs-on: ${{ matrix.runner || 'ubuntu-latest' }}
-
-    steps:
-      - name: Set up environment
-        run: |
-          echo 'PACKAGE=${{ env.PACKAGE_NAME }}-${{ matrix.platform }}' >> "${GITHUB_ENV}"
-          echo 'OUT_DIR=tmp/package/${{ env.PACKAGE_NAME }}${{ matrix.out_dir_suffix }}' >> "${GITHUB_ENV}"
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          lfs: ${{ env.USE_GIT_LFS }}
-
-      - name: Prepare output directory
-        run: |
-          rm -rf '${{ env.OUT_DIR }}'
-          mkdir -p '${{ env.OUT_DIR }}'
-
-      - name: Download binary from artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: binary-${{ matrix.platform }}-*
-          path: tmp
-
-      # TODO: Workaround for https://github.com/actions/upload-artifact/issues/38.
-      - name: Fix file permissions of binary (non-Web)
-        if: ${{ matrix.platform != 'web' }}
-        run: chmod +x tmp/binary-*/*'${{ matrix.binary_ext }}'
-
-      - name: Add binary to package
+      - name: Add binaries to package
         run: |
           if [ '${{ matrix.platform }}' == 'macos' ]; then
-            lipo tmp/binary-*/* -create -output '${{ env.OUT_DIR }}/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
+            lipo tmp/binary/* -create -output '${{ env.OUT_DIR }}/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
           else
-            mv tmp/binary-*/* '${{ env.OUT_DIR }}'
+            mv tmp/binary/* '${{ env.OUT_DIR }}'
           fi
 
       - name: Add assets to package
@@ -240,7 +190,8 @@ jobs:
             </plist>
           EOF
 
-      - name: Finish package
+      - name: Finish package (non-Windows)
+        if: ${{ matrix.platform != 'windows' }}
         working-directory: tmp/package
         run: |
           if [ '${{ matrix.platform }}' == 'macos' ]; then
@@ -249,6 +200,12 @@ jobs:
           else
             zip --recurse-paths '${{ env.PACKAGE }}${{ matrix.package_ext }}' '${{ env.PACKAGE_NAME }}'
           fi
+
+      - name: Finish package (Windows)
+        if: ${{ matrix.platform == 'windows' }}
+        working-directory: tmp/package
+        shell: pwsh
+        run: Compress-Archive -Path '${{ env.PACKAGE_NAME }}' -DestinationPath '${{ env.PACKAGE }}${{ matrix.package_ext }}'
 
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v4
@@ -284,7 +241,7 @@ jobs:
     needs:
       - get-version
       - get-itch-target
-      - package
+      - build
     env:
       VERSION: ${{ needs.get-version.outputs.version }}
     if: ${{ needs.get-itch-target.outputs.itch-target != '' }}
