@@ -14,7 +14,7 @@ pub(super) fn plugin(app: &mut App) {
     app.insert_resource(ClearColor(Color::srgb(0.157, 0.157, 0.157)));
 
     app.configure::<(
-        ConfigHandle<Theme>,
+        ConfigHandle<ThemeConfig>,
         ThemeColorFor<Sprite>,
         ThemeColorFor<UiImage>,
         ThemeColorFor<BackgroundColor>,
@@ -24,12 +24,12 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 #[derive(Asset, Reflect, Serialize, Deserialize)]
-pub struct Theme {
+pub struct ThemeConfig {
     pub colors: ThemeColorList,
     // TODO: pub fonts: ThemeFontList,
 }
 
-impl Config for Theme {
+impl Config for ThemeConfig {
     const PATH: &'static str = "config/theme.ron";
 
     const EXTENSION: &'static str = "theme.ron";
@@ -85,8 +85,8 @@ pub struct ThemeColorFor<C: Component + ColorMut>(
 );
 
 fn apply_theme_color_for<C: Component + ColorMut>(
-    theme_handle: Res<ConfigHandle<Theme>>,
-    theme: Res<Assets<Theme>>,
+    theme_handle: Res<ConfigHandle<ThemeConfig>>,
+    theme: Res<Assets<ThemeConfig>>,
     mut color_query: Query<(&ThemeColorFor<C>, &mut C)>,
 ) {
     let Some(palette) = &theme.get(&theme_handle.0).map(|theme| &theme.colors) else {
@@ -116,8 +116,8 @@ impl Configure for ThemeColorForText {
 }
 
 fn apply_theme_text_colors(
-    theme_handle: Res<ConfigHandle<Theme>>,
-    theme: Res<Assets<Theme>>,
+    theme_handle: Res<ConfigHandle<ThemeConfig>>,
+    theme: Res<Assets<ThemeConfig>>,
     mut text_query: Query<(&ThemeColorForText, &mut Text)>,
 ) {
     let Some(palette) = &theme.get(&theme_handle.0).map(|theme| &theme.colors) else {
