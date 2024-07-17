@@ -80,7 +80,7 @@ pub struct WindowReady;
 
 impl Configure for WindowReady {
     fn configure(app: &mut App) {
-        app.init_state::<WindowReady>();
+        app.add_state::<WindowReady>();
         app.add_systems(StateFlush, WindowReady.on_enter(show_window));
     }
 }

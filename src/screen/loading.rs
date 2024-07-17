@@ -42,7 +42,7 @@ fn exit_loading(mut commands: Commands, ui_root: Res<UiRoot>) {
 
 fn loading_screen(mut entity: EntityWorldMut) {
     entity
-        .add(widget::ui_root)
+        .add(widget::column_center)
         .insert(Name::new("LoadingScreen"))
         .with_children(|children| {
             children.spawn_with(loading_text);
@@ -80,6 +80,7 @@ fn loading_bar(mut entity: EntityWorldMut) {
                 style: Style {
                     width: Percent(60.0),
                     height: Percent(8.0),
+                    margin: UiRect::all(VMin(2.0)),
                     padding: UiRect::all(VMin(1.0)),
                     border: UiRect::all(VMin(1.0)),
                     ..default()
@@ -104,7 +105,7 @@ fn loading_bar_fill(mut entity: EntityWorldMut) {
             },
             ..default()
         },
-        ThemeColor::BodyText.set::<BackgroundColor>(),
+        ThemeColor::Primary.set::<BackgroundColor>(),
         IsLoadingBarFill,
     ));
 }

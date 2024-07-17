@@ -46,7 +46,7 @@ fn exit_title(mut commands: Commands, ui_root: Res<UiRoot>) {
 
 fn title_screen(mut entity: EntityWorldMut) {
     entity
-        .add(widget::ui_root)
+        .add(widget::column_mid)
         .insert(Name::new("TitleScreen"))
         .with_children(|children| {
             children.spawn_with(title_text);

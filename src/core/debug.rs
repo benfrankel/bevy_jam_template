@@ -10,8 +10,8 @@ use bevy::ecs::schedule::LogLevel;
 use bevy::ecs::schedule::ScheduleBuildSettings;
 use bevy::input::common_conditions::input_just_pressed;
 use bevy::prelude::*;
+use bevy_editor_pls::EditorPlugin;
 use bevy_mod_picking::debug::DebugPickingMode;
-//use bevy_editor_pls::EditorPlugin;
 use iyes_progress::prelude::*;
 use pyri_state::prelude::*;
 
@@ -90,11 +90,11 @@ pub(super) fn plugin(app: &mut App) {
 
     // Enable editor.
     if config.editor {
-        /*app.add_plugins(EditorPlugin::new().in_new_window(Window {
+        app.add_plugins(EditorPlugin::new().in_new_window(Window {
             title: "bevy_editor_pls".to_string(),
             focused: false,
             ..default()
-        }));*/
+        }));
     }
 
     // Extend loading screen.
@@ -153,9 +153,9 @@ impl Default for DebugConfig {
 
             debug_picking: true,
             debug_physics: true,
-            editor: false,
+            editor: true,
 
-            extend_loading_screen: 0.0,
+            extend_loading_screen: 20.0,
             start_screen: None,
         }
     }
