@@ -12,11 +12,10 @@ use crate::ui::prelude::*;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    // TODO: Add a patch for like `Screen::Title.bevy()`
     app.add_loading_state(
-        LoadingState::new(BevyState(Some(Screen::Title))).load_collection::<PlayingAssets>(),
+        LoadingState::new(Screen::Title.bevy()).load_collection::<PlayingAssets>(),
     );
-    app.add_plugins(ProgressPlugin::new(BevyState(Some(Screen::Title))));
+    app.add_plugins(ProgressPlugin::new(Screen::Title.bevy()));
     app.add_systems(StateFlush, Screen::Title.on_edge(exit_title, enter_title));
 
     app.configure::<TitleScreenAssets>();
