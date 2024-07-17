@@ -1,4 +1,3 @@
-mod boot;
 mod end;
 mod loading;
 mod playing;
@@ -11,13 +10,14 @@ use pyri_state::prelude::*;
 
 use crate::animation::FadeIn;
 use crate::animation::FadeOut;
+use crate::core::window::WindowState;
 use crate::ui::prelude::*;
 use crate::util::prelude::*;
 
 pub fn plugin(app: &mut App) {
-    app.init_state::<Screen>();
+    app.configure::<Screen>();
+
     app.add_plugins((
-        boot::plugin,
         splash::plugin,
         title::plugin,
         loading::plugin,
@@ -27,15 +27,24 @@ pub fn plugin(app: &mut App) {
 }
 
 #[derive(State, Copy, Clone, Eq, PartialEq, Hash, Debug, Reflect, Default)]
-#[state(bevy_state, log_flush)]
+#[state(after(WindowState), bevy_state, log_flush)]
 pub enum Screen {
     #[default]
-    Boot,
     Splash,
     Title,
     Loading,
     Playing,
     End,
+}
+
+impl Configure for Screen {
+    fn configure(app: &mut App) {
+        app.add_state::<Self>();
+        app.add_systems(
+            StateFlush,
+            WindowState::Ready.on_enter(Screen::enable_default),
+        );
+    }
 }
 
 const FADE_IN_SECS: f32 = 0.3;

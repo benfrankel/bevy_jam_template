@@ -13,6 +13,7 @@ use bevy_mod_picking::debug::DebugPickingMode;
 use iyes_progress::prelude::*;
 use pyri_state::prelude::*;
 
+use crate::core::window::WindowState;
 use crate::screen::Screen;
 use crate::util::time::wait;
 
@@ -33,7 +34,7 @@ pub(super) struct DebugPlugin {
     //pub editor: bool,
 
     // Screen settings
-    pub start_screen: Screen,
+    pub start_screen: Option<Screen>,
     pub extend_loading_screen: f32,
 }
 
@@ -53,7 +54,7 @@ impl Default for DebugPlugin {
             //editor: true,
             //
             extend_loading_screen: 0.0,
-            start_screen: default(),
+            start_screen: None,
         }
     }
 }
@@ -146,8 +147,13 @@ impl Plugin for DebugPlugin {
         }
 
         // Skip to a custom starting screen.
-        // Setting this at startup instead of right now avoids a plugin ordering requirement.
-        app.add_systems(Startup, self.start_screen.enter());
+        if let Some(start_screen) = self.start_screen {
+            // Setting this later avoids a plugin ordering requirement.
+            app.add_systems(
+                StateFlush,
+                WindowState::Ready.on_enter(start_screen.enter()),
+            );
+        }
 
         // Set up ad hoc debugging.
         app.add_systems(Update, debug_start);

@@ -12,6 +12,7 @@ pub mod theme;
 pub mod window;
 
 use avian2d::prelude::*;
+use bevy::log::LogPlugin;
 use bevy::prelude::*;
 use bevy::ui::UiSystem;
 
@@ -24,8 +25,9 @@ pub(super) fn plugin(app: &mut App) {
     app.add_plugins(
         DefaultPlugins
             .build()
-            .replace::<WindowPlugin>(window::plugin)
             .replace::<AssetPlugin>(asset::plugin)
+            .add_after::<LogPlugin, _>(state::plugin)
+            .replace::<WindowPlugin>(window::plugin)
             .set(ImagePlugin::default_nearest()),
     );
 
@@ -34,7 +36,6 @@ pub(super) fn plugin(app: &mut App) {
         audio::plugin,
         camera::plugin,
         config::plugin,
-        state::plugin,
         theme::plugin,
         physics::plugin,
     ));

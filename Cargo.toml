@@ -55,9 +55,7 @@ tap = "1"
 
 [patch.crates-io]
 # TODO: Workaround for https://github.com/NiklasEi/bevy_asset_loader/issues/219.
-bevy_asset_loader = { git = 'https://github.com/benfrankel/bevy_asset_loader.git', branch = 'direct-depend' }
-# TODO: Needs a patch release.
-pyri_state = { git = 'https://github.com/benfrankel/pyri_state.git', branch = 'main' }
+bevy_asset_loader = { git = "https://github.com/benfrankel/bevy_asset_loader.git", branch = "direct-depend" }
 
 [features]
 default = ["native_dev"]
