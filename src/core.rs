@@ -36,18 +36,11 @@ pub(super) fn plugin(app: &mut App) {
         audio::plugin,
         camera::plugin,
         config::plugin,
+        #[cfg(feature = "dev")]
+        debug::plugin,
         theme::plugin,
         physics::plugin,
     ));
-
-    // Debugging tools for dev builds
-    #[cfg(feature = "dev")]
-    app.add_plugins(debug::DebugPlugin {
-        log_diagnostics: false,
-        log_ambiguity_detection: false,
-        //editor: false,
-        ..default()
-    });
 }
 
 /// Game logic system ordering in the [`Update`] schedule.
