@@ -9,7 +9,6 @@ use pyri_state::prelude::*;
 use serde::Deserialize;
 use serde::Serialize;
 
-use crate::core::config::ConfigHandle;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
@@ -24,7 +23,7 @@ pub(super) fn plugin(app: &mut App) {
         ..default()
     });
 
-    app.configure::<(WindowRoot, WindowState)>();
+    app.configure::<(WindowRoot, ConfigHandle<WindowConfig>, WindowState)>();
 }
 
 #[derive(Resource, Reflect)]
@@ -50,15 +49,19 @@ impl FromWorld for WindowRoot {
     }
 }
 
-#[derive(Reflect, Serialize, Deserialize)]
+#[derive(Asset, Reflect, Serialize, Deserialize)]
 pub struct WindowConfig {
     pub title: String,
     pub window_mode: WindowMode,
     pub present_mode: PresentMode,
 }
 
-impl WindowConfig {
-    pub fn apply(&self, world: &mut World) {
+impl Config for WindowConfig {
+    const PATH: &'static str = "config/window.ron";
+
+    const EXTENSION: &'static str = "window.ron";
+
+    fn apply(&self, world: &mut World) {
         let Some(mut window) = world.get_mut::<Window>(world.resource::<WindowRoot>().primary)
         else {
             return;
@@ -90,7 +93,7 @@ impl Configure for WindowState {
         );
         app.add_systems(
             Update,
-            WindowState::Booting.on_update(wait_for_config.track_progress()),
+            WindowState::Booting.on_update(wait_for_window_config.track_progress()),
         );
     }
 }
@@ -112,7 +115,10 @@ fn show_window(window_root: Res<WindowRoot>, mut window_query: Query<&mut Window
 }
 
 // TODO: Load window config separately from other configs.
-fn wait_for_config(asset_server: Res<AssetServer>, config_handle: Res<ConfigHandle>) -> Progress {
+fn wait_for_window_config(
+    asset_server: Res<AssetServer>,
+    config_handle: Res<ConfigHandle<WindowConfig>>,
+) -> Progress {
     asset_server
         .is_loaded_with_dependencies(&config_handle.0)
         .into()

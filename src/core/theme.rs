@@ -5,8 +5,6 @@ use serde::Deserialize;
 use serde::Serialize;
 use strum::EnumCount;
 
-use crate::core::config::Config;
-use crate::core::config::ConfigHandle;
 use crate::core::UpdateSet;
 use crate::util::prelude::*;
 
@@ -15,6 +13,7 @@ pub(super) fn plugin(app: &mut App) {
     app.insert_resource(ClearColor(Color::srgb(0.157, 0.157, 0.157)));
 
     app.configure::<(
+        ConfigHandle<Theme>,
         ThemeSpriteColor,
         ThemeUiImageColor,
         ThemeTextColors,
@@ -23,14 +22,18 @@ pub(super) fn plugin(app: &mut App) {
     )>();
 }
 
-#[derive(Reflect, Serialize, Deserialize)]
-pub struct ThemeConfig {
+#[derive(Asset, Reflect, Serialize, Deserialize)]
+pub struct Theme {
     pub colors: ThemeColorList,
     // TODO: pub fonts: ThemeFontList,
 }
 
-impl ThemeConfig {
-    pub fn apply(&self, world: &mut World) {
+impl Config for Theme {
+    const PATH: &'static str = "config/theme.ron";
+
+    const EXTENSION: &'static str = "theme.ron";
+
+    fn apply(&self, world: &mut World) {
         world.resource_mut::<ClearColor>().0 = self.colors[ThemeColor::Body];
     }
 }
@@ -68,6 +71,7 @@ pub enum ThemeColor {
     Popup,
 }
 
+// TODO: Make this a generic component.
 #[derive(Component, Reflect, Default)]
 pub struct ThemeSpriteColor(pub ThemeColor);
 
@@ -79,18 +83,15 @@ impl Configure for ThemeSpriteColor {
 }
 
 fn apply_theme_sprite_color(
-    config_handle: Res<ConfigHandle>,
-    config: Res<Assets<Config>>,
-    mut theme_query: Query<(&ThemeSpriteColor, &mut Sprite)>,
+    theme_handle: Res<ConfigHandle<Theme>>,
+    theme: Res<Assets<Theme>>,
+    mut sprite_query: Query<(&ThemeSpriteColor, &mut Sprite)>,
 ) {
-    let Some(palette) = &config
-        .get(&config_handle.0)
-        .map(|config| &config.theme.colors)
-    else {
+    let Some(palette) = &theme.get(&theme_handle.0).map(|theme| &theme.colors) else {
         return;
     };
 
-    for (color, mut sprite) in &mut theme_query {
+    for (color, mut sprite) in &mut sprite_query {
         sprite.color = palette[color.0];
     }
 }
@@ -106,18 +107,15 @@ impl Configure for ThemeUiImageColor {
 }
 
 fn apply_theme_ui_image_color(
-    config_handle: Res<ConfigHandle>,
-    config: Res<Assets<Config>>,
-    mut theme_query: Query<(&ThemeUiImageColor, &mut UiImage)>,
+    theme_handle: Res<ConfigHandle<Theme>>,
+    theme: Res<Assets<Theme>>,
+    mut ui_image_query: Query<(&ThemeUiImageColor, &mut UiImage)>,
 ) {
-    let Some(palette) = &config
-        .get(&config_handle.0)
-        .map(|config| &config.theme.colors)
-    else {
+    let Some(palette) = &theme.get(&theme_handle.0).map(|theme| &theme.colors) else {
         return;
     };
 
-    for (color, mut image) in &mut theme_query {
+    for (color, mut image) in &mut ui_image_query {
         image.color = palette[color.0];
     }
 }
@@ -133,18 +131,15 @@ impl Configure for ThemeTextColors {
 }
 
 fn apply_theme_text_colors(
-    config_handle: Res<ConfigHandle>,
-    config: Res<Assets<Config>>,
-    mut theme_query: Query<(&ThemeTextColors, &mut Text)>,
+    theme_handle: Res<ConfigHandle<Theme>>,
+    theme: Res<Assets<Theme>>,
+    mut text_query: Query<(&ThemeTextColors, &mut Text)>,
 ) {
-    let Some(palette) = &config
-        .get(&config_handle.0)
-        .map(|config| &config.theme.colors)
-    else {
+    let Some(palette) = &theme.get(&theme_handle.0).map(|theme| &theme.colors) else {
         return;
     };
 
-    for (colors, mut text) in &mut theme_query {
+    for (colors, mut text) in &mut text_query {
         for (section, &color) in text.sections.iter_mut().zip(&colors.0) {
             section.style.color = palette[color];
         }
@@ -162,18 +157,15 @@ impl Configure for ThemeBackgroundColor {
 }
 
 fn apply_theme_background_color(
-    config_handle: Res<ConfigHandle>,
-    config: Res<Assets<Config>>,
-    mut theme_query: Query<(&ThemeBackgroundColor, &mut BackgroundColor)>,
+    theme_handle: Res<ConfigHandle<Theme>>,
+    theme: Res<Assets<Theme>>,
+    mut background_query: Query<(&ThemeBackgroundColor, &mut BackgroundColor)>,
 ) {
-    let Some(palette) = &config
-        .get(&config_handle.0)
-        .map(|config| &config.theme.colors)
-    else {
+    let Some(palette) = &theme.get(&theme_handle.0).map(|theme| &theme.colors) else {
         return;
     };
 
-    for (color, mut background) in &mut theme_query {
+    for (color, mut background) in &mut background_query {
         background.0 = palette[color.0];
     }
 }
@@ -189,18 +181,15 @@ impl Configure for ThemeBorderColor {
 }
 
 fn apply_theme_border_color(
-    config_handle: Res<ConfigHandle>,
-    config: Res<Assets<Config>>,
-    mut theme_query: Query<(&ThemeBorderColor, &mut BorderColor)>,
+    theme_handle: Res<ConfigHandle<Theme>>,
+    theme: Res<Assets<Theme>>,
+    mut border_query: Query<(&ThemeBorderColor, &mut BorderColor)>,
 ) {
-    let Some(palette) = &config
-        .get(&config_handle.0)
-        .map(|config| &config.theme.colors)
-    else {
+    let Some(palette) = &theme.get(&theme_handle.0).map(|theme| &theme.colors) else {
         return;
     };
 
-    for (color, mut border) in &mut theme_query {
+    for (color, mut border) in &mut border_query {
         border.0 = palette[color.0];
     }
 }

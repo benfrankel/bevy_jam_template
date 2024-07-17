@@ -2,11 +2,14 @@
 
 #![allow(dead_code, unused_imports)]
 
+pub mod config;
 pub mod despawn;
 pub mod patch;
 pub mod time;
 
 pub mod prelude {
+    pub use super::config::Config;
+    pub use super::config::ConfigHandle;
     pub use super::despawn::DespawnSet;
     pub use super::patch::AppExtConfigure as _;
     pub use super::patch::Configure;

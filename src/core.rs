@@ -3,7 +3,6 @@
 pub mod asset;
 pub mod audio;
 pub mod camera;
-pub mod config;
 #[cfg(feature = "dev")]
 pub mod debug;
 pub mod physics;
@@ -25,7 +24,9 @@ pub(super) fn plugin(app: &mut App) {
     app.add_plugins(
         DefaultPlugins
             .build()
-            .replace::<AssetPlugin>(asset::plugin)
+            // TODO: Doing this instead of `.replace` because `window::plugin` requires `AssetPlugin` to load its config.
+            .disable::<AssetPlugin>()
+            .add_after::<LogPlugin, _>(asset::plugin)
             .add_after::<LogPlugin, _>(state::plugin)
             .replace::<WindowPlugin>(window::plugin)
             .set(ImagePlugin::default_nearest()),
@@ -35,7 +36,6 @@ pub(super) fn plugin(app: &mut App) {
     app.add_plugins((
         audio::plugin,
         camera::plugin,
-        config::plugin,
         #[cfg(feature = "dev")]
         debug::plugin,
         theme::plugin,
