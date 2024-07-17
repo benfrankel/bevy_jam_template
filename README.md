@@ -57,14 +57,6 @@
     - Physics wireframes and picking tooltips (F3 to toggle)
     - Some helpful logging
 
-## Planned
-
-- [ ] Persistence on native + web via `bevy-persistent`
-- [ ] 9-slice UI via `bevy_nice_slice_ui`?
-- [ ] Audio settings, keybindings, and an in-game settings menu
-- [ ] In-game pause menu with restart and quit (to title screen) buttons
-- [ ] Debug mode cheats (e.g. type `/cmd`)
-
 # Credit
 
 - The [splash screen image](https://github.com/bevyengine/bevy/blob/main/assets/branding/bevy_logo_dark.png) belongs to Bevy and is not covered by any of the licenses in this repository.
