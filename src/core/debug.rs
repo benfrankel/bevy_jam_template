@@ -15,7 +15,7 @@ use bevy_mod_picking::debug::DebugPickingMode;
 use iyes_progress::prelude::*;
 use pyri_state::prelude::*;
 
-use crate::core::window::WindowState;
+use crate::core::window::WindowReady;
 use crate::screen::Screen;
 use crate::util::time::wait;
 
@@ -111,10 +111,7 @@ pub(super) fn plugin(app: &mut App) {
     // Skip to a custom starting screen.
     if let Some(start_screen) = config.start_screen {
         // Setting this later avoids a plugin ordering requirement.
-        app.add_systems(
-            StateFlush,
-            WindowState::Ready.on_enter(start_screen.enter()),
-        );
+        app.add_systems(StateFlush, WindowReady.on_enter(start_screen.enter()));
     }
 
     // Set up ad hoc debugging.

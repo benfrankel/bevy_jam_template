@@ -10,7 +10,7 @@ use pyri_state::prelude::*;
 
 use crate::animation::FadeIn;
 use crate::animation::FadeOut;
-use crate::core::window::WindowState;
+use crate::core::window::WindowReady;
 use crate::ui::prelude::*;
 use crate::util::prelude::*;
 
@@ -27,7 +27,7 @@ pub fn plugin(app: &mut App) {
 }
 
 #[derive(State, Copy, Clone, Eq, PartialEq, Hash, Debug, Reflect, Default)]
-#[state(after(WindowState), bevy_state, log_flush)]
+#[state(after(WindowReady), bevy_state, log_flush)]
 pub enum Screen {
     #[default]
     Splash,
@@ -40,10 +40,7 @@ pub enum Screen {
 impl Configure for Screen {
     fn configure(app: &mut App) {
         app.add_state::<Self>();
-        app.add_systems(
-            StateFlush,
-            WindowState::Ready.on_enter(Screen::enable_default),
-        );
+        app.add_systems(StateFlush, WindowReady.on_enter(Screen::enable_default));
     }
 }
 
