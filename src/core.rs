@@ -50,32 +50,28 @@ pub(super) fn plugin(app: &mut App) {
     });
 }
 
-/// (Update) Game logic system ordering
+/// Game logic system ordering in the [`Update`] schedule.
 #[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum UpdateSet {
-    /// Handle actions pressed this frame
+    /// Handle actions pressed this frame.
     HandleActions,
-    /// Apply deferred effects from HandleActions
-    HandleActionsFlush,
-    /// Initialize start-of-frame values and tick timers
+    /// Initialize start-of-frame values and tick timers.
     Start,
-    /// Step game logic
+    /// Step game logic.
     Update,
-    /// Run the trigger-effect system
+    /// Run the trigger-effect system.
     React,
-    /// Record player and AI intents
+    /// Record player and AI intents.
     RecordIntents,
-    /// Apply player and AI intents
+    /// Apply player and AI intents.
     ApplyIntents,
-    /// Handle events emitted this frame
+    /// Handle events emitted this frame.
     HandleEvents,
-    /// Queue despawn commands from DespawnSet
+    /// Queue despawn commands from DespawnSet.
     QueueDespawn,
-    /// Apply spawn / despawn and other commands
-    ApplyDeferred,
-    /// Update UI
+    /// Update UI.
     UpdateUi,
-    /// Synchronize end-of-frame values
+    /// Synchronize end-of-frame values.
     End,
 }
 
@@ -85,7 +81,6 @@ impl Configure for UpdateSet {
             Update,
             (
                 Self::HandleActions,
-                Self::HandleActionsFlush,
                 Self::Start,
                 Self::Update,
                 Self::React,
@@ -93,32 +88,24 @@ impl Configure for UpdateSet {
                 Self::ApplyIntents,
                 Self::HandleEvents,
                 Self::QueueDespawn,
-                Self::ApplyDeferred,
                 Self::UpdateUi,
                 Self::End,
             )
                 .chain(),
         );
-        app.add_systems(
-            Update,
-            (
-                apply_deferred.in_set(Self::HandleActionsFlush),
-                apply_deferred.in_set(Self::ApplyDeferred),
-            ),
-        );
     }
 }
 
-/// (PostUpdate) Transform post-processing system ordering
+/// [`Transform`] post-processing system ordering in the [`PostUpdate`] schedule.
 #[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum PostTransformSet {
-    /// Save the base transform as a backup
+    /// Save the base transform as a backup.
     Save,
-    /// Blend via transform multplication (add translation, add rotation, multiply scale)
+    /// Blend via transform multplication (add translation, add rotation, multiply scale).
     Blend,
-    /// Apply facing (may multiply translation.x by -1)
+    /// Apply facing (may multiply translation.x by -1).
     ApplyFacing,
-    /// Apply finishing touches to GlobalTransform, like rounding to the nearest pixel
+    /// Apply finishing touches to GlobalTransform, like rounding to the nearest pixel.
     Finish,
 }
 
@@ -140,12 +127,12 @@ impl Configure for PostTransformSet {
     }
 }
 
-/// (PostUpdate) Color post-processing system ordering
+/// [`Color`] post-processing system ordering in the [`PostUpdate`] schedule.
 #[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum PostColorSet {
-    /// Save the base color as a backup
+    /// Save the base color as a backup.
     Save,
-    /// Blend via color multiplication (multiply RGBA)
+    /// Blend via color multiplication (multiply RGBA).
     Blend,
 }
 
