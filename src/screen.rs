@@ -47,7 +47,7 @@ impl Configure for Screen {
     }
 }
 
-const FADE_IN_SECS: f32 = 0.3;
+const FADE_IN_SECS: f32 = 0.5;
 
 fn fade_in(mut entity: EntityWorldMut) {
     entity.add(widget::ui_overlay).insert((
@@ -57,7 +57,7 @@ fn fade_in(mut entity: EntityWorldMut) {
     ));
 }
 
-const FADE_OUT_SECS: f32 = 0.3;
+const FADE_OUT_SECS: f32 = 0.2;
 
 fn fade_out(to_screen: Screen) -> impl EntityCommand<World> {
     move |mut entity: EntityWorldMut| {
