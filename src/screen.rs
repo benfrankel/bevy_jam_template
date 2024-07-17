@@ -49,7 +49,7 @@ const FADE_IN_SECS: f32 = 0.5;
 fn fade_in(mut entity: EntityWorldMut) {
     entity.add(widget::ui_overlay).insert((
         Name::new("ScreenFadeIn"),
-        ThemeBackgroundColor(ThemeColor::Body),
+        ThemeColor::Body.set::<BackgroundColor>(),
         FadeIn::new(FADE_IN_SECS),
     ));
 }
@@ -60,7 +60,7 @@ fn fade_out(to_screen: Screen) -> impl EntityCommand<World> {
     move |mut entity: EntityWorldMut| {
         entity.add(widget::ui_overlay).insert((
             Name::new("ScreenFadeOut"),
-            ThemeBackgroundColor(ThemeColor::Body),
+            ThemeColor::Body.set::<BackgroundColor>(),
             FadeOut::new(FADE_OUT_SECS, to_screen),
         ));
     }

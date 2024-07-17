@@ -1,3 +1,4 @@
+use std::marker::PhantomData;
 use std::ops::Index;
 
 use bevy::prelude::*;
@@ -14,11 +15,11 @@ pub(super) fn plugin(app: &mut App) {
 
     app.configure::<(
         ConfigHandle<Theme>,
-        ThemeSpriteColor,
-        ThemeUiImageColor,
-        ThemeTextColors,
-        ThemeBackgroundColor,
-        ThemeBorderColor,
+        ThemeColorFor<Sprite>,
+        ThemeColorFor<UiImage>,
+        ThemeColorFor<BackgroundColor>,
+        ThemeColorFor<BorderColor>,
+        ThemeColorForText,
     )>();
 }
 
@@ -71,59 +72,43 @@ pub enum ThemeColor {
     Popup,
 }
 
-// TODO: Make this a generic component.
-#[derive(Component, Reflect, Default)]
-pub struct ThemeSpriteColor(pub ThemeColor);
-
-impl Configure for ThemeSpriteColor {
-    fn configure(app: &mut App) {
-        app.register_type::<Self>();
-        app.add_systems(Update, apply_theme_sprite_color.in_set(UpdateSet::End));
+impl ThemeColor {
+    pub const fn set<C: Component + ColorMut>(self) -> ThemeColorFor<C> {
+        ThemeColorFor(self, PhantomData)
     }
 }
 
-fn apply_theme_sprite_color(
+#[derive(Component, Reflect, Default)]
+pub struct ThemeColorFor<C: Component + ColorMut>(
+    pub ThemeColor,
+    #[reflect(ignore)] PhantomData<C>,
+);
+
+fn apply_theme_color_for<C: Component + ColorMut>(
     theme_handle: Res<ConfigHandle<Theme>>,
     theme: Res<Assets<Theme>>,
-    mut sprite_query: Query<(&ThemeSpriteColor, &mut Sprite)>,
+    mut color_query: Query<(&ThemeColorFor<C>, &mut C)>,
 ) {
     let Some(palette) = &theme.get(&theme_handle.0).map(|theme| &theme.colors) else {
         return;
     };
 
-    for (color, mut sprite) in &mut sprite_query {
-        sprite.color = palette[color.0];
+    for (theme_color, mut color) in &mut color_query {
+        *color.color_mut() = palette[theme_color.0];
     }
 }
 
-#[derive(Component, Reflect, Default)]
-pub struct ThemeUiImageColor(pub ThemeColor);
-
-impl Configure for ThemeUiImageColor {
+impl<C: Component + ColorMut + TypePath> Configure for ThemeColorFor<C> {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.add_systems(Update, apply_theme_ui_image_color.in_set(UpdateSet::End));
-    }
-}
-
-fn apply_theme_ui_image_color(
-    theme_handle: Res<ConfigHandle<Theme>>,
-    theme: Res<Assets<Theme>>,
-    mut ui_image_query: Query<(&ThemeUiImageColor, &mut UiImage)>,
-) {
-    let Some(palette) = &theme.get(&theme_handle.0).map(|theme| &theme.colors) else {
-        return;
-    };
-
-    for (color, mut image) in &mut ui_image_query {
-        image.color = palette[color.0];
+        app.add_systems(Update, apply_theme_color_for::<C>.in_set(UpdateSet::End));
     }
 }
 
 #[derive(Component, Reflect, Default)]
-pub struct ThemeTextColors(pub Vec<ThemeColor>);
+pub struct ThemeColorForText(pub Vec<ThemeColor>);
 
-impl Configure for ThemeTextColors {
+impl Configure for ThemeColorForText {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
         app.add_systems(Update, apply_theme_text_colors.in_set(UpdateSet::End));
@@ -133,7 +118,7 @@ impl Configure for ThemeTextColors {
 fn apply_theme_text_colors(
     theme_handle: Res<ConfigHandle<Theme>>,
     theme: Res<Assets<Theme>>,
-    mut text_query: Query<(&ThemeTextColors, &mut Text)>,
+    mut text_query: Query<(&ThemeColorForText, &mut Text)>,
 ) {
     let Some(palette) = &theme.get(&theme_handle.0).map(|theme| &theme.colors) else {
         return;
@@ -146,50 +131,30 @@ fn apply_theme_text_colors(
     }
 }
 
-#[derive(Component, Reflect, Default)]
-pub struct ThemeBackgroundColor(pub ThemeColor);
+pub trait ColorMut {
+    fn color_mut(&mut self) -> &mut Color;
+}
 
-impl Configure for ThemeBackgroundColor {
-    fn configure(app: &mut App) {
-        app.register_type::<Self>();
-        app.add_systems(Update, apply_theme_background_color.in_set(UpdateSet::End));
+impl ColorMut for Sprite {
+    fn color_mut(&mut self) -> &mut Color {
+        &mut self.color
     }
 }
 
-fn apply_theme_background_color(
-    theme_handle: Res<ConfigHandle<Theme>>,
-    theme: Res<Assets<Theme>>,
-    mut background_query: Query<(&ThemeBackgroundColor, &mut BackgroundColor)>,
-) {
-    let Some(palette) = &theme.get(&theme_handle.0).map(|theme| &theme.colors) else {
-        return;
-    };
-
-    for (color, mut background) in &mut background_query {
-        background.0 = palette[color.0];
+impl ColorMut for UiImage {
+    fn color_mut(&mut self) -> &mut Color {
+        &mut self.color
     }
 }
 
-#[derive(Component, Reflect, Default)]
-pub struct ThemeBorderColor(pub ThemeColor);
-
-impl Configure for ThemeBorderColor {
-    fn configure(app: &mut App) {
-        app.register_type::<Self>();
-        app.add_systems(Update, apply_theme_border_color.in_set(UpdateSet::End));
+impl ColorMut for BackgroundColor {
+    fn color_mut(&mut self) -> &mut Color {
+        &mut self.0
     }
 }
 
-fn apply_theme_border_color(
-    theme_handle: Res<ConfigHandle<Theme>>,
-    theme: Res<Assets<Theme>>,
-    mut border_query: Query<(&ThemeBorderColor, &mut BorderColor)>,
-) {
-    let Some(palette) = &theme.get(&theme_handle.0).map(|theme| &theme.colors) else {
-        return;
-    };
-
-    for (color, mut border) in &mut border_query {
-        border.0 = palette[color.0];
+impl ColorMut for BorderColor {
+    fn color_mut(&mut self) -> &mut Color {
+        &mut self.0
     }
 }

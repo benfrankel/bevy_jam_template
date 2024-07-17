@@ -39,7 +39,7 @@ impl FromWorld for TooltipRoot {
                     z_index: ZIndex::Global(999),
                     ..default()
                 },
-                ThemeBackgroundColor(ThemeColor::Popup),
+                ThemeColor::Popup.set::<BackgroundColor>(),
             ))
             .id();
 
@@ -57,7 +57,7 @@ impl FromWorld for TooltipRoot {
                     ),
                     // TODO: Adjustable font sizes in ThemeConfig
                     FontSize::new(Px(16.0)),
-                    ThemeTextColors(vec![ThemeColor::BodyText]),
+                    ThemeColorForText(vec![ThemeColor::BodyText]),
                 ))
                 .set_parent(container)
                 .id(),

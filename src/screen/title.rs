@@ -69,7 +69,7 @@ fn title_text(mut entity: EntityWorldMut) {
             ..default()
         }),
         FontSize::new(Vw(5.0)).with_step(8.0),
-        ThemeTextColors(vec![ThemeColor::BodyText]),
+        ThemeColorForText(vec![ThemeColor::BodyText]),
     ));
 }
 

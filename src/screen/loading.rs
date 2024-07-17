@@ -68,7 +68,7 @@ fn loading_text(mut entity: EntityWorldMut) {
             ..default()
         },
         FontSize::new(Vw(5.0)).with_step(8.0),
-        ThemeTextColors(vec![ThemeColor::BodyText]),
+        ThemeColorForText(vec![ThemeColor::BodyText]),
     ));
 }
 
@@ -86,7 +86,7 @@ fn loading_bar(mut entity: EntityWorldMut) {
                 },
                 ..default()
             },
-            ThemeBorderColor(ThemeColor::BodyText),
+            ThemeColor::BodyText.set::<BorderColor>(),
         ))
         .with_children(|children| {
             children.spawn_with(loading_bar_fill);
@@ -104,7 +104,7 @@ fn loading_bar_fill(mut entity: EntityWorldMut) {
             },
             ..default()
         },
-        ThemeBackgroundColor(ThemeColor::BodyText),
+        ThemeColor::BodyText.set::<BackgroundColor>(),
         IsLoadingBarFill,
     ));
 }

@@ -48,7 +48,7 @@ pub fn menu_button(text: impl Into<String>) -> impl EntityCommand<World> {
                     border_radius: BorderRadius::MAX,
                     ..default()
                 },
-                ThemeBackgroundColor(ThemeColor::Invisible),
+                ThemeColor::Invisible.set::<BackgroundColor>(),
                 InteractionPalette {
                     normal: ThemeColor::Primary,
                     hovered: ThemeColor::PrimaryHovered,
@@ -67,7 +67,7 @@ pub fn menu_button(text: impl Into<String>) -> impl EntityCommand<World> {
                         },
                     ),
                     FontSize::new(Vw(4.0)).with_step(8.0),
-                    ThemeTextColors(vec![ThemeColor::PrimaryText]),
+                    ThemeColorForText(vec![ThemeColor::PrimaryText]),
                 ));
             });
     }

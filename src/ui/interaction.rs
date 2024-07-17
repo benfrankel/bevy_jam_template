@@ -44,7 +44,7 @@ fn apply_interaction_palette(
             Option<&IsDisabled>,
             &Interaction,
             &InteractionPalette,
-            &mut ThemeBackgroundColor,
+            &mut ThemeColorFor<BackgroundColor>,
         ),
         Or<(Changed<Interaction>, Changed<IsDisabled>)>,
     >,
