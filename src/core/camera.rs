@@ -64,15 +64,11 @@ fn apply_absolute_scale(
     camera_query: Query<(&OrthographicProjection, &Camera)>,
     mut scale_query: Query<(&mut Transform, &AbsoluteScale)>,
 ) {
-    let Ok((camera_proj, camera)) = camera_query.get(camera_root.primary) else {
-        return;
-    };
-    let Some(viewport_size) = camera.logical_viewport_size() else {
-        return;
-    };
-
+    let (camera_proj, camera) = r!(camera_query.get(camera_root.primary));
+    let viewport_size = r!(camera.logical_viewport_size());
     let units_per_pixel = camera_proj.area.width() / viewport_size.x;
     let camera_scale_inverse = Vec2::splat(units_per_pixel).extend(1.0);
+
     for (mut transform, scale) in &mut scale_query {
         transform.scale = camera_scale_inverse * scale.0;
     }

@@ -77,24 +77,20 @@ pub fn apply_font_size(
     window_query: Query<&Window>,
     mut text_query: Query<(&FontSize, &Node, &mut Text)>,
 ) {
-    let Ok(window) = window_query.get(window_root.primary) else {
-        return;
-    };
+    let window = r!(window_query.get(window_root.primary));
     let viewport_size = Vec2::new(window.resolution.width(), window.resolution.height());
 
     for (font_size, node, mut text) in &mut text_query {
-        // Compute font size
-        let Ok(size) = font_size.size.resolve(node.size().x, viewport_size) else {
-            continue;
-        };
+        // Compute font size.
+        let size = c!(font_size.size.resolve(node.size().x, viewport_size));
 
-        // Round to nearest multiple of step
+        // Round to nearest multiple of step.
         let resolved = if font_size.step > 0.0 {
             (size / font_size.step).floor() * font_size.step
         } else {
             size
         };
-        // Clamp above minimum
+        // Clamp above minimum.
         let size = resolved.max(font_size.minimum);
 
         for section in &mut text.sections {
@@ -151,7 +147,7 @@ pub fn parse_rich_custom(text: &str, styles: &HashMap<&str, TextStyle>, start_ta
             return;
         }
 
-        // If the new text uses a different style, create a new section for it
+        // If the new text uses a different style, create a new section for it.
         if section.style.font != style.font
             || section.style.font_size != style.font_size
             || section.style.color != style.color
@@ -166,10 +162,8 @@ pub fn parse_rich_custom(text: &str, styles: &HashMap<&str, TextStyle>, start_ta
     };
 
     for tag in regex!(r"\[((?:\w|\d|-)+)\]").captures_iter(text) {
-        // Skip invalid tags to include them as literal text instead
-        let Some(next_style) = styles.get(&tag[1]) else {
-            continue;
-        };
+        // Skip invalid tags to include them as literal text instead.
+        let next_style = c!(styles.get(&tag[1]));
 
         let delim = tag.get(0).unwrap();
         push_str(&text[lo..delim.start()], style);

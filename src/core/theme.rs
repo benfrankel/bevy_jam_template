@@ -89,10 +89,7 @@ fn apply_theme_color_for<C: Component + ColorMut>(
     theme: Res<Assets<ThemeConfig>>,
     mut color_query: Query<(&ThemeColorFor<C>, &mut C)>,
 ) {
-    let Some(palette) = &theme.get(&theme_handle.0).map(|theme| &theme.colors) else {
-        return;
-    };
-
+    let palette = r!(theme.get(&theme_handle.0).map(|theme| &theme.colors));
     for (theme_color, mut color) in &mut color_query {
         *color.color_mut() = palette[theme_color.0];
     }
@@ -120,10 +117,7 @@ fn apply_theme_text_colors(
     theme: Res<Assets<ThemeConfig>>,
     mut text_query: Query<(&ThemeColorForText, &mut Text)>,
 ) {
-    let Some(palette) = &theme.get(&theme_handle.0).map(|theme| &theme.colors) else {
-        return;
-    };
-
+    let palette = r!(theme.get(&theme_handle.0).map(|theme| &theme.colors));
     for (colors, mut text) in &mut text_query {
         for (section, &color) in text.sections.iter_mut().zip(&colors.0) {
             section.style.color = palette[color];

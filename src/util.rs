@@ -4,6 +4,7 @@
 
 pub mod config;
 pub mod despawn;
+pub mod macros;
 pub mod patch;
 pub mod time;
 
@@ -17,6 +18,8 @@ pub mod prelude {
     pub use super::patch::PluginGroupBuilderExtReplace as _;
     pub use super::patch::SpawnWithExt as _;
     pub use super::patch::WorldSpawnWithExt as _;
+    pub use crate::c;
+    pub use crate::r;
 }
 
 use bevy::prelude::*;

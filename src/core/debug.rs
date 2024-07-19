@@ -155,7 +155,7 @@ impl Default for DebugConfig {
             debug_physics: true,
             editor: true,
 
-            extend_loading_screen: 20.0,
+            extend_loading_screen: 0.0,
             start_screen: None,
         }
     }

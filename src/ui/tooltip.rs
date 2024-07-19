@@ -96,15 +96,9 @@ fn show_tooltip_on_hover(
     mut text_query: Query<&mut Text>,
     interaction_query: Query<(&Interaction, &Tooltip, &GlobalTransform, &Node)>,
 ) {
-    let Ok(window) = window_query.get(window_root.primary) else {
-        return;
-    };
-    let Ok((mut visibility, mut style)) = container_query.get_mut(tooltip_root.container) else {
-        return;
-    };
-    let Ok(mut text) = text_query.get_mut(tooltip_root.text) else {
-        return;
-    };
+    let window = r!(window_query.get(window_root.primary));
+    let (mut visibility, mut style) = r!(container_query.get_mut(tooltip_root.container));
+    let mut text = r!(text_query.get_mut(tooltip_root.text));
 
     for (interaction, tooltip, gt, node) in &interaction_query {
         if matches!(interaction, Interaction::None) {

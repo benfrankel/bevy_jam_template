@@ -66,11 +66,10 @@ impl Config for WindowConfig {
             .resource_mut::<NextStateBuffer<_>>()
             .enable(WindowReady);
 
-        if let Some(mut window) = world.get_mut::<Window>(world.resource::<WindowRoot>().primary) {
-            window.title.clone_from(&self.title);
-            window.mode = self.window_mode;
-            window.present_mode = self.present_mode;
-        }
+        let mut window = r!(world.get_mut::<Window>(world.resource::<WindowRoot>().primary));
+        window.title.clone_from(&self.title);
+        window.mode = self.window_mode;
+        window.present_mode = self.present_mode;
     }
 }
 
@@ -86,9 +85,5 @@ impl Configure for WindowReady {
 }
 
 fn show_window(window_root: Res<WindowRoot>, mut window_query: Query<&mut Window>) {
-    let Ok(mut window) = window_query.get_mut(window_root.primary) else {
-        return;
-    };
-
-    window.visible = true;
+    r!(window_query.get_mut(window_root.primary)).visible = true;
 }
