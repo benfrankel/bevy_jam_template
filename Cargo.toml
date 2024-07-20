@@ -29,7 +29,7 @@ bevy = { version = "0.14", default-features = false, features = [
     #bevy_gilrs",
     #serialize",
     "subpixel_glyph_atlas",
-    #"bevy/tonemapping_luts",
+    "tonemapping_luts",
 
     # File formats
     "png",
