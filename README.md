@@ -2,9 +2,8 @@
 
 ## Create a new project
 
-1. Clone this template: `git clone --depth 1 https://benfrankel/bevy_jam_template.git`
-2. (Linux) Create a new project: `bevy_jam_template/create.sh PROJECT_PATH`
-3. (Non-Linux) Create a new project:
+1. Clone this template: `git clone --depth 1 https://github.com/benfrankel/bevy_jam_template.git`
+2. Create a new project:
     1. Copy `bevy_jam_template` to a new project path (with a valid Rust package name).
     2. Navigate into the new project path.
     3. Remove template files: `.git`, `create.sh`, `Cargo.lock`, `LICENSE-0BSD`, `LICENSE-CC0-1.0`, `README.md`.
@@ -24,7 +23,7 @@
 4. Create an itch.io page for your project.
 5. Point the `ITCH_TARGET` value in `.github/workflows/release.yaml` to your itch.io page.
 6. To trigger CI, push a commit to `main`.
-7. To trigger CD, push a release tag in the format `vX.Y.Z`. Consider releasing daily during a game jam!
+7. To trigger CD, push a release tag in the format `v1.2.3`. Consider releasing daily during a game jam!
 
 ## Build your project
 
@@ -36,29 +35,29 @@
 # Features
 
 - [Web release (WASM)](https://pyrious.itch.io/bevy-jam-template) support
-    - [CSS spinner](web/style.css) before the game starts
-- [Github CI / CD workflows](.github/workflows/), including itch.io upload
-- [VS Code tasks](.vscode/tasks.json)
-- [Game logic system ordering](src/core.rs) (via `UpdateSet` system set)
-- [Main screen sequence](src/screen.rs) (via `Screen` state)
+    - [CSS spinner](./web/style.css) before the game starts
+- [Github CI / CD workflows](./.github/workflows/), including itch.io upload
+- [VS Code tasks](./.vscode/tasks.json)
+- [Game logic system ordering](./src/core.rs) (via `UpdateSet` system set)
+- [Main screen sequence](./src/screen.rs) (via `Screen` state)
     - Screen fade in / out animations on transition
     - Restart game on R press
-- [Config file](assets/default.config.ron) with [hot-reloading](src/core/config.rs) (via `apply_config` system)
-    - [Window settings](src/core/window.rs)
-    - [Color palette](src/core/theme.rs) (via `ThemeSpriteColor`, ... components)
-- [UI utilities](src/util/ui.rs)
-    - [Built-in pixel fonts](assets/font/)
-    - [Dynamic font size](src/util/ui/font.rs) (via `FontSize` component)
-    - [Basic "rich text" parsing](src/util/ui/font.rs) (via `parse_rich`)
-    - [Interactive buttons](src/util/ui/interaction.rs) (via [`bevy_mod_picking`](https://github.com/aevyrie/bevy_mod_picking) and `InteractionPalette` component)
-    - [Tooltip on hover](src/util/ui/tooltip.rs) (via `Tooltip` component)
-- [Debug mode](src/core/debug.rs) for dev builds
+- [Config files](./assets/config/) with [hot-reloading](./src/util/config.rs) (via `apply_config<C>` system)
+    - [Window settings](./src/core/window.rs)
+    - [Color palette](./src/core/theme.rs) (via `ThemeColorFor<C>` components)
+- [UI utilities](./src/util/ui.rs)
+    - [Built-in pixel fonts](./assets/font/)
+    - [Dynamic font size](./src/ui/font.rs) (via `DynamicFontSize` component)
+    - [Basic "rich text" parsing](./src/ui/font.rs) (via `parse_rich`)
+    - [Interactive buttons](./src/ui/interaction.rs) (via [`bevy_mod_picking`](https://github.com/aevyrie/bevy_mod_picking) and `InteractionPalette` component)
+    - [Tooltip on hover](./src/ui/tooltip.rs) (via `Tooltip` component)
+- [Debug mode](./src/core/debug.rs) for dev builds
     - Live inspector window (via [`bevy_editor_pls`](https://github.com/jakobhellermann/bevy_editor_pls))
     - Physics wireframes and picking tooltips (F3 to toggle)
     - Some helpful logging
 
 # Credit
 
-- The [splash screen image](https://github.com/bevyengine/bevy/blob/main/assets/branding/bevy_logo_dark.png) belongs to Bevy and is not covered by any of the licenses in this repository.
+- The [splash screen image](https://github.com/bevyengine/bevy/blob/main/assets/branding/bevy_logo_dark.png) belongs to the Bevy Foundation and is not covered by any of the licenses in this repository.
 - The [pixel fonts](https://pyrious.itch.io/pypx-fonts) are CC0-licensed.
-- The remainder of this template is made available under [CC0](LICENSE-CC0-1.0) or [0BSD](LICENSE-0BSD) at your choice.
+- The remainder of this template is made available under [CC0](./LICENSE-CC0-1.0.txt) or [0BSD](./LICENSE-0BSD.txt) at your choice.

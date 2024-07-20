@@ -155,7 +155,7 @@ pub fn menu_button(text: impl Into<String>) -> impl EntityCommand<World> {
                             ..default()
                         },
                     ),
-                    FontSize::new(Vw(4.0)).with_step(8.0),
+                    DynamicFontSize::new(Vw(4.0)).with_step(8.0),
                     ThemeColorForText(vec![ThemeColor::PrimaryText]),
                 ));
             });

@@ -16,21 +16,12 @@ impl Configure for DespawnSet {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
         app.init_resource::<Self>();
-        app.add_systems(
-            Update,
-            (
-                // Flush queued commands first to prevent double despawn.
-                apply_deferred.in_set(UpdateSet::QueueDespawn),
-                apply_despawn_set.in_set(UpdateSet::QueueDespawn),
-            )
-                .chain(),
-        );
+        app.add_systems(Update, apply_despawn_set.in_set(UpdateSet::SpawnDespawn));
     }
 }
 
-#[allow(dead_code)]
 impl DespawnSet {
-    // Only supports recursive despawning, because Commands::despawn breaks the hierarchy.
+    // Only supports recursive despawning, because `Commands::despawn` breaks the hierarchy.
     pub fn recursive(&mut self, entity: Entity) {
         self.0.insert(entity);
     }

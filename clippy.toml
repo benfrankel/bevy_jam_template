@@ -1,1 +1,2 @@
+# TODO: Workaround for https://github.com/rust-lang/rust-clippy/issues/10689.
 avoid-breaking-exported-api = false

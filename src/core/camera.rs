@@ -35,6 +35,7 @@ impl FromWorld for CameraRoot {
                         },
                         ..default()
                     },
+                    IsDefaultUiCamera,
                 ))
                 .id(),
         }
@@ -49,7 +50,7 @@ pub struct AbsoluteScale(pub Vec3);
 impl Configure for AbsoluteScale {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.add_systems(Update, apply_absolute_scale.in_set(UpdateSet::End));
+        app.add_systems(Update, apply_absolute_scale.in_set(UpdateSet::SyncLate));
     }
 }
 

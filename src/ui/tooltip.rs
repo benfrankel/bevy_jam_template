@@ -56,7 +56,7 @@ impl FromWorld for TooltipRoot {
                         },
                     ),
                     // TODO: Adjustable font sizes in ThemeConfig
-                    FontSize::new(Px(16.0)),
+                    DynamicFontSize::new(Px(16.0)),
                     ThemeColorForText(vec![ThemeColor::BodyText]),
                 ))
                 .set_parent(container)
@@ -84,7 +84,7 @@ pub struct Tooltip {
 impl Configure for Tooltip {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.add_systems(Update, show_tooltip_on_hover.in_set(UpdateSet::Update));
+        app.add_systems(Update, show_tooltip_on_hover.in_set(UpdateSet::SyncLate));
     }
 }
 

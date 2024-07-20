@@ -60,12 +60,14 @@ jobs:
             features: web
             binary_ext: .wasm
             package_ext: .zip
+            runner: ubuntu-latest
 
           - platform: linux
             targets: x86_64-unknown-linux-gnu
             profile: release
             features: native,bevy/wayland
             package_ext: .zip
+            runner: ubuntu-latest
 
           - platform: windows
             targets: x86_64-pc-windows-msvc
@@ -82,7 +84,7 @@ jobs:
             out_dir_suffix: .app/Contents/MacOS
             package_ext: .dmg
             runner: macos-latest
-    runs-on: ${{ matrix.runner || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.runner }}
     defaults:
       run:
         shell: bash
@@ -107,11 +109,11 @@ jobs:
           targets: ${{ matrix.targets }}
 
       - name: Populate target directory from cache
-        uses: Leafwing-Studios/cargo-cache@v1
+        uses: Leafwing-Studios/cargo-cache@v2
 
       - name: Install dependencies (Linux)
         if: ${{ matrix.platform == 'linux' }}
-        run: sudo apt-get update; sudo apt-get install libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
       - name: Prepare output directories
         run: rm -rf tmp; mkdir -p tmp/binary '${{ env.OUT_DIR }}'
@@ -132,7 +134,7 @@ jobs:
         run: |
           cargo binstall --no-confirm wasm-bindgen-cli
           mkdir -p tmp/bindgen
-          wasm-bindgen tmp/binary/* --out-dir tmp/bindgen --out-name '${{ env.PACKAGE_NAME }}' --no-typescript --target web
+          wasm-bindgen tmp/binary/*'${{ matrix.binary_ext }}' --out-dir tmp/bindgen --out-name '${{ env.PACKAGE_NAME }}' --no-typescript --target web
           rm -rf tmp/binary; mv tmp/bindgen tmp/binary
 
       - name: Optimize Wasm (Web)
@@ -144,9 +146,9 @@ jobs:
       - name: Add binaries to package
         run: |
           if [ '${{ matrix.platform }}' == 'macos' ]; then
-            lipo tmp/binary/* -create -output '${{ env.OUT_DIR }}/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
+            lipo tmp/binary/*'${{ matrix.binary_ext }}' -create -output '${{ env.OUT_DIR }}/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
           else
-            mv tmp/binary/* '${{ env.OUT_DIR }}'
+            mv tmp/binary/*'${{ matrix.binary_ext }}' '${{ env.OUT_DIR }}/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
           fi
 
       - name: Add assets to package
@@ -159,7 +161,7 @@ jobs:
       - name: Add app metadata to package (MacOS)
         if: ${{ matrix.platform == 'macos' }}
         run: |
-          cat > '${{ env.OUT_DIR }}/../Info.plist' << EOF
+          cat >'${{ env.OUT_DIR }}/../Info.plist' <<EOF
             <?xml version="1.0" encoding="UTF-8"?>
             <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
             <plist version="1.0">
@@ -242,8 +244,6 @@ jobs:
       - get-version
       - get-itch-target
       - build
-    env:
-      VERSION: ${{ needs.get-version.outputs.version }}
     if: ${{ needs.get-itch-target.outputs.itch-target != '' }}
 
     steps:
@@ -267,7 +267,7 @@ jobs:
           for channel in $(ls tmp); do
             ./butler push \
               --fix-permissions \
-              --userversion='${{ env.VERSION }}' \
+              --userversion='${{ needs.get-version.outputs.version }}' \
               tmp/"${channel}"/* \
               '${{ env.ITCH_TARGET }}':"${channel#package-}"
           done

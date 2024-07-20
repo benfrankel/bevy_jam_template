@@ -22,6 +22,7 @@ bevy = { version = "0.14", default-features = false, features = [
     "bevy_ui",
     "multi_threaded",
     "x11",
+    "wayland",
     "webgl2",
 
     # Extra functionality
@@ -63,6 +64,7 @@ default = ["native_dev"]
 dev = [
     "dep:bevy_editor_pls",
     "avian2d/debug-plugin",
+    "bevy/bevy_dev_tools",
     "bevy/dynamic_linking",
     "bevy/sysinfo_plugin",
     "bevy_mod_picking/debug",
@@ -74,23 +76,44 @@ web_dev = ["web", "dev"]
 trace = ["bevy/trace", "bevy/wgpu_trace", "bevy/trace_tracy"]
 debug_dump = ["dep:bevy_mod_debugdump"]
 
-# Enable a small amount of optimization in debug mode.
+# Idiomatic Bevy code often triggers these lints, and the CI workflow treats them as errors.
+# In some cases they may still signal poor code quality however, so consider commenting out these lines.
+[lints.clippy]
+# Bevy supplies arguments to systems via dependency injection, so it's natural for systems to
+# request more than 7 arguments -- which triggers this lint.
+too_many_arguments = "allow"
+# Queries that access many components may trigger this lint.
+type_complexity = "allow"
+
+# Enable a small amount of optimization in the dev profile.
 [profile.dev]
 opt-level = 1
 
-# Enable a large amount of optimization in debug mode for dependencies.
+# Enable a large amount of optimization in the dev profile for dependencies.
 [profile.dev.package."*"]
 opt-level = 3
 
-# Enable additional optimization in release mode at the cost of compile time.
-[profile.release]
-lto = "thin"
-codegen-units = 1
+# TODO: Workaround for https://github.com/bevyengine/bevy/issues/14291.
+[profile.dev.package.wgpu-types]
+debug-assertions = false
 
-# Optimize for size in wasm-release mode.
+# Enable more optimization in the release profile at the cost of compile time.
+[profile.release]
+# Compile the entire crate as one unit.
+# Slows compile times, marginal improvements.
+codegen-units = 1
+# Do a second optimization pass over the entire program, including dependencies.
+# Slows compile times, marginal improvements.
+lto = "thin"
+
+# Optimize for size in the wasm-release profile to reduce load times and bandwidth usage on web.
 [profile.wasm-release]
+# Default to release profile values.
 inherits = "release"
-opt-level = "z"
+# Optimize with size in mind (also try "z", sometimes it is better).
+# Slightly slows compile times, great improvements to file size and runtime performance.
+opt-level = "s"
+# Strip all debugging information from the binary to slightly reduce file size.
 strip = "debuginfo"
 
 [[bin]]

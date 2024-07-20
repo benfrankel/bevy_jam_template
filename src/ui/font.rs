@@ -27,7 +27,7 @@ pub(super) fn plugin(app: &mut App) {
         |bytes: &[u8], _path: String| Font::try_from_bytes(bytes.to_vec()).unwrap()
     );
 
-    app.configure::<FontSize>();
+    app.configure::<DynamicFontSize>();
 }
 
 pub const FONT_HANDLE: Handle<Font> =
@@ -38,20 +38,20 @@ pub const THICK_FONT_HANDLE: Handle<Font> =
     Handle::weak_from_u128(93153499609634570285243616548722721367);
 
 #[derive(Component, Reflect)]
-pub struct FontSize {
+pub struct DynamicFontSize {
     pub size: Val,
     pub step: f32,
     pub minimum: f32,
 }
 
-impl Configure for FontSize {
+impl Configure for DynamicFontSize {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.add_systems(Update, apply_font_size.in_set(UpdateSet::End));
+        app.add_systems(Update, apply_font_size.in_set(UpdateSet::SyncLate));
     }
 }
 
-impl FontSize {
+impl DynamicFontSize {
     pub fn new(size: Val) -> Self {
         Self {
             size,
@@ -75,7 +75,7 @@ impl FontSize {
 pub fn apply_font_size(
     window_root: Res<WindowRoot>,
     window_query: Query<&Window>,
-    mut text_query: Query<(&FontSize, &Node, &mut Text)>,
+    mut text_query: Query<(&DynamicFontSize, &Node, &mut Text)>,
 ) {
     let window = r!(window_query.get(window_root.primary));
     let viewport_size = Vec2::new(window.resolution.width(), window.resolution.height());

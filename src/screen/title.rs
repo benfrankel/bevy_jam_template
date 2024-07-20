@@ -67,7 +67,7 @@ fn title_text(mut entity: EntityWorldMut) {
             margin: UiRect::vertical(Vw(5.0)),
             ..default()
         }),
-        FontSize::new(Vw(5.0)).with_step(8.0),
+        DynamicFontSize::new(Vw(5.0)).with_step(8.0),
         ThemeColorForText(vec![ThemeColor::BodyText]),
     ));
 }

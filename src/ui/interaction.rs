@@ -34,7 +34,10 @@ pub struct InteractionPalette {
 impl Configure for InteractionPalette {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.add_systems(Update, apply_interaction_palette.in_set(UpdateSet::End));
+        app.add_systems(
+            Update,
+            apply_interaction_palette.in_set(UpdateSet::SyncLate),
+        );
     }
 }
 

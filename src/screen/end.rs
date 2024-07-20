@@ -96,7 +96,7 @@ fn end_text(mut entity: EntityWorldMut) {
             ),
             ..default()
         },
-        FontSize::new(Vw(5.0)).with_step(8.0),
+        DynamicFontSize::new(Vw(5.0)).with_step(8.0),
         ThemeColorForText(vec![ThemeColor::BodyText]),
     ));
 }

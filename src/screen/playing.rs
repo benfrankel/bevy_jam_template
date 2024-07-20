@@ -3,9 +3,9 @@ use bevy_asset_loader::prelude::*;
 use leafwing_input_manager::common_conditions::action_just_pressed;
 use leafwing_input_manager::prelude::*;
 use pyri_state::prelude::*;
+use pyri_state::schedule::ResolveStateSet;
 
 use crate::core::camera::CameraRoot;
-use crate::core::UpdateSet;
 use crate::screen::fade_in;
 use crate::screen::Screen;
 use crate::ui::prelude::*;
@@ -70,12 +70,14 @@ impl Configure for PlayingAction {
         );
         app.add_plugins(InputManagerPlugin::<Self>::default());
         app.add_systems(
-            Update,
-            Screen::Playing.on_update(
-                Screen::refresh
-                    .in_set(UpdateSet::HandleActions)
-                    .run_if(action_just_pressed(Self::Restart)),
-            ),
+            StateFlush,
+            Screen::refresh
+                .in_set(ResolveStateSet::<Screen>::Compute)
+                .run_if(
+                    Screen::Playing
+                        .will_exit()
+                        .and_then(action_just_pressed(Self::Restart)),
+                ),
         );
     }
 }

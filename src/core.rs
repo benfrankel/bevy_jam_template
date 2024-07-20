@@ -1,4 +1,4 @@
-//! Foundational features and cross-cutting concerns
+//! Foundational features and cross-cutting concerns.
 
 pub mod asset;
 pub mod audio;
@@ -20,7 +20,7 @@ use crate::util::prelude::*;
 pub(super) fn plugin(app: &mut App) {
     app.configure::<(UpdateSet, PostTransformSet, PostColorSet)>();
 
-    // Bevy plugins
+    // Add Bevy plugins.
     app.add_plugins(
         DefaultPlugins
             .build()
@@ -32,7 +32,7 @@ pub(super) fn plugin(app: &mut App) {
             .set(ImagePlugin::default_nearest()),
     );
 
-    // Other plugins
+    // Add other plugins.
     app.add_plugins((
         audio::plugin,
         camera::plugin,
@@ -46,26 +46,20 @@ pub(super) fn plugin(app: &mut App) {
 /// Game logic system ordering in the [`Update`] schedule.
 #[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum UpdateSet {
-    /// Handle actions pressed this frame.
-    HandleActions,
-    /// Initialize start-of-frame values and tick timers.
-    Start,
+    /// Synchronize start-of-frame values.
+    SyncEarly,
+    /// Tick timers.
+    TickTimers,
+    /// Record player and AI input.
+    RecordInput,
     /// Step game logic.
     Update,
-    /// Run the trigger-effect system.
-    React,
-    /// Record player and AI intents.
-    RecordIntents,
-    /// Apply player and AI intents.
-    ApplyIntents,
     /// Handle events emitted this frame.
     HandleEvents,
-    /// Queue despawn commands from DespawnSet.
-    QueueDespawn,
-    /// Update UI.
-    UpdateUi,
+    /// Spawn and despawn entities.
+    SpawnDespawn,
     /// Synchronize end-of-frame values.
-    End,
+    SyncLate,
 }
 
 impl Configure for UpdateSet {
@@ -73,16 +67,13 @@ impl Configure for UpdateSet {
         app.configure_sets(
             Update,
             (
-                Self::HandleActions,
-                Self::Start,
+                Self::SyncEarly,
+                Self::TickTimers,
                 Self::Update,
-                Self::React,
-                Self::RecordIntents,
-                Self::ApplyIntents,
+                Self::RecordInput,
                 Self::HandleEvents,
-                Self::QueueDespawn,
-                Self::UpdateUi,
-                Self::End,
+                Self::SpawnDespawn,
+                Self::SyncLate,
             )
                 .chain(),
         );

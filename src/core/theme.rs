@@ -98,7 +98,10 @@ fn apply_theme_color_for<C: Component + ColorMut>(
 impl<C: Component + ColorMut + TypePath> Configure for ThemeColorFor<C> {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.add_systems(Update, apply_theme_color_for::<C>.in_set(UpdateSet::End));
+        app.add_systems(
+            Update,
+            apply_theme_color_for::<C>.in_set(UpdateSet::SyncLate),
+        );
     }
 }
 
@@ -108,11 +111,14 @@ pub struct ThemeColorForText(pub Vec<ThemeColor>);
 impl Configure for ThemeColorForText {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.add_systems(Update, apply_theme_text_colors.in_set(UpdateSet::End));
+        app.add_systems(
+            Update,
+            apply_theme_color_for_text.in_set(UpdateSet::SyncLate),
+        );
     }
 }
 
-fn apply_theme_text_colors(
+fn apply_theme_color_for_text(
     theme_handle: Res<ConfigHandle<ThemeConfig>>,
     theme: Res<Assets<ThemeConfig>>,
     mut text_query: Query<(&ThemeColorForText, &mut Text)>,
