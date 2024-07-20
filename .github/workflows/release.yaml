@@ -147,12 +147,15 @@ jobs:
         run: |
           if [ '${{ matrix.platform }}' == 'macos' ]; then
             lipo tmp/binary/*'${{ matrix.binary_ext }}' -create -output '${{ env.OUT_DIR }}/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
+          elif [ '${{ matrix.platform }}' == 'web' ]; then
+            mv tmp/binary/*'${{ matrix.binary_ext }}' '${{ env.OUT_DIR }}/${{ env.PACKAGE_NAME }}_bg${{ matrix.binary_ext }}'
           else
             mv tmp/binary/*'${{ matrix.binary_ext }}' '${{ env.OUT_DIR }}/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
           fi
+          mv tmp/binary/* '${{ env.OUT_DIR }}' || true # Ignore error if there's nothing left to move
 
       - name: Add assets to package
-        run: cp -r '${{ env.ASSETS_DIR }}' '${{ env.OUT_DIR }}' || true # Ignore error if assets folder does not exist
+        run: cp -r '${{ env.ASSETS_DIR }}' '${{ env.OUT_DIR }}' || true # Ignore error if there's nothing to copy
 
       - name: Add web content to package (Web)
         if: ${{ matrix.platform == 'web' }}
