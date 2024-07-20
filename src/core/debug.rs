@@ -50,12 +50,10 @@ pub(super) fn plugin(app: &mut App) {
     }
 
     // Log state flushes.
-    if config.log_state_flush {
-        app.insert_resource(StateDebugSettings {
-            log_flush: true,
-            ..default()
-        });
-    }
+    app.insert_resource(StateDebugSettings {
+        log_flush: config.log_state_flush,
+        ..default()
+    });
 
     // Debug picking.
     if config.debug_picking {

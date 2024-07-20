@@ -47,7 +47,12 @@ iyes_progress = "0.12"
 lazy-regex = { version = "3", features = ["lite"] }
 leafwing-input-manager = "0.14"
 #noise = "0.8"
-pyri_state = "0.2"
+pyri_state = { version = "0.2", default-features = false, features = [
+    "bevy_app",
+    "bevy_reflect",
+    "bevy_state",
+    "entity_scope",
+] }
 #rand = { version = "0.8", features = ["small_rng"] }
 ron = "0.8"
 serde = "1"
@@ -68,6 +73,7 @@ dev = [
     "bevy/dynamic_linking",
     "bevy/sysinfo_plugin",
     "bevy_mod_picking/debug",
+    "pyri_state/debug",
 ]
 native = ["avian2d/parallel"]
 native_dev = ["native", "dev", "bevy/file_watcher", "bevy/embedded_watcher"]
