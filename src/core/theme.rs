@@ -50,7 +50,7 @@ impl Index<ThemeColor> for ThemeColorList {
     }
 }
 
-/// See: https://getbootstrap.com/docs/5.3/customize/color/
+/// See: <https://getbootstrap.com/docs/5.3/customize/color/>
 #[derive(Reflect, Clone, Copy, Default, EnumCount)]
 pub enum ThemeColor {
     // Absolute colors

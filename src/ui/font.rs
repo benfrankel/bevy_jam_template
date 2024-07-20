@@ -99,7 +99,7 @@ pub fn apply_font_size(
     }
 }
 
-/// Parses a "rich text" string with tags "[r]", "[b]", and "[t]".
+/// Parses a "rich text" string with tags `"[r]"`, `"[b]"`, and `"[t]"`.
 pub fn parse_rich(text: &str) -> Text {
     let styles = HashMap::from([
         (
@@ -132,9 +132,9 @@ pub fn parse_rich(text: &str) -> Text {
 ///
 /// Format:
 /// - The text style will be set to `styles[start_tag]` initially.
-/// - "[tag]" will set the text style to `styles["tag"]` for the following text.
-/// - If `styles["tag"]` is not found, "[tag]" will be interpreted as literal text.
-/// - Tags cannot be escaped. To allow literal "[tag]", don't use "tag" as a key.
+/// - `"[tag]"` will set the text style to `styles["tag"]` for the following text.
+/// - If `styles["tag"]` is not found, `"[tag]"` will be interpreted as literal text.
+/// - Tags cannot be escaped. To allow literal `"[tag]"`, don't use `"tag"` as a key.
 pub fn parse_rich_custom(text: &str, styles: &HashMap<&str, TextStyle>, start_tag: &str) -> Text {
     let mut sections = vec![];
 
