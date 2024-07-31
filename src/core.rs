@@ -54,8 +54,10 @@ pub enum UpdateSet {
     Update,
     /// Handle events emitted this frame.
     HandleEvents,
-    /// Spawn and despawn entities.
-    SpawnDespawn,
+    /// Despawn entities.
+    Despawn,
+    /// Spawn entities.
+    Spawn,
     /// Synchronize end-of-frame values.
     SyncLate,
 }
@@ -70,7 +72,8 @@ impl Configure for UpdateSet {
                 Self::Update,
                 Self::RecordInput,
                 Self::HandleEvents,
-                Self::SpawnDespawn,
+                Self::Despawn,
+                Self::Spawn,
                 Self::SyncLate,
             )
                 .chain(),

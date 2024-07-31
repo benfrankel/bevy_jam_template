@@ -3,7 +3,7 @@ use pyri_state::prelude::*;
 
 use crate::core::PostColorSet;
 use crate::screen::Screen;
-use crate::util::despawn::DespawnSet;
+use crate::util::late_despawn::LateDespawn;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
@@ -34,7 +34,7 @@ impl FadeIn {
 
 fn apply_fade_in(
     time: Res<Time>,
-    mut despawn: ResMut<DespawnSet>,
+    mut despawn: ResMut<LateDespawn>,
     mut fade_query: Query<(Entity, &mut FadeIn, &mut BackgroundColor)>,
 ) {
     let dt = time.delta_seconds();
@@ -74,7 +74,7 @@ impl FadeOut {
 
 fn apply_fade_out(
     time: Res<Time>,
-    mut despawn: ResMut<DespawnSet>,
+    mut despawn: ResMut<LateDespawn>,
     mut screen: NextMut<Screen>,
     mut fade_query: Query<(Entity, &mut FadeOut, &mut BackgroundColor)>,
 ) {
