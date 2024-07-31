@@ -4,6 +4,7 @@
 
 pub mod color;
 pub mod interaction;
+pub mod layout;
 pub mod text;
 pub mod tooltip;
 pub mod widget;
@@ -15,6 +16,7 @@ pub mod prelude {
     pub use super::color::ThemeColorFor;
     pub use super::color::ThemeColorForText;
     pub use super::interaction::*;
+    pub use super::layout::StyleExtLayout;
     pub use super::text::*;
     pub use super::widget;
     pub use super::UiRoot;

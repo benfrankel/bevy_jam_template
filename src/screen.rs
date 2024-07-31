@@ -58,7 +58,7 @@ const FADE_OUT_SECS: f32 = 0.2;
 
 fn fade_out(to_screen: Screen) -> impl EntityCommand<World> {
     move |mut entity: EntityWorldMut| {
-        entity.add(widget::overlay).insert((
+        entity.add(widget::blocking_overlay).insert((
             Name::new("ScreenFadeOut"),
             ThemeColor::Body.set::<BackgroundColor>(),
             FadeOut::new(FADE_OUT_SECS, to_screen),

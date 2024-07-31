@@ -71,8 +71,7 @@ fn exit_end(mut commands: Commands, ui_root: Res<UiRoot>) {
 
 fn end_screen(mut entity: EntityWorldMut) {
     entity
-        .add(widget::column_mid)
-        .insert(Name::new("EndScreen"))
+        .insert(Style::COLUMN_MID.full_size().node("EndScreen"))
         .with_children(|children| {
             children.spawn_with(end_text);
         });

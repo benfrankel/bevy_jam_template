@@ -45,8 +45,7 @@ fn exit_title(mut commands: Commands, ui_root: Res<UiRoot>) {
 
 fn title_screen(mut entity: EntityWorldMut) {
     entity
-        .add(widget::column_mid)
-        .insert(Name::new("TitleScreen"))
+        .insert(Style::COLUMN_MID.full_size().node("TitleScreen"))
         .with_children(|children| {
             children.spawn_with(title_text);
             children.spawn_with(button_container);
@@ -78,12 +77,9 @@ fn button_container(mut entity: EntityWorldMut) {
             Name::new("ButtonContainer"),
             NodeBundle {
                 style: Style {
-                    width: Percent(100.0),
-                    align_items: AlignItems::Center,
-                    flex_direction: FlexDirection::Column,
                     margin: UiRect::vertical(VMin(9.0)),
                     row_gap: Vw(2.5),
-                    ..default()
+                    ..Style::COLUMN_MID.full_width()
                 },
                 ..default()
             },

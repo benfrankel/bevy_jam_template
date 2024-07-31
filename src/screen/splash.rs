@@ -50,8 +50,7 @@ fn exit_splash(mut commands: Commands, ui_root: Res<UiRoot>) {
 
 fn splash_screen(mut entity: EntityWorldMut) {
     entity
-        .add(widget::column_center)
-        .insert(Name::new("SplashScreen"))
+        .insert(Style::COLUMN_MID.full_size().node("SplashScreen"))
         .with_children(|children| {
             children.spawn_with(splash_image);
         });

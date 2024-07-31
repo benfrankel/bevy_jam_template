@@ -42,8 +42,7 @@ fn exit_loading(mut commands: Commands, ui_root: Res<UiRoot>) {
 
 fn loading_screen(mut entity: EntityWorldMut) {
     entity
-        .add(widget::column_center)
-        .insert(Name::new("LoadingScreen"))
+        .insert(Style::COLUMN_CENTER.full_size().node("LoadingScreen"))
         .with_children(|children| {
             children.spawn_with(loading_text);
             children.spawn_with(loading_bar);

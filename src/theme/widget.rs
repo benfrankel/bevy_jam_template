@@ -1,119 +1,24 @@
 use bevy::ecs::system::EntityCommand;
 use bevy::prelude::*;
 use bevy::ui::FocusPolicy;
+use bevy_mod_picking::prelude::*;
 
 use crate::theme::prelude::*;
 
-pub fn column_left(mut entity: EntityWorldMut) {
-    entity.insert(NodeBundle {
-        style: Style {
-            width: Percent(100.0),
-            height: Percent(100.0),
-            align_items: AlignItems::Start,
-            flex_direction: FlexDirection::Column,
-            ..default()
-        },
-        ..default()
-    });
-}
-
-pub fn column_mid(mut entity: EntityWorldMut) {
-    entity.insert(NodeBundle {
-        style: Style {
-            width: Percent(100.0),
-            height: Percent(100.0),
-            align_items: AlignItems::Center,
-            flex_direction: FlexDirection::Column,
-            ..default()
-        },
-        ..default()
-    });
-}
-
-pub fn column_right(mut entity: EntityWorldMut) {
-    entity.insert(NodeBundle {
-        style: Style {
-            width: Percent(100.0),
-            height: Percent(100.0),
-            align_items: AlignItems::End,
-            flex_direction: FlexDirection::Column,
-            ..default()
-        },
-        ..default()
-    });
-}
-
-pub fn column_center(mut entity: EntityWorldMut) {
-    entity.insert(NodeBundle {
-        style: Style {
-            width: Percent(100.0),
-            height: Percent(100.0),
-            align_items: AlignItems::Center,
-            justify_content: JustifyContent::Center,
-            flex_direction: FlexDirection::Column,
-            ..default()
-        },
-        ..default()
-    });
-}
-
-pub fn row_top(mut entity: EntityWorldMut) {
-    entity.insert(NodeBundle {
-        style: Style {
-            width: Percent(100.0),
-            height: Percent(100.0),
-            align_items: AlignItems::Start,
-            ..default()
-        },
-        ..default()
-    });
-}
-
-pub fn row_mid(mut entity: EntityWorldMut) {
-    entity.insert(NodeBundle {
-        style: Style {
-            width: Percent(100.0),
-            height: Percent(100.0),
-            align_items: AlignItems::Center,
-            ..default()
-        },
-        ..default()
-    });
-}
-
-pub fn row_bottom(mut entity: EntityWorldMut) {
-    entity.insert(NodeBundle {
-        style: Style {
-            width: Percent(100.0),
-            height: Percent(100.0),
-            align_items: AlignItems::End,
-            ..default()
-        },
-        ..default()
-    });
-}
-
-pub fn row_center(mut entity: EntityWorldMut) {
-    entity.insert(NodeBundle {
-        style: Style {
-            width: Percent(100.0),
-            height: Percent(100.0),
-            align_items: AlignItems::Center,
-            justify_content: JustifyContent::Center,
-            ..default()
-        },
-        ..default()
-    });
-}
-
 pub fn overlay(mut entity: EntityWorldMut) {
-    entity.insert(NodeBundle {
-        style: Style {
-            position_type: PositionType::Absolute,
-            width: Percent(100.0),
-            height: Percent(100.0),
+    entity.insert((
+        NodeBundle {
+            style: Style::DEFAULT.abs().full_size(),
+            z_index: ZIndex::Global(1000),
             ..default()
         },
+        Pickable::IGNORE,
+    ));
+}
+
+pub fn blocking_overlay(mut entity: EntityWorldMut) {
+    entity.insert(NodeBundle {
+        style: Style::DEFAULT.abs().full_size(),
         focus_policy: FocusPolicy::Block,
         z_index: ZIndex::Global(1000),
         ..default()
@@ -130,9 +35,7 @@ pub fn menu_button(text: impl Into<String>) -> impl EntityCommand<World> {
                     style: Style {
                         height: Vw(11.0),
                         width: Vw(38.0),
-                        align_items: AlignItems::Center,
-                        justify_content: JustifyContent::Center,
-                        ..default()
+                        ..Style::ROW_CENTER
                     },
                     border_radius: BorderRadius::MAX,
                     ..default()
