@@ -6,6 +6,7 @@ pub mod config;
 pub mod late_despawn;
 pub mod macros;
 pub mod patch;
+pub mod selection;
 pub mod time;
 
 pub mod prelude {
@@ -21,12 +22,15 @@ pub mod prelude {
     pub use super::patch::SpawnWithExt as _;
     pub use super::patch::TriggerExtGetEntity as _;
     pub use super::patch::WorldSpawnWithExt as _;
+    pub use super::selection::Selection;
     pub use crate::c;
+    pub use crate::cq;
     pub use crate::r;
+    pub use crate::rq;
 }
 
 use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_plugins(late_despawn::plugin);
+    app.add_plugins((late_despawn::plugin, selection::plugin));
 }
