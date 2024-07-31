@@ -12,7 +12,7 @@ use crate::screen::fade_out;
 use crate::screen::title::TitleScreenAssets;
 use crate::screen::Screen;
 use crate::screen::FADE_IN_SECS;
-use crate::ui::prelude::*;
+use crate::theme::prelude::*;
 use crate::util::prelude::*;
 use crate::util::time::wait;
 

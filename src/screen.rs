@@ -11,7 +11,7 @@ use pyri_state::prelude::*;
 use crate::animation::FadeIn;
 use crate::animation::FadeOut;
 use crate::core::window::WindowReady;
-use crate::ui::prelude::*;
+use crate::theme::prelude::*;
 use crate::util::prelude::*;
 
 pub fn plugin(app: &mut App) {

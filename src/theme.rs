@@ -1,22 +1,23 @@
-//! Custom UI tools.
+//! Custom theming and UI tools.
 
 #![allow(dead_code, unused_imports)]
 
-pub mod font;
+pub mod color;
 pub mod interaction;
+pub mod text;
 pub mod tooltip;
 pub mod widget;
 
 pub mod prelude {
     pub use bevy::ui::Val::*;
 
-    pub use super::font::*;
+    pub use super::color::ThemeColor;
+    pub use super::color::ThemeColorFor;
+    pub use super::color::ThemeColorForText;
     pub use super::interaction::*;
+    pub use super::text::*;
     pub use super::widget;
     pub use super::UiRoot;
-    pub use crate::core::theme::ThemeColor;
-    pub use crate::core::theme::ThemeColorFor;
-    pub use crate::core::theme::ThemeColorForText;
 }
 
 use bevy::prelude::*;
@@ -28,7 +29,12 @@ use crate::util::prelude::*;
 pub(super) fn plugin(app: &mut App) {
     app.configure::<UiRoot>();
 
-    app.add_plugins((font::plugin, interaction::plugin, tooltip::plugin));
+    app.add_plugins((
+        color::plugin,
+        interaction::plugin,
+        text::plugin,
+        tooltip::plugin,
+    ));
 }
 
 #[derive(Resource, Reflect)]

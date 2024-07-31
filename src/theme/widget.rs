@@ -2,7 +2,7 @@ use bevy::ecs::system::EntityCommand;
 use bevy::prelude::*;
 use bevy::ui::FocusPolicy;
 
-use crate::ui::prelude::*;
+use crate::theme::prelude::*;
 
 pub fn column_left(mut entity: EntityWorldMut) {
     entity.insert(NodeBundle {

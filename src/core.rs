@@ -7,7 +7,6 @@ pub mod camera;
 pub mod debug;
 pub mod physics;
 pub mod state;
-pub mod theme;
 pub mod window;
 
 use avian2d::prelude::*;
@@ -38,7 +37,6 @@ pub(super) fn plugin(app: &mut App) {
         camera::plugin,
         #[cfg(feature = "dev")]
         debug::plugin,
-        theme::plugin,
         physics::plugin,
     ));
 }

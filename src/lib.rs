@@ -2,7 +2,7 @@ mod animation;
 mod core;
 mod game;
 mod screen;
-mod ui;
+mod theme;
 mod util;
 
 use bevy::prelude::*;
@@ -13,7 +13,7 @@ pub fn plugin(app: &mut App) {
         core::plugin,
         game::plugin,
         screen::plugin,
-        ui::plugin,
+        theme::plugin,
         util::plugin,
     ));
 }

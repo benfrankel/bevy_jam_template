@@ -8,7 +8,7 @@ use pyri_state::schedule::ResolveStateSet;
 use crate::core::camera::CameraRoot;
 use crate::screen::fade_in;
 use crate::screen::Screen;
-use crate::ui::prelude::*;
+use crate::theme::prelude::*;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {

@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::core::window::WindowRoot;
 use crate::core::UpdateSet;
-use crate::ui::prelude::*;
+use crate::theme::prelude::*;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
