@@ -11,7 +11,10 @@ pub trait EntityWorldMutExtAdd {
 impl EntityWorldMutExtAdd for EntityWorldMut<'_> {
     fn add<M: 'static>(&mut self, command: impl EntityCommand<M>) -> &mut Self {
         let id = self.id();
-        self.world_scope(|world| world.commands().add(command.with_entity(id)));
+        self.world_scope(|world| {
+            world.commands().add(command.with_entity(id));
+            world.flush_commands();
+        });
         self
     }
 }
@@ -94,5 +97,40 @@ pub trait PluginGroupBuilderExtReplace {
 impl PluginGroupBuilderExtReplace for PluginGroupBuilder {
     fn replace<Target: Plugin>(self, plugin: impl Plugin) -> Self {
         self.disable::<Target>().add_after::<Target, _>(plugin)
+    }
+}
+
+// TODO: Workaround for https://github.com/bevyengine/bevy/issues/14233.
+pub trait EntityCommandsExtTrigger {
+    fn trigger(&mut self, event: impl Event) -> &mut Self;
+}
+
+impl EntityCommandsExtTrigger for EntityCommands<'_> {
+    fn trigger(&mut self, event: impl Event) -> &mut Self {
+        let entity = self.id();
+        self.commands().trigger_targets(event, entity);
+        self
+    }
+}
+
+// TODO: Workaround for https://github.com/bevyengine/bevy/issues/14236.
+pub trait TriggerExtGetEntity {
+    fn get_entity(&self) -> Option<Entity>;
+}
+
+impl<E, B: Bundle> TriggerExtGetEntity for Trigger<'_, E, B> {
+    fn get_entity(&self) -> Option<Entity> {
+        Some(self.entity()).filter(|&x| x != Entity::PLACEHOLDER)
+    }
+}
+
+// TODO: Workaround for https://github.com/bevyengine/bevy/issues/14525.
+pub trait Dir2ExtToQuat {
+    fn to_quat(self) -> Quat;
+}
+
+impl Dir2ExtToQuat for Dir2 {
+    fn to_quat(self) -> Quat {
+        Quat::from_rotation_z(self.to_angle())
     }
 }
