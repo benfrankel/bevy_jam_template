@@ -2,6 +2,8 @@
 
 use avian2d::prelude::*;
 use bevy::core::FrameCount;
+use bevy::dev_tools::ui_debug_overlay::DebugUiPlugin;
+use bevy::dev_tools::ui_debug_overlay::UiDebugOptions;
 use bevy::diagnostic::EntityCountDiagnosticsPlugin;
 use bevy::diagnostic::FrameTimeDiagnosticsPlugin;
 use bevy::diagnostic::LogDiagnosticsPlugin;
@@ -54,6 +56,16 @@ pub(super) fn plugin(app: &mut App) {
         log_flush: config.log_state_flush,
         ..default()
     });
+
+    // Debug UI.
+    if config.debug_ui {
+        app.add_plugins(DebugUiPlugin);
+        app.add_systems(
+            Update,
+            (|mut options: ResMut<UiDebugOptions>| options.toggle())
+                .run_if(input_just_pressed(DEBUG_TOGGLE_KEY)),
+        );
+    }
 
     // Debug picking.
     if config.debug_picking {
@@ -118,22 +130,23 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 pub(super) struct DebugConfig {
-    // Diagnostics
+    // Diagnostics:
     pub frame_time_diagnostics: bool,
     pub system_information_diagnostics: bool,
     pub entity_count_diagnostics: bool,
 
-    // Logging
+    // Logging:
     pub log_diagnostics: bool,
     pub log_ambiguity_detection: bool,
     pub log_state_flush: bool,
 
-    // 3rd-party debug tools
+    // Other debug tools:
+    pub debug_ui: bool,
     pub debug_picking: bool,
     pub debug_physics: bool,
     pub editor: bool,
 
-    // Screen settings
+    // Screen settings:
     pub start_screen: Option<Screen>,
     pub extend_loading_screen: f32,
 }
@@ -149,6 +162,7 @@ impl Default for DebugConfig {
             log_ambiguity_detection: false,
             log_state_flush: true,
 
+            debug_ui: true,
             debug_picking: true,
             debug_physics: true,
             editor: true,
