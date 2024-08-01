@@ -1,4 +1,4 @@
-/// Helper trait to be generic over `Option` and `Result`.
+/// Helper trait to abstract over `Option` vs. `Result`.
 pub trait Success<T> {
     fn success(self) -> Option<T>;
 }
@@ -29,7 +29,7 @@ macro_rules! warn_unwrap {
     };
 }
 
-/// Unwrap or warn and return.
+/// Unwrap or return with a warning.
 #[macro_export]
 macro_rules! r {
     ($return:expr, $expr:expr $(,)?) => {
@@ -47,7 +47,7 @@ macro_rules! r {
             Some(x) => x,
             None => {
                 $crate::warn_unwrap!($expr);
-                return;
+                return Default::default();
             },
         }
     };
@@ -66,12 +66,12 @@ macro_rules! rq {
     ($expr:expr $(,)?) => {
         match $crate::util::macros::Success::success($expr) {
             Some(x) => x,
-            None => return,
+            None => return Default::default(),
         }
     };
 }
 
-/// Unwrap or warn and continue.
+/// Unwrap or continue with a warning.
 #[macro_export]
 macro_rules! c {
     ($expr:expr) => {
@@ -85,7 +85,7 @@ macro_rules! c {
     };
 }
 
-/// Unwrap or continue quiety.
+/// Unwrap or continue quietly.
 #[macro_export]
 macro_rules! cq {
     ($expr:expr) => {
