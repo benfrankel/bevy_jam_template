@@ -5,6 +5,7 @@ pub mod audio;
 pub mod camera;
 #[cfg(feature = "dev")]
 pub mod debug;
+pub mod pause;
 pub mod physics;
 pub mod state;
 pub mod window;
@@ -37,6 +38,7 @@ pub(super) fn plugin(app: &mut App) {
         camera::plugin,
         #[cfg(feature = "dev")]
         debug::plugin,
+        pause::plugin,
         physics::plugin,
     ));
 }

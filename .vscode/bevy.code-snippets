@@ -121,7 +121,7 @@
         "scope": "rust",
         "prefix": "state",
         "body": [
-            "#[derive(State, Copy, Clone, Eq, PartialEq, Reflect, Default)]",
+            "#[derive(State, Copy, Clone, Default, Eq, PartialEq, Debug, Reflect)]",
             "#[state(log_flush)]",
             "#[reflect(Resource)]",
             "enum $1 {",
@@ -133,6 +133,7 @@
             "    fn configure(app: &mut App) {",
             "        app.register_type::<Self>();",
             "        app.init_state::<Self>();$0",
+            "    }",
             "}"
         ],
         "description": "Define a new State"
