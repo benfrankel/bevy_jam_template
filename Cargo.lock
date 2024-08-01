@@ -904,11 +904,14 @@ dependencies = [
  "iyes_progress",
  "lazy-regex",
  "leafwing-input-manager",
+ "log",
  "pyri_state",
  "ron",
  "serde",
  "strum",
  "tap",
+ "tiny_bail",
+ "tracing",
 ]
 
 [[package]]
@@ -4728,6 +4731,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "tiny_bail"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b9497bf0b7812c3383d61716fc8e6b61b0b5fdfe8786375ed633bfef125dcd4d"
+dependencies = [
+ "tracing",
+]
+
+[[package]]
 name = "tinyvec"
 version = "1.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4776,6 +4788,7 @@ version = "0.1.40"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c3523ab5a71916ccf420eebdf5521fcef02141234bbc0b8a49f2fdc4544364ef"
 dependencies = [
+ "log",
  "pin-project-lite",
  "tracing-attributes",
  "tracing-core",
