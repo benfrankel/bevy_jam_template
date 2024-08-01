@@ -1,6 +1,6 @@
 //! Custom theming and UI tools.
 
-#![allow(dead_code, unused_imports)]
+#![allow(dead_code)]
 
 pub mod color;
 pub mod interaction;
@@ -9,6 +9,7 @@ pub mod text;
 pub mod tooltip;
 pub mod widget;
 
+#[allow(unused_imports)]
 pub mod prelude {
     pub use bevy::ui::Val::*;
 

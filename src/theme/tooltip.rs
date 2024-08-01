@@ -1,8 +1,6 @@
-use bevy::ecs::entity::Entities;
 use bevy::prelude::*;
 use bevy::sprite::Anchor;
 
-use crate::core::window::WindowRoot;
 use crate::core::PostTransformSet;
 use crate::core::UpdateSet;
 use crate::theme::prelude::*;

@@ -1,6 +1,6 @@
 //! Self-contained, re-usable utilities that are not specific to this game.
 
-#![allow(dead_code, unused_imports)]
+#![allow(dead_code)]
 
 pub mod config;
 pub mod late_despawn;
@@ -8,6 +8,7 @@ pub mod patch;
 pub mod selection;
 pub mod time;
 
+#[allow(unused_imports)]
 pub mod prelude {
     pub use tiny_bail::prelude::*;
 
