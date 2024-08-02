@@ -1,12 +1,14 @@
 use bevy::prelude::*;
+use pyri_state::prelude::*;
 
+use crate::core::pause::Pause;
 use crate::core::UpdateSet;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.insert_resource(Msaa::Off);
 
-    app.configure::<(CameraRoot, AbsoluteScale)>();
+    app.configure::<(CameraRoot, SmoothFollow, AbsoluteScale)>();
 }
 
 #[derive(Resource, Reflect)]
@@ -35,10 +37,50 @@ impl FromWorld for CameraRoot {
                         },
                         ..default()
                     },
+                    SmoothFollow {
+                        target: Entity::PLACEHOLDER,
+                        rate: Vec2::splat(100.0),
+                    },
                     IsDefaultUiCamera,
                 ))
                 .id(),
         }
+    }
+}
+
+/// Smooth camera follow.
+#[derive(Component, Reflect)]
+#[reflect(Component)]
+pub struct SmoothFollow {
+    pub target: Entity,
+    pub rate: Vec2,
+}
+
+impl Configure for SmoothFollow {
+    fn configure(app: &mut App) {
+        app.register_type::<Self>();
+        app.add_systems(Update, apply_smooth_follow.run_if(Pause::is_disabled));
+    }
+}
+
+fn apply_smooth_follow(
+    time: Res<Time>,
+    mut follow_query: Query<(&mut Transform, &mut GlobalTransform, &SmoothFollow)>,
+    target_query: Query<&GlobalTransform, Without<SmoothFollow>>,
+) {
+    let dt = time.delta_seconds();
+    for (mut transform, mut gt, follow) in &mut follow_query {
+        let Ok(target) = target_query.get(follow.target) else {
+            continue;
+        };
+
+        let target_pos = target.translation().xy();
+        let mut pos = transform.translation.xy();
+        pos += (target_pos - pos) * (follow.rate * dt).clamp(Vec2::ZERO, Vec2::ONE);
+
+        transform.translation = pos.extend(transform.translation.z);
+        // TODO: This is a bit of a hack because transform propagation is awkward.
+        *gt = (*transform).into();
     }
 }
 
