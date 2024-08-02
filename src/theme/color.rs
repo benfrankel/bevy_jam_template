@@ -30,9 +30,7 @@ pub struct ThemeConfig {
 }
 
 impl Config for ThemeConfig {
-    const PATH: &'static str = "config/theme.ron";
-
-    const EXTENSION: &'static str = "theme.ron";
+    const FILE: &'static str = "theme.ron";
 
     fn apply(&self, world: &mut World) {
         world.resource_mut::<ClearColor>().0 = self.colors[ThemeColor::Body];

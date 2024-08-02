@@ -57,9 +57,7 @@ pub struct WindowConfig {
 }
 
 impl Config for WindowConfig {
-    const PATH: &'static str = "config/window.ron";
-
-    const EXTENSION: &'static str = "window.ron";
+    const FILE: &'static str = "window.ron";
 
     fn apply(&self, world: &mut World) {
         world

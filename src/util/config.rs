@@ -10,9 +10,8 @@ use serde::Serialize;
 use crate::util::prelude::*;
 
 pub trait Config: Asset + Serialize + for<'de> Deserialize<'de> {
-    const PATH: &'static str;
-
-    const EXTENSION: &'static str;
+    const FILE: &'static str;
+    const FOLDER: &'static str = "config";
 
     fn apply(&self, world: &mut World);
 }
@@ -24,7 +23,7 @@ pub struct ConfigHandle<C: Config>(pub Handle<C>);
 impl<C: Config> Configure for ConfigHandle<C> {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.add_plugins(RonAssetPlugin::<C>::new(&[C::EXTENSION]));
+        app.add_plugins(RonAssetPlugin::<C>::new(&[C::FILE]));
         app.add_systems(Startup, load_config::<C>);
         app.add_systems(
             PreUpdate,
@@ -34,7 +33,9 @@ impl<C: Config> Configure for ConfigHandle<C> {
 }
 
 fn load_config<C: Config>(world: &mut World) {
-    let handle = world.resource_mut::<AssetServer>().load(C::PATH);
+    let handle = world
+        .resource_mut::<AssetServer>()
+        .load(format!("{}/{}", C::FOLDER, C::FILE));
     world.insert_resource(ConfigHandle::<C>(handle));
 }
 
