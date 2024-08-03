@@ -73,7 +73,7 @@ impl Default for DebugConfig {
 impl Config for DebugConfig {
     const FILE: &'static str = "debug.ron";
 
-    fn on_load(&self, world: &mut World) {
+    fn on_load(&mut self, world: &mut World) {
         ambiguity::on_load(self, world);
         diagnostics::on_load(self, world);
         state::on_load(self, world);

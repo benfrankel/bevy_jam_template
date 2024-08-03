@@ -28,29 +28,17 @@ pub(super) fn on_load(config: &DebugConfig, world: &mut World) {
     world.resource_mut::<StateDebugSettings>().log_flush = config.log_state_flush;
 }
 
-fn enter_initial_screen(
-    config_handle: Res<ConfigHandle<DebugConfig>>,
-    config: Res<Assets<DebugConfig>>,
-
-    mut screen: NextMut<Screen>,
-) {
-    let config = r!(config.get(&config_handle.0));
+fn enter_initial_screen(config: ConfigRef<DebugConfig>, mut screen: NextMut<Screen>) {
+    let config = r!(config.get());
     screen.enter(rq!(config.initial_screen));
 }
 
-fn do_not_skip_loading_screen(
-    config_handle: Res<ConfigHandle<DebugConfig>>,
-    config: Res<Assets<DebugConfig>>,
-) -> Progress {
-    let config = r!(config.get(&config_handle.0));
+fn do_not_skip_loading_screen(config: ConfigRef<DebugConfig>) -> Progress {
+    let config = r!(config.get());
     (config.extend_loading_screen <= 0.0).into()
 }
 
-fn extend_loading_screen(
-    config_handle: Res<ConfigHandle<DebugConfig>>,
-    config: Res<Assets<DebugConfig>>,
-    screen_time: Res<ScreenTime>,
-) -> Progress {
-    let config = r!(config.get(&config_handle.0));
+fn extend_loading_screen(config: ConfigRef<DebugConfig>, screen_time: Res<ScreenTime>) -> Progress {
+    let config = r!(config.get());
     (screen_time.0.as_secs_f32() >= config.extend_loading_screen).into()
 }

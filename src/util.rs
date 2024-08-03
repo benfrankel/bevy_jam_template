@@ -14,6 +14,7 @@ pub mod prelude {
 
     pub use super::config::Config;
     pub use super::config::ConfigHandle;
+    pub use super::config::ConfigRef;
     pub use super::late_despawn::LateDespawn;
     pub use super::patch::prelude::*;
     pub use super::selection::Selection;

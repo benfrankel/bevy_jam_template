@@ -33,7 +33,7 @@ pub struct ThemeConfig {
 impl Config for ThemeConfig {
     const FILE: &'static str = "theme.ron";
 
-    fn on_load(&self, world: &mut World) {
+    fn on_load(&mut self, world: &mut World) {
         world.resource_mut::<ClearColor>().0 = self.colors[ThemeColor::Body];
     }
 }
@@ -85,11 +85,10 @@ pub struct ThemeColorFor<C: Component + ColorMut>(
 );
 
 fn apply_theme_color_for<C: Component + ColorMut>(
-    theme_handle: Res<ConfigHandle<ThemeConfig>>,
-    theme: Res<Assets<ThemeConfig>>,
+    config: ConfigRef<ThemeConfig>,
     mut color_query: Query<(&ThemeColorFor<C>, &mut C)>,
 ) {
-    let palette = r!(theme.get(&theme_handle.0).map(|theme| &theme.colors));
+    let palette = r!(config.get().map(|x| &x.colors));
     for (theme_color, mut color) in &mut color_query {
         *color.color_mut() = palette[theme_color.0];
     }
@@ -119,11 +118,10 @@ impl Configure for ThemeColorForText {
 }
 
 fn apply_theme_color_for_text(
-    theme_handle: Res<ConfigHandle<ThemeConfig>>,
-    theme: Res<Assets<ThemeConfig>>,
+    config: ConfigRef<ThemeConfig>,
     mut text_query: Query<(&ThemeColorForText, &mut Text)>,
 ) {
-    let palette = r!(theme.get(&theme_handle.0).map(|theme| &theme.colors));
+    let palette = r!(config.get().map(|x| &x.colors));
     for (colors, mut text) in &mut text_query {
         for (section, &color) in text.sections.iter_mut().zip(&colors.0) {
             section.style.color = palette[color];

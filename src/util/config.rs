@@ -2,8 +2,10 @@ use std::any::type_name;
 
 use bevy::core::FrameCount;
 use bevy::ecs::event::ManualEventReader;
+use bevy::ecs::system::SystemParam;
 use bevy::prelude::*;
 use bevy_common_assets::ron::RonAssetPlugin;
+use iyes_progress::prelude::*;
 use serde::Deserialize;
 use serde::Serialize;
 
@@ -13,7 +15,19 @@ pub trait Config: Asset + Serialize + for<'de> Deserialize<'de> {
     const FILE: &'static str;
     const FOLDER: &'static str = "config";
 
-    fn on_load(&self, world: &mut World);
+    fn on_load(&mut self, world: &mut World);
+
+    fn count_progress(&self, asset_server: &AssetServer) -> Progress {
+        let _ = asset_server;
+        true.into()
+    }
+
+    fn progress(config: ConfigRef<Self>, asset_server: Res<AssetServer>) -> Progress {
+        config
+            .get()
+            .map(|x| x.count_progress(&asset_server))
+            .unwrap_or(false.into())
+    }
 }
 
 #[derive(Resource, Reflect)]
@@ -52,10 +66,20 @@ fn apply_config<C: Config>(world: &mut World, mut reader: Local<ManualEventReade
         world.resource::<FrameCount>().0,
         type_name::<C>()
     );
-    world.resource_scope(|world, config: Mut<Assets<C>>| {
-        config
-            .get(&world.resource::<ConfigHandle<C>>().0)
-            .unwrap()
-            .on_load(world);
+    world.resource_scope(|world, mut config: Mut<Assets<C>>| {
+        let config = r!(config.get_mut(&world.resource::<ConfigHandle<C>>().0));
+        config.on_load(world);
     });
+}
+
+#[derive(SystemParam)]
+pub struct ConfigRef<'w, C: Config> {
+    handle: Option<Res<'w, ConfigHandle<C>>>,
+    assets: Res<'w, Assets<C>>,
+}
+
+impl<C: Config> ConfigRef<'_, C> {
+    pub fn get(&self) -> Option<&C> {
+        self.handle.as_ref().and_then(|x| self.assets.get(&x.0))
+    }
 }
