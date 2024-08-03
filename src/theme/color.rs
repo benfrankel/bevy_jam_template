@@ -78,7 +78,7 @@ impl ThemeColor {
     }
 }
 
-#[derive(Component, Reflect, Default)]
+#[derive(Component, Reflect, Clone, Default)]
 pub struct ThemeColorFor<C: Component + ColorMut>(
     pub ThemeColor,
     #[reflect(ignore)] PhantomData<C>,

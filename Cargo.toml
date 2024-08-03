@@ -57,7 +57,7 @@ pyri_state = { version = "0.2", default-features = false, features = [
     "bevy_state",
     "entity_scope",
 ] }
-#rand = { version = "0.8", features = ["small_rng"] }
+rand = { version = "0.8", features = ["small_rng"] }
 ron = "0.8"
 serde = "1"
 strum = { version = "0.26", features = ["derive"] }

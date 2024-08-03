@@ -906,6 +906,7 @@ dependencies = [
  "leafwing-input-manager",
  "log",
  "pyri_state",
+ "rand",
  "ron",
  "serde",
  "strum",

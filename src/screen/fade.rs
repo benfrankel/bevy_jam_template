@@ -2,7 +2,7 @@ use bevy::ecs::system::EntityCommand;
 use bevy::prelude::*;
 use pyri_state::prelude::*;
 
-use crate::core::PostColorSet;
+use crate::animation::PostColorSet;
 use crate::screen::Screen;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;

@@ -170,6 +170,27 @@
         ],
         "description": "Define a new Actionlike"
     },
+    "AssetCollection": {
+        "scope": "rust",
+        "prefix": "asset_collection",
+        "body": [
+            "#[derive(AssetCollection, Resource, Reflect, Default)]",
+            "#[reflect(Resource)]",
+            "pub struct $1Assets {",
+            "    #[asset(path = \"$2\")]",
+            "    pub $3: Handle<$4>,",
+            "    $0",
+            "}",
+            "",
+            "impl Configure for $1Assets {",
+            "    fn configure(app: &mut App) {",
+            "        app.register_type::<Self>();",
+            "        app.init_collection::<Self>();",
+            "    }",
+            "}"
+        ],
+        "description": "Define a new AssetCollection"
+    },
     "Config": {
         "scope": "rust",
         "prefix": "config",

@@ -4,6 +4,8 @@ use bevy::prelude::*;
 use bevy::ui::FocusPolicy;
 use bevy_mod_picking::prelude::*;
 
+use crate::animation::backup::Backup;
+use crate::animation::offset::Offset;
 use crate::theme::prelude::*;
 
 pub fn overlay(In(id): In<Entity>, mut commands: Commands) {
@@ -56,13 +58,21 @@ fn menu_button(In((id, this)): In<(Entity, MenuButton)>, mut commands: Commands)
                 border_radius: BorderRadius::MAX,
                 ..default()
             },
-            ThemeColor::Invisible.set::<BackgroundColor>(),
-            InteractionPalette {
-                normal: ThemeColor::Primary,
-                hovered: ThemeColor::PrimaryHovered,
-                pressed: ThemeColor::PrimaryPressed,
-                disabled: ThemeColor::PrimaryDisabled,
+            ThemeColor::default().set::<BackgroundColor>(),
+            InteractionTable {
+                normal: ThemeColor::Primary.set::<BackgroundColor>(),
+                hovered: ThemeColor::PrimaryHovered.set::<BackgroundColor>(),
+                pressed: ThemeColor::PrimaryPressed.set::<BackgroundColor>(),
+                disabled: ThemeColor::PrimaryDisabled.set::<BackgroundColor>(),
             },
+            Offset::default(),
+            Backup::<Transform>::default(),
+            InteractionTable {
+                hovered: Offset(Vec2::new(0.0, -4.0)),
+                pressed: Offset(Vec2::new(0.0, 2.0)),
+                ..default()
+            },
+            InteractionSfx,
         ))
         .with_children(|parent| {
             parent.spawn((

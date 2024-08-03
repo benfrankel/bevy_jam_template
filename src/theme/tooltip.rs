@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy::sprite::Anchor;
 
-use crate::core::PostTransformSet;
+use crate::animation::PostTransformSet;
 use crate::core::UpdateSet;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
