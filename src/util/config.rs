@@ -13,7 +13,7 @@ pub trait Config: Asset + Serialize + for<'de> Deserialize<'de> {
     const FILE: &'static str;
     const FOLDER: &'static str = "config";
 
-    fn apply(&self, world: &mut World);
+    fn on_load(&self, world: &mut World);
 }
 
 #[derive(Resource, Reflect)]
@@ -56,6 +56,6 @@ fn apply_config<C: Config>(world: &mut World, mut reader: Local<ManualEventReade
         config
             .get(&world.resource::<ConfigHandle<C>>().0)
             .unwrap()
-            .apply(world);
+            .on_load(world);
     });
 }

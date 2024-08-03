@@ -4,8 +4,8 @@ use pyri_state::extra::entity_scope::StateScope;
 use pyri_state::prelude::*;
 
 use crate::core::pause::Pause;
+use crate::screen::fade::FadeOut;
 use crate::screen::playing::PlayingMenu;
-use crate::screen::FadeOut;
 use crate::screen::Screen;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;

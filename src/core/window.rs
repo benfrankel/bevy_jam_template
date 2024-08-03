@@ -50,6 +50,7 @@ impl FromWorld for WindowRoot {
 }
 
 #[derive(Asset, Reflect, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct WindowConfig {
     pub title: String,
     pub window_mode: WindowMode,
@@ -59,7 +60,7 @@ pub struct WindowConfig {
 impl Config for WindowConfig {
     const FILE: &'static str = "window.ron";
 
-    fn apply(&self, world: &mut World) {
+    fn on_load(&self, world: &mut World) {
         world
             .resource_mut::<NextStateBuffer<_>>()
             .enable(WindowReady);

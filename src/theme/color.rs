@@ -24,6 +24,7 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 #[derive(Asset, Reflect, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct ThemeConfig {
     pub colors: ThemeColorList,
     // TODO: pub fonts: ThemeFontList,
@@ -32,7 +33,7 @@ pub struct ThemeConfig {
 impl Config for ThemeConfig {
     const FILE: &'static str = "theme.ron";
 
-    fn apply(&self, world: &mut World) {
+    fn on_load(&self, world: &mut World) {
         world.resource_mut::<ClearColor>().0 = self.colors[ThemeColor::Body];
     }
 }

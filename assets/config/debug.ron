@@ -1,0 +1,14 @@
+(
+    // Diagnostics:
+    frame_time_diagnostics: false,
+    system_information_diagnostics: false,
+    entity_count_diagnostics: false,
+
+    // Ambiguity:
+    log_ambiguity_detection: false,
+
+    // State:
+    log_state_flush: true,
+    extend_loading_screen: 0.0,
+    initial_screen: Some(Playing),
+)

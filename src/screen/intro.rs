@@ -4,9 +4,8 @@ use bevy_mod_picking::prelude::*;
 use iyes_progress::prelude::*;
 use pyri_state::prelude::*;
 
+use crate::screen::fade::FadeOut;
 use crate::screen::playing::PlayingAssets;
-use crate::screen::FadeIn;
-use crate::screen::FadeOut;
 use crate::screen::Screen;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
@@ -16,16 +15,11 @@ pub(super) fn plugin(app: &mut App) {
         LoadingState::new(Screen::Intro.bevy()).load_collection::<PlayingAssets>(),
     );
     app.add_plugins(ProgressPlugin::new(Screen::Intro.bevy()));
-    app.add_systems(StateFlush, Screen::Intro.on_edge(exit_intro, enter_intro));
+    app.add_systems(StateFlush, Screen::Intro.on_enter(spawn_intro_screen));
 }
 
-fn enter_intro(mut commands: Commands, ui_root: Res<UiRoot>) {
-    commands.spawn_with(FadeIn::default());
+fn spawn_intro_screen(mut commands: Commands, ui_root: Res<UiRoot>) {
     commands.spawn_fn(intro_screen).set_parent(ui_root.body);
-}
-
-fn exit_intro(mut commands: Commands, ui_root: Res<UiRoot>) {
-    commands.entity(ui_root.body).despawn_descendants();
 }
 
 fn intro_screen(In(id): In<Entity>, mut commands: Commands) {

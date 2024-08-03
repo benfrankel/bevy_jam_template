@@ -7,18 +7,11 @@ use leafwing_input_manager::prelude::*;
 use pyri_state::prelude::*;
 use pyri_state::schedule::ResolveStateSet;
 
-use crate::core::camera::CameraRoot;
-use crate::core::pause::Pause;
-use crate::screen::FadeIn;
 use crate::screen::Screen;
-use crate::theme::prelude::*;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(
-        StateFlush,
-        Screen::Playing.on_edge((exit_playing, Pause::disable), enter_playing),
-    );
+    app.add_systems(StateFlush, Screen::Playing.on_enter(spawn_playing_screen));
 
     app.configure::<(PlayingAssets, PlayingAction, PlayingMenu)>();
 }
@@ -34,30 +27,8 @@ impl Configure for PlayingAssets {
     }
 }
 
-fn enter_playing(mut commands: Commands) {
-    commands.spawn_with(FadeIn::default());
-}
-
-fn exit_playing(
-    mut commands: Commands,
-    ui_root: Res<UiRoot>,
-    camera_root: Res<CameraRoot>,
-    mut camera_query: Query<&mut Transform>,
-) {
-    // Reset resources:
-
-    // Clear events:
-
-    // TODO: Change `StateScope<S>` -> `enum DespawnOnExit<S>` with different despawn options.
-    // TODO: Add a Ui/Screen sub-entity with despawn descendants in Screen::ANY.on_exit.
-    // Despawn entities:
-    commands.entity(ui_root.body).despawn_descendants();
-
-    // TODO: This should be in `Screen::ANY.on_exit`.
-    // Reset camera:
-    if let Ok(mut transform) = camera_query.get_mut(camera_root.primary) {
-        transform.translation = Vec2::ZERO.extend(transform.translation.z);
-    };
+fn spawn_playing_screen(mut _commands: Commands) {
+    // TODO
 }
 
 #[derive(Actionlike, Reflect, Clone, Hash, PartialEq, Eq)]

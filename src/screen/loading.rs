@@ -4,9 +4,8 @@ use bevy_asset_loader::prelude::*;
 use iyes_progress::prelude::*;
 use pyri_state::prelude::*;
 
+use crate::screen::fade::FadeOut;
 use crate::screen::playing::PlayingAssets;
-use crate::screen::FadeIn;
-use crate::screen::FadeOut;
 use crate::screen::Screen;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
@@ -16,10 +15,7 @@ pub(super) fn plugin(app: &mut App) {
         LoadingState::new(Screen::Loading.bevy()).load_collection::<PlayingAssets>(),
     );
     app.add_plugins(ProgressPlugin::new(Screen::Loading.bevy()));
-    app.add_systems(
-        StateFlush,
-        Screen::Loading.on_edge(exit_loading, enter_loading),
-    );
+    app.add_systems(StateFlush, Screen::Loading.on_enter(spawn_loading_screen));
 
     app.register_type::<IsLoadingBarFill>();
     app.add_systems(
@@ -31,13 +27,8 @@ pub(super) fn plugin(app: &mut App) {
 #[derive(Component, Reflect)]
 struct IsLoadingBarFill;
 
-fn enter_loading(mut commands: Commands, ui_root: Res<UiRoot>) {
-    commands.spawn_with(FadeIn::default());
+fn spawn_loading_screen(mut commands: Commands, ui_root: Res<UiRoot>) {
     commands.spawn_fn(loading_screen).set_parent(ui_root.body);
-}
-
-fn exit_loading(mut commands: Commands, ui_root: Res<UiRoot>) {
-    commands.entity(ui_root.body).despawn_descendants();
 }
 
 fn loading_screen(In(id): In<Entity>, mut commands: Commands) {

@@ -6,7 +6,6 @@ pub mod config;
 pub mod late_despawn;
 pub mod patch;
 pub mod selection;
-pub mod time;
 
 #[allow(unused_imports)]
 pub mod prelude {

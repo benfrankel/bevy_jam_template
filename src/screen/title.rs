@@ -3,19 +3,16 @@ use bevy_asset_loader::prelude::*;
 use bevy_mod_picking::prelude::*;
 use pyri_state::prelude::*;
 
-use crate::screen::FadeIn;
-use crate::screen::FadeOut;
+use crate::screen::fade::FadeOut;
 use crate::screen::Screen;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(StateFlush, Screen::Title.on_edge(exit_title, enter_title));
+    app.add_systems(StateFlush, Screen::Title.on_enter(spawn_title_screen));
 
     app.configure::<TitleScreenAssets>();
 }
-
-const HEADER: &str = "bevy_jam_template";
 
 #[derive(AssetCollection, Resource, Reflect, Default)]
 #[reflect(Resource)]
@@ -28,13 +25,8 @@ impl Configure for TitleScreenAssets {
     }
 }
 
-fn enter_title(mut commands: Commands, ui_root: Res<UiRoot>) {
-    commands.spawn_with(FadeIn::default());
+fn spawn_title_screen(mut commands: Commands, ui_root: Res<UiRoot>) {
     commands.spawn_fn(title_screen).set_parent(ui_root.body);
-}
-
-fn exit_title(mut commands: Commands, ui_root: Res<UiRoot>) {
-    commands.entity(ui_root.body).despawn_descendants();
 }
 
 fn title_screen(In(id): In<Entity>, mut commands: Commands) {
@@ -50,7 +42,7 @@ fn title_screen(In(id): In<Entity>, mut commands: Commands) {
 fn header(In(id): In<Entity>, mut commands: Commands) {
     commands.entity(id).insert((
         Name::new("Header"),
-        TextBundle::from_sections(parse_rich(HEADER)).with_style(Style {
+        TextBundle::from_sections(parse_rich("bevy_jam_template")).with_style(Style {
             margin: UiRect::vertical(Vw(5.0)),
             ..default()
         }),

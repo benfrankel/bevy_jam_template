@@ -1,32 +1,34 @@
+mod fade;
 mod intro;
 mod loading;
 mod playing;
 mod splash;
 mod title;
 
-use bevy::ecs::system::EntityCommand;
-use bevy::prelude::*;
-use pyri_state::prelude::*;
+use std::time::Duration;
 
+use bevy::ecs::schedule::SystemConfigs;
+use bevy::prelude::*;
+use iyes_progress::prelude::*;
+use pyri_state::prelude::*;
+use serde::Deserialize;
+use serde::Serialize;
+
+use crate::core::camera::CameraRoot;
+use crate::core::pause::Pause;
 use crate::core::window::WindowReady;
-use crate::core::PostColorSet;
-use crate::theme::prelude::*;
-use crate::util::late_despawn::LateDespawn;
+use crate::theme::UiRoot;
 use crate::util::prelude::*;
 
 pub fn plugin(app: &mut App) {
-    app.configure::<(Screen, FadeIn, FadeOut)>();
+    app.configure::<(Screen, ScreenTime)>();
 
-    app.add_plugins((
-        splash::plugin,
-        title::plugin,
-        intro::plugin,
-        loading::plugin,
-        playing::plugin,
-    ));
+    app.add_plugins(fade::plugin);
 }
 
-#[derive(State, Copy, Clone, Eq, PartialEq, Hash, Debug, Reflect, Default)]
+#[derive(
+    State, Copy, Clone, Default, Eq, PartialEq, Hash, Debug, Reflect, Serialize, Deserialize,
+)]
 #[state(after(WindowReady), entity_scope, bevy_state, log_flush)]
 pub enum Screen {
     #[default]
@@ -40,133 +42,59 @@ pub enum Screen {
 impl Configure for Screen {
     fn configure(app: &mut App) {
         app.add_state::<Self>();
-        app.add_systems(StateFlush, WindowReady.on_enter(Screen::enable_default));
-    }
-}
-
-#[derive(Component, Reflect)]
-pub struct FadeIn {
-    duration: f32,
-    remaining: f32,
-}
-
-impl Configure for FadeIn {
-    fn configure(app: &mut App) {
-        app.register_type::<Self>();
-        app.add_systems(PostUpdate, apply_fade_in.in_set(PostColorSet::Blend));
-    }
-}
-
-impl EntityCommand for FadeIn {
-    fn apply(self, id: Entity, world: &mut World) {
-        world.run_system_once_with((id, self), fade_in);
-    }
-}
-
-fn fade_in(In((id, this)): In<(Entity, FadeIn)>, mut commands: Commands) {
-    commands.entity(id).add_fn(widget::overlay).insert((
-        Name::new("FadeIn"),
-        ThemeColor::Body.set::<BackgroundColor>(),
-        this,
-    ));
-}
-
-const FADE_IN_SECS: f32 = 0.5;
-
-impl Default for FadeIn {
-    fn default() -> Self {
-        Self::new(FADE_IN_SECS)
-    }
-}
-
-impl FadeIn {
-    pub fn new(duration: f32) -> Self {
-        Self {
-            duration,
-            remaining: duration,
-        }
-    }
-}
-
-fn apply_fade_in(
-    time: Res<Time>,
-    mut despawn: ResMut<LateDespawn>,
-    mut fade_query: Query<(Entity, &mut FadeIn, &mut BackgroundColor)>,
-) {
-    let dt = time.delta_seconds();
-    for (entity, mut fade, mut color) in &mut fade_query {
-        // TODO: Non-linear alpha?
-        color.0.set_alpha((fade.remaining / fade.duration).max(0.0));
-        if fade.remaining <= 0.0 {
-            despawn.recursive(entity);
-        }
-        fade.remaining -= dt;
-    }
-}
-
-#[derive(Component, Reflect)]
-pub struct FadeOut {
-    duration: f32,
-    remaining: f32,
-    to_screen: Screen,
-}
-
-impl Configure for FadeOut {
-    fn configure(app: &mut App) {
-        app.register_type::<Self>();
-        app.add_systems(PostUpdate, apply_fade_out.in_set(PostColorSet::Blend));
-    }
-}
-
-impl EntityCommand for FadeOut {
-    fn apply(self, id: Entity, world: &mut World) {
-        world.run_system_once_with((id, self), fade_out);
-    }
-}
-
-fn fade_out(In((id, this)): In<(Entity, FadeOut)>, mut commands: Commands) {
-    commands
-        .entity(id)
-        .add_fn(widget::blocking_overlay)
-        .insert((
-            Name::new("FadeOut"),
-            ThemeColor::Body.set::<BackgroundColor>(),
-            this,
+        app.add_systems(
+            StateFlush,
+            (
+                WindowReady.on_enter(Screen::enable_default),
+                Screen::ANY.on_exit((Pause::disable, clear_screen_root, reset_screen_camera)),
+            ),
+        );
+        app.add_plugins((
+            splash::plugin,
+            title::plugin,
+            intro::plugin,
+            loading::plugin,
+            playing::plugin,
         ));
-}
-
-const FADE_OUT_SECS: f32 = 0.2;
-
-impl FadeOut {
-    pub fn to(screen: Screen) -> Self {
-        Self::new(FADE_OUT_SECS, screen)
-    }
-
-    pub fn new(duration: f32, to_screen: Screen) -> Self {
-        Self {
-            duration,
-            remaining: duration,
-            to_screen,
-        }
     }
 }
 
-fn apply_fade_out(
-    time: Res<Time>,
-    mut despawn: ResMut<LateDespawn>,
-    mut screen: NextMut<Screen>,
-    mut fade_query: Query<(Entity, &mut FadeOut, &mut BackgroundColor)>,
-) {
-    let dt = time.delta_seconds();
-    for (entity, mut fade, mut color) in &mut fade_query {
-        // TODO: Non-linear alpha?
-        color
-            .0
-            .set_alpha(1.0 - (fade.remaining / fade.duration).max(0.0));
-        if fade.remaining <= 0.0 {
-            screen.trigger().enter(fade.to_screen);
-            despawn.recursive(entity);
-        }
-        fade.remaining -= dt;
+fn clear_screen_root(mut commands: Commands, ui_root: Res<UiRoot>) {
+    // TODO: Change `StateScope<S>` -> `enum DespawnOnExit<S>` with different despawn options.
+    // TODO: Add a Ui/Screen sub-entity with despawn descendants in Screen::ANY.on_exit.
+    commands.entity(ui_root.body).despawn_descendants();
+}
+
+fn reset_screen_camera(camera_root: Res<CameraRoot>, mut camera_query: Query<&mut Transform>) {
+    let mut transform = r!(camera_query.get_mut(camera_root.primary));
+    *transform = default();
+}
+
+// TODO: Screen timer. Then update `wait` to use it.
+#[derive(Resource, Reflect, Default)]
+#[reflect(Resource)]
+pub struct ScreenTime(pub Duration);
+
+impl Configure for ScreenTime {
+    fn configure(app: &mut App) {
+        app.register_type::<Self>();
+        app.init_resource::<Self>();
+        app.add_systems(StateFlush, Screen::ANY.on_exit(reset_screen_time));
+        app.add_systems(Update, tick_screen_time.run_if(Screen::is_enabled));
     }
+}
+
+fn reset_screen_time(mut screen_time: ResMut<ScreenTime>) {
+    *screen_time = default();
+}
+
+fn tick_screen_time(time: Res<Time>, mut screen_time: ResMut<ScreenTime>) {
+    screen_time.0 += time.delta();
+}
+
+fn wait_in_screen(duration: f32) -> SystemConfigs {
+    (move |screen_time: Res<ScreenTime>| -> Progress {
+        (screen_time.0.as_secs_f32() >= duration).into()
+    })
+    .track_progress()
 }
