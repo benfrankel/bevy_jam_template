@@ -100,7 +100,7 @@ pub fn apply_font_size(
 }
 
 /// Parses a "rich text" string with tags `"[r]"`, `"[b]"`, and `"[t]"`.
-pub fn parse_rich(text: &str) -> Text {
+pub fn parse_rich(text: &str) -> Vec<TextSection> {
     let styles = HashMap::from([
         (
             "r",
@@ -135,7 +135,11 @@ pub fn parse_rich(text: &str) -> Text {
 /// - `"[tag]"` will set the text style to `styles["tag"]` for the following text.
 /// - If `styles["tag"]` is not found, `"[tag]"` will be interpreted as literal text.
 /// - Tags cannot be escaped. To allow literal `"[tag]"`, don't use `"tag"` as a key.
-pub fn parse_rich_custom(text: &str, styles: &HashMap<&str, TextStyle>, start_tag: &str) -> Text {
+pub fn parse_rich_custom(
+    text: &str,
+    styles: &HashMap<&str, TextStyle>,
+    start_tag: &str,
+) -> Vec<TextSection> {
     let mut sections = vec![];
 
     let mut lo = 0;
@@ -175,7 +179,7 @@ pub fn parse_rich_custom(text: &str, styles: &HashMap<&str, TextStyle>, start_ta
         sections.push(section);
     }
 
-    Text::from_sections(sections)
+    sections
 }
 
 #[cfg(test)]
@@ -277,8 +281,8 @@ mod tests {
             ),
         ] {
             let got = parse_rich_custom(case, &styles, "regular");
-            assert_eq!(got.sections.len(), want.len());
-            for (got, want) in got.sections.iter().zip(&want) {
+            assert_eq!(got.len(), want.len());
+            for (got, want) in got.iter().zip(&want) {
                 assert_eq!(got.value, want.value);
                 assert_eq!(got.style.font, want.style.font);
                 assert_eq!(got.style.font_size, want.style.font_size);

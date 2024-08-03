@@ -7,9 +7,9 @@ use bevy_asset_loader::prelude::*;
 use iyes_progress::prelude::*;
 use pyri_state::prelude::*;
 
-use crate::screen::fade_in;
-use crate::screen::fade_out;
 use crate::screen::title::TitleScreenAssets;
+use crate::screen::FadeIn;
+use crate::screen::FadeOut;
 use crate::screen::Screen;
 use crate::screen::FADE_IN_SECS;
 use crate::theme::prelude::*;
@@ -40,26 +40,25 @@ pub(super) fn plugin(app: &mut App) {
 const SPLASH_SCREEN_MIN_SECS: f32 = 0.8;
 
 fn enter_splash(mut commands: Commands, ui_root: Res<UiRoot>) {
-    commands.spawn_with(fade_in);
-    commands.spawn_with(splash_screen).set_parent(ui_root.body);
+    commands.spawn_with(FadeIn::default());
+    commands.spawn_fn(splash_screen).set_parent(ui_root.body);
 }
 
 fn exit_splash(mut commands: Commands, ui_root: Res<UiRoot>) {
     commands.entity(ui_root.body).despawn_descendants();
 }
 
-fn splash_screen(mut entity: EntityWorldMut) {
-    entity
+fn splash_screen(In(id): In<Entity>, mut commands: Commands) {
+    commands
+        .entity(id)
         .insert(Style::COLUMN_MID.full_size().node("SplashScreen"))
         .with_children(|children| {
-            children.spawn_with(splash_image);
+            children.spawn_fn(splash_image);
         });
 }
 
-fn splash_image(mut entity: EntityWorldMut) {
-    let asset_server = entity.world().resource::<AssetServer>();
-
-    entity.insert((
+fn splash_image(In(id): In<Entity>, mut commands: Commands, asset_server: Res<AssetServer>) {
+    commands.entity(id).insert((
         Name::new("SplashImage"),
         ImageBundle {
             style: Style {
@@ -93,7 +92,7 @@ fn update_splash(
 
     // Continue to next screen when ready
     if done == total {
-        commands.spawn_with(fade_out(Screen::Title));
+        commands.spawn_with(FadeOut::to(Screen::Title));
     }
 
     info!("[Frame {}] Booting: {done} / {total}", frame.0);

@@ -31,10 +31,9 @@ impl FromWorld for TooltipRoot {
                 Name::new("Tooltip"),
                 NodeBundle {
                     style: Style {
-                        position_type: PositionType::Absolute,
                         max_width: Vw(40.0),
                         padding: UiRect::all(Px(8.0)),
-                        ..default()
+                        ..Style::DEFAULT.abs()
                     },
                     visibility: Visibility::Hidden,
                     z_index: ZIndex::Global(999),

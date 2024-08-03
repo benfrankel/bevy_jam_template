@@ -4,9 +4,9 @@ use bevy_asset_loader::prelude::*;
 use iyes_progress::prelude::*;
 use pyri_state::prelude::*;
 
-use crate::screen::fade_in;
-use crate::screen::fade_out;
 use crate::screen::playing::PlayingAssets;
+use crate::screen::FadeIn;
+use crate::screen::FadeOut;
 use crate::screen::Screen;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
@@ -32,25 +32,26 @@ pub(super) fn plugin(app: &mut App) {
 struct IsLoadingBarFill;
 
 fn enter_loading(mut commands: Commands, ui_root: Res<UiRoot>) {
-    commands.spawn_with(fade_in);
-    commands.spawn_with(loading_screen).set_parent(ui_root.body);
+    commands.spawn_with(FadeIn::default());
+    commands.spawn_fn(loading_screen).set_parent(ui_root.body);
 }
 
 fn exit_loading(mut commands: Commands, ui_root: Res<UiRoot>) {
     commands.entity(ui_root.body).despawn_descendants();
 }
 
-fn loading_screen(mut entity: EntityWorldMut) {
-    entity
+fn loading_screen(In(id): In<Entity>, mut commands: Commands) {
+    commands
+        .entity(id)
         .insert(Style::COLUMN_CENTER.full_size().node("LoadingScreen"))
         .with_children(|children| {
-            children.spawn_with(loading_text);
-            children.spawn_with(loading_bar);
+            children.spawn_fn(loading_text);
+            children.spawn_fn(loading_bar);
         });
 }
 
-fn loading_text(mut entity: EntityWorldMut) {
-    entity.insert((
+fn loading_text(In(id): In<Entity>, mut commands: Commands) {
+    commands.entity(id).insert((
         Name::new("LoadingText"),
         TextBundle {
             style: Style {
@@ -71,8 +72,9 @@ fn loading_text(mut entity: EntityWorldMut) {
     ));
 }
 
-fn loading_bar(mut entity: EntityWorldMut) {
-    entity
+fn loading_bar(In(id): In<Entity>, mut commands: Commands) {
+    commands
+        .entity(id)
         .insert((
             Name::new("LoadingBar"),
             NodeBundle {
@@ -89,12 +91,12 @@ fn loading_bar(mut entity: EntityWorldMut) {
             ThemeColor::BodyText.set::<BorderColor>(),
         ))
         .with_children(|children| {
-            children.spawn_with(loading_bar_fill);
+            children.spawn_fn(loading_bar_fill);
         });
 }
 
-fn loading_bar_fill(mut entity: EntityWorldMut) {
-    entity.insert((
+fn loading_bar_fill(In(id): In<Entity>, mut commands: Commands) {
+    commands.entity(id).insert((
         Name::new("LoadingBarFill"),
         NodeBundle {
             style: Style {
@@ -124,7 +126,7 @@ fn update_loading(
 
     // Continue to next screen when ready
     if done == total {
-        commands.spawn_with(fade_out(Screen::Playing));
+        commands.spawn_with(FadeOut::to(Screen::Playing));
     }
 
     // Update loading bar

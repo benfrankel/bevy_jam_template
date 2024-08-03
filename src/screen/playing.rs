@@ -1,3 +1,5 @@
+pub mod pause;
+
 use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
 use leafwing_input_manager::common_conditions::action_just_pressed;
@@ -6,7 +8,7 @@ use pyri_state::prelude::*;
 use pyri_state::schedule::ResolveStateSet;
 
 use crate::core::camera::CameraRoot;
-use crate::screen::fade_in;
+use crate::screen::FadeIn;
 use crate::screen::Screen;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
@@ -32,7 +34,7 @@ impl Configure for PlayingAssets {
 }
 
 fn enter_playing(mut commands: Commands) {
-    commands.spawn_with(fade_in);
+    commands.spawn_with(FadeIn::default());
 }
 
 fn exit_playing(
@@ -79,5 +81,21 @@ impl Configure for PlayingAction {
                         .and_then(action_just_pressed(Self::Restart)),
                 ),
         );
+    }
+}
+
+#[derive(State, Copy, Clone, Eq, PartialEq, Debug, Reflect)]
+#[state(after(Screen), entity_scope, log_flush)]
+#[reflect(Resource)]
+enum PlayingMenu {
+    Pause,
+    Victory,
+    Defeat,
+}
+
+impl Configure for PlayingMenu {
+    fn configure(app: &mut App) {
+        app.register_type::<Self>();
+        app.add_state::<Self>();
     }
 }

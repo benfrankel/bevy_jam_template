@@ -54,11 +54,15 @@
             "",
             "impl EntityCommand for $1 {",
             "    fn apply(self, id: Entity, world: &mut World) {",
-            "        world.entity_mut(id).insert((",
-            "            Name::new(\"$1\"),",
-            "            $0",
-            "        ));",
+            "        world.run_system_once((id, self), $2);",
             "    }",
+            "}",
+            "",
+            "fn $2(In((id, this)): In<(Entity, $1)>, mut commands: Commands$3)",
+            "    commands.entity(id).insert((",
+            "        Name::new(\"$1\"),",
+            "        $0",
+            "    ));",
             "}"
         ],
         "description": "Define a new EntityCommand"
@@ -67,9 +71,9 @@
         "scope": "rust",
         "prefix": "entity_fn",
         "body": [
-            "fn $1(entity: Entity, world: &mut World) {",
-            "    world.entity_mut(entity).insert((",
-            "        Name::new(\"$1\"),",
+            "fn $1(In(id): In<Entity>, mut commands: Commands) {",
+            "    commands.entity(id).insert((",
+            "        Name::new(\"$2\"),",
             "        $0",
             "    ));",
             "}"
