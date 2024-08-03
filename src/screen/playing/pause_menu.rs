@@ -72,17 +72,14 @@ fn header(In(id): In<Entity>, mut commands: Commands) {
 fn buttons(In(id): In<Entity>, mut commands: Commands) {
     commands
         .entity(id)
-        .insert((
-            Name::new("Buttons"),
-            NodeBundle {
-                style: Style {
-                    margin: UiRect::top(VMin(6.0)),
-                    row_gap: Vw(2.5),
-                    ..Style::COLUMN_CENTER
-                },
-                ..default()
-            },
-        ))
+        .insert(
+            Style {
+                margin: UiRect::top(VMin(6.0)),
+                row_gap: Vw(2.5),
+                ..Style::COLUMN_CENTER
+            }
+            .node("Buttons"),
+        )
         .with_children(|children| {
             children.spawn_fn(continue_button);
             children.spawn_fn(restart_button);

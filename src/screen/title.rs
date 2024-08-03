@@ -62,17 +62,14 @@ fn header(In(id): In<Entity>, mut commands: Commands) {
 fn buttons(In(id): In<Entity>, mut commands: Commands) {
     commands
         .entity(id)
-        .insert((
-            Name::new("Buttons"),
-            NodeBundle {
-                style: Style {
-                    margin: UiRect::vertical(VMin(9.0)),
-                    row_gap: Vw(2.5),
-                    ..Style::COLUMN_MID.full_width()
-                },
-                ..default()
-            },
-        ))
+        .insert(
+            Style {
+                margin: UiRect::vertical(VMin(9.0)),
+                row_gap: Vw(2.5),
+                ..Style::COLUMN_MID.full_width()
+            }
+            .node("Buttons"),
+        )
         .with_children(|children| {
             children.spawn_fn(play_button);
             children.spawn_fn(quit_button);

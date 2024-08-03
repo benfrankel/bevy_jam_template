@@ -53,14 +53,10 @@ fn loading_screen(In(id): In<Entity>, mut commands: Commands) {
 fn loading_text(In(id): In<Entity>, mut commands: Commands) {
     commands.entity(id).insert((
         Name::new("LoadingText"),
-        TextBundle {
-            style: Style {
-                margin: UiRect::all(Percent(1.0)),
-                ..default()
-            },
-            text: Text::from_sections(parse_rich("[t]Loading...")),
+        TextBundle::from_sections(parse_rich("[t]Loading...")).with_style(Style {
+            margin: UiRect::all(Percent(1.0)),
             ..default()
-        },
+        }),
         DynamicFontSize::new(Vw(5.0)).with_step(8.0),
         ThemeColorForText(vec![ThemeColor::BodyText]),
     ));
@@ -70,18 +66,15 @@ fn loading_bar(In(id): In<Entity>, mut commands: Commands) {
     commands
         .entity(id)
         .insert((
-            Name::new("LoadingBar"),
-            NodeBundle {
-                style: Style {
-                    width: Percent(60.0),
-                    height: Percent(8.0),
-                    margin: UiRect::all(VMin(2.0)),
-                    padding: UiRect::all(VMin(1.0)),
-                    border: UiRect::all(VMin(1.0)),
-                    ..default()
-                },
+            Style {
+                width: Percent(60.0),
+                height: Percent(8.0),
+                margin: UiRect::all(VMin(2.0)),
+                padding: UiRect::all(VMin(1.0)),
+                border: UiRect::all(VMin(1.0)),
                 ..default()
-            },
+            }
+            .node("LoadingBar"),
             ThemeColor::BodyText.set::<BorderColor>(),
         ))
         .with_children(|children| {
@@ -91,15 +84,7 @@ fn loading_bar(In(id): In<Entity>, mut commands: Commands) {
 
 fn loading_bar_fill(In(id): In<Entity>, mut commands: Commands) {
     commands.entity(id).insert((
-        Name::new("LoadingBarFill"),
-        NodeBundle {
-            style: Style {
-                width: Percent(0.0),
-                height: Percent(100.0),
-                ..default()
-            },
-            ..default()
-        },
+        Style::DEFAULT.full_height().node("LoadingBarFill"),
         ThemeColor::Primary.set::<BackgroundColor>(),
         IsLoadingBarFill,
     ));
