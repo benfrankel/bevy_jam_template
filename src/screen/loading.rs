@@ -58,13 +58,7 @@ fn loading_text(In(id): In<Entity>, mut commands: Commands) {
                 margin: UiRect::all(Percent(1.0)),
                 ..default()
             },
-            text: Text::from_section(
-                "Loading...",
-                TextStyle {
-                    font: THICK_FONT_HANDLE,
-                    ..default()
-                },
-            ),
+            text: Text::from_sections(parse_rich("[t]Loading...")),
             ..default()
         },
         DynamicFontSize::new(Vw(5.0)).with_step(8.0),

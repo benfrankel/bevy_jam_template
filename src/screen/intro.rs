@@ -48,13 +48,7 @@ fn header(In(id): In<Entity>, mut commands: Commands) {
                 height: Percent(8.0),
                 ..default()
             },
-            text: Text::from_section(
-                "How to play",
-                TextStyle {
-                    font: BOLD_FONT_HANDLE,
-                    ..default()
-                },
-            ),
+            text: Text::from_sections(parse_rich("[b]How to play")),
             ..default()
         },
         DynamicFontSize::new(Vw(5.0)).with_step(8.0),

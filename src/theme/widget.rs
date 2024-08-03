@@ -67,13 +67,7 @@ fn menu_button(In((id, this)): In<(Entity, MenuButton)>, mut commands: Commands)
         .with_children(|parent| {
             parent.spawn((
                 Name::new("ButtonText"),
-                TextBundle::from_section(
-                    this.text,
-                    TextStyle {
-                        font: FONT_HANDLE,
-                        ..default()
-                    },
-                ),
+                TextBundle::from_sections(parse_rich(&this.text)),
                 DynamicFontSize::new(Vw(4.0)).with_step(8.0),
                 ThemeColorForText(vec![ThemeColor::PrimaryText]),
             ));

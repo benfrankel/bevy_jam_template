@@ -49,14 +49,7 @@ impl FromWorld for TooltipRoot {
             text: world
                 .spawn((
                     Name::new("TooltipText"),
-                    TextBundle::from_section(
-                        "",
-                        TextStyle {
-                            font: FONT_HANDLE,
-                            ..default()
-                        },
-                    )
-                    .with_text_justify(JustifyText::Center),
+                    TextBundle::default().with_text_justify(JustifyText::Center),
                     // TODO: Adjustable font sizes in ThemeConfig
                     DynamicFontSize::new(Px(16.0)),
                     ThemeColorForText(vec![ThemeColor::BodyText]),

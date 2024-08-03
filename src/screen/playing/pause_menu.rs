@@ -55,19 +55,12 @@ fn pause_menu(In(id): In<Entity>, mut commands: Commands) {
         });
 }
 
-const HEADER: &str = "Game paused";
+const HEADER: &str = "[b]Game paused";
 
 fn header(In(id): In<Entity>, mut commands: Commands) {
     commands.entity(id).insert((
         Name::new("Header"),
-        TextBundle::from_section(
-            HEADER,
-            TextStyle {
-                font: BOLD_FONT_HANDLE,
-                ..default()
-            },
-        )
-        .with_style(Style {
+        TextBundle::from_sections(parse_rich(HEADER)).with_style(Style {
             margin: UiRect::bottom(Vw(2.5)),
             ..default()
         }),
