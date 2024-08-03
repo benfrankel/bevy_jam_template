@@ -95,27 +95,26 @@ fn play_interaction_sfx(
     assets: Res<ThemeAssets>,
     audio: Res<Audio>,
     interaction_query: Query<
-        (Option<&IsDisabled>, &Interaction),
+        (Option<&IsDisabled>, &Old<Interaction>, &Interaction),
         (
             With<InteractionSfx>,
             Or<(Changed<Interaction>, Changed<IsDisabled>)>,
         ),
     >,
 ) {
-    for (is_disabled, interaction) in &interaction_query {
+    for (is_disabled, old, new) in &interaction_query {
         if matches!(is_disabled, Some(IsDisabled(true))) {
             continue;
         }
 
-        // TODO: Track the previous Interaction to avoid playing the hover SFX on Pressed -> Hovered.
-        match interaction {
-            Interaction::Hovered => {
+        match (old.0, new) {
+            (Interaction::None, Interaction::Hovered) => {
                 audio
                     .play(assets.sfx_hover.clone())
                     .with_volume(0.6)
                     .with_playback_rate(thread_rng().gen_range(0.7..1.6));
             },
-            Interaction::Pressed => {
+            (_, Interaction::Pressed) => {
                 audio
                     .play(assets.sfx_click.clone())
                     .with_volume(1.4)

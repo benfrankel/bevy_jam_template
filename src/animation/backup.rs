@@ -3,13 +3,13 @@ use bevy::reflect::GetTypeRegistration;
 use bevy::transform::systems::propagate_transforms;
 use bevy::transform::systems::sync_simple_transforms;
 
-use crate::animation::PostTransformSet;
+use crate::animation::SaveBackupSet;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.configure::<Backup<Transform>>();
 
-    // Fix `GlobalTransform` after restoring `Transform`.
+    // Restore `GlobalTransform` after restoring `Transform`.
     app.add_systems(
         First,
         (sync_simple_transforms, propagate_transforms)
@@ -30,7 +30,7 @@ impl<C: Component + Clone + Reflect + FromReflect + TypePath + GetTypeRegistrati
         // This has to run before `UiSystem::Focus` in `PreUpdate` anyways, so may as well
         // go all the way back to `First`.
         app.add_systems(First, restore_backup::<C>);
-        app.add_systems(PostUpdate, save_backup::<C>.in_set(PostTransformSet::Save));
+        app.add_systems(PostUpdate, save_backup::<C>.in_set(SaveBackupSet));
     }
 }
 

@@ -7,6 +7,7 @@ use bevy_mod_picking::prelude::*;
 use crate::animation::backup::Backup;
 use crate::animation::offset::Offset;
 use crate::theme::prelude::*;
+use crate::util::prelude::*;
 
 pub fn overlay(In(id): In<Entity>, mut commands: Commands) {
     commands.entity(id).insert((
@@ -72,6 +73,7 @@ fn menu_button(In((id, this)): In<(Entity, MenuButton)>, mut commands: Commands)
                 pressed: Offset(Vec2::new(0.0, 2.0)),
                 ..default()
             },
+            Old(Interaction::None),
             InteractionSfx,
         ))
         .with_children(|parent| {

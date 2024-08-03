@@ -8,16 +8,26 @@ use bevy::ui::UiSystem;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.configure::<(PostTransformSet, PostColorSet)>();
+    app.configure::<(SaveBackupSet, PostTransformSet, PostColorSet)>();
 
     app.add_plugins((backup::plugin, offset::plugin));
+}
+
+#[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
+struct SaveBackupSet;
+
+impl Configure for SaveBackupSet {
+    fn configure(app: &mut App) {
+        app.configure_sets(
+            PostUpdate,
+            ((UiSystem::Layout, PhysicsSet::Sync), Self).chain(),
+        );
+    }
 }
 
 /// [`Transform`] post-processing system ordering in the [`PostUpdate`] schedule.
 #[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum PostTransformSet {
-    /// Save the base transform as a backup.
-    Save,
     /// Blend via transform multplication (add translation, add rotation, multiply scale).
     Blend,
     /// Apply facing (may multiply translation.x by -1).
@@ -31,8 +41,7 @@ impl Configure for PostTransformSet {
         app.configure_sets(
             PostUpdate,
             (
-                (UiSystem::Layout, PhysicsSet::Sync),
-                Self::Save,
+                SaveBackupSet,
                 Self::Blend,
                 Self::ApplyFacing,
                 TransformSystem::TransformPropagate,
@@ -47,14 +56,12 @@ impl Configure for PostTransformSet {
 /// [`Color`] post-processing system ordering in the [`PostUpdate`] schedule.
 #[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum PostColorSet {
-    /// Save the base color as a backup.
-    Save,
     /// Blend via color multiplication (multiply RGBA).
     Blend,
 }
 
 impl Configure for PostColorSet {
     fn configure(app: &mut App) {
-        app.configure_sets(PostUpdate, (Self::Save, Self::Blend).chain());
+        app.configure_sets(PostUpdate, (SaveBackupSet, Self::Blend).chain());
     }
 }

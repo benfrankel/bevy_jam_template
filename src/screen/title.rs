@@ -42,7 +42,7 @@ fn title_screen(In(id): In<Entity>, mut commands: Commands) {
 fn header(In(id): In<Entity>, mut commands: Commands) {
     commands.entity(id).insert((
         Name::new("Header"),
-        TextBundle::from_sections(parse_rich("bevy_jam_template")).with_style(Style {
+        TextBundle::from_sections(parse_rich("[b]bevy_jam_template")).with_style(Style {
             margin: UiRect::vertical(Vw(5.0)),
             ..default()
         }),
