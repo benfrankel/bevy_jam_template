@@ -7,6 +7,7 @@ use pyri_state::prelude::*;
 use crate::screen::fade::FadeOut;
 use crate::screen::playing::PlayingAssets;
 use crate::screen::Screen;
+use crate::screen::ScreenRoot;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
 
@@ -18,8 +19,8 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(StateFlush, Screen::Intro.on_enter(spawn_intro_screen));
 }
 
-fn spawn_intro_screen(mut commands: Commands, ui_root: Res<UiRoot>) {
-    commands.spawn_fn(intro_screen).set_parent(ui_root.body);
+fn spawn_intro_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
+    commands.spawn_fn(intro_screen).set_parent(screen_root.ui);
 }
 
 fn intro_screen(In(id): In<Entity>, mut commands: Commands) {

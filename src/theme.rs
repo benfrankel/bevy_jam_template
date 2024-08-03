@@ -27,19 +27,16 @@ pub mod prelude {
     pub use super::text::FONT_HANDLE;
     pub use super::text::THICK_FONT_HANDLE;
     pub use super::widget;
-    pub use super::UiRoot;
 }
 
 use bevy::prelude::*;
-use bevy::ui::Val::*;
 use bevy_asset_loader::prelude::*;
 use bevy_kira_audio::prelude::*;
-use bevy_mod_picking::prelude::*;
 
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.configure::<(ThemeAssets, UiRoot)>();
+    app.configure::<ThemeAssets>();
 
     app.add_plugins((
         color::plugin,
@@ -64,39 +61,5 @@ impl Configure for ThemeAssets {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
         app.init_collection::<Self>();
-    }
-}
-
-#[derive(Resource, Reflect)]
-#[reflect(Resource)]
-pub struct UiRoot {
-    pub body: Entity,
-}
-
-impl Configure for UiRoot {
-    fn configure(app: &mut App) {
-        app.register_type::<Self>();
-        app.init_resource::<Self>();
-    }
-}
-
-impl FromWorld for UiRoot {
-    fn from_world(world: &mut World) -> Self {
-        Self {
-            body: world
-                .spawn((
-                    Name::new("Ui"),
-                    NodeBundle {
-                        style: Style {
-                            width: Percent(100.0),
-                            height: Percent(100.0),
-                            ..default()
-                        },
-                        ..default()
-                    },
-                    Pickable::IGNORE,
-                ))
-                .id(),
-        }
     }
 }

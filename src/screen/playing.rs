@@ -63,7 +63,7 @@ impl Configure for PlayingAction {
 }
 
 #[derive(State, Copy, Clone, Eq, PartialEq, Debug, Reflect)]
-#[state(after(Screen), entity_scope, log_flush)]
+#[state(after(Screen), react, log_flush)]
 #[reflect(Resource)]
 enum PlayingMenu {
     Pause,

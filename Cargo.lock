@@ -4031,8 +4031,7 @@ dependencies = [
 [[package]]
 name = "pyri_state"
 version = "0.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dd8ad04c301566c2367679045f64f4f51efb5043f8490485bfca6ac80526ae42"
+source = "git+https://github.com/benfrankel/pyri_state.git#60dfce3e01ef679f282ef9c7033fc6acaf17cf78"
 dependencies = [
  "bevy_app",
  "bevy_core",
@@ -4040,6 +4039,7 @@ dependencies = [
  "bevy_hierarchy",
  "bevy_log",
  "bevy_reflect",
+ "bevy_render",
  "bevy_state",
  "pyri_state_derive",
 ]
@@ -4047,8 +4047,7 @@ dependencies = [
 [[package]]
 name = "pyri_state_derive"
 version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aa155ce5ef77ecf42a9b3f4e46bbd160b72ef380bc46d6a7be753d1bd1884d42"
+source = "git+https://github.com/benfrankel/pyri_state.git#60dfce3e01ef679f282ef9c7033fc6acaf17cf78"
 dependencies = [
  "bevy_macro_utils",
  "proc-macro2",

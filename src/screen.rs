@@ -9,6 +9,7 @@ use std::time::Duration;
 
 use bevy::ecs::schedule::SystemConfigs;
 use bevy::prelude::*;
+use bevy_mod_picking::prelude::*;
 use iyes_progress::prelude::*;
 use pyri_state::prelude::*;
 use serde::Deserialize;
@@ -17,19 +18,46 @@ use serde::Serialize;
 use crate::core::camera::CameraRoot;
 use crate::core::pause::Pause;
 use crate::core::window::WindowReady;
-use crate::theme::UiRoot;
+use crate::theme::prelude::*;
 use crate::util::prelude::*;
 
 pub fn plugin(app: &mut App) {
-    app.configure::<(Screen, ScreenTime)>();
+    app.configure::<(ScreenRoot, Screen, ScreenTime)>();
 
     app.add_plugins(fade::plugin);
+}
+
+#[derive(Resource, Reflect)]
+#[reflect(Resource)]
+pub struct ScreenRoot {
+    pub ui: Entity,
+}
+
+impl Configure for ScreenRoot {
+    fn configure(app: &mut App) {
+        app.register_type::<Self>();
+        app.init_resource::<Self>();
+    }
+}
+
+impl FromWorld for ScreenRoot {
+    fn from_world(world: &mut World) -> Self {
+        Self {
+            ui: world
+                .spawn((
+                    Style::DEFAULT.full_size().node("ScreenUi"),
+                    Pickable::IGNORE,
+                    DespawnOnExit::<Screen>::Descendants,
+                ))
+                .id(),
+        }
+    }
 }
 
 #[derive(
     State, Copy, Clone, Default, Eq, PartialEq, Hash, Debug, Reflect, Serialize, Deserialize,
 )]
-#[state(after(WindowReady), entity_scope, bevy_state, log_flush)]
+#[state(after(WindowReady), react, bevy_state, log_flush)]
 pub enum Screen {
     #[default]
     Splash,
@@ -46,7 +74,7 @@ impl Configure for Screen {
             StateFlush,
             (
                 WindowReady.on_enter(Screen::enable_default),
-                Screen::ANY.on_exit((Pause::disable, clear_screen_root, reset_screen_camera)),
+                Screen::ANY.on_exit((Pause::disable, reset_screen_camera)),
             ),
         );
         app.add_plugins((
@@ -57,12 +85,6 @@ impl Configure for Screen {
             playing::plugin,
         ));
     }
-}
-
-fn clear_screen_root(mut commands: Commands, ui_root: Res<UiRoot>) {
-    // TODO: Change `StateScope<S>` -> `enum DespawnOnExit<S>` with different despawn options.
-    // TODO: Add a Ui/Screen sub-entity with despawn descendants in Screen::ANY.on_exit.
-    commands.entity(ui_root.body).despawn_descendants();
 }
 
 fn reset_screen_camera(camera_root: Res<CameraRoot>, mut camera_query: Query<&mut Transform>) {

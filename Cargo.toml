@@ -55,7 +55,7 @@ pyri_state = { version = "0.2", default-features = false, features = [
     "bevy_app",
     "bevy_reflect",
     "bevy_state",
-    "entity_scope",
+    "react",
 ] }
 rand = { version = "0.8", features = ["small_rng"] }
 ron = "0.8"
@@ -72,6 +72,7 @@ tracing = { version = "0.1", features = [
 # TODO: Workaround for https://github.com/NiklasEi/bevy_asset_loader/issues/219.
 bevy_asset_loader = { git = "https://github.com/benfrankel/bevy_asset_loader.git", branch = "direct-depend" }
 bevy_editor_pls = { git = "https://github.com/zhaop/bevy_editor_pls", branch = "bevy-0.14" }
+pyri_state = { git = "https://github.com/benfrankel/pyri_state.git" }
 
 [features]
 default = ["native_dev"]

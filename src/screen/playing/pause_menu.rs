@@ -1,12 +1,12 @@
 use bevy::prelude::*;
 use bevy_mod_picking::prelude::*;
-use pyri_state::extra::entity_scope::StateScope;
 use pyri_state::prelude::*;
 
 use crate::core::pause::Pause;
 use crate::screen::fade::FadeOut;
 use crate::screen::playing::PlayingMenu;
 use crate::screen::Screen;
+use crate::screen::ScreenRoot;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
 
@@ -17,9 +17,9 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-fn open_pause_menu(mut commands: Commands, ui_root: Res<UiRoot>) {
-    commands.spawn_fn(pause_overlay).set_parent(ui_root.body);
-    commands.spawn_fn(pause_menu).set_parent(ui_root.body);
+fn open_pause_menu(mut commands: Commands, screen_root: Res<ScreenRoot>) {
+    commands.spawn_fn(pause_overlay).set_parent(screen_root.ui);
+    commands.spawn_fn(pause_menu).set_parent(screen_root.ui);
 }
 
 fn pause_overlay(In(id): In<Entity>, mut commands: Commands) {
@@ -30,7 +30,7 @@ fn pause_overlay(In(id): In<Entity>, mut commands: Commands) {
             Name::new("PauseOverlay"),
             ZIndex::Global(1),
             ThemeColor::Overlay.set::<BackgroundColor>(),
-            StateScope::<PlayingMenu>::default(),
+            DespawnOnExit::<PlayingMenu>::Recursive,
         ));
 }
 
@@ -47,7 +47,7 @@ fn pause_menu(In(id): In<Entity>, mut commands: Commands) {
                 z_index: ZIndex::Global(2),
                 ..default()
             },
-            StateScope::<PlayingMenu>::default(),
+            DespawnOnExit::<PlayingMenu>::Recursive,
         ))
         .with_children(|children| {
             children.spawn_fn(header);

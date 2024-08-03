@@ -12,6 +12,7 @@ use crate::screen::fade::FADE_IN_SECS;
 use crate::screen::title::TitleScreenAssets;
 use crate::screen::wait_in_screen;
 use crate::screen::Screen;
+use crate::screen::ScreenRoot;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
 
@@ -35,8 +36,8 @@ pub(super) fn plugin(app: &mut App) {
 
 const SPLASH_SCREEN_MIN_SECS: f32 = 0.8;
 
-fn spawn_splash_screen(mut commands: Commands, ui_root: Res<UiRoot>) {
-    commands.spawn_fn(splash_screen).set_parent(ui_root.body);
+fn spawn_splash_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
+    commands.spawn_fn(splash_screen).set_parent(screen_root.ui);
 }
 
 fn splash_screen(In(id): In<Entity>, mut commands: Commands) {

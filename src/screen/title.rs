@@ -5,6 +5,7 @@ use pyri_state::prelude::*;
 
 use crate::screen::fade::FadeOut;
 use crate::screen::Screen;
+use crate::screen::ScreenRoot;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
 
@@ -25,8 +26,8 @@ impl Configure for TitleScreenAssets {
     }
 }
 
-fn spawn_title_screen(mut commands: Commands, ui_root: Res<UiRoot>) {
-    commands.spawn_fn(title_screen).set_parent(ui_root.body);
+fn spawn_title_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
+    commands.spawn_fn(title_screen).set_parent(screen_root.ui);
 }
 
 fn title_screen(In(id): In<Entity>, mut commands: Commands) {
