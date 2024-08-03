@@ -13,9 +13,9 @@ use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_loading_state(
-        LoadingState::new(Screen::Title.bevy()).load_collection::<PlayingAssets>(),
+        LoadingState::new(Screen::Intro.bevy()).load_collection::<PlayingAssets>(),
     );
-    app.add_plugins(ProgressPlugin::new(Screen::Title.bevy()));
+    app.add_plugins(ProgressPlugin::new(Screen::Intro.bevy()));
     app.add_systems(StateFlush, Screen::Intro.on_edge(exit_intro, enter_intro));
 }
 

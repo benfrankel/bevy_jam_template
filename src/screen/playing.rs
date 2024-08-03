@@ -1,4 +1,4 @@
-pub mod pause;
+pub mod pause_menu;
 
 use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
@@ -8,6 +8,7 @@ use pyri_state::prelude::*;
 use pyri_state::schedule::ResolveStateSet;
 
 use crate::core::camera::CameraRoot;
+use crate::core::pause::Pause;
 use crate::screen::FadeIn;
 use crate::screen::Screen;
 use crate::theme::prelude::*;
@@ -16,10 +17,10 @@ use crate::util::prelude::*;
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         StateFlush,
-        Screen::Playing.on_edge(exit_playing, enter_playing),
+        Screen::Playing.on_edge((exit_playing, Pause::disable), enter_playing),
     );
 
-    app.configure::<(PlayingAssets, PlayingAction)>();
+    app.configure::<(PlayingAssets, PlayingAction, PlayingMenu)>();
 }
 
 #[derive(AssetCollection, Resource, Reflect, Default)]
@@ -43,14 +44,17 @@ fn exit_playing(
     camera_root: Res<CameraRoot>,
     mut camera_query: Query<&mut Transform>,
 ) {
-    // Reset resources
+    // Reset resources:
 
-    // Clear events
+    // Clear events:
 
-    // Despawn entities
+    // TODO: Change `StateScope<S>` -> `enum DespawnOnExit<S>` with different despawn options.
+    // TODO: Add a Ui/Screen sub-entity with despawn descendants in Screen::ANY.on_exit.
+    // Despawn entities:
     commands.entity(ui_root.body).despawn_descendants();
 
-    // Reset camera
+    // TODO: This should be in `Screen::ANY.on_exit`.
+    // Reset camera:
     if let Ok(mut transform) = camera_query.get_mut(camera_root.primary) {
         transform.translation = Vec2::ZERO.extend(transform.translation.z);
     };
@@ -58,8 +62,7 @@ fn exit_playing(
 
 #[derive(Actionlike, Reflect, Clone, Hash, PartialEq, Eq)]
 pub enum PlayingAction {
-    Restart,
-    // TODO: Pause
+    TogglePause,
 }
 
 impl Configure for PlayingAction {
@@ -67,18 +70,22 @@ impl Configure for PlayingAction {
         app.init_resource::<ActionState<Self>>();
         app.insert_resource(
             InputMap::default()
-                .insert(Self::Restart, KeyCode::KeyR)
+                .insert(Self::TogglePause, GamepadButtonType::Start)
+                .insert(Self::TogglePause, KeyCode::Escape)
+                .insert(Self::TogglePause, KeyCode::KeyP)
                 .build(),
         );
         app.add_plugins(InputManagerPlugin::<Self>::default());
         app.add_systems(
             StateFlush,
-            Screen::refresh
-                .in_set(ResolveStateSet::<Screen>::Compute)
+            PlayingMenu::Pause
+                .toggle()
+                .in_set(ResolveStateSet::<PlayingMenu>::Compute)
                 .run_if(
-                    Screen::Playing
-                        .will_exit()
-                        .and_then(action_just_pressed(Self::Restart)),
+                    PlayingMenu::is_disabled
+                        .or_else(PlayingMenu::Pause.will_exit())
+                        .and_then(Screen::Playing.will_enter())
+                        .and_then(action_just_pressed(Self::TogglePause)),
                 ),
         );
     }
@@ -97,5 +104,7 @@ impl Configure for PlayingMenu {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
         app.add_state::<Self>();
+        app.add_systems(StateFlush, Screen::Playing.on_exit(Self::disable));
+        app.add_plugins(pause_menu::plugin);
     }
 }

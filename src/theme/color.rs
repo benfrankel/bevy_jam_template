@@ -68,6 +68,7 @@ pub enum ThemeColor {
 
     // Misc UI colors
     Popup,
+    Overlay,
 }
 
 impl ThemeColor {

@@ -164,7 +164,7 @@ fn apply_fade_out(
             .0
             .set_alpha(1.0 - (fade.remaining / fade.duration).max(0.0));
         if fade.remaining <= 0.0 {
-            screen.enter(fade.to_screen);
+            screen.trigger().enter(fade.to_screen);
             despawn.recursive(entity);
         }
         fade.remaining -= dt;

@@ -23,5 +23,7 @@
 
         // Popup
         Srgba(Srgba(red: 0.106, green: 0.118, blue: 0.122, alpha: 0.850)),
+        // Overlay
+        Srgba(Srgba(red: 0.101, green: 0.107, blue: 0.231, alpha: 0.900)),
     )),
 )
