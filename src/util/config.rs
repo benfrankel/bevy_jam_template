@@ -15,7 +15,9 @@ pub trait Config: Asset + Serialize + for<'de> Deserialize<'de> {
     const FILE: &'static str;
     const FOLDER: &'static str = "config";
 
-    fn on_load(&mut self, world: &mut World);
+    fn on_load(&mut self, world: &mut World) {
+        let _ = world;
+    }
 
     fn count_progress(&self, asset_server: &AssetServer) -> Progress {
         let _ = asset_server;

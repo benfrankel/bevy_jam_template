@@ -5,6 +5,7 @@ use bevy_mod_picking::prelude::*;
 use rand::prelude::*;
 
 use crate::animation::offset::Offset;
+use crate::core::audio::AudioConfig;
 use crate::core::UpdateSet;
 use crate::theme::prelude::*;
 use crate::theme::ThemeAssets;
@@ -92,6 +93,7 @@ impl Configure for InteractionSfx {
 }
 
 fn play_interaction_sfx(
+    audio_config: ConfigRef<AudioConfig>,
     assets: Res<ThemeAssets>,
     audio: Res<Audio>,
     interaction_query: Query<
@@ -102,6 +104,8 @@ fn play_interaction_sfx(
         ),
     >,
 ) {
+    let audio_config = r!(audio_config.get());
+
     for (is_disabled, old, new) in &interaction_query {
         if matches!(is_disabled, Some(IsDisabled(true))) {
             continue;
@@ -111,13 +115,13 @@ fn play_interaction_sfx(
             (Interaction::None, Interaction::Hovered) => {
                 audio
                     .play(assets.sfx_hover.clone())
-                    .with_volume(0.6)
+                    .with_volume(2.0 * audio_config.ui_volume)
                     .with_playback_rate(thread_rng().gen_range(0.7..1.6));
             },
             (_, Interaction::Pressed) => {
                 audio
                     .play(assets.sfx_click.clone())
-                    .with_volume(1.4)
+                    .with_volume(4.0 * audio_config.ui_volume)
                     .with_playback_rate(thread_rng().gen_range(0.7..1.6));
             },
             _ => (),

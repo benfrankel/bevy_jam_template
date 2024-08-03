@@ -200,8 +200,7 @@
             "struct $1;",
             "",
             "impl Config for $1 {",
-            "    const PATH: &str = \"config/$2.ron\";",
-            "    const EXTENSION: &str = \"$2.ron\";$0",
+            "    const FILE: &str = \"$2.ron\";",
             "}"
         ],
         "description": "Define a new Config"
