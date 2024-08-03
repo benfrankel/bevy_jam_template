@@ -31,7 +31,7 @@ fn exit_intro(mut commands: Commands, ui_root: Res<UiRoot>) {
 fn intro_screen(In(id): In<Entity>, mut commands: Commands) {
     commands
         .entity(id)
-        .insert(Style::COLUMN_MID.full_size().node("IntroScreen"))
+        .insert(Style::COLUMN_CENTER.full_size().node("IntroScreen"))
         .with_children(|children| {
             children.spawn_fn(header);
             children.spawn_fn(body);
@@ -42,15 +42,10 @@ fn intro_screen(In(id): In<Entity>, mut commands: Commands) {
 fn header(In(id): In<Entity>, mut commands: Commands) {
     commands.entity(id).insert((
         Name::new("Header"),
-        TextBundle {
-            style: Style {
-                margin: UiRect::top(Percent(5.0)),
-                height: Percent(8.0),
-                ..default()
-            },
-            text: Text::from_sections(parse_rich("[b]How to play")),
+        TextBundle::from_sections(parse_rich("[b]How to play")).with_style(Style {
+            margin: UiRect::bottom(Vw(5.0)),
             ..default()
-        },
+        }),
         DynamicFontSize::new(Vw(5.0)).with_step(8.0),
         ThemeColorForText(vec![ThemeColor::BodyText]),
     ));
@@ -67,7 +62,10 @@ fn body(In(id): In<Entity>, mut commands: Commands) {
             .node("Body"),
         )
         .with_children(|children| {
-            for (i, text) in ["Be skillful,", "win the game!"].into_iter().enumerate() {
+            for (i, text) in ["Be skillful,", "win the game!", "Press P to pause."]
+                .into_iter()
+                .enumerate()
+            {
                 children.spawn((
                     Name::new(format!("Span{}", i)),
                     TextBundle::from_sections(parse_rich(text)),
