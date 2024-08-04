@@ -10,7 +10,7 @@ use crate::theme::prelude::*;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(StateFlush, Screen::Title.on_enter(spawn_title_screen));
+    app.add_systems(StateFlush, Screen::Title.on_enter(title.spawn()));
 
     app.configure::<TitleScreenAssets>();
 }
@@ -26,14 +26,11 @@ impl Configure for TitleScreenAssets {
     }
 }
 
-fn spawn_title_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
-    commands.spawn_fn(title_screen).set_parent(screen_root.ui);
-}
-
-fn title_screen(In(id): In<Entity>, mut commands: Commands) {
+fn title(In(id): In<Entity>, mut commands: Commands, screen_root: Res<ScreenRoot>) {
     commands
         .entity(id)
-        .insert(Style::COLUMN_MID.full_size().node("TitleScreen"))
+        .insert(Style::COLUMN_MID.full_size().node("Title"))
+        .set_parent(screen_root.ui)
         .with_children(|children| {
             children.spawn_fn(header);
             children.spawn_fn(buttons);

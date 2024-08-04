@@ -16,26 +16,16 @@ pub(super) fn plugin(app: &mut App) {
         LoadingState::new(Screen::Loading.bevy()).load_collection::<PlayingAssets>(),
     );
     app.add_plugins(ProgressPlugin::new(Screen::Loading.bevy()));
-    app.add_systems(StateFlush, Screen::Loading.on_enter(spawn_loading_screen));
+    app.add_systems(StateFlush, Screen::Loading.on_enter(loading.spawn()));
 
-    app.register_type::<IsLoadingBarFill>();
-    app.add_systems(
-        Update,
-        Screen::Loading.on_update(update_loading.after(TrackedProgressSet)),
-    );
+    app.configure::<IsLoadingBarFill>();
 }
 
-#[derive(Component, Reflect)]
-struct IsLoadingBarFill;
-
-fn spawn_loading_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
-    commands.spawn_fn(loading_screen).set_parent(screen_root.ui);
-}
-
-fn loading_screen(In(id): In<Entity>, mut commands: Commands) {
+fn loading(In(id): In<Entity>, mut commands: Commands, screen_root: Res<ScreenRoot>) {
     commands
         .entity(id)
-        .insert(Style::COLUMN_CENTER.full_size().node("LoadingScreen"))
+        .insert(Style::COLUMN_CENTER.full_size().node("Loading"))
+        .set_parent(screen_root.ui)
         .with_children(|children| {
             children.spawn_fn(loading_text);
             children.spawn_fn(loading_bar);
@@ -82,11 +72,24 @@ fn loading_bar_fill(In(id): In<Entity>, mut commands: Commands) {
     ));
 }
 
+#[derive(Component, Reflect)]
+struct IsLoadingBarFill;
+
+impl Configure for IsLoadingBarFill {
+    fn configure(app: &mut App) {
+        app.register_type::<Self>();
+        app.add_systems(
+            Update,
+            Screen::Loading.on_update(update_loading.after(TrackedProgressSet)),
+        );
+    }
+}
+
 fn update_loading(
     mut commands: Commands,
     progress: Res<ProgressCounter>,
     frame: Res<FrameCount>,
-    mut loading_bar_query: Query<&mut Style, With<IsLoadingBarFill>>,
+    mut fill_query: Query<&mut Style, With<IsLoadingBarFill>>,
     mut last_done: Local<u32>,
 ) {
     let Progress { done, total } = progress.progress();
@@ -95,13 +98,13 @@ fn update_loading(
     }
     *last_done = done;
 
-    // Continue to next screen when ready
+    // Continue to next screen when ready.
     if done == total {
         commands.spawn_with(FadeOut::to(Screen::Playing));
     }
 
-    // Update loading bar
-    for mut style in &mut loading_bar_query {
+    // Update loading bar fill.
+    for mut style in &mut fill_query {
         style.width = Percent(100.0 * done as f32 / total as f32);
     }
 

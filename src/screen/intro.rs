@@ -16,17 +16,14 @@ pub(super) fn plugin(app: &mut App) {
         LoadingState::new(Screen::Intro.bevy()).load_collection::<PlayingAssets>(),
     );
     app.add_plugins(ProgressPlugin::new(Screen::Intro.bevy()));
-    app.add_systems(StateFlush, Screen::Intro.on_enter(spawn_intro_screen));
+    app.add_systems(StateFlush, Screen::Intro.on_enter(intro.spawn()));
 }
 
-fn spawn_intro_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
-    commands.spawn_fn(intro_screen).set_parent(screen_root.ui);
-}
-
-fn intro_screen(In(id): In<Entity>, mut commands: Commands) {
+fn intro(In(id): In<Entity>, mut commands: Commands, screen_root: Res<ScreenRoot>) {
     commands
         .entity(id)
-        .insert(Style::COLUMN_CENTER.full_size().node("IntroScreen"))
+        .insert(Style::COLUMN_CENTER.full_size().node("Intro"))
+        .set_parent(screen_root.ui)
         .with_children(|children| {
             children.spawn_fn(header);
             children.spawn_fn(body);

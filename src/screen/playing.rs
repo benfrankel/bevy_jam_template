@@ -10,7 +10,7 @@ use crate::screen::Screen;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(StateFlush, Screen::Playing.on_enter(spawn_playing_screen));
+    app.add_systems(StateFlush, Screen::Playing.on_enter(playing.spawn()));
 
     app.configure::<(PlayingAssets, PlayingAction)>();
 }
@@ -26,8 +26,9 @@ impl Configure for PlayingAssets {
     }
 }
 
-fn spawn_playing_screen(mut _commands: Commands) {
-    // TODO
+fn playing(In(id): In<Entity>, mut commands: Commands) {
+    // TODO: Spawn HUD.
+    commands.entity(id);
 }
 
 #[derive(Actionlike, Reflect, Clone, Hash, PartialEq, Eq)]

@@ -2,43 +2,22 @@ use bevy::prelude::*;
 use bevy_mod_picking::prelude::*;
 use pyri_state::prelude::*;
 
-use crate::core::pause::Pause;
 use crate::menu::Menu;
+use crate::menu::MenuRoot;
 use crate::screen::fade::FadeOut;
 use crate::screen::Screen;
-use crate::screen::ScreenRoot;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(
-        StateFlush,
-        Menu::Pause.on_edge(Pause::disable, (Pause::enable_default, open_pause_menu)),
-    );
+    app.add_systems(StateFlush, Menu::Pause.on_enter(pause.spawn()));
 }
 
-fn open_pause_menu(mut commands: Commands, screen_root: Res<ScreenRoot>) {
-    commands.spawn_fn(pause_overlay).set_parent(screen_root.ui);
-    commands.spawn_fn(pause_menu).set_parent(screen_root.ui);
-}
-
-fn pause_overlay(In(id): In<Entity>, mut commands: Commands) {
-    commands
-        .entity(id)
-        .add_fn(widget::blocking_overlay)
-        .insert((
-            Name::new("PauseOverlay"),
-            ZIndex::Global(1),
-            ThemeColor::Overlay.set::<BackgroundColor>(),
-            DespawnOnExit::<Menu>::Recursive,
-        ));
-}
-
-fn pause_menu(In(id): In<Entity>, mut commands: Commands) {
+fn pause(In(id): In<Entity>, mut commands: Commands, menu_root: Res<MenuRoot>) {
     commands
         .entity(id)
         .insert((
-            Name::new("PauseMenu"),
+            Name::new("Pause"),
             NodeBundle {
                 style: Style {
                     padding: UiRect::all(Vw(4.5)),
@@ -49,6 +28,7 @@ fn pause_menu(In(id): In<Entity>, mut commands: Commands) {
             },
             DespawnOnExit::<Menu>::Recursive,
         ))
+        .set_parent(menu_root.ui)
         .with_children(|children| {
             children.spawn_fn(header);
             children.spawn_fn(buttons);
@@ -81,10 +61,25 @@ fn buttons(In(id): In<Entity>, mut commands: Commands) {
             .node("Buttons"),
         )
         .with_children(|children| {
+            children.spawn_fn(settings_button);
             children.spawn_fn(continue_button);
             children.spawn_fn(restart_button);
             children.spawn_fn(quit_to_title_button);
         });
+}
+
+fn settings_button(In(id): In<Entity>, mut commands: Commands) {
+    commands
+        .entity(id)
+        .add(widget::MenuButton::new("Settings"))
+        .insert((
+            On::<Pointer<Click>>::run(Menu::Settings.push()),
+            Style {
+                height: Vw(9.0),
+                width: Vw(38.0),
+                ..Style::ROW_CENTER
+            },
+        ));
 }
 
 fn continue_button(In(id): In<Entity>, mut commands: Commands) {

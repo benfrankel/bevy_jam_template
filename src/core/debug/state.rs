@@ -1,9 +1,9 @@
 use bevy::prelude::*;
 use iyes_progress::prelude::*;
 use pyri_state::prelude::*;
+use pyri_state::schedule::ResolveStateSet;
 
 use crate::core::debug::DebugConfig;
-use crate::core::window::WindowReady;
 use crate::screen::Screen;
 use crate::screen::ScreenTime;
 use crate::util::prelude::*;
@@ -12,7 +12,12 @@ pub(super) fn plugin(app: &mut App) {
     app.init_resource::<StateDebugSettings>();
 
     // Skip to a custom initial screen.
-    app.add_systems(StateFlush, WindowReady.on_enter(enter_initial_screen));
+    app.add_systems(
+        StateFlush,
+        enter_initial_screen
+            .in_set(ResolveStateSet::<Screen>::Compute)
+            .run_if(Screen::ANY.will_enable()),
+    );
 
     // Extend loading screen.
     app.add_systems(

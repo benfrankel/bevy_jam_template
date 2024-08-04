@@ -202,3 +202,15 @@ impl AddFnExt for EntityWorldMut<'_> {
         self
     }
 }
+
+pub trait SpawnSystemExt<M> {
+    fn spawn(self) -> impl Fn(Commands);
+}
+
+impl<M, T: 'static + Send + Clone + IntoSystem<Entity, (), M>> SpawnSystemExt<M> for T {
+    fn spawn(self) -> impl Fn(Commands) {
+        move |mut commands: Commands| {
+            commands.spawn_fn(self.clone());
+        }
+    }
+}

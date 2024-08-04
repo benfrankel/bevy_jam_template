@@ -23,7 +23,7 @@ pub(super) fn plugin(app: &mut App) {
         LoadingState::new(Screen::Splash.bevy()).load_collection::<TitleScreenAssets>(),
     );
     app.add_plugins(ProgressPlugin::new(Screen::Splash.bevy()));
-    app.add_systems(StateFlush, Screen::Splash.on_enter(spawn_splash_screen));
+    app.add_systems(StateFlush, Screen::Splash.on_enter(splash.spawn()));
 
     app.add_systems(
         Update,
@@ -36,14 +36,11 @@ pub(super) fn plugin(app: &mut App) {
 
 const SPLASH_SCREEN_MIN_SECS: f32 = 0.8;
 
-fn spawn_splash_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
-    commands.spawn_fn(splash_screen).set_parent(screen_root.ui);
-}
-
-fn splash_screen(In(id): In<Entity>, mut commands: Commands) {
+fn splash(In(id): In<Entity>, mut commands: Commands, screen_root: Res<ScreenRoot>) {
     commands
         .entity(id)
-        .insert(Style::COLUMN_MID.full_size().node("SplashScreen"))
+        .insert(Style::COLUMN_MID.full_size().node("Splash"))
+        .set_parent(screen_root.ui)
         .with_children(|children| {
             children.spawn_fn(splash_image);
         });

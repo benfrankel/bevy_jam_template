@@ -46,7 +46,7 @@ impl FromWorld for ScreenRoot {
         Self {
             ui: world
                 .spawn((
-                    Style::DEFAULT.full_size().node("ScreenUi"),
+                    Style::DEFAULT.full_size().node("Screen"),
                     Pickable::IGNORE,
                     DespawnOnExit::<Screen>::Descendants,
                 ))
@@ -58,7 +58,7 @@ impl FromWorld for ScreenRoot {
 #[derive(
     State, Copy, Clone, Default, Eq, PartialEq, Hash, Debug, Reflect, Serialize, Deserialize,
 )]
-#[state(after(WindowReady), before(Menu), react, bevy_state, log_flush)]
+#[state(after(WindowReady), before(Menu, Pause), react, bevy_state, log_flush)]
 pub enum Screen {
     #[default]
     Splash,

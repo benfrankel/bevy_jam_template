@@ -12,6 +12,7 @@ pub mod prelude {
     pub use super::spawn::CommandsExtRunSystemOnce as _;
     pub use super::spawn::EntityWorldMutExtAdd as _;
     pub use super::spawn::EntityWorldMutExtRunSystemOnce as _;
+    pub use super::spawn::SpawnSystemExt as _;
     pub use super::spawn::SpawnWithExt as _;
     pub use super::spawn::WorldSpawnWithExt as _;
     pub use super::transform::Dir2ExtToQuat as _;
