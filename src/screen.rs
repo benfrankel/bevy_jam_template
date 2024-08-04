@@ -1,4 +1,4 @@
-mod fade;
+pub mod fade;
 mod intro;
 mod loading;
 mod playing;
@@ -18,6 +18,7 @@ use serde::Serialize;
 use crate::core::camera::CameraRoot;
 use crate::core::pause::Pause;
 use crate::core::window::WindowReady;
+use crate::menu::Menu;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
 
@@ -57,7 +58,7 @@ impl FromWorld for ScreenRoot {
 #[derive(
     State, Copy, Clone, Default, Eq, PartialEq, Hash, Debug, Reflect, Serialize, Deserialize,
 )]
-#[state(after(WindowReady), react, bevy_state, log_flush)]
+#[state(after(WindowReady), before(Menu), react, bevy_state, log_flush)]
 pub enum Screen {
     #[default]
     Splash,
@@ -74,7 +75,7 @@ impl Configure for Screen {
             StateFlush,
             (
                 WindowReady.on_enter(Screen::enable_default),
-                Screen::ANY.on_exit((Pause::disable, reset_screen_camera)),
+                Screen::ANY.on_exit((Pause::disable, Menu::disable, reset_screen_camera)),
             ),
         );
         app.add_plugins((

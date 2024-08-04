@@ -3,8 +3,8 @@ use bevy_mod_picking::prelude::*;
 use pyri_state::prelude::*;
 
 use crate::core::pause::Pause;
+use crate::menu::Menu;
 use crate::screen::fade::FadeOut;
-use crate::screen::playing::PlayingMenu;
 use crate::screen::Screen;
 use crate::screen::ScreenRoot;
 use crate::theme::prelude::*;
@@ -13,7 +13,7 @@ use crate::util::prelude::*;
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         StateFlush,
-        PlayingMenu::Pause.on_edge(Pause::disable, (Pause::enable_default, open_pause_menu)),
+        Menu::Pause.on_edge(Pause::disable, (Pause::enable_default, open_pause_menu)),
     );
 }
 
@@ -30,7 +30,7 @@ fn pause_overlay(In(id): In<Entity>, mut commands: Commands) {
             Name::new("PauseOverlay"),
             ZIndex::Global(1),
             ThemeColor::Overlay.set::<BackgroundColor>(),
-            DespawnOnExit::<PlayingMenu>::Recursive,
+            DespawnOnExit::<Menu>::Recursive,
         ));
 }
 
@@ -47,7 +47,7 @@ fn pause_menu(In(id): In<Entity>, mut commands: Commands) {
                 z_index: ZIndex::Global(2),
                 ..default()
             },
-            DespawnOnExit::<PlayingMenu>::Recursive,
+            DespawnOnExit::<Menu>::Recursive,
         ))
         .with_children(|children| {
             children.spawn_fn(header);
@@ -92,7 +92,7 @@ fn continue_button(In(id): In<Entity>, mut commands: Commands) {
         .entity(id)
         .add(widget::MenuButton::new("Continue"))
         .insert((
-            On::<Pointer<Click>>::run(PlayingMenu::disable),
+            On::<Pointer<Click>>::run(Menu::disable),
             Style {
                 height: Vw(9.0),
                 width: Vw(38.0),

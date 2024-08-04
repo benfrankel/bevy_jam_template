@@ -1,5 +1,3 @@
-pub mod pause_menu;
-
 use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
 use leafwing_input_manager::common_conditions::action_just_pressed;
@@ -7,13 +5,14 @@ use leafwing_input_manager::prelude::*;
 use pyri_state::prelude::*;
 use pyri_state::schedule::ResolveStateSet;
 
+use crate::menu::Menu;
 use crate::screen::Screen;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(StateFlush, Screen::Playing.on_enter(spawn_playing_screen));
 
-    app.configure::<(PlayingAssets, PlayingAction, PlayingMenu)>();
+    app.configure::<(PlayingAssets, PlayingAction)>();
 }
 
 #[derive(AssetCollection, Resource, Reflect, Default)]
@@ -49,33 +48,15 @@ impl Configure for PlayingAction {
         app.add_plugins(InputManagerPlugin::<Self>::default());
         app.add_systems(
             StateFlush,
-            PlayingMenu::Pause
+            Menu::Pause
                 .toggle()
-                .in_set(ResolveStateSet::<PlayingMenu>::Compute)
+                .in_set(ResolveStateSet::<Menu>::Compute)
                 .run_if(
-                    PlayingMenu::is_disabled
-                        .or_else(PlayingMenu::Pause.will_exit())
+                    Menu::is_disabled
+                        .or_else(Menu::Pause.will_exit())
                         .and_then(Screen::Playing.will_enter())
                         .and_then(action_just_pressed(Self::TogglePause)),
                 ),
         );
-    }
-}
-
-#[derive(State, Copy, Clone, Eq, PartialEq, Debug, Reflect)]
-#[state(after(Screen), react, log_flush)]
-#[reflect(Resource)]
-enum PlayingMenu {
-    Pause,
-    Victory,
-    Defeat,
-}
-
-impl Configure for PlayingMenu {
-    fn configure(app: &mut App) {
-        app.register_type::<Self>();
-        app.add_state::<Self>();
-        app.add_systems(StateFlush, Screen::Playing.on_exit(Self::disable));
-        app.add_plugins(pause_menu::plugin);
     }
 }
