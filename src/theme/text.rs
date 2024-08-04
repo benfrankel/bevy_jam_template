@@ -47,7 +47,7 @@ pub struct DynamicFontSize {
 impl Configure for DynamicFontSize {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.add_systems(Update, apply_font_size.in_set(UpdateSet::SyncLate));
+        app.add_systems(Update, apply_dynamic_font_size.in_set(UpdateSet::SyncLate));
     }
 }
 
@@ -72,7 +72,7 @@ impl DynamicFontSize {
     }
 }
 
-pub fn apply_font_size(
+pub fn apply_dynamic_font_size(
     window_root: Res<WindowRoot>,
     window_query: Query<&Window>,
     mut text_query: Query<(&DynamicFontSize, &Node, &mut Text)>,

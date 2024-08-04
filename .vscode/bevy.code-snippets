@@ -200,7 +200,7 @@
             "struct $1;",
             "",
             "impl Config for $1 {",
-            "    const FILE: &str = \"$2.ron\";",
+            "    const FILE: &'static str = \"$2.ron\";",
             "}"
         ],
         "description": "Define a new Config"

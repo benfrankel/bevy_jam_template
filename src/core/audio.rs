@@ -30,7 +30,7 @@ impl Default for AudioConfig {
 }
 
 impl Config for AudioConfig {
-    const FILE: &str = "audio.ron";
+    const FILE: &'static str = "audio.ron";
 
     fn on_load(&mut self, world: &mut World) {
         world.resource::<Audio>().set_volume(self.global_volume);
