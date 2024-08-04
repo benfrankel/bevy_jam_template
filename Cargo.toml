@@ -56,6 +56,7 @@ pyri_state = { version = "0.2", default-features = false, features = [
     "bevy_reflect",
     "bevy_state",
     "react",
+    "stack",
 ] }
 rand = { version = "0.8", features = ["small_rng"] }
 ron = "0.8"
