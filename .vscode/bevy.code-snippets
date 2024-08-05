@@ -1,5 +1,5 @@
 {
-    "Function Plugin": {
+    "Bevy: New top-level Function Plugin": {
         "scope": "rust",
         "prefix": "plugin_fn",
         "body": [
@@ -8,12 +8,12 @@
             "use crate::util::prelude::*;",
             "",
             "pub(super) fn plugin(app: &mut App) {",
-            "    $0",
+            "\t$0",
             "}"
         ],
         "description": "Define a new module-level function Plugin"
     },
-    "Component": {
+    "Bevy: New Component": {
         "scope": "rust",
         "prefix": "component",
         "body": [
@@ -22,14 +22,14 @@
             "struct $1;",
             "",
             "impl Configure for $1 {",
-            "    fn configure(app: &mut App) {",
-            "        app.register_type::<Self>();$0",
-            "    }",
+            "\tfn configure(app: &mut App) {",
+            "\t\tapp.register_type::<Self>();$0",
+            "\t}",
             "}"
         ],
         "description": "Define a new Component"
     },
-    "Resource": {
+    "Bevy: New Resource": {
         "scope": "rust",
         "prefix": "resource",
         "body": [
@@ -38,49 +38,49 @@
             "struct $1;",
             "",
             "impl Configure for $1 {",
-            "    fn configure(app: &mut App) {",
-            "        app.register_type::<Self>();",
-            "        app.init_resource::<Self>();$0",
-            "    }",
+            "\tfn configure(app: &mut App) {",
+            "\t\tapp.register_type::<Self>();",
+            "\t\tapp.init_resource::<Self>();$0",
+            "\t}",
             "}"
         ],
         "description": "Define a new Resource"
     },
-    "EntityCommand": {
+    "Bevy: New EntityCommand": {
         "scope": "rust",
         "prefix": "entity",
         "body": [
             "struct $1;",
             "",
             "impl EntityCommand for $1 {",
-            "    fn apply(self, id: Entity, world: &mut World) {",
-            "        world.run_system_once((id, self), $2);",
-            "    }",
+            "\tfn apply(self, id: Entity, world: &mut World) {",
+            "\t\tworld.run_system_once((id, self), $2);",
+            "\t}",
             "}",
             "",
             "fn $2(In((id, this)): In<(Entity, $1)>, mut commands: Commands$3)",
-            "    commands.entity(id).insert((",
-            "        Name::new(\"$1\"),",
-            "        $0",
-            "    ));",
+            "\tcommands.entity(id).insert((",
+            "\t\tName::new(\"$1\"),",
+            "\t\t$0",
+            "\t));",
             "}"
         ],
         "description": "Define a new EntityCommand"
     },
-    "Function EntityCommand": {
+    "Bevy: New function EntityCommand": {
         "scope": "rust",
         "prefix": "entity_fn",
         "body": [
             "fn $1(In(id): In<Entity>, mut commands: Commands) {",
-            "    commands.entity(id).insert((",
-            "        Name::new(\"$2\"),",
-            "        $0",
-            "    ));",
+            "\tcommands.entity(id).insert((",
+            "\t\tName::new(\"$2\"),",
+            "\t\t$0",
+            "\t));",
             "}"
         ],
         "description": "Define a new function EntityCommand"
     },
-    "Event": {
+    "Bevy: New Event": {
         "scope": "rust",
         "prefix": "event",
         "body": [
@@ -88,31 +88,31 @@
             "struct $1;",
             "",
             "impl Configure for $1 {",
-            "    fn configure(app: &mut App) {",
-            "        app.add_event::<Self>();$0",
-            "    }",
+            "\tfn configure(app: &mut App) {",
+            "\t\tapp.add_event::<Self>();$0",
+            "\t}",
             "}"
         ],
         "description": "Define a new buffered Event"
     },
-    "SystemSet": {
+    "Bevy: New SystemSet": {
         "scope": "rust",
         "prefix": "system_set",
         "body": [
             "#[derive(SystemSet, Copy, Clone, Eq, PartialEq, Hash, Debug)]",
             "enum $1 {",
-            "    $2",
+            "\t$2",
             "}",
             "",
             "impl Configure for $1 {",
-            "    fn configure(app: &mut App) {",
-            "        app.configure_sets($3, $0);",
-            "    }",
+            "\tfn configure(app: &mut App) {",
+            "\t\tapp.configure_sets($3, $0);",
+            "\t}",
             "}"
         ],
         "description": "Define a new SystemSet"
     },
-    "Schedule": {
+    "Bevy: New Schedule": {
         "scope": "rust",
         "prefix": "schedule",
         "body": [
@@ -121,7 +121,7 @@
         ],
         "description": "Define a new Schedule"
     },
-    "State": {
+    "Bevy: New State": {
         "scope": "rust",
         "prefix": "state",
         "body": [
@@ -129,69 +129,69 @@
             "#[state(log_flush)]",
             "#[reflect(Resource)]",
             "enum $1 {",
-            "    #[default]",
-            "    $2",
+            "\t#[default]",
+            "\t$2",
             "}",
             "",
             "impl Configure for $1 {",
-            "    fn configure(app: &mut App) {",
-            "        app.register_type::<Self>();",
-            "        app.init_state::<Self>();$0",
-            "    }",
+            "\tfn configure(app: &mut App) {",
+            "\t\tapp.register_type::<Self>();",
+            "\t\tapp.init_state::<Self>();$0",
+            "\t}",
             "}"
         ],
         "description": "Define a new State"
     },
-    "Actionlike": {
+    "Bevy: New Actionlike": {
         "scope": "rust",
         "prefix": "actionlike",
         "body": [
             "#[derive(Actionlike, Copy, Clone, Eq, PartialEq, Reflect)]",
             "enum $1 {",
-            "    $2",
+            "\t$2",
             "}",
             "",
             "impl Configure for $1 {",
-            "    fn configure(app: &mut App) {",
-            "        app.init_resource::<ActionState<Self>>();",
-            "        app.insert_resource(InputMap::default()",
-            "            .insert($0)",
-            "            .build(),",
-            "        );",
-            "        app.add_plugins(InputManagerPlugin::<Self>::default());",
-            "        app.add_systems(",
-            "            Update,",
-            "            (",
-            "                .in_set(UpdateSet::RecordInput).run_if(action_just_pressed()),",
-            "            ),",
-            "        );",
-            "    }",
+            "\tfn configure(app: &mut App) {",
+            "\t\tapp.init_resource::<ActionState<Self>>();",
+            "\t\tapp.insert_resource(InputMap::default()",
+            "\t\t\t.insert($0)",
+            "\t\t\t.build(),",
+            "\t\t);",
+            "\t\tapp.add_plugins(InputManagerPlugin::<Self>::default());",
+            "\t\tapp.add_systems(",
+            "\t\t\tUpdate,",
+            "\t\t\t(",
+            "\t\t\t\t.in_set(UpdateSet::RecordInput).run_if(action_just_pressed()),",
+            "\t\t\t),",
+            "\t\t);",
+            "\t}",
             "}"
         ],
         "description": "Define a new Actionlike"
     },
-    "AssetCollection": {
+    "Bevy: New AssetCollection": {
         "scope": "rust",
         "prefix": "asset_collection",
         "body": [
             "#[derive(AssetCollection, Resource, Reflect, Default)]",
             "#[reflect(Resource)]",
             "pub struct $1Assets {",
-            "    #[asset(path = \"$2\")]",
-            "    pub $3: Handle<$4>,",
-            "    $0",
+            "\t#[asset(path = \"$2\")]",
+            "\tpub $3: Handle<$4>,",
+            "\t$0",
             "}",
             "",
             "impl Configure for $1Assets {",
-            "    fn configure(app: &mut App) {",
-            "        app.register_type::<Self>();",
-            "        app.init_collection::<Self>();",
-            "    }",
+            "\tfn configure(app: &mut App) {",
+            "\t\tapp.register_type::<Self>();",
+            "\t\tapp.init_collection::<Self>();",
+            "\t}",
             "}"
         ],
         "description": "Define a new AssetCollection"
     },
-    "Config": {
+    "Bevy: New Config": {
         "scope": "rust",
         "prefix": "config",
         "body": [
@@ -200,7 +200,7 @@
             "struct $1;",
             "",
             "impl Config for $1 {",
-            "    const FILE: &'static str = \"$2.ron\";",
+            "\tconst FILE: &'static str = \"$2.ron\";",
             "}"
         ],
         "description": "Define a new Config"
