@@ -1,7 +1,7 @@
 {
-    "Bevy: New top-level Function Plugin": {
+    "Bevy: New top-level function Plugin": {
         "scope": "rust",
-        "prefix": "plugin_fn",
+        "prefix": "pluginfn",
         "body": [
             "use bevy::prelude::*;",
             "",
@@ -10,14 +10,13 @@
             "pub(super) fn plugin(app: &mut App) {",
             "\t$0",
             "}"
-        ],
-        "description": "Define a new module-level function Plugin"
+        ]
     },
     "Bevy: New Component": {
         "scope": "rust",
         "prefix": "component",
         "body": [
-            "#[derive(Component, Reflect)]",
+            "#[derive(Component, Reflect, Debug)]",
             "#[reflect(Component)]",
             "struct $1;",
             "",
@@ -26,14 +25,13 @@
             "\t\tapp.register_type::<Self>();$0",
             "\t}",
             "}"
-        ],
-        "description": "Define a new Component"
+        ]
     },
     "Bevy: New Resource": {
         "scope": "rust",
         "prefix": "resource",
         "body": [
-            "#[derive(Resource, Reflect, Default)]",
+            "#[derive(Resource, Default, Reflect, Debug)]",
             "#[reflect(Resource)]",
             "struct $1;",
             "",
@@ -43,33 +41,11 @@
             "\t\tapp.init_resource::<Self>();$0",
             "\t}",
             "}"
-        ],
-        "description": "Define a new Resource"
+        ]
     },
-    "Bevy: New EntityCommand": {
+    "Bevy: New function Entity": {
         "scope": "rust",
-        "prefix": "entity",
-        "body": [
-            "struct $1;",
-            "",
-            "impl EntityCommand for $1 {",
-            "\tfn apply(self, id: Entity, world: &mut World) {",
-            "\t\tworld.run_system_once((id, self), $2);",
-            "\t}",
-            "}",
-            "",
-            "fn $2(In((id, this)): In<(Entity, $1)>, mut commands: Commands$3)",
-            "\tcommands.entity(id).insert((",
-            "\t\tName::new(\"$1\"),",
-            "\t\t$0",
-            "\t));",
-            "}"
-        ],
-        "description": "Define a new EntityCommand"
-    },
-    "Bevy: New function EntityCommand": {
-        "scope": "rust",
-        "prefix": "entity_fn",
+        "prefix": "entityfn",
         "body": [
             "fn $1(In(id): In<Entity>, mut commands: Commands) {",
             "\tcommands.entity(id).insert((",
@@ -77,14 +53,33 @@
             "\t\t$0",
             "\t));",
             "}"
-        ],
-        "description": "Define a new function EntityCommand"
+        ]
+    },
+    "Bevy: New Entity": {
+        "scope": "rust",
+        "prefix": "entity",
+        "body": [
+            "struct $1;",
+            "",
+            "impl EntityCommand for $1 {",
+            "\tfn apply(self, id: Entity, world: &mut World) {",
+            "\t\tworld.run_system_once_with((id, self), $2);",
+            "\t}",
+            "}",
+            "",
+            "fn $2(In((id, this)): In<(Entity, $1)>, mut commands: Commands$3)",
+            "\tcommands.entity(id).insert((",
+            "\t\tName::new(\"$1\"),$0",
+            "\t\t$0",
+            "\t));",
+            "}"
+        ]
     },
     "Bevy: New Event": {
         "scope": "rust",
         "prefix": "event",
         "body": [
-            "#[derive(Event)]",
+            "#[derive(Event, Debug)]",
             "struct $1;",
             "",
             "impl Configure for $1 {",
@@ -92,12 +87,11 @@
             "\t\tapp.add_event::<Self>();$0",
             "\t}",
             "}"
-        ],
-        "description": "Define a new buffered Event"
+        ]
     },
     "Bevy: New SystemSet": {
         "scope": "rust",
-        "prefix": "system_set",
+        "prefix": "systemset",
         "body": [
             "#[derive(SystemSet, Copy, Clone, Eq, PartialEq, Hash, Debug)]",
             "enum $1 {",
@@ -109,23 +103,21 @@
             "\t\tapp.configure_sets($3, $0);",
             "\t}",
             "}"
-        ],
-        "description": "Define a new SystemSet"
+        ]
     },
     "Bevy: New Schedule": {
         "scope": "rust",
         "prefix": "schedule",
         "body": [
             "#[derive(ScheduleLabel, Copy, Clone, Eq, PartialEq, Hash, Debug)]",
-            "struct $0"
-        ],
-        "description": "Define a new Schedule"
+            "struct $1;"
+        ]
     },
-    "Bevy: New State": {
+    "pyri_state: New State": {
         "scope": "rust",
         "prefix": "state",
         "body": [
-            "#[derive(State, Copy, Clone, Default, Eq, PartialEq, Debug, Reflect)]",
+            "#[derive(State, Copy, Clone, Default, Eq, PartialEq, Reflect, Debug)]",
             "#[state(log_flush)]",
             "#[reflect(Resource)]",
             "enum $1 {",
@@ -139,14 +131,13 @@
             "\t\tapp.init_state::<Self>();$0",
             "\t}",
             "}"
-        ],
-        "description": "Define a new State"
+        ]
     },
-    "Bevy: New Actionlike": {
+    "leafwing-input-manager: New Actionlike": {
         "scope": "rust",
         "prefix": "actionlike",
         "body": [
-            "#[derive(Actionlike, Copy, Clone, Eq, PartialEq, Reflect)]",
+            "#[derive(Actionlike, Copy, Clone, Eq, PartialEq, Reflect, Debug)]",
             "enum $1 {",
             "\t$2",
             "}",
@@ -167,14 +158,13 @@
             "\t\t);",
             "\t}",
             "}"
-        ],
-        "description": "Define a new Actionlike"
+        ]
     },
-    "Bevy: New AssetCollection": {
+    "bevy_asset_loader: New AssetCollection": {
         "scope": "rust",
-        "prefix": "asset_collection",
+        "prefix": "assets",
         "body": [
-            "#[derive(AssetCollection, Resource, Reflect, Default)]",
+            "#[derive(AssetCollection, Resource, Default, Reflect, Debug)]",
             "#[reflect(Resource)]",
             "pub struct $1Assets {",
             "\t#[asset(path = \"$2\")]",
@@ -188,21 +178,19 @@
             "\t\tapp.init_collection::<Self>();",
             "\t}",
             "}"
-        ],
-        "description": "Define a new AssetCollection"
+        ]
     },
-    "Bevy: New Config": {
+    "bevy_jam_template: New Config": {
         "scope": "rust",
         "prefix": "config",
         "body": [
-            "#[derive(Asset, Reflect, Serialize, Deserialize, Default)]",
+            "#[derive(Asset, Default, Reflect, Serialize, Deserialize)]",
             "#[serde(deny_unknown_fields, default)]",
             "struct $1;",
             "",
             "impl Config for $1 {",
             "\tconst FILE: &'static str = \"$2.ron\";",
             "}"
-        ],
-        "description": "Define a new Config"
+        ]
     }
 }
