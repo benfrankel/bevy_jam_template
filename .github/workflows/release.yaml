@@ -26,7 +26,9 @@ env:
   ITCH_TARGET: pyrious/bevy-jam-template
   # The organization or author that owns the rights to the game.
   OWNER: Pyrious
-  # The path to the assets directory.
+  # The path to the workspace directory. Change this from `.` if you have multiple workspaces.
+  WORKSPACE_DIR: .
+  # The path to the assets directory (relative to the workspace directory).
   ASSETS_DIR: assets
   # Whether packages produced by this workflow should be uploaded to the Github release.
   UPLOAD_PACKAGES_TO_GITHUB_RELEASE: true
@@ -114,15 +116,19 @@ jobs:
 
       - name: Populate target directory from cache
         uses: Leafwing-Studios/cargo-cache@v2
+        with:
+          cargo-target-dir: ${{ env.WORKSPACE_DIR }}/target
 
       - name: Install dependencies (Linux)
         if: ${{ matrix.platform == 'linux' }}
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
       - name: Prepare output directories
+        working-directory: ${{ env.WORKSPACE_DIR }}
         run: rm -rf tmp; mkdir -p tmp/binary '${{ env.OUT_DIR }}'
 
       - name: Build binaries
+        working-directory: ${{ env.WORKSPACE_DIR }}
         run: |
           for target in ${{ matrix.targets }}; do
             cargo build --profile='${{ matrix.profile }}' --target="${target}" --no-default-features --features='${{ matrix.features }}'
@@ -135,6 +141,7 @@ jobs:
 
       - name: Run wasm-bindgen (Web)
         if: ${{ matrix.platform == 'web' }}
+        working-directory: ${{ env.WORKSPACE_DIR }}
         run: |
           cargo binstall --no-confirm wasm-bindgen-cli
           mkdir -p tmp/bindgen
@@ -145,9 +152,10 @@ jobs:
         if: ${{ matrix.platform == 'web' }}
         uses: NiklasEi/wasm-opt-action@v2
         with:
-          file: tmp/binary/*${{ matrix.binary_ext }}
+          file: ${{ env.WORKSPACE_DIR }}/tmp/binary/*${{ matrix.binary_ext }}
 
       - name: Add binaries to package
+        working-directory: ${{ env.WORKSPACE_DIR }}
         run: |
           if [ '${{ matrix.platform }}' == 'macos' ]; then
             lipo tmp/binary/*'${{ matrix.binary_ext }}' -create -output '${{ env.OUT_DIR }}/${{ env.PACKAGE_NAME }}${{ matrix.binary_ext }}'
@@ -159,14 +167,17 @@ jobs:
           mv tmp/binary/* '${{ env.OUT_DIR }}' || true # Ignore error if there's nothing left to move
 
       - name: Add assets to package
+        working-directory: ${{ env.WORKSPACE_DIR }}
         run: cp -r '${{ env.ASSETS_DIR }}' '${{ env.OUT_DIR }}' || true # Ignore error if there's nothing to copy
 
       - name: Add web content to package (Web)
         if: ${{ matrix.platform == 'web' }}
+        working-directory: ${{ env.WORKSPACE_DIR }}
         run: cp -r web/* '${{ env.OUT_DIR }}'
 
       - name: Add app metadata to package (MacOS)
         if: ${{ matrix.platform == 'macos' }}
+        working-directory: ${{ env.WORKSPACE_DIR }}
         run: |
           cat >'${{ env.OUT_DIR }}/../Info.plist' <<EOF
             <?xml version="1.0" encoding="UTF-8"?>
@@ -201,7 +212,7 @@ jobs:
 
       - name: Finish package (non-Windows)
         if: ${{ matrix.platform != 'windows' }}
-        working-directory: tmp/package
+        working-directory: ${{ env.WORKSPACE_DIR }}/tmp/package
         run: |
           if [ '${{ matrix.platform }}' == 'macos' ]; then
             ln -s /Applications .
@@ -212,14 +223,14 @@ jobs:
 
       - name: Finish package (Windows)
         if: ${{ matrix.platform == 'windows' }}
-        working-directory: tmp/package
+        working-directory: ${{ env.WORKSPACE_DIR }}/tmp/package
         shell: pwsh
         run: Compress-Archive -Path '${{ env.PACKAGE_NAME }}' -DestinationPath '${{ env.PACKAGE }}${{ matrix.package_ext }}'
 
       - name: Upload package to artifacts
         uses: actions/upload-artifact@v4
         with:
-          path: tmp/package/${{ env.PACKAGE }}${{ matrix.package_ext }}
+          path: ${{ env.WORKSPACE_DIR }}/tmp/package/${{ env.PACKAGE }}${{ matrix.package_ext }}
           name: package-${{ matrix.platform }}
           retention-days: 1
 
@@ -228,7 +239,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: tmp/package/${{ env.PACKAGE }}${{ matrix.package_ext }}
+          file: ${{ env.WORKSPACE_DIR }}/tmp/package/${{ env.PACKAGE }}${{ matrix.package_ext }}
           asset_name: ${{ env.PACKAGE }}${{ matrix.package_ext }}
           release_name: ${{ env.VERSION }}
           tag: ${{ env.VERSION }}
