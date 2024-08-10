@@ -12,14 +12,13 @@
 
 ## Enable CI / CD
 
-1. Create a Github repo for your project.
-2. Link your local repo to the Github repo.
-3. Configure the Github repo:
+1. Create a GitHub repo for your project.
+2. Link your local repo to the GitHub repo.
+3. Configure the GitHub repo:
     1. Settings > General > Default branch = `main`
-    2. Settings > Actions > General > Workflow permissions = `Read and write permissions`
-    3. Settings > Secrets and variables > Actions > New repository secret
+    2. Settings > Secrets and variables > Actions > New repository secret
         - Name = `BUTLER_CREDENTIALS`
-        - Secret = `<itch.io API keys>`
+        - Secret = `<itch.io API key>`
 4. Create an itch.io page for your project.
 5. Point the `ITCH_TARGET` value in `.github/workflows/release.yaml` to your itch.io page.
 6. To trigger CI, push a commit to `main`.
