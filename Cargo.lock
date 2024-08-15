@@ -679,7 +679,8 @@ dependencies = [
 [[package]]
 name = "bevy_editor_pls"
 version = "0.9.0"
-source = "git+https://github.com/zhaop/bevy_editor_pls?branch=bevy-0.14#78aa34ce109ecd924928bbd54b04dcd7286ebfea"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "02242646d9efb114c156b11ade613bc47339133422c261435eca8c07c36f6dd7"
 dependencies = [
  "bevy",
  "bevy_editor_pls_core",
@@ -691,7 +692,8 @@ dependencies = [
 [[package]]
 name = "bevy_editor_pls_core"
 version = "0.9.0"
-source = "git+https://github.com/zhaop/bevy_editor_pls?branch=bevy-0.14#78aa34ce109ecd924928bbd54b04dcd7286ebfea"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0c405936c0efb9279ce9a0689cd40df87fd94b85d9723530a8f88d2f98627eb9"
 dependencies = [
  "bevy",
  "bevy-inspector-egui",
@@ -702,7 +704,8 @@ dependencies = [
 [[package]]
 name = "bevy_editor_pls_default_windows"
 version = "0.9.0"
-source = "git+https://github.com/zhaop/bevy_editor_pls?branch=bevy-0.14#78aa34ce109ecd924928bbd54b04dcd7286ebfea"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c81d69f24cc6b61f0f62f997c491365a1c0956b6276530e4fec12c5839c8fff4"
 dependencies = [
  "bevy",
  "bevy-inspector-egui",
@@ -2053,6 +2056,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "dyn-clone"
+version = "1.0.17"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0d6ef0072f8a535281e4876be788938b528e9a1d43900b82c2569af7da799125"
+
+[[package]]
+name = "dyn-eq"
+version = "0.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5c2d035d21af5cde1a6f5c7b444a5bf963520a9f142e5d06931178433d7d5388"
+
+[[package]]
+name = "dyn-hash"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a650a461c6a8ff1ef205ed9a2ad56579309853fecefc2423f73dced342f92258"
+
+[[package]]
 name = "ecolor"
 version = "0.28.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2972,22 +2993,27 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
 
 [[package]]
 name = "leafwing-input-manager"
-version = "0.14.0"
+version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bebb7f3227809906ca7ccc981aedf7805b5edb422b4265290cc749316c0faba4"
+checksum = "10cfa701709bb37011dd09965a76ff981f6284ed5b8ac0e5089dcd311efeff49"
 dependencies = [
  "bevy",
  "derive_more",
+ "dyn-clone",
+ "dyn-eq",
+ "dyn-hash",
  "itertools 0.13.0",
  "leafwing_input_manager_macros",
+ "once_cell",
  "serde",
+ "serde_flexitos",
 ]
 
 [[package]]
 name = "leafwing_input_manager_macros"
-version = "0.13.0"
+version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5d065e4f0771d9cc597e76d648da18476ad01fd50cd60ee585ee500f9cd8d696"
+checksum = "61ff6f0b220de1c284422f6af6a529acfaa5dab76ee86d6167eb2ee34502290c"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -4370,6 +4396,16 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.72",
+]
+
+[[package]]
+name = "serde_flexitos"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "15a95e8972debc2acae5fa208fd4ec9ba96ace41d2bdd4e715ad4082b822e955"
+dependencies = [
+ "erased-serde",
+ "serde",
 ]
 
 [[package]]

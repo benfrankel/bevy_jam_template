@@ -78,7 +78,7 @@ fn menu_overlay(In(id): In<Entity>, mut commands: Commands, menu_root: Res<MenuR
         .set_parent(menu_root.ui);
 }
 
-#[derive(Actionlike, Reflect, Clone, Hash, PartialEq, Eq)]
+#[derive(Actionlike, Copy, Clone, Eq, PartialEq, Hash, Reflect, Debug)]
 pub enum MenuAction {
     Back,
 }
@@ -88,9 +88,8 @@ impl Configure for MenuAction {
         app.init_resource::<ActionState<Self>>();
         app.insert_resource(
             InputMap::default()
-                .insert(Self::Back, GamepadButtonType::South)
-                .insert(Self::Back, KeyCode::Escape)
-                .build(),
+                .with(Self::Back, GamepadButtonType::South)
+                .with(Self::Back, KeyCode::Escape),
         );
         app.add_plugins(InputManagerPlugin::<Self>::default());
         app.add_systems(

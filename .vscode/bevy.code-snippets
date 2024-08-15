@@ -137,7 +137,7 @@
         "scope": "rust",
         "prefix": "actionlike",
         "body": [
-            "#[derive(Actionlike, Copy, Clone, Eq, PartialEq, Reflect, Debug)]",
+            "#[derive(Actionlike, Copy, Clone, Eq, PartialEq, Hash, Reflect, Debug)]",
             "enum $1 {",
             "\t$2",
             "}",
@@ -146,8 +146,7 @@
             "\tfn configure(app: &mut App) {",
             "\t\tapp.init_resource::<ActionState<Self>>();",
             "\t\tapp.insert_resource(InputMap::default()",
-            "\t\t\t.insert($0)",
-            "\t\t\t.build(),",
+            "\t\t\t.with($0),",
             "\t\t);",
             "\t\tapp.add_plugins(InputManagerPlugin::<Self>::default());",
             "\t\tapp.add_systems(",

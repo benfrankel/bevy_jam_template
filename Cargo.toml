@@ -45,7 +45,7 @@ bevy_mod_picking = { version = "0.20", default-features = false, features = [
 bevy_state = "0.14"
 iyes_progress = "0.12"
 lazy-regex = { version = "3", features = ["lite"] }
-leafwing-input-manager = "0.14"
+leafwing-input-manager = "0.15"
 log = { version = "0.4", features = [
     "max_level_debug",
     "release_max_level_warn",
@@ -72,7 +72,6 @@ tracing = { version = "0.1", features = [
 [patch.crates-io]
 # TODO: Workaround for https://github.com/NiklasEi/bevy_asset_loader/issues/219.
 bevy_asset_loader = { git = "https://github.com/benfrankel/bevy_asset_loader.git", branch = "direct-depend" }
-bevy_editor_pls = { git = "https://github.com/zhaop/bevy_editor_pls", branch = "bevy-0.14" }
 pyri_state = { git = "https://github.com/benfrankel/pyri_state.git" }
 
 [features]
