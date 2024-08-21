@@ -78,7 +78,7 @@ pub fn apply_dynamic_font_size(
     mut text_query: Query<(&DynamicFontSize, &Node, &mut Text)>,
 ) {
     let window = r!(window_query.get(window_root.primary));
-    let viewport_size = Vec2::new(window.resolution.width(), window.resolution.height());
+    let viewport_size = window.resolution.size();
 
     for (font_size, node, mut text) in &mut text_query {
         // Compute font size.

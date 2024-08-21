@@ -11,7 +11,10 @@ pub mod widget;
 
 #[allow(unused_imports)]
 pub mod prelude {
+    pub use bevy::color::palettes::tailwind::*;
+    pub use bevy::sprite::Anchor;
     pub use bevy::ui::Val::*;
+    pub use pyri_tooltip::prelude::*;
 
     pub use super::color::ThemeColor;
     pub use super::color::ThemeColorFor;

@@ -58,12 +58,13 @@ pyri_state = { version = "0.2", default-features = false, features = [
     "react",
     "stack",
 ] }
+pyri_tooltip = "0.1"
 rand = { version = "0.8", features = ["small_rng"] }
 ron = "0.8"
 serde = "1"
 strum = { version = "0.26", features = ["derive"] }
 tap = "1"
-tiny_bail = "0.1"
+tiny_bail = "0.3"
 tracing = { version = "0.1", features = [
     "max_level_debug",
     "release_max_level_warn",
