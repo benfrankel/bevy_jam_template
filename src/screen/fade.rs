@@ -65,7 +65,7 @@ impl FadeIn {
 
 impl EntityCommand for FadeIn {
     fn apply(self, id: Entity, world: &mut World) {
-        world.run_system_once_with((id, self), fade_in);
+        r!(world.run_system_cached_with((id, self), fade_in));
     }
 }
 
@@ -127,7 +127,7 @@ impl FadeOut {
 
 impl EntityCommand for FadeOut {
     fn apply(self, id: Entity, world: &mut World) {
-        world.run_system_once_with((id, self), fade_out);
+        r!(world.run_system_cached_with((id, self), fade_out));
     }
 }
 

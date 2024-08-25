@@ -1,5 +1,4 @@
 use bevy::ecs::system::EntityCommand;
-use bevy::ecs::system::RunSystemOnce as _;
 use bevy::prelude::*;
 use bevy::ui::FocusPolicy;
 use bevy_mod_picking::prelude::*;
@@ -41,7 +40,7 @@ impl MenuButton {
 
 impl EntityCommand for MenuButton {
     fn apply(self, id: Entity, world: &mut World) {
-        world.run_system_once_with((id, self), menu_button);
+        r!(world.run_system_cached_with((id, self), menu_button));
     }
 }
 

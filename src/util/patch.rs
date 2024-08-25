@@ -1,4 +1,5 @@
 pub mod plugin;
+mod run_system_cached;
 pub mod spawn;
 pub mod transform;
 pub mod trigger;
@@ -8,6 +9,7 @@ pub mod prelude {
     pub use super::plugin::AppExtConfigure as _;
     pub use super::plugin::Configure;
     pub use super::plugin::PluginGroupBuilderExtReplace as _;
+    pub use super::run_system_cached::RunSystemCached as _;
     pub use super::spawn::AddExt as _;
     pub use super::spawn::AddFnExt as _;
     pub use super::spawn::SpawnExt as _;

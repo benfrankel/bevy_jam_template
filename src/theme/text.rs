@@ -77,7 +77,7 @@ pub fn apply_dynamic_font_size(
     window_query: Query<&Window>,
     mut text_query: Query<(&DynamicFontSize, &Node, &mut Text)>,
 ) {
-    let window = r!(window_query.get(window_root.primary));
+    let window = rq!(window_query.get(window_root.primary));
     let viewport_size = window.resolution.size();
 
     for (font_size, node, mut text) in &mut text_query {

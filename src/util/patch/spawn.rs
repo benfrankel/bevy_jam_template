@@ -1,16 +1,18 @@
 use bevy::ecs::system::EntityCommand;
 use bevy::ecs::system::EntityCommands;
-use bevy::ecs::system::RunSystemOnce as _;
 use bevy::ecs::world::Command as _;
 use bevy::prelude::*;
+use tiny_bail::prelude::*;
+
+use super::run_system_cached::RunSystemCached as _;
 
 pub trait SpawnExt {
     // TODO: Workaround for https://github.com/bevyengine/bevy/issues/14231#issuecomment-2216321086.
     fn spawn_with<M: 'static>(&mut self, command: impl EntityCommand<M>) -> EntityCommands;
 
-    fn spawn_fn<M>(
+    fn spawn_fn<M, T: 'static + Send + IntoSystem<Entity, (), M>>(
         &mut self,
-        system: impl IntoSystem<Entity, (), M> + Send + 'static,
+        system: T,
     ) -> EntityCommands;
 }
 
@@ -21,9 +23,9 @@ impl SpawnExt for Commands<'_, '_> {
         e
     }
 
-    fn spawn_fn<M>(
+    fn spawn_fn<M, T: 'static + Send + IntoSystem<Entity, (), M>>(
         &mut self,
-        system: impl IntoSystem<Entity, (), M> + Send + 'static,
+        system: T,
     ) -> EntityCommands {
         let mut e = self.spawn_empty();
         e.add_fn(system);
@@ -38,9 +40,9 @@ impl SpawnExt for ChildBuilder<'_> {
         e
     }
 
-    fn spawn_fn<M>(
+    fn spawn_fn<M, T: 'static + Send + IntoSystem<Entity, (), M>>(
         &mut self,
-        system: impl IntoSystem<Entity, (), M> + Send + 'static,
+        system: T,
     ) -> EntityCommands {
         let mut e = self.spawn_empty();
         e.add_fn(system);
@@ -52,9 +54,9 @@ pub trait WorldSpawnExt {
     // TODO: Workaround for https://github.com/bevyengine/bevy/issues/14231#issuecomment-2216321086.
     fn spawn_with<M: 'static>(&mut self, command: impl EntityCommand<M>) -> EntityWorldMut;
 
-    fn spawn_fn<M>(
+    fn spawn_fn<M, T: 'static + Send + IntoSystem<Entity, (), M>>(
         &mut self,
-        system: impl IntoSystem<Entity, (), M> + Send + 'static,
+        system: T,
     ) -> EntityWorldMut;
 }
 
@@ -65,9 +67,9 @@ impl WorldSpawnExt for World {
         e
     }
 
-    fn spawn_fn<M>(
+    fn spawn_fn<M, T: 'static + Send + IntoSystem<Entity, (), M>>(
         &mut self,
-        system: impl IntoSystem<Entity, (), M> + Send + 'static,
+        system: T,
     ) -> EntityWorldMut {
         let mut e = self.spawn_empty();
         e.add_fn(system);
@@ -82,9 +84,9 @@ impl WorldSpawnExt for WorldChildBuilder<'_> {
         e
     }
 
-    fn spawn_fn<M>(
+    fn spawn_fn<M, T: 'static + Send + IntoSystem<Entity, (), M>>(
         &mut self,
-        system: impl IntoSystem<Entity, (), M> + Send + 'static,
+        system: T,
     ) -> EntityWorldMut {
         let mut e = self.spawn_empty();
         e.add_fn(system);
@@ -108,22 +110,22 @@ impl AddExt for EntityWorldMut<'_> {
 }
 
 pub trait AddFnExt {
-    fn add_fn<M>(&mut self, system: impl IntoSystem<Entity, (), M> + Send + 'static) -> &mut Self;
+    fn add_fn<M, T: 'static + Send + IntoSystem<Entity, (), M>>(&mut self, system: T) -> &mut Self;
 }
 
 impl AddFnExt for EntityCommands<'_> {
-    fn add_fn<M>(&mut self, system: impl IntoSystem<Entity, (), M> + Send + 'static) -> &mut Self {
+    fn add_fn<M, T: 'static + Send + IntoSystem<Entity, (), M>>(&mut self, system: T) -> &mut Self {
         let id = self.id();
         self.commands()
-            .add(move |world: &mut World| world.run_system_once_with(id, system));
+            .add(move |world: &mut World| r!(world.run_system_cached_with(id, system)));
         self
     }
 }
 
 impl AddFnExt for EntityWorldMut<'_> {
-    fn add_fn<M>(&mut self, system: impl IntoSystem<Entity, (), M> + Send + 'static) -> &mut Self {
+    fn add_fn<M, T: 'static + Send + IntoSystem<Entity, (), M>>(&mut self, system: T) -> &mut Self {
         let id = self.id();
-        self.world_scope(move |world| world.run_system_once_with(id, system));
+        self.world_scope(move |world| r!(world.run_system_cached_with(id, system)));
         self
     }
 }

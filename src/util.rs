@@ -10,7 +10,6 @@ pub mod selection;
 
 #[allow(unused_imports)]
 pub mod prelude {
-    pub use bevy::ecs::system::RunSystemOnce as _;
     pub use tiny_bail::prelude::*;
 
     pub use super::config::Config;
