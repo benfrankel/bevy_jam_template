@@ -1,11 +1,10 @@
 use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
-use bevy_mod_picking::prelude::*;
 use pyri_state::prelude::*;
 
-use crate::screen::fade::FadeOut;
 use crate::screen::Screen;
 use crate::screen::ScreenRoot;
+use crate::screen::fade::FadeOut;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
 
@@ -29,7 +28,7 @@ impl Configure for TitleScreenAssets {
 fn title(In(id): In<Entity>, mut commands: Commands, screen_root: Res<ScreenRoot>) {
     commands
         .entity(id)
-        .insert(Style::COLUMN_MID.full_size().node("Title"))
+        .insert(Node::COLUMN_MID.full_size().named("Title"))
         .set_parent(screen_root.ui)
         .with_children(|children| {
             children.spawn_fn(header);
@@ -40,12 +39,13 @@ fn title(In(id): In<Entity>, mut commands: Commands, screen_root: Res<ScreenRoot
 fn header(In(id): In<Entity>, mut commands: Commands) {
     commands.entity(id).insert((
         Name::new("Header"),
-        TextBundle::from_sections(parse_rich("[b]bevy_jam_template")).with_style(Style {
-            margin: UiRect::vertical(Vw(5.0)),
-            ..default()
-        }),
+        RichText::from_sections(parse_rich("[b]bevy_jam_template")),
         DynamicFontSize::new(Vw(5.0)).with_step(8.0),
         ThemeColorForText(vec![ThemeColor::BodyText]),
+        Node {
+            margin: UiRect::vertical(Vw(5.0)),
+            ..default()
+        },
     ));
 }
 
@@ -53,12 +53,12 @@ fn buttons(In(id): In<Entity>, mut commands: Commands) {
     commands
         .entity(id)
         .insert(
-            Style {
+            Node {
                 margin: UiRect::vertical(VMin(9.0)),
                 row_gap: Vw(2.5),
-                ..Style::COLUMN_MID.full_width()
+                ..Node::COLUMN_MID.full_width()
             }
-            .node("Buttons"),
+            .named("Buttons"),
         )
         .with_children(|children| {
             children.spawn_fn(play_button);
@@ -69,22 +69,22 @@ fn buttons(In(id): In<Entity>, mut commands: Commands) {
 fn play_button(In(id): In<Entity>, mut commands: Commands) {
     commands
         .entity(id)
-        .add(widget::MenuButton::new("Play"))
-        .insert(On::<Pointer<Click>>::run(|mut commands: Commands| {
+        .queue(widget::MenuButton::new("Play"))
+        .observe(|_: Trigger<Pointer<Click>>, mut commands: Commands| {
             commands.spawn_with(FadeOut::to(Screen::Intro));
-        }));
+        });
 }
 
 fn quit_button(In(id): In<Entity>, mut commands: Commands) {
+    commands.entity(id).queue(widget::MenuButton::new("Quit"));
+
+    #[cfg(feature = "web")]
+    commands.entity(id).insert(IsDisabled(true));
+
+    #[cfg(not(feature = "web"))]
     commands
         .entity(id)
-        .add(widget::MenuButton::new("Quit"))
-        .insert((
-            #[cfg(feature = "web")]
-            IsDisabled(true),
-            #[cfg(not(feature = "web"))]
-            On::<Pointer<Click>>::run(|mut app_exit: EventWriter<_>| {
-                app_exit.send(bevy::app::AppExit::Success);
-            }),
-        ));
+        .observe(|_: Trigger<Pointer<Click>>, mut app_exit: EventWriter<_>| {
+            app_exit.send(bevy::app::AppExit::Success);
+        });
 }

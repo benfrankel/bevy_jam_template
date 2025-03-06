@@ -1,7 +1,6 @@
 use bevy::ecs::system::EntityCommand;
 use bevy::prelude::*;
 use bevy::ui::FocusPolicy;
-use bevy_mod_picking::prelude::*;
 
 use crate::animation::backup::Backup;
 use crate::animation::offset::Offset;
@@ -10,22 +9,18 @@ use crate::util::prelude::*;
 
 pub fn overlay(In(id): In<Entity>, mut commands: Commands) {
     commands.entity(id).insert((
-        NodeBundle {
-            style: Style::DEFAULT.abs().full_size(),
-            z_index: ZIndex::Global(1000),
-            ..default()
-        },
-        Pickable::IGNORE,
+        Node::DEFAULT.abs().full_size(),
+        GlobalZIndex(1000),
+        PickingBehavior::IGNORE,
     ));
 }
 
 pub fn blocking_overlay(In(id): In<Entity>, mut commands: Commands) {
-    commands.entity(id).insert(NodeBundle {
-        style: Style::DEFAULT.abs().full_size(),
-        focus_policy: FocusPolicy::Block,
-        z_index: ZIndex::Global(1000),
-        ..default()
-    });
+    commands.entity(id).insert((
+        Node::DEFAULT.abs().full_size(),
+        FocusPolicy::Block,
+        GlobalZIndex(1000),
+    ));
 }
 
 pub struct MenuButton {
@@ -40,7 +35,7 @@ impl MenuButton {
 
 impl EntityCommand for MenuButton {
     fn apply(self, id: Entity, world: &mut World) {
-        r!(world.run_system_cached_with((id, self), menu_button));
+        r!(world.run_system_cached_with(menu_button, (id, self)));
     }
 }
 
@@ -49,15 +44,13 @@ fn menu_button(In((id, this)): In<(Entity, MenuButton)>, mut commands: Commands)
         .entity(id)
         .insert((
             Name::new(format!("MenuButton(\"{}\")", &this.text)),
-            ButtonBundle {
-                style: Style {
-                    height: Vw(11.0),
-                    width: Vw(38.0),
-                    ..Style::ROW_CENTER
-                },
-                border_radius: BorderRadius::MAX,
-                ..default()
+            Button,
+            Node {
+                height: Vw(11.0),
+                width: Vw(38.0),
+                ..Node::ROW_CENTER
             },
+            BorderRadius::MAX,
             ThemeColor::default().set::<BackgroundColor>(),
             InteractionTable {
                 normal: ThemeColor::Primary.set::<BackgroundColor>(),
@@ -78,7 +71,7 @@ fn menu_button(In((id, this)): In<(Entity, MenuButton)>, mut commands: Commands)
         .with_children(|parent| {
             parent.spawn((
                 Name::new("ButtonText"),
-                TextBundle::from_sections(parse_rich(&this.text)),
+                RichText::from_sections(parse_rich(&this.text)),
                 DynamicFontSize::new(Vw(4.0)).with_step(8.0),
                 ThemeColorForText(vec![ThemeColor::PrimaryText]),
             ));

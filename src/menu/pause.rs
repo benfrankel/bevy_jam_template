@@ -1,11 +1,10 @@
 use bevy::prelude::*;
-use bevy_mod_picking::prelude::*;
 use pyri_state::prelude::*;
 
 use crate::menu::Menu;
 use crate::menu::MenuRoot;
-use crate::screen::fade::FadeOut;
 use crate::screen::Screen;
+use crate::screen::fade::FadeOut;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
 
@@ -18,14 +17,11 @@ fn pause(In(id): In<Entity>, mut commands: Commands, menu_root: Res<MenuRoot>) {
         .entity(id)
         .insert((
             Name::new("Pause"),
-            NodeBundle {
-                style: Style {
-                    padding: UiRect::all(Vw(4.5)),
-                    ..Style::COLUMN_MID.full_size().abs()
-                },
-                z_index: ZIndex::Global(2),
-                ..default()
+            Node {
+                padding: UiRect::all(Vw(4.5)),
+                ..Node::COLUMN_MID.full_size().abs()
             },
+            GlobalZIndex(2),
             DespawnOnExit::<Menu>::Recursive,
         ))
         .set_parent(menu_root.ui)
@@ -40,12 +36,13 @@ const HEADER: &str = "[b]Game paused";
 fn header(In(id): In<Entity>, mut commands: Commands) {
     commands.entity(id).insert((
         Name::new("Header"),
-        TextBundle::from_sections(parse_rich(HEADER)).with_style(Style {
-            margin: UiRect::bottom(Vw(2.5)),
-            ..default()
-        }),
+        RichText::from_sections(parse_rich(HEADER)),
         DynamicFontSize::new(Vw(5.0)).with_step(8.0),
         ThemeColorForText(vec![ThemeColor::BodyText]),
+        Node {
+            margin: UiRect::bottom(Vw(2.5)),
+            ..default()
+        },
     ));
 }
 
@@ -53,12 +50,12 @@ fn buttons(In(id): In<Entity>, mut commands: Commands) {
     commands
         .entity(id)
         .insert(
-            Style {
+            Node {
                 margin: UiRect::top(VMin(6.0)),
                 row_gap: Vw(2.5),
-                ..Style::COLUMN_CENTER
+                ..Node::COLUMN_CENTER
             }
-            .node("Buttons"),
+            .named("Buttons"),
         )
         .with_children(|children| {
             children.spawn_fn(settings_button);
@@ -71,59 +68,55 @@ fn buttons(In(id): In<Entity>, mut commands: Commands) {
 fn settings_button(In(id): In<Entity>, mut commands: Commands) {
     commands
         .entity(id)
-        .add(widget::MenuButton::new("Settings"))
-        .insert((
-            On::<Pointer<Click>>::run(Menu::Settings.push()),
-            Style {
-                height: Vw(9.0),
-                width: Vw(38.0),
-                ..Style::ROW_CENTER
+        .queue(widget::MenuButton::new("Settings"))
+        .insert(Node {
+            height: Vw(9.0),
+            width: Vw(38.0),
+            ..Node::ROW_CENTER
+        })
+        .observe(
+            |_: Trigger<Pointer<Click>>, mut menu: ResMut<NextStateStack<Menu>>| {
+                menu.push(Menu::Settings);
             },
-        ));
+        );
 }
 
 fn continue_button(In(id): In<Entity>, mut commands: Commands) {
     commands
         .entity(id)
-        .add(widget::MenuButton::new("Continue"))
-        .insert((
-            On::<Pointer<Click>>::run(Menu::disable),
-            Style {
-                height: Vw(9.0),
-                width: Vw(38.0),
-                ..Style::ROW_CENTER
-            },
-        ));
+        .queue(widget::MenuButton::new("Continue"))
+        .insert(Node {
+            height: Vw(9.0),
+            width: Vw(38.0),
+            ..Node::ROW_CENTER
+        })
+        .observe(|_: Trigger<Pointer<Click>>, mut menu: NextMut<Menu>| menu.disable());
 }
 
 fn restart_button(In(id): In<Entity>, mut commands: Commands) {
     commands
         .entity(id)
-        .add(widget::MenuButton::new("Restart"))
-        .insert((
-            On::<Pointer<Click>>::run(|mut commands: Commands| {
-                commands.spawn_with(FadeOut::to(Screen::Playing));
-            }),
-            Style {
-                height: Vw(9.0),
-                width: Vw(38.0),
-                ..Style::ROW_CENTER
-            },
-        ));
+        .queue(widget::MenuButton::new("Restart"))
+        .insert(Node {
+            height: Vw(9.0),
+            width: Vw(38.0),
+            ..Node::ROW_CENTER
+        })
+        .observe(|_: Trigger<Pointer<Click>>, mut commands: Commands| {
+            commands.spawn_with(FadeOut::to(Screen::Playing));
+        });
 }
 
 fn quit_to_title_button(In(id): In<Entity>, mut commands: Commands) {
     commands
         .entity(id)
-        .add(widget::MenuButton::new("Quit to title"))
-        .insert((
-            On::<Pointer<Click>>::run(|mut commands: Commands| {
-                commands.spawn_with(FadeOut::to(Screen::Title));
-            }),
-            Style {
-                height: Vw(9.0),
-                width: Vw(38.0),
-                ..Style::ROW_CENTER
-            },
-        ));
+        .queue(widget::MenuButton::new("Quit to title"))
+        .insert(Node {
+            height: Vw(9.0),
+            width: Vw(38.0),
+            ..Node::ROW_CENTER
+        })
+        .observe(|_: Trigger<Pointer<Click>>, mut commands: Commands| {
+            commands.spawn_with(FadeOut::to(Screen::Title));
+        });
 }

@@ -23,8 +23,9 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         Update,
         (
-            Screen::Intro.on_update(do_not_skip_loading_screen.track_progress()),
-            Screen::Loading.on_update(extend_loading_screen.track_progress()),
+            Screen::Intro
+                .on_update(do_not_skip_loading_screen.track_progress::<BevyState<Screen>>()),
+            Screen::Loading.on_update(extend_loading_screen.track_progress::<BevyState<Screen>>()),
         ),
     );
 }

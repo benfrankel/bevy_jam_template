@@ -1,7 +1,7 @@
 use std::any::type_name;
 
 use bevy::core::FrameCount;
-use bevy::ecs::event::ManualEventReader;
+use bevy::ecs::event::EventCursor;
 use bevy::ecs::system::SystemParam;
 use bevy::prelude::*;
 use bevy_common_assets::ron::RonAssetPlugin;
@@ -43,7 +43,7 @@ impl<C: Config> Configure for ConfigHandle<C> {
         app.add_systems(Startup, load_config::<C>);
         app.add_systems(
             PreUpdate,
-            apply_config::<C>.run_if(on_event::<AssetEvent<C>>()),
+            apply_config::<C>.run_if(on_event::<AssetEvent<C>>),
         );
     }
 }
@@ -55,8 +55,8 @@ fn load_config<C: Config>(world: &mut World) {
     world.insert_resource(ConfigHandle::<C>(handle));
 }
 
-fn apply_config<C: Config>(world: &mut World, mut reader: Local<ManualEventReader<AssetEvent<C>>>) {
-    if !reader
+fn apply_config<C: Config>(world: &mut World, mut cursor: Local<EventCursor<AssetEvent<C>>>) {
+    if !cursor
         .read(world.resource::<Events<AssetEvent<_>>>())
         .any(|event| event.is_loaded_with_dependencies(&world.resource::<ConfigHandle<C>>().0))
     {

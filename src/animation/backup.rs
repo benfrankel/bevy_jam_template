@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use bevy::reflect::GetTypeRegistration;
+use bevy::reflect::Typed;
 use bevy::transform::systems::propagate_transforms;
 use bevy::transform::systems::sync_simple_transforms;
 
@@ -22,9 +23,7 @@ pub(super) fn plugin(app: &mut App) {
 #[reflect(Component)]
 pub struct Backup<C: Component + Clone>(Option<C>);
 
-impl<C: Component + Clone + Reflect + FromReflect + TypePath + GetTypeRegistration> Configure
-    for Backup<C>
-{
+impl<C: Component + Clone + Typed + FromReflect + GetTypeRegistration> Configure for Backup<C> {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
         // This has to run before `UiSystem::Focus` in `PreUpdate` anyways, so may as well

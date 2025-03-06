@@ -1,13 +1,11 @@
 use bevy::prelude::*;
 use pyri_state::prelude::*;
 
-use crate::core::pause::Pause;
 use crate::core::UpdateSet;
+use crate::core::pause::Pause;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.insert_resource(Msaa::Off);
-
     app.configure::<(CameraRoot, SmoothFollow, AbsoluteScale)>();
 }
 
@@ -30,13 +28,12 @@ impl FromWorld for CameraRoot {
             primary: world
                 .spawn((
                     Name::new("PrimaryCamera"),
-                    Camera2dBundle {
-                        projection: OrthographicProjection {
-                            near: -1000.0,
-                            ..default()
-                        },
-                        ..default()
+                    Camera2d,
+                    OrthographicProjection {
+                        near: -1000.0,
+                        ..OrthographicProjection::default_2d()
                     },
+                    Msaa::Off,
                     SmoothFollow {
                         target: Entity::PLACEHOLDER,
                         rate: Vec2::splat(100.0),
@@ -68,7 +65,7 @@ fn apply_smooth_follow(
     mut follow_query: Query<(&mut Transform, &mut GlobalTransform, &SmoothFollow)>,
     target_query: Query<&GlobalTransform, Without<SmoothFollow>>,
 ) {
-    let dt = time.delta_seconds();
+    let dt = time.delta_secs();
     for (mut transform, mut gt, follow) in &mut follow_query {
         let Ok(target) = target_query.get(follow.target) else {
             continue;

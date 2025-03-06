@@ -1,19 +1,20 @@
 [package]
 name = "bevy_jam_template"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 default-run = "run"
 
 [dependencies]
-avian2d = { version = "0.1", default-features = false, features = [
+avian2d = { version = "0.2", default-features = false, features = [
     "2d",
     "f32",
     "parry-f32",
 ] }
-bevy = { version = "0.14", default-features = false, features = [
+bevy = { version = "0.15", default-features = false, features = [
     # Core functionality
     "bevy_asset",
     "bevy_color",
+    "bevy_picking",
     "bevy_render",
     "bevy_winit",
     "bevy_core_pipeline",
@@ -28,43 +29,39 @@ bevy = { version = "0.14", default-features = false, features = [
     # Extra functionality
     #bevy_gilrs",
     #serialize",
-    "subpixel_glyph_atlas",
     "tonemapping_luts",
 
     # File formats
     "png",
 ] }
-bevy_asset_loader = { version = "0.21", features = ["2d", "progress_tracking"] }
-bevy_common_assets = { version = "0.11", features = ["ron"] }
-bevy_editor_pls = { version = "0.9", optional = true }
-bevy_kira_audio = "0.20"
-bevy_mod_debugdump = { version = "0.11", optional = true }
-bevy_mod_picking = { version = "0.20", default-features = false, features = [
-    "backend_bevy_ui",
-] }
-bevy_state = "0.14"
-iyes_progress = "0.12"
+bevy_asset_loader = { version = "0.22", features = ["2d", "progress_tracking"] }
+bevy_common_assets = { version = "0.12", features = ["ron"] }
+bevy_editor_pls = { version = "0.11", optional = true }
+bevy_kira_audio = "0.22"
+bevy_mod_debugdump = { version = "0.12", optional = true }
+bevy_state = "0.15"
+iyes_progress = "0.13"
 lazy-regex = { version = "3", features = ["lite"] }
-leafwing-input-manager = "0.15"
+leafwing-input-manager = "0.16"
 log = { version = "0.4", features = [
     "max_level_debug",
     "release_max_level_warn",
 ] }
 #noise = "0.8"
-pyri_state = { version = "0.2", default-features = false, features = [
+pyri_state = { version = "0.3", default-features = false, features = [
     "bevy_app",
     "bevy_reflect",
     "bevy_state",
     "react",
     "stack",
 ] }
-pyri_tooltip = "0.1"
+pyri_tooltip = "0.2"
 rand = { version = "0.8", features = ["small_rng"] }
 ron = "0.8"
 serde = "1"
-strum = { version = "0.26", features = ["derive"] }
+strum = { version = "0.27", features = ["derive"] }
 tap = "1"
-tiny_bail = "0.3"
+tiny_bail = "0.4"
 tracing = { version = "0.1", features = [
     "max_level_debug",
     "release_max_level_warn",
@@ -73,7 +70,9 @@ tracing = { version = "0.1", features = [
 [patch.crates-io]
 # TODO: Workaround for https://github.com/NiklasEi/bevy_asset_loader/issues/219.
 bevy_asset_loader = { git = "https://github.com/benfrankel/bevy_asset_loader.git", branch = "direct-depend" }
-pyri_state = { git = "https://github.com/benfrankel/pyri_state.git" }
+bevy_editor_pls = { git = "https://github.com/jakobhellermann/bevy_editor_pls.git" }
+pyri_tooltip = { git = "https://github.com/benfrankel/pyri_tooltip.git" }
+transform-gizmo-bevy = { git = "https://github.com/ActuallyHappening/transform-gizmo" }
 
 [features]
 default = ["native_dev"]
@@ -81,16 +80,16 @@ dev = [
     "dep:bevy_editor_pls",
     "avian2d/debug-plugin",
     "bevy/bevy_dev_tools",
+    "bevy/default_font",
     "bevy/dynamic_linking",
     "bevy/sysinfo_plugin",
-    "bevy_mod_picking/debug",
     "pyri_state/debug",
 ]
 native = ["avian2d/parallel"]
 native_dev = ["native", "dev", "bevy/file_watcher", "bevy/embedded_watcher"]
 web = []
 web_dev = ["web", "dev"]
-trace = ["bevy/trace", "bevy/wgpu_trace", "bevy/trace_tracy"]
+trace = ["bevy/trace", "bevy/trace_tracy"]
 debug_dump = ["dep:bevy_mod_debugdump"]
 
 # Idiomatic Bevy code often triggers these lints, and the CI workflow treats them as errors.

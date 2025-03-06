@@ -1,23 +1,20 @@
 use bevy::prelude::*;
 use bevy::reflect::GetTypeRegistration;
+use bevy::reflect::Typed;
 use bevy_kira_audio::prelude::*;
-use bevy_mod_picking::prelude::*;
 use rand::prelude::*;
 
 use crate::animation::offset::Offset;
-use crate::core::audio::AudioConfig;
 use crate::core::UpdateSet;
-use crate::theme::prelude::*;
+use crate::core::audio::AudioConfig;
 use crate::theme::ThemeAssets;
+use crate::theme::prelude::*;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_plugins(DefaultPickingPlugins);
-
     app.configure::<(
         IsDisabled,
         InteractionTable<ThemeColorFor<BackgroundColor>>,
-        InteractionTable<TextureAtlas>,
         InteractionTable<Offset>,
         InteractionSfx,
     )>();
@@ -43,7 +40,7 @@ pub struct InteractionTable<C: Component> {
     pub disabled: C,
 }
 
-impl<C: Component + Clone + Reflect + FromReflect + TypePath + GetTypeRegistration> Configure
+impl<C: Component + Clone + Typed + FromReflect + GetTypeRegistration> Configure
     for InteractionTable<C>
 {
     fn configure(app: &mut App) {

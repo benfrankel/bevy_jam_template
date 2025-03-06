@@ -2,9 +2,10 @@ use bevy::asset::load_internal_binary_asset;
 use bevy::prelude::*;
 use bevy::utils::HashMap;
 use lazy_regex::regex;
+use pyri_tooltip::prelude::*;
 
-use crate::core::window::WindowRoot;
 use crate::core::UpdateSet;
+use crate::core::window::WindowRoot;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
@@ -75,14 +76,16 @@ impl DynamicFontSize {
 pub fn apply_dynamic_font_size(
     window_root: Res<WindowRoot>,
     window_query: Query<&Window>,
-    mut text_query: Query<(&DynamicFontSize, &Node, &mut Text)>,
+    mut text_query: Query<(&DynamicFontSize, &ComputedNode, &mut RichText)>,
 ) {
     let window = rq!(window_query.get(window_root.primary));
     let viewport_size = window.resolution.size();
 
-    for (font_size, node, mut text) in &mut text_query {
+    for (font_size, computed_node, mut text) in &mut text_query {
         // Compute font size.
-        let size = c!(font_size.size.resolve(node.size().x, viewport_size));
+        let size = c!(font_size
+            .size
+            .resolve(computed_node.size().x, viewport_size));
 
         // Round to nearest multiple of step.
         let resolved = if font_size.step > 0.0 {

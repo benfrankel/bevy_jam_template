@@ -3,7 +3,7 @@ use std::borrow::Cow;
 use bevy::prelude::*;
 use bevy::ui::Val::*;
 
-pub trait StyleExtLayout {
+pub trait NodeExtLayout {
     const ROW: Self;
     const ROW_TOP: Self;
     const ROW_MID: Self;
@@ -24,66 +24,66 @@ pub trait StyleExtLayout {
 
     fn full_size(self) -> Self;
 
-    fn node(self, name: impl Into<Cow<'static, str>>) -> (Name, NodeBundle);
+    fn named(self, name: impl Into<Cow<'static, str>>) -> (Name, Node);
 }
 
-impl StyleExtLayout for Style {
+impl NodeExtLayout for Node {
     const ROW: Self = Self::DEFAULT;
 
     const ROW_TOP: Self = {
-        let mut style = Style::ROW;
-        style.align_items = AlignItems::Start;
-        style
+        let mut x = Self::ROW;
+        x.align_items = AlignItems::Start;
+        x
     };
 
     const ROW_MID: Self = {
-        let mut style = Style::ROW;
-        style.align_items = AlignItems::Center;
-        style
+        let mut x = Self::ROW;
+        x.align_items = AlignItems::Center;
+        x
     };
 
     const ROW_BOTTOM: Self = {
-        let mut style = Style::ROW;
-        style.align_items = AlignItems::End;
-        style
+        let mut x = Self::ROW;
+        x.align_items = AlignItems::End;
+        x
     };
 
     const ROW_CENTER: Self = {
-        let mut style = Style::ROW;
-        style.align_items = AlignItems::Center;
-        style.justify_content = JustifyContent::Center;
-        style
+        let mut x = Self::ROW;
+        x.align_items = AlignItems::Center;
+        x.justify_content = JustifyContent::Center;
+        x
     };
 
     const COLUMN: Self = {
-        let mut style = Self::DEFAULT;
-        style.flex_direction = FlexDirection::Column;
-        style
+        let mut x = Self::DEFAULT;
+        x.flex_direction = FlexDirection::Column;
+        x
     };
 
     const COLUMN_LEFT: Self = {
-        let mut style = Style::COLUMN;
-        style.align_items = AlignItems::Start;
-        style
+        let mut x = Self::COLUMN;
+        x.align_items = AlignItems::Start;
+        x
     };
 
     const COLUMN_MID: Self = {
-        let mut style = Style::COLUMN;
-        style.align_items = AlignItems::Center;
-        style
+        let mut x = Self::COLUMN;
+        x.align_items = AlignItems::Center;
+        x
     };
 
     const COLUMN_RIGHT: Self = {
-        let mut style = Style::COLUMN;
-        style.align_items = AlignItems::End;
-        style
+        let mut x = Self::COLUMN;
+        x.align_items = AlignItems::End;
+        x
     };
 
     const COLUMN_CENTER: Self = {
-        let mut style = Style::COLUMN;
-        style.align_items = AlignItems::Center;
-        style.justify_content = JustifyContent::Center;
-        style
+        let mut x = Self::COLUMN;
+        x.align_items = AlignItems::Center;
+        x.justify_content = JustifyContent::Center;
+        x
     };
 
     fn abs(mut self) -> Self {
@@ -105,13 +105,7 @@ impl StyleExtLayout for Style {
         self.full_width().full_height()
     }
 
-    fn node(self, name: impl Into<Cow<'static, str>>) -> (Name, NodeBundle) {
-        (
-            Name::new(name),
-            NodeBundle {
-                style: self,
-                ..default()
-            },
-        )
+    fn named(self, name: impl Into<Cow<'static, str>>) -> (Name, Node) {
+        (Name::new(name), self)
     }
 }

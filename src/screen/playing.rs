@@ -41,7 +41,7 @@ impl Configure for PlayingAction {
         app.init_resource::<ActionState<Self>>();
         app.insert_resource(
             InputMap::default()
-                .with(Self::TogglePause, GamepadButtonType::Start)
+                .with(Self::TogglePause, GamepadButton::Start)
                 .with(Self::TogglePause, KeyCode::Escape)
                 .with(Self::TogglePause, KeyCode::KeyP),
         );
@@ -51,7 +51,7 @@ impl Configure for PlayingAction {
             Screen::Playing.on_update(
                 Menu::Pause.toggle().in_set(UpdateSet::RecordInput).run_if(
                     action_just_pressed(Self::TogglePause)
-                        .and_then(Menu::is_disabled.or_else(Menu::Pause.will_update())),
+                        .and(Menu::is_disabled.or(Menu::Pause.will_update())),
                 ),
             ),
         );

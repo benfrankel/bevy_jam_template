@@ -24,8 +24,8 @@ pub(super) fn plugin(app: &mut App) {
             .build()
             // TODO: Doing this instead of `.replace` because `window::plugin` requires `AssetPlugin` to load its config.
             .disable::<AssetPlugin>()
-            .add_after::<LogPlugin, _>(asset::plugin)
-            .add_after::<LogPlugin, _>(state::plugin)
+            .add_after::<LogPlugin>(asset::plugin)
+            .add_after::<LogPlugin>(state::plugin)
             .replace::<WindowPlugin>(window::plugin)
             .set(ImagePlugin::default_nearest()),
     );

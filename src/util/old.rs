@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use bevy::reflect::GetTypeRegistration;
+use bevy::reflect::Typed;
 
 use crate::util::prelude::*;
 
@@ -11,9 +12,7 @@ pub(super) fn plugin(app: &mut App) {
 #[reflect(Component)]
 pub struct Old<C: Component>(pub C);
 
-impl<C: Component + Clone + Reflect + FromReflect + TypePath + GetTypeRegistration> Configure
-    for Old<C>
-{
+impl<C: Component + Clone + Typed + FromReflect + GetTypeRegistration> Configure for Old<C> {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
         app.add_systems(First, update_old::<C>);

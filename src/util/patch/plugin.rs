@@ -37,6 +37,6 @@ pub trait PluginGroupBuilderExtReplace {
 
 impl PluginGroupBuilderExtReplace for PluginGroupBuilder {
     fn replace<Target: Plugin>(self, plugin: impl Plugin) -> Self {
-        self.disable::<Target>().add_after::<Target, _>(plugin)
+        self.disable::<Target>().add_after::<Target>(plugin)
     }
 }

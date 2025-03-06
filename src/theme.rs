@@ -22,13 +22,13 @@ pub mod prelude {
     pub use super::interaction::InteractionSfx;
     pub use super::interaction::InteractionTable;
     pub use super::interaction::IsDisabled;
-    pub use super::layout::StyleExtLayout;
-    pub use super::text::parse_rich;
-    pub use super::text::parse_rich_custom;
-    pub use super::text::DynamicFontSize;
+    pub use super::layout::NodeExtLayout;
     pub use super::text::BOLD_FONT_HANDLE;
+    pub use super::text::DynamicFontSize;
     pub use super::text::FONT_HANDLE;
     pub use super::text::THICK_FONT_HANDLE;
+    pub use super::text::parse_rich;
+    pub use super::text::parse_rich_custom;
     pub use super::widget;
 }
 

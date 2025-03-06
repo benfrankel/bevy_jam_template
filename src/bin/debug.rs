@@ -35,11 +35,7 @@ fn main() {
 }
 
 fn print_schedule_graph(app: &mut App, label: impl ScheduleLabel) {
-    let settings = Settings {
-        prettify_system_names: false,
-        ..default()
-    };
-    let dot = schedule_graph_dot(app, label, &settings);
+    let dot = schedule_graph_dot(app, label, &Settings::default());
     println!("{dot}");
 }
 

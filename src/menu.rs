@@ -2,13 +2,12 @@ pub mod pause;
 pub mod settings;
 
 use bevy::prelude::*;
-use bevy_mod_picking::prelude::*;
 use leafwing_input_manager::common_conditions::action_just_pressed;
 use leafwing_input_manager::prelude::*;
 use pyri_state::prelude::*;
 
-use crate::core::pause::Pause;
 use crate::core::UpdateSet;
+use crate::core::pause::Pause;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
 
@@ -34,8 +33,8 @@ impl FromWorld for MenuRoot {
         Self {
             ui: world
                 .spawn((
-                    Style::DEFAULT.full_size().node("Menu"),
-                    Pickable::IGNORE,
+                    Node::DEFAULT.full_size().named("Menu"),
+                    PickingBehavior::IGNORE,
                     DespawnOnDisable::<Menu>::Descendants,
                 ))
                 .id(),
@@ -69,10 +68,10 @@ impl Configure for Menu {
 fn menu_overlay(In(id): In<Entity>, mut commands: Commands, menu_root: Res<MenuRoot>) {
     commands
         .entity(id)
-        .add_fn(widget::blocking_overlay)
+        .queue_fn(widget::blocking_overlay)
         .insert((
             Name::new("MenuOverlay"),
-            ZIndex::Global(1),
+            GlobalZIndex(1),
             ThemeColor::Overlay.set::<BackgroundColor>(),
         ))
         .set_parent(menu_root.ui);
@@ -88,7 +87,7 @@ impl Configure for MenuAction {
         app.init_resource::<ActionState<Self>>();
         app.insert_resource(
             InputMap::default()
-                .with(Self::Back, GamepadButtonType::South)
+                .with(Self::Back, GamepadButton::South)
                 .with(Self::Back, KeyCode::Escape),
         );
         app.add_plugins(InputManagerPlugin::<Self>::default());
@@ -96,7 +95,7 @@ impl Configure for MenuAction {
             Update,
             Menu::pop
                 .in_set(UpdateSet::RecordInput)
-                .run_if(action_just_pressed(Self::Back).and_then(Menu::is_enabled)),
+                .run_if(action_just_pressed(Self::Back).and(Menu::is_enabled)),
         );
     }
 }

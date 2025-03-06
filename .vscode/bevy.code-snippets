@@ -63,7 +63,7 @@
             "",
             "impl EntityCommand for $1 {",
             "\tfn apply(self, id: Entity, world: &mut World) {",
-            "\t\tworld.run_system_once_with((id, self), $2);",
+            "\t\tworld.run_system_once_with($2, (id, self));",
             "\t}",
             "}",
             "",

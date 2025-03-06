@@ -2,6 +2,7 @@ use std::marker::PhantomData;
 use std::ops::Index;
 
 use bevy::prelude::*;
+use pyri_tooltip::prelude::*;
 use serde::Deserialize;
 use serde::Serialize;
 use strum::EnumCount;
@@ -16,7 +17,7 @@ pub(super) fn plugin(app: &mut App) {
     app.configure::<(
         ConfigHandle<ThemeConfig>,
         ThemeColorFor<Sprite>,
-        ThemeColorFor<UiImage>,
+        ThemeColorFor<ImageNode>,
         ThemeColorFor<BackgroundColor>,
         ThemeColorFor<BorderColor>,
         ThemeColorForText,
@@ -119,7 +120,7 @@ impl Configure for ThemeColorForText {
 
 fn apply_theme_color_for_text(
     config: ConfigRef<ThemeConfig>,
-    mut text_query: Query<(&ThemeColorForText, &mut Text)>,
+    mut text_query: Query<(&ThemeColorForText, &mut RichText)>,
 ) {
     let palette = r!(config.get().map(|x| &x.colors));
     for (colors, mut text) in &mut text_query {
@@ -139,7 +140,7 @@ impl ColorMut for Sprite {
     }
 }
 
-impl ColorMut for UiImage {
+impl ColorMut for ImageNode {
     fn color_mut(&mut self) -> &mut Color {
         &mut self.color
     }

@@ -9,7 +9,6 @@ use std::time::Duration;
 
 use bevy::ecs::schedule::SystemConfigs;
 use bevy::prelude::*;
-use bevy_mod_picking::prelude::*;
 use iyes_progress::prelude::*;
 use pyri_state::prelude::*;
 use serde::Deserialize;
@@ -46,8 +45,8 @@ impl FromWorld for ScreenRoot {
         Self {
             ui: world
                 .spawn((
-                    Style::DEFAULT.full_size().node("Screen"),
-                    Pickable::IGNORE,
+                    Node::DEFAULT.full_size().named("Screen"),
+                    PickingBehavior::IGNORE,
                     DespawnOnExit::<Screen>::Descendants,
                 ))
                 .id(),
@@ -71,6 +70,7 @@ pub enum Screen {
 impl Configure for Screen {
     fn configure(app: &mut App) {
         app.add_state::<Self>();
+        app.add_plugins(ProgressPlugin::<BevyState<Self>>::new());
         app.add_systems(
             StateFlush,
             (
@@ -119,5 +119,5 @@ fn wait_in_screen(duration: f32) -> SystemConfigs {
     (move |screen_time: Res<ScreenTime>| -> Progress {
         (screen_time.0.as_secs_f32() >= duration).into()
     })
-    .track_progress()
+    .track_progress::<BevyState<Screen>>()
 }

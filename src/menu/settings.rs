@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use bevy_mod_picking::prelude::*;
 use pyri_state::prelude::*;
 
 use crate::menu::Menu;
@@ -16,14 +15,11 @@ fn settings(In(id): In<Entity>, mut commands: Commands, menu_root: Res<MenuRoot>
         .entity(id)
         .insert((
             Name::new("Settings"),
-            NodeBundle {
-                style: Style {
-                    padding: UiRect::all(Vw(4.5)),
-                    ..Style::COLUMN_MID.full_size().abs()
-                },
-                z_index: ZIndex::Global(2),
-                ..default()
+            Node {
+                padding: UiRect::all(Vw(4.5)),
+                ..Node::COLUMN_MID.full_size().abs()
             },
+            GlobalZIndex(2),
             DespawnOnExit::<Menu>::Recursive,
         ))
         .set_parent(menu_root.ui)
@@ -38,12 +34,13 @@ const HEADER: &str = "[b]Settings";
 fn header(In(id): In<Entity>, mut commands: Commands) {
     commands.entity(id).insert((
         Name::new("Header"),
-        TextBundle::from_sections(parse_rich(HEADER)).with_style(Style {
-            margin: UiRect::bottom(Vw(2.5)),
-            ..default()
-        }),
+        RichText::from_sections(parse_rich(HEADER)),
         DynamicFontSize::new(Vw(5.0)).with_step(8.0),
         ThemeColorForText(vec![ThemeColor::BodyText]),
+        Node {
+            margin: UiRect::bottom(Vw(2.5)),
+            ..default()
+        },
     ));
 }
 
@@ -51,12 +48,12 @@ fn buttons(In(id): In<Entity>, mut commands: Commands) {
     commands
         .entity(id)
         .insert(
-            Style {
+            Node {
                 margin: UiRect::top(VMin(6.0)),
                 row_gap: Vw(2.5),
-                ..Style::COLUMN_CENTER
+                ..Node::COLUMN_CENTER
             }
-            .node("Buttons"),
+            .named("Buttons"),
         )
         .with_children(|children| {
             children.spawn_fn(back_button);
@@ -66,13 +63,15 @@ fn buttons(In(id): In<Entity>, mut commands: Commands) {
 fn back_button(In(id): In<Entity>, mut commands: Commands) {
     commands
         .entity(id)
-        .add(widget::MenuButton::new("Back"))
-        .insert((
-            On::<Pointer<Click>>::run(Menu::pop),
-            Style {
-                height: Vw(9.0),
-                width: Vw(38.0),
-                ..Style::ROW_CENTER
+        .queue(widget::MenuButton::new("Back"))
+        .insert(Node {
+            height: Vw(9.0),
+            width: Vw(38.0),
+            ..Node::ROW_CENTER
+        })
+        .observe(
+            |_: Trigger<Pointer<Click>>, mut menu: ResMut<NextStateStack<Menu>>| {
+                menu.pop();
             },
-        ));
+        );
 }
