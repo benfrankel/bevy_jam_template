@@ -30,7 +30,7 @@ impl Configure for FadeIn {
 
 fn apply_fade_in(
     time: Res<Time>,
-    mut despawn: ResMut<LateDespawn>,
+    mut late: LateCommands,
     mut fade_query: Query<(Entity, &mut FadeIn, &mut BackgroundColor)>,
 ) {
     let dt = time.delta_secs();
@@ -38,7 +38,7 @@ fn apply_fade_in(
         // TODO: Non-linear alpha?
         color.0.set_alpha((fade.remaining / fade.duration).max(0.0));
         if fade.remaining <= 0.0 {
-            despawn.recursive(entity);
+            late.commands().entity(entity).despawn_recursive();
         }
         fade.remaining -= dt;
     }
@@ -93,7 +93,7 @@ impl Configure for FadeOut {
 
 fn apply_fade_out(
     time: Res<Time>,
-    mut despawn: ResMut<LateDespawn>,
+    mut late: LateCommands,
     mut screen: NextMut<Screen>,
     mut fade_query: Query<(Entity, &mut FadeOut, &mut BackgroundColor)>,
 ) {
@@ -105,7 +105,7 @@ fn apply_fade_out(
             .set_alpha(1.0 - (fade.remaining / fade.duration).max(0.0));
         if fade.remaining <= 0.0 {
             screen.trigger().enter(fade.to_screen);
-            despawn.recursive(entity);
+            late.commands().entity(entity).despawn_recursive();
         }
         fade.remaining -= dt;
     }

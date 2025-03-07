@@ -3,7 +3,7 @@
 #![allow(dead_code)]
 
 pub mod config;
-pub mod late_despawn;
+pub mod late_commands;
 pub mod old;
 pub mod patch;
 pub mod selection;
@@ -15,7 +15,7 @@ pub mod prelude {
     pub use super::config::Config;
     pub use super::config::ConfigHandle;
     pub use super::config::ConfigRef;
-    pub use super::late_despawn::LateDespawn;
+    pub use super::late_commands::LateCommands;
     pub use super::old::Old;
     pub use super::patch::prelude::*;
     pub use super::selection::Selection;
@@ -24,5 +24,5 @@ pub mod prelude {
 use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_plugins((late_despawn::plugin, old::plugin, selection::plugin));
+    app.add_plugins((late_commands::plugin, old::plugin, selection::plugin));
 }
