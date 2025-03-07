@@ -21,10 +21,10 @@ env:
   cargo_build_binary_name: run
 
   # The path to the assets directory.
-  assets_path: foo/assets
+  assets_path: assets
 
   # The path to the web content directory (containing `index.html`).
-  web_content_path: foo/web
+  web_content_path: web
 
   # Whether to upload the packages produced by this workflow to a GitHub release.
   upload_to_github: true
@@ -44,22 +44,22 @@ env:
 
   # The base filename of the binary in the package produced by this workflow.
   # Defaults to `cargo_build_binary_name` if commented out.
-  #app_binary_name: bevy_jam_template
+  app_binary_name: bevy_jam_template
 
   # The name of the `.zip` or `.dmg` file produced by this workflow.
   # Defaults to `app_binary_name` if commented out.
-  #app_package_name: bevy-jam-template
+  app_package_name: bevy-jam-template
 
   # The display name of the app produced by this workflow.
   # Applies to macOS releases.
   # Defaults to `app_package_name` if commented out.
-  #app_display_name: Bevy Jam Template
+  app_display_name: Bevy Jam Template
 
   # The short display name of the app produced by this workflow.
   # Applies to macOS releases.
   # Must be 15 or fewer characters: https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundlename
   # Defaults to `app_display_name` if commented out.
-  #app_short_name: Bevy Template
+  app_short_name: Bevy Template
 
   # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
   # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
@@ -155,6 +155,8 @@ jobs:
 
       - name: Populate cargo cache
         uses: Leafwing-Studios/cargo-cache@v2
+        with:
+          sweep-cache: true
 
       - name: Install dependencies (Linux)
         if: ${{ matrix.platform == 'linux' }}
@@ -246,7 +248,7 @@ jobs:
         run: |
           if [ '${{ matrix.platform }}' == 'macos' ]; then
             ln -s /Applications .
-            hdiutil create -fs HFS+ -volname '${{ env.app_packag_name }}' -srcfolder . '${{ env.package }}'
+            hdiutil create -fs HFS+ -volname '${{ env.app_package_name }}' -srcfolder . '${{ env.package }}'
           else
             zip --recurse-paths '${{ env.package }}' '${{ env.app_package_name }}'
           fi
