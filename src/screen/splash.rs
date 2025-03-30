@@ -41,8 +41,8 @@ fn splash(In(id): In<Entity>, mut commands: Commands, screen_root: Res<ScreenRoo
         .entity(id)
         .insert(Node::COLUMN_MID.full_size().named("Splash"))
         .set_parent(screen_root.ui)
-        .with_children(|children| {
-            children.spawn_fn(splash_image);
+        .with_children(|parent| {
+            parent.spawn_fn(splash_image);
         });
 }
 

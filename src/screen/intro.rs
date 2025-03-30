@@ -22,10 +22,10 @@ fn intro(In(id): In<Entity>, mut commands: Commands, screen_root: Res<ScreenRoot
         .entity(id)
         .insert(Node::COLUMN_CENTER.full_size().named("Intro"))
         .set_parent(screen_root.ui)
-        .with_children(|children| {
-            children.spawn_fn(header);
-            children.spawn_fn(body);
-            children.spawn_fn(buttons);
+        .with_children(|parent| {
+            parent.spawn_fn(header);
+            parent.spawn_fn(body);
+            parent.spawn_fn(buttons);
         });
 }
 
@@ -52,12 +52,12 @@ fn body(In(id): In<Entity>, mut commands: Commands) {
             }
             .named("Body"),
         )
-        .with_children(|children| {
+        .with_children(|parent| {
             for (i, text) in ["Be skillful,", "win the game!", "Press P to pause."]
                 .into_iter()
                 .enumerate()
             {
-                children.spawn((
+                parent.spawn((
                     Name::new(format!("Span{}", i)),
                     RichText::from_sections(parse_rich(text)),
                     DynamicFontSize::new(Vw(3.5)).with_step(8.0),
@@ -78,8 +78,8 @@ fn buttons(In(id): In<Entity>, mut commands: Commands) {
             }
             .named("Buttons"),
         )
-        .with_children(|children| {
-            children.spawn_fn(start_button);
+        .with_children(|parent| {
+            parent.spawn_fn(start_button);
         });
 }
 

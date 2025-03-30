@@ -30,9 +30,9 @@ fn title(In(id): In<Entity>, mut commands: Commands, screen_root: Res<ScreenRoot
         .entity(id)
         .insert(Node::COLUMN_MID.full_size().named("Title"))
         .set_parent(screen_root.ui)
-        .with_children(|children| {
-            children.spawn_fn(header);
-            children.spawn_fn(buttons);
+        .with_children(|parent| {
+            parent.spawn_fn(header);
+            parent.spawn_fn(buttons);
         });
 }
 
@@ -60,9 +60,9 @@ fn buttons(In(id): In<Entity>, mut commands: Commands) {
             }
             .named("Buttons"),
         )
-        .with_children(|children| {
-            children.spawn_fn(play_button);
-            children.spawn_fn(quit_button);
+        .with_children(|parent| {
+            parent.spawn_fn(play_button);
+            parent.spawn_fn(quit_button);
         });
 }
 

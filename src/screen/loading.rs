@@ -25,9 +25,9 @@ fn loading(In(id): In<Entity>, mut commands: Commands, screen_root: Res<ScreenRo
         .entity(id)
         .insert(Node::COLUMN_CENTER.full_size().named("Loading"))
         .set_parent(screen_root.ui)
-        .with_children(|children| {
-            children.spawn_fn(loading_text);
-            children.spawn_fn(loading_bar);
+        .with_children(|parent| {
+            parent.spawn_fn(loading_text);
+            parent.spawn_fn(loading_bar);
         });
 }
 
@@ -59,8 +59,8 @@ fn loading_bar(In(id): In<Entity>, mut commands: Commands) {
             .named("LoadingBar"),
             ThemeColor::BodyText.set::<BorderColor>(),
         ))
-        .with_children(|children| {
-            children.spawn_fn(loading_bar_fill);
+        .with_children(|parent| {
+            parent.spawn_fn(loading_bar_fill);
         });
 }
 

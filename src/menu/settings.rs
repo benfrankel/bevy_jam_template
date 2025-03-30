@@ -23,9 +23,9 @@ fn settings(In(id): In<Entity>, mut commands: Commands, menu_root: Res<MenuRoot>
             DespawnOnExit::<Menu>::Recursive,
         ))
         .set_parent(menu_root.ui)
-        .with_children(|children| {
-            children.spawn_fn(header);
-            children.spawn_fn(buttons);
+        .with_children(|parent| {
+            parent.spawn_fn(header);
+            parent.spawn_fn(buttons);
         });
 }
 
@@ -55,8 +55,8 @@ fn buttons(In(id): In<Entity>, mut commands: Commands) {
             }
             .named("Buttons"),
         )
-        .with_children(|children| {
-            children.spawn_fn(back_button);
+        .with_children(|parent| {
+            parent.spawn_fn(back_button);
         });
 }
 
