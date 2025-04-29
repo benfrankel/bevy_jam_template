@@ -3970,7 +3970,7 @@ dependencies = [
 [[package]]
 name = "pyri_state"
 version = "0.4.0"
-source = "git+https://github.com/benfrankel/pyri_state.git#2153b1d3c0b26e6416da6d4bf8d11d12786c68f1"
+source = "git+https://github.com/benfrankel/pyri_state.git#49675793f66e03cb8447364052e2cc411be9af33"
 dependencies = [
  "bevy_app",
  "bevy_diagnostic",
@@ -3985,7 +3985,7 @@ dependencies = [
 [[package]]
 name = "pyri_state_derive"
 version = "0.4.0"
-source = "git+https://github.com/benfrankel/pyri_state.git#2153b1d3c0b26e6416da6d4bf8d11d12786c68f1"
+source = "git+https://github.com/benfrankel/pyri_state.git#49675793f66e03cb8447364052e2cc411be9af33"
 dependencies = [
  "bevy_macro_utils",
  "proc-macro2",

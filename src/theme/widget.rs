@@ -11,7 +11,7 @@ use crate::util::prelude::*;
 pub fn overlay(z: i32) -> impl Bundle {
     (
         Node::DEFAULT.abs().full_size(),
-        FocusPolicy::Pass,
+        Pickable::IGNORE,
         GlobalZIndex(z),
     )
 }
