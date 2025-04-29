@@ -7,13 +7,13 @@ use pyri_state::prelude::*;
 use crate::screen::Screen;
 use crate::screen::ScreenRoot;
 use crate::screen::fade::fade_out;
-use crate::screen::playing::PlayingAssets;
+use crate::screen::gameplay::GameplayAssets;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_loading_state(
-        LoadingState::new(Screen::Loading.bevy()).load_collection::<PlayingAssets>(),
+        LoadingState::new(Screen::Loading.bevy()).load_collection::<GameplayAssets>(),
     );
     app.add_systems(StateFlush, Screen::Loading.on_enter(spawn_loading_screen));
 
@@ -101,7 +101,7 @@ fn update_loading(
 
     // Continue to next screen when ready.
     if done == total {
-        commands.spawn(fade_out(Screen::Playing));
+        commands.spawn(fade_out(Screen::Gameplay));
     }
 
     // Update loading bar fill.

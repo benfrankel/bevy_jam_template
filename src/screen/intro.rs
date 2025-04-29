@@ -7,12 +7,12 @@ use pyri_state::prelude::*;
 use crate::screen::Screen;
 use crate::screen::ScreenRoot;
 use crate::screen::fade::fade_out;
-use crate::screen::playing::PlayingAssets;
+use crate::screen::gameplay::GameplayAssets;
 use crate::theme::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_loading_state(
-        LoadingState::new(Screen::Intro.bevy()).load_collection::<PlayingAssets>(),
+        LoadingState::new(Screen::Intro.bevy()).load_collection::<GameplayAssets>(),
     );
     app.add_systems(StateFlush, Screen::Intro.on_enter(spawn_intro_screen));
 }
@@ -84,7 +84,7 @@ fn start_game(
 ) {
     let Progress { done, total } = progress.get_global_combined_progress();
     commands.spawn(fade_out(if done >= total {
-        Screen::Playing
+        Screen::Gameplay
     } else {
         Screen::Loading
     }));

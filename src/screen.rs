@@ -1,7 +1,7 @@
 pub mod fade;
+mod gameplay;
 mod intro;
 mod loading;
-mod playing;
 mod splash;
 mod title;
 
@@ -67,7 +67,7 @@ pub enum Screen {
     Title,
     Intro,
     Loading,
-    Playing,
+    Gameplay,
 }
 
 impl Configure for Screen {
@@ -86,7 +86,7 @@ impl Configure for Screen {
             title::plugin,
             intro::plugin,
             loading::plugin,
-            playing::plugin,
+            gameplay::plugin,
         ));
     }
 }

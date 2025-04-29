@@ -10,5 +10,5 @@
     // State:
     log_state_flush: true,
     extend_loading_screen: 0.0,
-    initial_screen: None,
+    initial_screen: Some(Gameplay),
 )

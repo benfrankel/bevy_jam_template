@@ -69,7 +69,7 @@ fn disable_menu(_: Trigger<Pointer<Click>>, mut menu: NextMut<Menu>) {
 }
 
 fn restart_game(_: Trigger<Pointer<Click>>, mut commands: Commands) {
-    commands.spawn(fade_out(Screen::Playing));
+    commands.spawn(fade_out(Screen::Gameplay));
 }
 
 fn quit_to_title(_: Trigger<Pointer<Click>>, mut commands: Commands) {
