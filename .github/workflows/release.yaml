@@ -184,11 +184,11 @@ jobs:
         with:
           targets: ${{ matrix.targets }}
 
-      - name: Populate cargo cache
+      - name: Restore from cache
         if: ${{ env.is_platform_enabled == 'true' && env.use_github_cache == 'true' }}
-        uses: Leafwing-Studios/cargo-cache@v2
+        uses: Swatinem/rust-cache@v2
         with:
-          sweep-cache: true
+          save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Install dependencies (Linux)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'linux' }}

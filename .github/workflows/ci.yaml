@@ -46,10 +46,10 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
-      - name: Populate target directory from cache
-        uses: Leafwing-Studios/cargo-cache@v2
+      - name: Restore from cache
+        uses: Swatinem/rust-cache@v2
         with:
-          sweep-cache: true
+          save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Run Clippy lints
         run: cargo clippy --workspace --all-features --all-targets -- --deny warnings
@@ -69,10 +69,10 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
-      - name: Populate target directory from cache
-        uses: Leafwing-Studios/cargo-cache@v2
+      - name: Restore from cache
+        uses: Swatinem/rust-cache@v2
         with:
-          sweep-cache: true
+          save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Check documentation
         run: cargo doc --workspace --all-features --document-private-items --no-deps
@@ -92,10 +92,10 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev libxkbcommon-dev
 
-      - name: Populate target directory from cache
-        uses: Leafwing-Studios/cargo-cache@v2
+      - name: Restore from cache
+        uses: Swatinem/rust-cache@v2
         with:
-          sweep-cache: true
+          save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Run tests
         run: |
