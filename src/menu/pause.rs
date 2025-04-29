@@ -28,12 +28,10 @@ fn pause() -> impl Bundle {
     )
 }
 
-const HEADER: &str = "[b]Game paused";
-
 fn header() -> impl Bundle {
     (
         Name::new("Header"),
-        RichText::from_sections(parse_rich(HEADER)),
+        RichText::from_sections(parse_rich("[b]Game paused")),
         DynamicFontSize::new(Vw(5.0)).with_step(8.0),
         ThemeColorForText(vec![ThemeColor::BodyText]),
         Node {

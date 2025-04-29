@@ -23,7 +23,7 @@ impl Configure for FadeIn {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
         app.add_systems(PostUpdate, apply_fade_in.in_set(PostColorSet::Blend));
-        app.add_systems(StateFlush, Screen::ANY.on_enter(spawn_screen_fade_in));
+        app.add_systems(StateFlush, Screen::ANY.on_enter(spawn_fade_in));
     }
 }
 
@@ -52,10 +52,11 @@ fn apply_fade_in(
     }
 }
 
-fn spawn_screen_fade_in(mut commands: Commands) {
+fn spawn_fade_in(mut commands: Commands) {
     commands.spawn(fade_in());
 }
 
+/// A screen transition animation for entering the current [`Screen`].
 pub fn fade_in() -> impl Bundle {
     (
         Name::new("FadeIn"),
@@ -109,6 +110,7 @@ fn apply_fade_out(
     }
 }
 
+/// A screen transition animation for exiting the current [`Screen`].
 pub fn fade_out(to_screen: Screen) -> impl Bundle {
     (
         Name::new("FadeOut"),

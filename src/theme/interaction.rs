@@ -31,11 +31,12 @@ impl Configure for IsDisabled {
 }
 
 // TODO: Text labels are usually child entities, so this is annoying to implement for text colors.
+// TODO: Could solve this with a `ParentInteractionTable` component that checks the parent's interaction state.
 /// Different values of a component to set for each [`Interaction`] state.
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
 pub struct InteractionTable<C: Component<Mutability = Mutable>> {
-    pub normal: C,
+    pub none: C,
     pub hovered: C,
     pub pressed: C,
     pub disabled: C,
@@ -70,7 +71,7 @@ fn apply_interaction_table<C: Component<Mutability = Mutable> + Clone>(
             &table.disabled
         } else {
             match interaction {
-                Interaction::None => &table.normal,
+                Interaction::None => &table.none,
                 Interaction::Hovered => &table.hovered,
                 Interaction::Pressed => &table.pressed,
             }
@@ -116,6 +117,7 @@ fn play_interaction_sfx(
                     .with_volume(2.0 * audio_config.ui_volume)
                     .with_playback_rate(thread_rng().gen_range(0.7..1.6));
             },
+            // TODO: This plays a sound on mouse down, not on click.
             (_, Interaction::Pressed) => {
                 audio
                     .play(assets.sfx_click.clone())

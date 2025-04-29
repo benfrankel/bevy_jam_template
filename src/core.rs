@@ -41,7 +41,7 @@ pub(super) fn plugin(app: &mut App) {
     ));
 }
 
-/// Game logic system ordering in the [`Update`] schedule.
+/// Game logic steps for the [`Update`] schedule.
 #[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum UpdateSet {
     /// Synchronize start-of-frame values.

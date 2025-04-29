@@ -42,7 +42,7 @@ where
         BorderRadius::MAX,
         ThemeColor::default().set::<BackgroundColor>(),
         InteractionTable {
-            normal: ThemeColor::Primary.set::<BackgroundColor>(),
+            none: ThemeColor::Primary.set::<BackgroundColor>(),
             hovered: ThemeColor::PrimaryHovered.set::<BackgroundColor>(),
             pressed: ThemeColor::PrimaryPressed.set::<BackgroundColor>(),
             disabled: ThemeColor::PrimaryDisabled.set::<BackgroundColor>(),
