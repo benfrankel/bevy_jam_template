@@ -1,7 +1,9 @@
+use bevy::ecs::component::Mutable;
 use bevy::prelude::*;
 use bevy::reflect::GetTypeRegistration;
 use bevy::reflect::Typed;
-use bevy::transform::systems::propagate_transforms;
+use bevy::transform::systems::mark_dirty_trees;
+use bevy::transform::systems::propagate_parent_transforms;
 use bevy::transform::systems::sync_simple_transforms;
 
 use crate::animation::SaveBackupSet;
@@ -13,7 +15,11 @@ pub(super) fn plugin(app: &mut App) {
     // Restore `GlobalTransform` after restoring `Transform`.
     app.add_systems(
         First,
-        (sync_simple_transforms, propagate_transforms)
+        (
+            mark_dirty_trees,
+            sync_simple_transforms,
+            propagate_parent_transforms,
+        )
             .chain()
             .after(restore_backup::<Transform>),
     );
@@ -21,9 +27,11 @@ pub(super) fn plugin(app: &mut App) {
 
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
-pub struct Backup<C: Component + Clone>(Option<C>);
+pub struct Backup<C: Component<Mutability = Mutable> + Clone>(Option<C>);
 
-impl<C: Component + Clone + Typed + FromReflect + GetTypeRegistration> Configure for Backup<C> {
+impl<C: Component<Mutability = Mutable> + Clone + Typed + FromReflect + GetTypeRegistration>
+    Configure for Backup<C>
+{
     fn configure(app: &mut App) {
         app.register_type::<Self>();
         // This has to run before `UiSystem::Focus` in `PreUpdate` anyways, so may as well
@@ -33,13 +41,17 @@ impl<C: Component + Clone + Typed + FromReflect + GetTypeRegistration> Configure
     }
 }
 
-fn restore_backup<C: Component + Clone>(mut backup_query: Query<(&mut Backup<C>, &mut C)>) {
+fn restore_backup<C: Component<Mutability = Mutable> + Clone>(
+    mut backup_query: Query<(&mut Backup<C>, &mut C)>,
+) {
     for (mut backup, mut target) in &mut backup_query {
         *target = c!(backup.0.take());
     }
 }
 
-fn save_backup<C: Component + Clone>(mut backup_query: Query<(&mut Backup<C>, &C)>) {
+fn save_backup<C: Component<Mutability = Mutable> + Clone>(
+    mut backup_query: Query<(&mut Backup<C>, &C)>,
+) {
     for (mut backup, target) in &mut backup_query {
         backup.0 = Some(target.clone());
     }

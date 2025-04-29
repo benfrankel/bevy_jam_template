@@ -1,9 +1,9 @@
-# Stable
+# Stable options:
 max_width = 100
 use_field_init_shorthand = true
 use_try_shorthand = true
 
-# Unstable
+# Unstable options:
 group_imports = "StdExternalCrate"
 imports_granularity = "Item"
 imports_layout = "HorizontalVertical"

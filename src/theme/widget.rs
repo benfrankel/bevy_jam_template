@@ -1,79 +1,87 @@
-use bevy::ecs::system::EntityCommand;
+use bevy::ecs::system::IntoObserverSystem;
 use bevy::prelude::*;
 use bevy::ui::FocusPolicy;
+use bevy_spawn_observer::SpawnObserver;
 
 use crate::animation::backup::Backup;
 use crate::animation::offset::Offset;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
 
-pub fn overlay(In(id): In<Entity>, mut commands: Commands) {
-    commands.entity(id).insert((
+pub fn overlay(z: i32) -> impl Bundle {
+    (
         Node::DEFAULT.abs().full_size(),
-        GlobalZIndex(1000),
-        PickingBehavior::IGNORE,
-    ));
+        FocusPolicy::Pass,
+        GlobalZIndex(z),
+    )
 }
 
-pub fn blocking_overlay(In(id): In<Entity>, mut commands: Commands) {
-    commands.entity(id).insert((
+pub fn blocking_overlay(z: i32) -> impl Bundle {
+    (
         Node::DEFAULT.abs().full_size(),
         FocusPolicy::Block,
-        GlobalZIndex(1000),
-    ));
+        GlobalZIndex(z),
+    )
 }
 
-pub struct MenuButton {
-    text: String,
-}
-
-impl MenuButton {
-    pub fn new(text: impl Into<String>) -> Self {
-        Self { text: text.into() }
-    }
-}
-
-impl EntityCommand for MenuButton {
-    fn apply(self, id: Entity, world: &mut World) {
-        r!(world.run_system_cached_with(menu_button, (id, self)));
-    }
-}
-
-fn menu_button(In((id, this)): In<(Entity, MenuButton)>, mut commands: Commands) {
-    commands
-        .entity(id)
-        .insert((
-            Name::new(format!("MenuButton(\"{}\")", &this.text)),
-            Button,
-            Node {
-                height: Vw(11.0),
-                width: Vw(38.0),
-                ..Node::ROW_CENTER
-            },
-            BorderRadius::MAX,
-            ThemeColor::default().set::<BackgroundColor>(),
-            InteractionTable {
-                normal: ThemeColor::Primary.set::<BackgroundColor>(),
-                hovered: ThemeColor::PrimaryHovered.set::<BackgroundColor>(),
-                pressed: ThemeColor::PrimaryPressed.set::<BackgroundColor>(),
-                disabled: ThemeColor::PrimaryDisabled.set::<BackgroundColor>(),
-            },
-            Offset::default(),
-            Backup::<Transform>::default(),
-            InteractionTable {
-                hovered: Offset(Vec2::new(0.0, -4.0)),
-                pressed: Offset(Vec2::new(0.0, 2.0)),
-                ..default()
-            },
-            Old(Interaction::None),
-            InteractionSfx,
-        ))
-        .with_children(|parent| {
-            parent.spawn((
+fn button<E, B, M, I>(width: Val, height: Val, text: impl Into<String>, action: I) -> impl Bundle
+where
+    E: Event,
+    B: Bundle,
+    I: IntoObserverSystem<E, B, M>,
+{
+    let text = text.into();
+    (
+        Name::new(format!("Button(\"{}\")", &text)),
+        Button,
+        Node {
+            width,
+            height,
+            ..Node::ROW_CENTER
+        },
+        BorderRadius::MAX,
+        ThemeColor::default().set::<BackgroundColor>(),
+        InteractionTable {
+            normal: ThemeColor::Primary.set::<BackgroundColor>(),
+            hovered: ThemeColor::PrimaryHovered.set::<BackgroundColor>(),
+            pressed: ThemeColor::PrimaryPressed.set::<BackgroundColor>(),
+            disabled: ThemeColor::PrimaryDisabled.set::<BackgroundColor>(),
+        },
+        Offset::default(),
+        Backup::<Transform>::default(),
+        InteractionTable {
+            hovered: Offset(Vec2::new(0.0, -4.0)),
+            pressed: Offset(Vec2::new(0.0, 2.0)),
+            ..default()
+        },
+        Old(Interaction::None),
+        InteractionSfx,
+        Children::spawn((
+            Spawn((
                 Name::new("ButtonText"),
-                RichText::from_sections(parse_rich(&this.text)),
+                RichText::from_sections(parse_rich(&text)),
                 DynamicFontSize::new(Vw(4.0)).with_step(8.0),
                 ThemeColorForText(vec![ThemeColor::PrimaryText]),
-            ));
-        });
+            )),
+            SpawnObserver::new(action),
+        )),
+    )
+}
+
+pub fn big_button<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
+where
+    E: Event,
+    B: Bundle,
+    I: IntoObserverSystem<E, B, M>,
+{
+    button(Vw(38.0), Vw(11.0), text, action)
+}
+
+pub fn small_button<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
+where
+    E: Event,
+    B: Bundle,
+    I: IntoObserverSystem<E, B, M>,
+{
+    button(Vw(38.0), Vw(9.0), text, action)
 }

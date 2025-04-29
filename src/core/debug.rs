@@ -8,7 +8,7 @@ mod picking;
 mod state;
 mod ui;
 
-use bevy::core::FrameCount;
+use bevy::diagnostic::FrameCount;
 use bevy::prelude::*;
 use serde::Deserialize;
 use serde::Serialize;

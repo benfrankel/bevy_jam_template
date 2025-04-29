@@ -1,6 +1,7 @@
 use bevy::asset::load_internal_binary_asset;
+use bevy::asset::weak_handle;
+use bevy::platform::collections::HashMap;
 use bevy::prelude::*;
-use bevy::utils::HashMap;
 use lazy_regex::regex;
 use pyri_tooltip::prelude::*;
 
@@ -31,12 +32,9 @@ pub(super) fn plugin(app: &mut App) {
     app.configure::<DynamicFontSize>();
 }
 
-pub const FONT_HANDLE: Handle<Font> =
-    Handle::weak_from_u128(303551798864246209986336759745415587961);
-pub const BOLD_FONT_HANDLE: Handle<Font> =
-    Handle::weak_from_u128(317423448069604009516378143395193332978);
-pub const THICK_FONT_HANDLE: Handle<Font> =
-    Handle::weak_from_u128(93153499609634570285243616548722721367);
+pub const FONT_HANDLE: Handle<Font> = weak_handle!("7bb72ab4-990c-4656-b7f1-08f1f2a2e72a");
+pub const BOLD_FONT_HANDLE: Handle<Font> = weak_handle!("b30e0c4e-52cb-4775-aaeb-ced1b93a4cd0");
+pub const THICK_FONT_HANDLE: Handle<Font> = weak_handle!("b099a4e0-1119-4ff7-b4c0-4a80ed5c5765");
 
 #[derive(Component, Reflect)]
 pub struct DynamicFontSize {

@@ -1,6 +1,7 @@
 use std::marker::PhantomData;
 use std::ops::Index;
 
+use bevy::ecs::component::Mutable;
 use bevy::prelude::*;
 use pyri_tooltip::prelude::*;
 use serde::Deserialize;
@@ -74,18 +75,15 @@ pub enum ThemeColor {
 }
 
 impl ThemeColor {
-    pub const fn set<C: Component + ColorMut>(self) -> ThemeColorFor<C> {
+    pub const fn set<C: ColorMut>(self) -> ThemeColorFor<C> {
         ThemeColorFor(self, PhantomData)
     }
 }
 
 #[derive(Component, Reflect, Clone, Default)]
-pub struct ThemeColorFor<C: Component + ColorMut>(
-    pub ThemeColor,
-    #[reflect(ignore)] PhantomData<C>,
-);
+pub struct ThemeColorFor<C: ColorMut>(pub ThemeColor, #[reflect(ignore)] PhantomData<C>);
 
-fn apply_theme_color_for<C: Component + ColorMut>(
+fn apply_theme_color_for<C: ColorMut>(
     config: ConfigRef<ThemeConfig>,
     mut color_query: Query<(&ThemeColorFor<C>, &mut C)>,
 ) {
@@ -95,7 +93,7 @@ fn apply_theme_color_for<C: Component + ColorMut>(
     }
 }
 
-impl<C: Component + ColorMut + TypePath> Configure for ThemeColorFor<C> {
+impl<C: ColorMut + TypePath> Configure for ThemeColorFor<C> {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
         app.add_systems(
@@ -130,7 +128,7 @@ fn apply_theme_color_for_text(
     }
 }
 
-pub trait ColorMut {
+pub trait ColorMut: Component<Mutability = Mutable> {
     fn color_mut(&mut self) -> &mut Color;
 }
 

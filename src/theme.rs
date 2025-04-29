@@ -22,7 +22,7 @@ pub mod prelude {
     pub use super::interaction::InteractionSfx;
     pub use super::interaction::InteractionTable;
     pub use super::interaction::IsDisabled;
-    pub use super::layout::NodeExtLayout;
+    pub use super::layout::NodeExtLayout as _;
     pub use super::text::BOLD_FONT_HANDLE;
     pub use super::text::DynamicFontSize;
     pub use super::text::FONT_HANDLE;

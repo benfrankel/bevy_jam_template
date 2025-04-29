@@ -2,6 +2,7 @@ pub mod pause;
 pub mod settings;
 
 use bevy::prelude::*;
+use bevy::ui::FocusPolicy;
 use leafwing_input_manager::common_conditions::action_just_pressed;
 use leafwing_input_manager::prelude::*;
 use pyri_state::prelude::*;
@@ -33,9 +34,10 @@ impl FromWorld for MenuRoot {
         Self {
             ui: world
                 .spawn((
-                    Node::DEFAULT.full_size().named("Menu"),
-                    PickingBehavior::IGNORE,
-                    DespawnOnDisable::<Menu>::Descendants,
+                    Name::new("Menu"),
+                    Node::DEFAULT.full_size(),
+                    FocusPolicy::Pass,
+                    DespawnOnDisableState::<Menu>::Descendants,
                 ))
                 .id(),
         }
@@ -58,23 +60,23 @@ impl Configure for Menu {
             StateFlush,
             (
                 Menu::ANY.on_disable(Pause::disable),
-                Menu::ANY.on_enable((Pause::enable_default, menu_overlay.spawn())),
+                Menu::ANY.on_enable((Pause::enable_default, spawn_menu_overlay)),
             ),
         );
         app.add_plugins((pause::plugin, settings::plugin));
     }
 }
 
-fn menu_overlay(In(id): In<Entity>, mut commands: Commands, menu_root: Res<MenuRoot>) {
-    commands
-        .entity(id)
-        .queue_fn(widget::blocking_overlay)
-        .insert((
-            Name::new("MenuOverlay"),
-            GlobalZIndex(1),
-            ThemeColor::Overlay.set::<BackgroundColor>(),
-        ))
-        .set_parent(menu_root.ui);
+fn spawn_menu_overlay(mut commands: Commands, menu_root: Res<MenuRoot>) {
+    commands.entity(menu_root.ui).with_child(menu_overlay());
+}
+
+fn menu_overlay() -> impl Bundle {
+    (
+        Name::new("MenuOverlay"),
+        widget::blocking_overlay(1),
+        ThemeColor::Overlay.set::<BackgroundColor>(),
+    )
 }
 
 #[derive(Actionlike, Copy, Clone, Eq, PartialEq, Hash, Reflect, Debug)]

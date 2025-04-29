@@ -29,10 +29,10 @@ impl FromWorld for CameraRoot {
                 .spawn((
                     Name::new("PrimaryCamera"),
                     Camera2d,
-                    OrthographicProjection {
+                    Projection::Orthographic(OrthographicProjection {
                         near: -1000.0,
                         ..OrthographicProjection::default_2d()
-                    },
+                    }),
                     Msaa::Off,
                     SmoothFollow {
                         target: Entity::PLACEHOLDER,
@@ -101,12 +101,16 @@ impl Default for AbsoluteScale {
 
 fn apply_absolute_scale(
     camera_root: Res<CameraRoot>,
-    camera_query: Query<(&OrthographicProjection, &Camera)>,
+    camera_query: Query<(&Projection, &Camera)>,
     mut scale_query: Query<(&mut Transform, &AbsoluteScale)>,
 ) {
-    let (camera_proj, camera) = r!(camera_query.get(camera_root.primary));
+    let (projection, camera) = r!(camera_query.get(camera_root.primary));
+    let projection = r!(match projection {
+        Projection::Orthographic(x) => Some(x),
+        _ => None,
+    });
     let viewport_size = r!(camera.logical_viewport_size());
-    let units_per_pixel = camera_proj.area.width() / viewport_size.x;
+    let units_per_pixel = projection.area.width() / viewport_size.x;
     let camera_scale_inverse = Vec2::splat(units_per_pixel).extend(1.0);
 
     for (mut transform, scale) in &mut scale_query {

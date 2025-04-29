@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use bevy::prelude::*;
 use bevy::ui::Val::*;
 
@@ -23,8 +21,6 @@ pub trait NodeExtLayout {
     fn full_height(self) -> Self;
 
     fn full_size(self) -> Self;
-
-    fn named(self, name: impl Into<Cow<'static, str>>) -> (Name, Node);
 }
 
 impl NodeExtLayout for Node {
@@ -103,9 +99,5 @@ impl NodeExtLayout for Node {
 
     fn full_size(self) -> Self {
         self.full_width().full_height()
-    }
-
-    fn named(self, name: impl Into<Cow<'static, str>>) -> (Name, Node) {
-        (Name::new(name), self)
     }
 }

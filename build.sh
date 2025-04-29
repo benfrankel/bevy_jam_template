@@ -23,8 +23,8 @@ function web() {
     rm -rf "${OUT_DIR:?}/"* "${OUT_ZIP}"
 
     # Build
-    cargo build --profile=wasm-release --target="${TARGET}" --no-default-features --features=web
-    wasm-bindgen --no-typescript --out-name "${EXE}" --out-dir "${OUT_DIR}" --target web "target/${TARGET}/wasm-release/${EXE}.wasm"
+    cargo build --profile=web-release --target="${TARGET}" --no-default-features --features=web
+    wasm-bindgen --no-typescript --out-name "${EXE}" --out-dir "${OUT_DIR}" --target web "target/${TARGET}/web-release/${EXE}.wasm"
     wasm-opt -O -ol 100 -s 100 -o "${OUT_DIR}/${EXE}_bg.wasm" "${OUT_DIR}/${EXE}_bg.wasm"
 
     # Prepare zip

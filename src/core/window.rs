@@ -44,7 +44,8 @@ impl FromWorld for WindowRoot {
         Self {
             primary: world
                 .query_filtered::<Entity, With<PrimaryWindow>>()
-                .single(world),
+                .single(world)
+                .unwrap(),
         }
     }
 }

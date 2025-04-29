@@ -1,6 +1,6 @@
 use std::any::type_name;
 
-use bevy::core::FrameCount;
+use bevy::diagnostic::FrameCount;
 use bevy::ecs::event::EventCursor;
 use bevy::ecs::system::SystemParam;
 use bevy::prelude::*;

@@ -17,7 +17,7 @@ macro_rules! impl_configure {
     }
 }
 
-bevy::utils::all_tuples!(impl_configure, 0, 15, T);
+variadics_please::all_tuples!(impl_configure, 0, 15, T);
 
 pub trait AppExtConfigure {
     fn configure<T: Configure>(&mut self) -> &mut Self;

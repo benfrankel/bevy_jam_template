@@ -7,8 +7,10 @@ mod title;
 
 use std::time::Duration;
 
-use bevy::ecs::schedule::SystemConfigs;
+use bevy::ecs::schedule::ScheduleConfigs;
+use bevy::ecs::system::ScheduleSystem;
 use bevy::prelude::*;
+use bevy::ui::FocusPolicy;
 use iyes_progress::prelude::*;
 use pyri_state::prelude::*;
 use serde::Deserialize;
@@ -45,9 +47,10 @@ impl FromWorld for ScreenRoot {
         Self {
             ui: world
                 .spawn((
-                    Node::DEFAULT.full_size().named("Screen"),
-                    PickingBehavior::IGNORE,
-                    DespawnOnExit::<Screen>::Descendants,
+                    Name::new("Screen"),
+                    Node::DEFAULT.full_size(),
+                    FocusPolicy::Pass,
+                    DespawnOnExitState::<Screen>::Descendants,
                 ))
                 .id(),
         }
@@ -115,7 +118,7 @@ fn tick_screen_time(time: Res<Time>, mut screen_time: ResMut<ScreenTime>) {
     screen_time.0 += time.delta();
 }
 
-fn wait_in_screen(duration: f32) -> SystemConfigs {
+fn wait_in_screen(duration: f32) -> ScheduleConfigs<ScheduleSystem> {
     (move |screen_time: Res<ScreenTime>| -> Progress {
         (screen_time.0.as_secs_f32() >= duration).into()
     })

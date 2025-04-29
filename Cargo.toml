@@ -4,85 +4,21 @@ version = "0.1.0"
 edition = "2024"
 default-run = "run"
 
-[dependencies]
-avian2d = { version = "0.2", default-features = false, features = [
-    "2d",
-    "f32",
-    "parry-f32",
-] }
-bevy = { version = "0.15", default-features = false, features = [
-    # Core functionality
-    "bevy_asset",
-    "bevy_color",
-    "bevy_picking",
-    "bevy_render",
-    "bevy_winit",
-    "bevy_core_pipeline",
-    "bevy_sprite",
-    "bevy_text",
-    "bevy_ui",
-    "multi_threaded",
-    "x11",
-    "wayland",
-    "webgl2",
-
-    # Extra functionality
-    #bevy_gilrs",
-    #serialize",
-    "tonemapping_luts",
-
-    # File formats
-    "png",
-] }
-bevy_asset_loader = { version = "0.22", features = ["2d", "progress_tracking"] }
-bevy_common_assets = { version = "0.12", features = ["ron"] }
-bevy_editor_pls = { version = "0.11", optional = true }
-bevy_kira_audio = "0.22"
-bevy_mod_debugdump = { version = "0.12", optional = true }
-bevy_state = "0.15"
-iyes_progress = "0.13"
-lazy-regex = { version = "3", features = ["lite"] }
-leafwing-input-manager = "0.16"
-log = { version = "0.4", features = [
-    "max_level_debug",
-    "release_max_level_warn",
-] }
-#noise = "0.8"
-pyri_state = { version = "0.3", default-features = false, features = [
-    "bevy_app",
-    "bevy_reflect",
-    "bevy_state",
-    "react",
-    "stack",
-] }
-pyri_tooltip = "0.2"
-rand = { version = "0.8", features = ["small_rng"] }
-ron = "0.8"
-serde = "1"
-strum = { version = "0.27", features = ["derive"] }
-tap = "1"
-tiny_bail = "0.4"
-tracing = { version = "0.1", features = [
-    "max_level_debug",
-    "release_max_level_warn",
-] }
-
-[patch.crates-io]
-# TODO: Workaround for https://github.com/NiklasEi/bevy_asset_loader/issues/219.
-bevy_asset_loader = { git = "https://github.com/benfrankel/bevy_asset_loader.git", branch = "direct-depend" }
-bevy_editor_pls = { git = "https://github.com/jakobhellermann/bevy_editor_pls.git" }
-pyri_tooltip = { git = "https://github.com/benfrankel/pyri_tooltip.git" }
-transform-gizmo-bevy = { git = "https://github.com/ActuallyHappening/transform-gizmo" }
 
 [features]
 default = ["native_dev"]
 dev = [
-    "dep:bevy_editor_pls",
+    #"dep:bevy_editor_pls",
     "avian2d/debug-plugin",
     "bevy/bevy_dev_tools",
+    #"bevy/bevy_remote",
+    "bevy/bevy_ui_debug",
+    #"bevy/configurable_error_handler",
     "bevy/default_font",
     "bevy/dynamic_linking",
+    "bevy/glam_assert",
     "bevy/sysinfo_plugin",
+    "bevy/track_location",
     "pyri_state/debug",
 ]
 native = ["avian2d/parallel"]
@@ -90,16 +26,95 @@ native_dev = ["native", "dev", "bevy/file_watcher", "bevy/embedded_watcher"]
 web = []
 web_dev = ["web", "dev"]
 trace = ["bevy/trace", "bevy/trace_tracy"]
-debug_dump = ["dep:bevy_mod_debugdump"]
+bevy_mod_debugdump = ["dep:bevy_mod_debugdump"]
 
-# Idiomatic Bevy code often triggers these lints, and the CI workflow treats them as errors.
-# In some cases they may still signal poor code quality however, so consider commenting out these lines.
+
+[dependencies]
+avian2d = { version = "0.2", default-features = false, features = [
+    "2d",
+    "f32",
+    "parry-f32",
+] }
+bevy = { version = "0.16", default-features = false, features = [
+    # Core features
+    "bevy_winit",
+    "bevy_ui",
+    "bevy_ui_picking_backend",
+
+    # Extra features
+    "async_executor",
+    #"custom_cursor",
+    #"default_font",
+    "multi_threaded",
+    "tonemapping_luts",
+
+    # Platform features
+    "wayland",
+    "webgl2",
+    "x11",
+
+    # File formats
+    "png",
+] }
+bevy_asset_loader = { version = "0.23", features = ["2d", "progress_tracking"] }
+bevy_common_assets = { version = "0.13", features = ["ron"] }
+#bevy_editor_pls = { version = "0.12", optional = true }
+bevy_kira_audio = "0.23"
+bevy_mod_debugdump = { version = "0.12", optional = true }
+bevy_spawn_observer = "0.1"
+bevy_state = "0.16"
+iyes_progress = "0.14"
+lazy-regex = { version = "3", features = ["lite"] }
+leafwing-input-manager = "0.16"
+# Compile low-severity logs out of native builds for performance.
+log = { version = "0.4", features = [
+    "max_level_debug",
+    "release_max_level_warn",
+] }
+pyri_state = { version = "0.4", default-features = false, features = [
+    "bevy_app",
+    "bevy_reflect",
+    "bevy_state",
+    "react",
+    "stack",
+] }
+pyri_tooltip = "0.3"
+rand = { version = "0.8", features = ["small_rng"] }
+ron = "0.10"
+serde = "1"
+strum = { version = "0.27", features = ["derive"] }
+tap = "1"
+tiny_bail = "0.4"
+# Compile low-severity logs out of web builds for performance.
+tracing = { version = "0.1", features = [
+    "max_level_debug",
+    "release_max_level_warn",
+] }
+variadics_please = "1"
+
+[patch.crates-io]
+avian2d = { git = "https://github.com/Jondolf/avian.git" }
+# TODO: Workaround for https://github.com/NiklasEi/bevy_asset_loader/issues/219.
+bevy_asset_loader = { git = "https://github.com/benfrankel/bevy_asset_loader.git", branch = "direct-depend" }
+bevy_mod_debugdump = { git = "https://github.com/jakobhellermann/bevy_mod_debugdump.git" }
+iyes_progress = { git = "https://github.com/benfrankel/iyes_progress.git", branch = "bevy-0-16" }
+leafwing-input-manager = { git = "https://github.com/Leafwing-Studios/leafwing-input-manager.git" }
+pyri_state = { git = "https://github.com/benfrankel/pyri_state.git" }
+pyri_tooltip = { git = "https://github.com/benfrankel/pyri_tooltip.git" }
+
+
 [lints.clippy]
 # Bevy supplies arguments to systems via dependency injection, so it's natural for systems to
-# request more than 7 arguments -- which triggers this lint.
+# request more than 7 arguments, which would undesirably trigger this lint.
 too_many_arguments = "allow"
-# Queries that access many components may trigger this lint.
+# Queries may access many components, which would undesirably trigger this lint.
 type_complexity = "allow"
+# Make sure macros use their standard braces, such as `[]` for `bevy_ecs::children!`.
+nonstandard_macro_braces = "warn"
+
+
+# Compile with Performance Optimizations:
+# https://bevyengine.org/learn/quick-start/getting-started/setup/#compile-with-performance-optimizations
 
 # Enable a small amount of optimization in the dev profile.
 [profile.dev]
@@ -109,7 +124,7 @@ opt-level = 1
 [profile.dev.package."*"]
 opt-level = 3
 
-# TODO: Workaround for https://github.com/bevyengine/bevy/issues/14291.
+# Remove expensive debug assertions due to https://github.com/bevyengine/bevy/issues/14291
 [profile.dev.package.wgpu-types]
 debug-assertions = false
 
@@ -122,8 +137,8 @@ codegen-units = 1
 # Slows compile times, marginal improvements.
 lto = "thin"
 
-# Optimize for size in the wasm-release profile to reduce load times and bandwidth usage on web.
-[profile.wasm-release]
+# Optimize for size in the web-release profile to reduce load times and bandwidth usage on web.
+[profile.web-release]
 # Default to release profile values.
 inherits = "release"
 # Optimize with size in mind (also try "z", sometimes it is better).
@@ -132,6 +147,7 @@ opt-level = "s"
 # Strip all debugging information from the binary to slightly reduce file size.
 strip = "debuginfo"
 
+
 [[bin]]
 name = "debug"
-required-features = ["debug_dump"]
+required-features = ["bevy_mod_debugdump"]

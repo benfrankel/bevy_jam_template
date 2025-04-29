@@ -1,4 +1,4 @@
-use bevy::core::FrameCount;
+use bevy::diagnostic::FrameCount;
 use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
 use iyes_progress::prelude::*;
@@ -6,7 +6,7 @@ use pyri_state::prelude::*;
 
 use crate::screen::Screen;
 use crate::screen::ScreenRoot;
-use crate::screen::fade::FadeOut;
+use crate::screen::fade::fade_out;
 use crate::screen::playing::PlayingAssets;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
@@ -15,24 +15,25 @@ pub(super) fn plugin(app: &mut App) {
     app.add_loading_state(
         LoadingState::new(Screen::Loading.bevy()).load_collection::<PlayingAssets>(),
     );
-    app.add_systems(StateFlush, Screen::Loading.on_enter(loading.spawn()));
+    app.add_systems(StateFlush, Screen::Loading.on_enter(spawn_loading_screen));
 
     app.configure::<IsLoadingBarFill>();
 }
 
-fn loading(In(id): In<Entity>, mut commands: Commands, screen_root: Res<ScreenRoot>) {
-    commands
-        .entity(id)
-        .insert(Node::COLUMN_CENTER.full_size().named("Loading"))
-        .set_parent(screen_root.ui)
-        .with_children(|parent| {
-            parent.spawn_fn(loading_text);
-            parent.spawn_fn(loading_bar);
-        });
+fn spawn_loading_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
+    commands.entity(screen_root.ui).with_child(loading());
 }
 
-fn loading_text(In(id): In<Entity>, mut commands: Commands) {
-    commands.entity(id).insert((
+fn loading() -> impl Bundle {
+    (
+        Name::new("Loading"),
+        Node::COLUMN_CENTER.full_size(),
+        children![loading_text(), loading_bar()],
+    )
+}
+
+fn loading_text() -> impl Bundle {
+    (
         Name::new("LoadingText"),
         RichText::from_sections(parse_rich("[t]Loading...")),
         DynamicFontSize::new(Vw(5.0)).with_step(8.0),
@@ -41,35 +42,32 @@ fn loading_text(In(id): In<Entity>, mut commands: Commands) {
             margin: UiRect::all(Percent(1.0)),
             ..default()
         },
-    ));
+    )
 }
 
-fn loading_bar(In(id): In<Entity>, mut commands: Commands) {
-    commands
-        .entity(id)
-        .insert((
-            Node {
-                width: Percent(60.0),
-                height: Percent(8.0),
-                margin: UiRect::all(VMin(2.0)),
-                padding: UiRect::all(VMin(1.0)),
-                border: UiRect::all(VMin(1.0)),
-                ..default()
-            }
-            .named("LoadingBar"),
-            ThemeColor::BodyText.set::<BorderColor>(),
-        ))
-        .with_children(|parent| {
-            parent.spawn_fn(loading_bar_fill);
-        });
+fn loading_bar() -> impl Bundle {
+    (
+        Name::new("LoadingBar"),
+        Node {
+            width: Percent(60.0),
+            height: Percent(8.0),
+            margin: UiRect::all(VMin(2.0)),
+            padding: UiRect::all(VMin(1.0)),
+            border: UiRect::all(VMin(1.0)),
+            ..default()
+        },
+        ThemeColor::BodyText.set::<BorderColor>(),
+        children![loading_bar_fill()],
+    )
 }
 
-fn loading_bar_fill(In(id): In<Entity>, mut commands: Commands) {
-    commands.entity(id).insert((
-        Node::DEFAULT.full_height().named("LoadingBarFill"),
+fn loading_bar_fill() -> impl Bundle {
+    (
+        Name::new("LoadingBarFill"),
+        Node::DEFAULT.full_height(),
         ThemeColor::Primary.set::<BackgroundColor>(),
         IsLoadingBarFill,
-    ));
+    )
 }
 
 #[derive(Component, Reflect)]
@@ -103,7 +101,7 @@ fn update_loading(
 
     // Continue to next screen when ready.
     if done == total {
-        commands.spawn_with(FadeOut::to(Screen::Playing));
+        commands.spawn(fade_out(Screen::Playing));
     }
 
     // Update loading bar fill.

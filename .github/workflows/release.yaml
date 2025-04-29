@@ -109,7 +109,7 @@ jobs:
         include:
           - platform: web
             targets: wasm32-unknown-unknown
-            profile: wasm-release
+            profile: web-release
             features: web
             binary_ext: .wasm
             package_ext: .zip

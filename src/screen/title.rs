@@ -4,12 +4,12 @@ use pyri_state::prelude::*;
 
 use crate::screen::Screen;
 use crate::screen::ScreenRoot;
-use crate::screen::fade::FadeOut;
+use crate::screen::fade::fade_out;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(StateFlush, Screen::Title.on_enter(title.spawn()));
+    app.add_systems(StateFlush, Screen::Title.on_enter(spawn_title_screen));
 
     app.configure::<TitleScreenAssets>();
 }
@@ -25,19 +25,20 @@ impl Configure for TitleScreenAssets {
     }
 }
 
-fn title(In(id): In<Entity>, mut commands: Commands, screen_root: Res<ScreenRoot>) {
-    commands
-        .entity(id)
-        .insert(Node::COLUMN_MID.full_size().named("Title"))
-        .set_parent(screen_root.ui)
-        .with_children(|parent| {
-            parent.spawn_fn(header);
-            parent.spawn_fn(buttons);
-        });
+fn spawn_title_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
+    commands.entity(screen_root.ui).with_child(title());
 }
 
-fn header(In(id): In<Entity>, mut commands: Commands) {
-    commands.entity(id).insert((
+fn title() -> impl Bundle {
+    (
+        Name::new("Title"),
+        Node::COLUMN_MID.full_size(),
+        children![header(), buttons()],
+    )
+}
+
+fn header() -> impl Bundle {
+    (
         Name::new("Header"),
         RichText::from_sections(parse_rich("[b]bevy_jam_template")),
         DynamicFontSize::new(Vw(5.0)).with_step(8.0),
@@ -46,45 +47,32 @@ fn header(In(id): In<Entity>, mut commands: Commands) {
             margin: UiRect::vertical(Vw(5.0)),
             ..default()
         },
-    ));
+    )
 }
 
-fn buttons(In(id): In<Entity>, mut commands: Commands) {
-    commands
-        .entity(id)
-        .insert(
-            Node {
-                margin: UiRect::vertical(VMin(9.0)),
-                row_gap: Vw(2.5),
-                ..Node::COLUMN_MID.full_width()
-            }
-            .named("Buttons"),
-        )
-        .with_children(|parent| {
-            parent.spawn_fn(play_button);
-            parent.spawn_fn(quit_button);
-        });
+fn buttons() -> impl Bundle {
+    (
+        Name::new("Buttons"),
+        Node {
+            margin: UiRect::vertical(VMin(9.0)),
+            row_gap: Vw(2.5),
+            ..Node::COLUMN_MID.full_width()
+        },
+        children![
+            widget::big_button("Play", play_game),
+            (
+                widget::big_button("Quit", quit_to_desktop),
+                #[cfg(feature = "web")]
+                IsDisabled(true),
+            )
+        ],
+    )
 }
 
-fn play_button(In(id): In<Entity>, mut commands: Commands) {
-    commands
-        .entity(id)
-        .queue(widget::MenuButton::new("Play"))
-        .observe(|_: Trigger<Pointer<Click>>, mut commands: Commands| {
-            commands.spawn_with(FadeOut::to(Screen::Intro));
-        });
+fn play_game(_: Trigger<Pointer<Click>>, mut commands: Commands) {
+    commands.spawn(fade_out(Screen::Intro));
 }
 
-fn quit_button(In(id): In<Entity>, mut commands: Commands) {
-    commands.entity(id).queue(widget::MenuButton::new("Quit"));
-
-    #[cfg(feature = "web")]
-    commands.entity(id).insert(IsDisabled(true));
-
-    #[cfg(not(feature = "web"))]
-    commands
-        .entity(id)
-        .observe(|_: Trigger<Pointer<Click>>, mut app_exit: EventWriter<_>| {
-            app_exit.send(bevy::app::AppExit::Success);
-        });
+fn quit_to_desktop(_: Trigger<Pointer<Click>>, mut app_exit: EventWriter<AppExit>) {
+    app_exit.write(AppExit::Success);
 }

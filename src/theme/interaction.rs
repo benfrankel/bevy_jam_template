@@ -1,3 +1,4 @@
+use bevy::ecs::component::Mutable;
 use bevy::prelude::*;
 use bevy::reflect::GetTypeRegistration;
 use bevy::reflect::Typed;
@@ -33,15 +34,15 @@ impl Configure for IsDisabled {
 /// Different values of a component to set for each [`Interaction`] state.
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
-pub struct InteractionTable<C: Component> {
+pub struct InteractionTable<C: Component<Mutability = Mutable>> {
     pub normal: C,
     pub hovered: C,
     pub pressed: C,
     pub disabled: C,
 }
 
-impl<C: Component + Clone + Typed + FromReflect + GetTypeRegistration> Configure
-    for InteractionTable<C>
+impl<C: Component<Mutability = Mutable> + Clone + Typed + FromReflect + GetTypeRegistration>
+    Configure for InteractionTable<C>
 {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
@@ -52,7 +53,7 @@ impl<C: Component + Clone + Typed + FromReflect + GetTypeRegistration> Configure
     }
 }
 
-fn apply_interaction_table<C: Component + Clone>(
+fn apply_interaction_table<C: Component<Mutability = Mutable> + Clone>(
     mut interaction_query: Query<
         (
             Option<&IsDisabled>,

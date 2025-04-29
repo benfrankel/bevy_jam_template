@@ -1,5 +1,5 @@
 use bevy::asset::embedded_asset;
-use bevy::core::FrameCount;
+use bevy::diagnostic::FrameCount;
 use bevy::image::ImageLoaderSettings;
 use bevy::image::ImageSampler;
 use bevy::prelude::*;
@@ -10,11 +10,10 @@ use pyri_state::prelude::*;
 use crate::screen::Screen;
 use crate::screen::ScreenRoot;
 use crate::screen::fade::FADE_IN_SECS;
-use crate::screen::fade::FadeOut;
+use crate::screen::fade::fade_out;
 use crate::screen::title::TitleScreenAssets;
 use crate::screen::wait_in_screen;
 use crate::theme::prelude::*;
-use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     embedded_asset!(app, "splash/splash.png");
@@ -22,7 +21,7 @@ pub(super) fn plugin(app: &mut App) {
     app.add_loading_state(
         LoadingState::new(Screen::Splash.bevy()).load_collection::<TitleScreenAssets>(),
     );
-    app.add_systems(StateFlush, Screen::Splash.on_enter(splash.spawn()));
+    app.add_systems(StateFlush, Screen::Splash.on_enter(spawn_splash_screen));
 
     app.add_systems(
         Update,
@@ -36,18 +35,26 @@ pub(super) fn plugin(app: &mut App) {
 
 const SPLASH_SCREEN_MIN_SECS: f32 = 0.8;
 
-fn splash(In(id): In<Entity>, mut commands: Commands, screen_root: Res<ScreenRoot>) {
+fn spawn_splash_screen(
+    mut commands: Commands,
+    screen_root: Res<ScreenRoot>,
+    asset_server: Res<AssetServer>,
+) {
     commands
-        .entity(id)
-        .insert(Node::COLUMN_MID.full_size().named("Splash"))
-        .set_parent(screen_root.ui)
-        .with_children(|parent| {
-            parent.spawn_fn(splash_image);
-        });
+        .entity(screen_root.ui)
+        .with_child(splash(&asset_server));
 }
 
-fn splash_image(In(id): In<Entity>, mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.entity(id).insert((
+fn splash(asset_server: &AssetServer) -> impl Bundle {
+    (
+        Name::new("Splash"),
+        Node::COLUMN_MID.full_size(),
+        children![splash_image(asset_server)],
+    )
+}
+
+fn splash_image(asset_server: &AssetServer) -> impl Bundle {
+    (
         Name::new("SplashImage"),
         ImageNode::new(asset_server.load_with_settings(
             "embedded://bevy_jam_template/screen/splash/splash.png",
@@ -61,7 +68,7 @@ fn splash_image(In(id): In<Entity>, mut commands: Commands, asset_server: Res<As
             ..default()
         },
         ThemeColor::BodyText.set::<ImageNode>(),
-    ));
+    )
 }
 
 fn update_splash(
@@ -76,9 +83,9 @@ fn update_splash(
     }
     *last_done = done;
 
-    // Continue to next screen when ready
+    // Continue to next screen when ready.
     if done == total {
-        commands.spawn_with(FadeOut::to(Screen::Title));
+        commands.spawn(fade_out(Screen::Title));
     }
 
     info!("[Frame {}] Booting: {done} / {total}", frame.0);

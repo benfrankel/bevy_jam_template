@@ -1,14 +1,14 @@
+//use bevy_editor_pls::EditorPlugin;
+//use bevy_editor_pls::EditorWindowPlacement;
 use bevy::input::common_conditions::input_just_pressed;
 use bevy::prelude::*;
-use bevy_editor_pls::EditorPlugin;
-use bevy_editor_pls::EditorWindowPlacement;
 
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.configure::<IsEditorWindow>();
 
-    let window = app
+    /*let window = app
         .world_mut()
         .spawn((
             Name::new("EditorWindow"),
@@ -24,7 +24,7 @@ pub(super) fn plugin(app: &mut App) {
 
     app.add_plugins(EditorPlugin {
         window: EditorWindowPlacement::Window(window),
-    });
+    });*/
 }
 
 #[derive(Component, Reflect)]
