@@ -55,7 +55,7 @@ fn body() -> impl Bundle {
                 .enumerate()
                 .map(|(i, text)| {
                     (
-                        Name::new(format!("Span{}", i)),
+                        Name::new(format!("Span{i}")),
                         RichText::from_sections(parse_rich(text)),
                         DynamicFontSize::new(Vw(3.5)).with_step(8.0),
                         ThemeColorForText(vec![ThemeColor::BodyText]),
