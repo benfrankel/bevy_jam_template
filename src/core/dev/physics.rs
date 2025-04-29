@@ -4,6 +4,10 @@ use bevy::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(PhysicsDebugPlugin::default());
+    app.add_systems(
+        Update,
+        toggle_debug_physics.run_if(input_just_pressed(TOGGLE_KEY)),
+    );
 
     // Disable debug physics by default.
     app.world_mut()
@@ -11,11 +15,6 @@ pub(super) fn plugin(app: &mut App) {
         .config_mut::<PhysicsGizmos>()
         .0
         .enabled = false;
-
-    app.add_systems(
-        Update,
-        toggle_debug_physics.run_if(input_just_pressed(TOGGLE_KEY)),
-    );
 }
 
 const TOGGLE_KEY: KeyCode = KeyCode::F3;
