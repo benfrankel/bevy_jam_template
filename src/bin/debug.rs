@@ -46,7 +46,7 @@ fn print_schedule(app: &mut App, label: impl ScheduleLabel + Clone) {
             let graph = schedule.graph_mut();
             graph.initialize(world);
             graph
-                .build_schedule(world.components(), label.intern(), &default())
+                .build_schedule(world, label.intern(), &default())
                 .unwrap();
 
             // List systems
