@@ -1,10 +1,10 @@
 use bevy::ecs::schedule::LogLevel;
 use bevy::prelude::*;
 
-use crate::core::debug::DebugConfig;
+use crate::core::dev::DevConfig;
 
 // TODO: Ambiguity detection only runs on startup, so this doesn't really work like it should.
-pub(super) fn on_load(config: &DebugConfig, world: &mut World) {
+pub(super) fn on_load(config: &DevConfig, world: &mut World) {
     let level = if config.log_ambiguity_detection {
         LogLevel::Warn
     } else {

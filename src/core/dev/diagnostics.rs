@@ -5,7 +5,7 @@ use bevy::diagnostic::LogDiagnosticsPlugin;
 use bevy::diagnostic::SystemInformationDiagnosticsPlugin;
 use bevy::prelude::*;
 
-use crate::core::debug::DebugConfig;
+use crate::core::dev::DevConfig;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
@@ -25,7 +25,7 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 /// Enable diagnostics determined by the loaded config.
-pub(super) fn on_load(config: &DebugConfig, world: &mut World) {
+pub(super) fn on_load(config: &DevConfig, world: &mut World) {
     // Disable all diagnostics first.
     let mut store = world.resource_mut::<DiagnosticsStore>();
     for diagnostic in store.iter_mut() {

@@ -4,7 +4,7 @@ pub mod asset;
 pub mod audio;
 pub mod camera;
 #[cfg(feature = "dev")]
-pub mod debug;
+pub mod dev;
 pub mod pause;
 pub mod physics;
 pub mod state;
@@ -35,7 +35,7 @@ pub(super) fn plugin(app: &mut App) {
         audio::plugin,
         camera::plugin,
         #[cfg(feature = "dev")]
-        debug::plugin,
+        dev::plugin,
         pause::plugin,
         physics::plugin,
     ));

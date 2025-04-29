@@ -3,7 +3,7 @@ use iyes_progress::prelude::*;
 use pyri_state::prelude::*;
 use pyri_state::schedule::ResolveStateSet;
 
-use crate::core::debug::DebugConfig;
+use crate::core::dev::DevConfig;
 use crate::screen::Screen;
 use crate::screen::ScreenTime;
 use crate::util::prelude::*;
@@ -30,21 +30,21 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-pub(super) fn on_load(config: &DebugConfig, world: &mut World) {
+pub(super) fn on_load(config: &DevConfig, world: &mut World) {
     world.resource_mut::<StateDebugSettings>().log_flush = config.log_state_flush;
 }
 
-fn enter_initial_screen(config: ConfigRef<DebugConfig>, mut screen: NextMut<Screen>) {
+fn enter_initial_screen(config: ConfigRef<DevConfig>, mut screen: NextMut<Screen>) {
     let config = r!(config.get());
     screen.enter(rq!(config.initial_screen));
 }
 
-fn do_not_skip_loading_screen(config: ConfigRef<DebugConfig>) -> Progress {
+fn do_not_skip_loading_screen(config: ConfigRef<DevConfig>) -> Progress {
     let config = r!(config.get());
     (config.extend_loading_screen <= 0.0).into()
 }
 
-fn extend_loading_screen(config: ConfigRef<DebugConfig>, screen_time: Res<ScreenTime>) -> Progress {
+fn extend_loading_screen(config: ConfigRef<DevConfig>, screen_time: Res<ScreenTime>) -> Progress {
     let config = r!(config.get());
     (screen_time.0.as_secs_f32() >= config.extend_loading_screen).into()
 }

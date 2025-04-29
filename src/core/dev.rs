@@ -1,4 +1,4 @@
-//! Debugging tools for dev builds.
+//! Dev tools for dev builds.
 
 mod ambiguity;
 mod diagnostics;
@@ -17,9 +17,8 @@ use crate::screen::Screen;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.configure::<ConfigHandle<DebugConfig>>();
+    app.configure::<ConfigHandle<DevConfig>>();
 
-    // Add debug subsystems.
     app.add_plugins((
         diagnostics::plugin,
         editor::plugin,
@@ -30,7 +29,7 @@ pub(super) fn plugin(app: &mut App) {
     ));
 
     // Load the default configs.
-    DebugConfig::default().on_load(app.world_mut());
+    DevConfig::default().on_load(app.world_mut());
 
     // Set up ad hoc debugging.
     app.add_systems(Update, debug_start);
@@ -39,7 +38,7 @@ pub(super) fn plugin(app: &mut App) {
 
 #[derive(Asset, Reflect, Serialize, Deserialize)]
 #[serde(deny_unknown_fields, default)]
-struct DebugConfig {
+struct DevConfig {
     // Diagnostics:
     pub frame_time_diagnostics: bool,
     pub system_information_diagnostics: bool,
@@ -54,7 +53,7 @@ struct DebugConfig {
     pub extend_loading_screen: f32,
 }
 
-impl Default for DebugConfig {
+impl Default for DevConfig {
     fn default() -> Self {
         Self {
             frame_time_diagnostics: false,
@@ -70,8 +69,8 @@ impl Default for DebugConfig {
     }
 }
 
-impl Config for DebugConfig {
-    const FILE: &'static str = "debug.ron";
+impl Config for DevConfig {
+    const FILE: &'static str = ".dev.ron";
 
     fn on_load(&mut self, world: &mut World) {
         ambiguity::on_load(self, world);
