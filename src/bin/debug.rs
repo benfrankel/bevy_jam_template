@@ -16,7 +16,7 @@ fn main() {
         .world()
         .resource::<Schedules>()
         .iter()
-        .map(|(label, _)| format!("{:?}", label))
+        .map(|(label, _)| format!("{label:?}"))
         .collect::<Vec<_>>();
     labels.sort();
     println!("All schedules: {}\n", labels.join(", "));
@@ -26,7 +26,7 @@ fn main() {
         .resource::<MainScheduleOrder>()
         .labels
         .iter()
-        .map(|label| format!("{:?}", label))
+        .map(|label| format!("{label:?}"))
         .collect::<Vec<_>>();
     println!("Main schedules: {}\n", main_labels.join(", "));
 
@@ -72,7 +72,7 @@ fn print_schedule(app: &mut App, label: impl ScheduleLabel + Clone) {
             // Print systems
             for system in systems {
                 let system_name = graph.system_at(system).name().to_string();
-                println!("[{:?}] {}", label, system_name);
+                println!("[{label:?}] {system_name}");
             }
         });
 }
