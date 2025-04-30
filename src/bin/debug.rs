@@ -6,8 +6,8 @@ use bevy::prelude::*;
 use bevy_mod_debugdump::schedule_graph::Settings;
 use bevy_mod_debugdump::schedule_graph_dot;
 
-// Usage: Disable logging with RUST_LOG=off, then pipe the output into `dot`
-// Example: `RUST_LOG=off cargo run --release --bin debug_dump | dot -Tsvg | feh -`
+// Usage: Disable logging with RUST_LOG=off, then pipe the output into `dot`.
+// Example: `RUST_LOG=off cargo run --release --bin debug_dump | dot -Tsvg | feh -`.
 fn main() {
     let mut app = App::new();
     app.add_plugins(bevy_jam_template::plugin);
@@ -49,13 +49,13 @@ fn print_schedule(app: &mut App, label: impl ScheduleLabel + Clone) {
                 .build_schedule(world, label.intern(), &default())
                 .unwrap();
 
-            // List systems
+            // List systems.
             let mut systems = vec![];
             for (node_id, _, _) in graph.systems() {
                 systems.push(node_id);
             }
 
-            // Sort topologically based on dependency graph
+            // Sort topologically based on dependency graph.
             let mut system_order = vec![];
             for &node in graph.dependency().cached_topsort() {
                 if graph.get_system_at(node).is_some() {
