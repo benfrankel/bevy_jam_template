@@ -205,7 +205,7 @@ jobs:
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
         run: |
           bevy build --locked --release --features='${{ matrix.features }}' --yes web --bundle
-          mv 'target/bevy_web/release/${{ env.cargo_build_binary_name }}' '${{ env.app }}'
+          mv 'target/bevy_web/web-release/${{ env.cargo_build_binary_name }}' '${{ env.app }}'
 
       - name: Build binaries and add them to app (non-Web)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform != 'web' }}
