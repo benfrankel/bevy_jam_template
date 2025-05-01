@@ -1,14 +1,10 @@
-# Getting started
+# Bevy Jam Template
 
-## Create a new project
+## Getting started
 
-1. Clone this template: `git clone --depth 1 https://github.com/benfrankel/bevy_jam_template.git`
-2. Create a new project:
-    1. Copy `bevy_jam_template` to a new project path (with a valid Rust package name).
-    2. Navigate into the new project path.
-    3. Remove template files: `.git`, `create.sh`, `Cargo.lock`, `LICENSE-0BSD`, `LICENSE-CC0-1.0`, `README.md`.
-    4. Search and replace instances of `bevy_jam_template` with your project name.
-    5. Initialize git repo: `git init && git add . && git commit -m 'Initial commit'`
+1. Generate a new project using the [Bevy CLI](https://github.com/TheBevyFlock/bevy_cli): `bevy new my_game -t https://github.com/benfrankel/bevy_jam_template`.
+2. Navigate to your project: `cd my_game`.
+3. Set up version control: `git commit -am 'Initial commit'`
 
 ## Enable CI / CD
 

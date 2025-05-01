@@ -1,0 +1,4 @@
+# {{project-name | title_case}}
+
+This project was generated using the [Bevy Jam Template](https://github.com/benfrankel/bevy_jam_template).
+Check out the [documentation](https://github.com/benfrankel/bevy_jam_template/blob/main/README.md) to get started!
