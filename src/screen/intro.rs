@@ -32,7 +32,7 @@ fn intro() -> impl Bundle {
 fn header() -> impl Bundle {
     (
         Name::new("Header"),
-        RichText::from_sections(parse_rich("[b]How to play")),
+        RichText::from_sections(parse_rich("[b]How to play:")),
         DynamicFontSize::new(Vw(5.0)).with_step(8.0),
         ThemeColorForText(vec![ThemeColor::BodyText]),
         Node {
