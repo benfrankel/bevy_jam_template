@@ -24,7 +24,13 @@ pub fn blocking_overlay(z: i32) -> impl Bundle {
     )
 }
 
-fn button<E, B, M, I>(width: Val, height: Val, text: impl Into<String>, action: I) -> impl Bundle
+fn button<E, B, M, I>(
+    width: Val,
+    height: Val,
+    font_size: Val,
+    text: impl Into<String>,
+    action: I,
+) -> impl Bundle
 where
     E: Event,
     B: Bundle,
@@ -60,7 +66,7 @@ where
             Spawn((
                 Name::new("ButtonText"),
                 RichText::from_sections(parse_rich(&text)),
-                DynamicFontSize::new(Vw(4.0)).with_step(8.0),
+                DynamicFontSize::new(font_size).with_step(8.0),
                 ThemeColorForText(vec![ThemeColor::PrimaryText]),
             )),
             SpawnObserver::new(action),
@@ -74,7 +80,7 @@ where
     B: Bundle,
     I: IntoObserverSystem<E, B, M>,
 {
-    button(Vw(38.0), Vw(11.0), text, action)
+    button(Vw(38.0), Vw(11.0), Vw(4.0), text, action)
 }
 
 pub fn small_button<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
@@ -83,5 +89,5 @@ where
     B: Bundle,
     I: IntoObserverSystem<E, B, M>,
 {
-    button(Vw(38.0), Vw(9.0), text, action)
+    button(Vw(38.0), Vw(7.0), Vw(3.0), text, action)
 }
