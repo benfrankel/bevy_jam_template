@@ -63,7 +63,7 @@ fn buttons() -> impl Bundle {
             (
                 widget::big_button("Quit", quit_to_desktop),
                 #[cfg(feature = "web")]
-                IsDisabled(true),
+                InteractionDisabled(true),
             )
         ],
     )

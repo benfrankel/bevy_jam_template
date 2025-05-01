@@ -14,7 +14,7 @@ use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.configure::<(
-        IsDisabled,
+        InteractionDisabled,
         InteractionTable<ThemeColorFor<BackgroundColor>>,
         InteractionTable<Offset>,
         InteractionSfx,
@@ -22,9 +22,9 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 #[derive(Component, Reflect)]
-pub struct IsDisabled(pub bool);
+pub struct InteractionDisabled(pub bool);
 
-impl Configure for IsDisabled {
+impl Configure for InteractionDisabled {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
     }
@@ -57,17 +57,17 @@ impl<C: Component<Mutability = Mutable> + Clone + Typed + FromReflect + GetTypeR
 fn apply_interaction_table<C: Component<Mutability = Mutable> + Clone>(
     mut interaction_query: Query<
         (
-            Option<&IsDisabled>,
+            Option<&InteractionDisabled>,
             &Interaction,
             &InteractionTable<C>,
             &mut C,
         ),
-        Or<(Changed<Interaction>, Changed<IsDisabled>)>,
+        Or<(Changed<Interaction>, Changed<InteractionDisabled>)>,
     >,
 ) {
     for (is_disabled, interaction, table, mut target) in &mut interaction_query {
         // Clone the component from the current `Interaction` state.
-        *target = if matches!(is_disabled, Some(IsDisabled(true))) {
+        *target = if matches!(is_disabled, Some(InteractionDisabled(true))) {
             &table.disabled
         } else {
             match interaction {
@@ -96,17 +96,21 @@ fn play_interaction_sfx(
     assets: Res<ThemeAssets>,
     audio: Res<Audio>,
     interaction_query: Query<
-        (Option<&IsDisabled>, &Old<Interaction>, &Interaction),
+        (
+            Option<&InteractionDisabled>,
+            &Old<Interaction>,
+            &Interaction,
+        ),
         (
             With<InteractionSfx>,
-            Or<(Changed<Interaction>, Changed<IsDisabled>)>,
+            Or<(Changed<Interaction>, Changed<InteractionDisabled>)>,
         ),
     >,
 ) {
     let audio_config = r!(audio_config.get());
 
     for (is_disabled, old, new) in &interaction_query {
-        if matches!(is_disabled, Some(IsDisabled(true))) {
+        if matches!(is_disabled, Some(InteractionDisabled(true))) {
             continue;
         }
 
