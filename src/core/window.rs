@@ -13,9 +13,7 @@ use crate::util::prelude::*;
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(BevyWindowPlugin {
         primary_window: Some(Window {
-            canvas: Some("#bevy".to_string()),
             fit_canvas_to_parent: true,
-            prevent_default_event_handling: true,
             visible: false,
             ..default()
         }),
