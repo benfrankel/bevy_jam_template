@@ -184,7 +184,7 @@ jobs:
         with:
           targets: ${{ matrix.targets }}
 
-      - name: Restore from cache
+      - name: Restore Rust cache
         if: ${{ env.is_platform_enabled == 'true' && env.use_github_cache == 'true' }}
         uses: Swatinem/rust-cache@v2
         with:
