@@ -10,11 +10,11 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version number in the format `v1.2.3`'
+        description: "Version number in the format `v1.2.3`"
         required: true
         type: string
 
-# Configure the release workflow by editing these values.
+# Configure the release workflow by editing the following values.
 env:
   # TODO: This may become unnecessary: https://github.com/rust-lang/cargo/issues/6790
   # The base filename of the binary produced by `cargo build`.
@@ -22,9 +22,6 @@ env:
 
   # The path to the assets directory.
   assets_path: assets
-
-  # The path to the web content directory (containing `index.html`).
-  web_content_path: web
 
   # Whether to build and package a release for a given target platform.
   build_for_web: true
@@ -57,6 +54,7 @@ env:
   app_id: {{itch_username | kebab_case}}.{{project-name | kebab_case}}
 
   # The base filename of the binary in the package produced by this workflow.
+  # Applies to Windows, macOS, and Linux releases.
   # Defaults to `cargo_build_binary_name` if commented out.
   #app_binary_name: {{project-name}}
 
@@ -92,7 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Do nothing
-        run: 'true'
+        run: "true"
     outputs:
       upload_to_itch: ${{ env.upload_to_itch }}
 
@@ -118,31 +116,23 @@ jobs:
         include:
           - platform: web
             targets: wasm32-unknown-unknown
-            profile: web-release
-            features: web
-            binary_ext: .wasm
             package_ext: .zip
             runner: ubuntu-latest
 
           - platform: linux
             targets: x86_64-unknown-linux-gnu
-            profile: release
-            features: native,bevy/wayland
+            features: bevy/wayland
             package_ext: .zip
             runner: ubuntu-latest
 
           - platform: windows
             targets: x86_64-pc-windows-msvc
-            profile: release
-            features: native
             binary_ext: .exe
             package_ext: .zip
             runner: windows-latest
 
           - platform: macos
             targets: x86_64-apple-darwin aarch64-apple-darwin
-            profile: release
-            features: native
             app_suffix: .app/Contents/MacOS
             package_ext: .dmg
             runner: macos-latest
@@ -207,51 +197,32 @@ jobs:
         if: ${{ env.is_platform_enabled == 'true' }}
         run: rm -rf tmp; mkdir -p tmp/binary '${{ env.app }}'
 
-      - name: Build binaries
+      - name: Install Bevy CLI
         if: ${{ env.is_platform_enabled == 'true' }}
+        run: cargo install --locked --git=https://github.com/TheBevyFlock/bevy_cli bevy_cli
+
+      - name: Build web bundle and add it to app (Web)
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
+        run: |
+          bevy build --locked --release --features='${{ matrix.features }}' --yes web --bundle
+          mv 'target/bevy_web/release/${{ env.cargo_build_binary_name }}' '${{ env.app }}'
+
+      - name: Build binaries and add them to app (non-Web)
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform != 'web' }}
         run: |
           for target in ${{ matrix.targets }}; do
-            cargo build --profile='${{ matrix.profile }}' --target="${target}" --no-default-features --features='${{ matrix.features }}'
-            mv target/"${target}"/'${{ matrix.profile }}/${{ env.cargo_build_binary_name }}${{ matrix.binary_ext }}' tmp/binary/"${target}"'${{ matrix.binary_ext }}'
+            bevy build --locked --release --target="${target}" --features='${{ matrix.features }}'
+            mv target/"${target}"/release/'${{ env.cargo_build_binary_name }}${{ matrix.binary_ext }}' tmp/binary/"${target}"'${{ matrix.binary_ext }}'
           done
-
-      - name: Install cargo-binstall (Web)
-        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
-        uses: cargo-bins/cargo-binstall@v1.9.0
-
-      - name: Run wasm-bindgen (Web)
-        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
-        run: |
-          cargo binstall --no-confirm wasm-bindgen-cli
-          mkdir -p tmp/bindgen
-          wasm-bindgen tmp/binary/*'${{ matrix.binary_ext }}' --out-dir tmp/bindgen --out-name '${{ env.app_binary_name }}' --no-typescript --target web
-          rm -rf tmp/binary; mv tmp/bindgen tmp/binary
-
-      - name: Optimize Wasm (Web)
-        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
-        uses: NiklasEi/wasm-opt-action@v2
-        with:
-          file: tmp/binary/*${{ matrix.binary_ext }}
-
-      - name: Add binaries to app
-        if: ${{ env.is_platform_enabled == 'true' }}
-        run: |
           if [ '${{ matrix.platform }}' == 'macos' ]; then
             lipo tmp/binary/*'${{ matrix.binary_ext }}' -create -output '${{ env.app }}/${{ env.app_binary_name }}${{ matrix.binary_ext }}'
-          elif [ '${{ matrix.platform }}' == 'web' ]; then
-            mv tmp/binary/*'${{ matrix.binary_ext }}' '${{ env.app }}/${{ env.app_binary_name }}_bg${{ matrix.binary_ext }}'
           else
             mv tmp/binary/*'${{ matrix.binary_ext }}' '${{ env.app }}/${{ env.app_binary_name }}${{ matrix.binary_ext }}'
           fi
-          mv tmp/binary/* '${{ env.app }}' || true # Ignore error if there's nothing left to move
 
-      - name: Add assets to app
-        if: ${{ env.is_platform_enabled == 'true' }}
-        run: cp -r ./'${{ env.assets_path }}' '${{ env.app }}' || true # Ignore error if there's nothing to copy
-
-      - name: Add web content to app (Web)
-        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
-        run: cp -r ./'${{ env.web_content_path }}'/* '${{ env.app }}'
+      - name: Add assets to app (non-Web)
+        if: ${{ env.is_platform_enabled == 'true' && matrix.platform != 'web' }}
+        run: cp -r ./'${{ env.assets_path }}' '${{ env.app }}' || true # Ignore error if assets folder does not exist
 
       - name: Add metadata to app (macOS)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'macos' }}

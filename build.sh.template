@@ -11,6 +11,7 @@ function usage() {
     echo "Usage: $0 [web|windows|linux|mac]..."
 }
 
+# TODO: Test that this still works.
 # Web
 function web() {
     PLATFORM='web'
@@ -23,13 +24,9 @@ function web() {
     rm -rf "${OUT_DIR:?}/"* "${OUT_ZIP}"
 
     # Build
-    cargo build --profile=web-release --target="${TARGET}" --no-default-features --features=web
-    wasm-bindgen --no-typescript --out-name "${EXE}" --out-dir "${OUT_DIR}" --target web "target/${TARGET}/web-release/${EXE}.wasm"
-    wasm-opt -O -ol 100 -s 100 -o "${OUT_DIR}/${EXE}_bg.wasm" "${OUT_DIR}/${EXE}_bg.wasm"
+    bevy build --release web --bundle
 
     # Prepare zip
-    cp -r assets web/* "${OUT_DIR}"
-    rm "${OUT_DIR:?}"/**/*.aseprite
     zip -r "${OUT_ZIP}" "${OUT_DIR}"
 }
 
@@ -45,7 +42,7 @@ function windows() {
     rm -rf "${OUT_DIR:?}"/* "${OUT_ZIP}"
 
     # Build
-    cargo build --release --target="${TARGET}" --no-default-features --features=native
+    bevy build --release --target="${TARGET}"
 
     # Prepare zip
     cp -r assets "target/${TARGET}/release/${EXE}.exe" "${OUT_DIR}"
@@ -65,7 +62,7 @@ function linux() {
     rm -rf "${OUT_DIR:?}"/* "${OUT_ZIP}"
 
     # Build
-    cargo build --release --target="${TARGET}" --no-default-features --features=native,bevy/wayland
+    bevy build --release --target="${TARGET}" --features=bevy/wayland
 
     # Prepare zip
     cp -r assets "target/${TARGET}/release/${EXE}" "${OUT_DIR}"
@@ -86,7 +83,7 @@ function mac() {
     rm -rf "${OUT_DIR:?}"/* "${OUT_ZIP}"
 
     # Build
-    cargo build --release --target="${TARGET}" --no-default-features --features=native
+    bevy build --release --target="${TARGET}"
 
     # Prepare zip
     cp -r assets "target/${TARGET}/release/${EXE}.exe" "${OUT_DIR}"

@@ -3,8 +3,11 @@
     "tasks": [
         {
             "label": "Run native dev",
-            "type": "cargo",
-            "command": "run",
+            "type": "process",
+            "command": "bevy",
+            "args": [
+                "run"
+            ],
             "options": {
                 "env": {
                     "RUST_BACKTRACE": "full"
@@ -23,12 +26,51 @@
         },
         {
             "label": "Run native release",
-            "type": "cargo",
-            "command": "run",
+            "type": "process",
+            "command": "bevy",
             "args": [
+                "run",
+                "--release"
+            ],
+            "presentation": {
+                "clear": true
+            },
+            "problemMatcher": [
+                "$rustc"
+            ],
+            "group": "build"
+        },
+        {
+            "label": "Run web dev",
+            "type": "process",
+            "command": "bevy",
+            "args": [
+                "run",
+                "--yes",
+                "web"
+            ],
+            "options": {
+                "env": {
+                    "RUST_BACKTRACE": "full"
+                }
+            },
+            "presentation": {
+                "clear": true
+            },
+            "problemMatcher": [
+                "$rustc"
+            ],
+            "group": "build"
+        },
+        {
+            "label": "Run web release",
+            "type": "process",
+            "command": "bevy",
+            "args": [
+                "run",
+                "--yes",
                 "--release",
-                "--no-default-features",
-                "--features=native"
+                "web"
             ],
             "presentation": {
                 "clear": true
@@ -40,11 +82,12 @@
         },
         {
             "label": "Debug native dev",
-            "type": "cargo",
-            "command": "run",
+            "type": "process",
+            "command": "bevy",
             "args": [
+                "run",
                 "--bin=debug",
-                "--features=debug_dump"
+                "--features=bevy_mod_debugdump"
             ],
             "options": {
                 "env": {
@@ -61,13 +104,13 @@
         },
         {
             "label": "Debug native release",
-            "type": "cargo",
-            "command": "run",
+            "type": "process",
+            "command": "bevy",
             "args": [
+                "run",
                 "--release",
                 "--bin=debug",
-                "--no-default-features",
-                "--features=native,debug_dump"
+                "--features=bevy_mod_debugdump"
             ],
             "options": {
                 "env": {

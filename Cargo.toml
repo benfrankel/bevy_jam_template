@@ -6,7 +6,6 @@ default-run = "run"
 
 
 [features]
-default = ["native_dev"]
 dev = [
     #"dep:bevy_editor_pls",
     "avian2d/debug-plugin",
@@ -27,6 +26,20 @@ web = []
 web_dev = ["web", "dev"]
 trace = ["bevy/trace", "bevy/trace_tracy"]
 bevy_mod_debugdump = ["dep:bevy_mod_debugdump"]
+
+[package.metadata.bevy_cli.native]
+features = ["native"]
+
+[package.metadata.bevy_cli.native.dev]
+features = ["native_dev"]
+
+[package.metadata.bevy_cli.web]
+features = ["web"]
+# Use the `wasm_js` backend for randomness on web.
+rustflags = ["--cfg", "getrandom_backend=\"wasm_js\""]
+
+[package.metadata.bevy_cli.web.dev]
+features = ["web_dev"]
 
 
 [dependencies]

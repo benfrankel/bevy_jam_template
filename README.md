@@ -22,7 +22,7 @@
 
 ## Build your project
 
-- Use `cargo build` for native dev builds (or `cargo run`, etc.).
+- Use `bevy build` for native dev builds (or `bevy run`, etc.).
 - (Linux) Use `./build.sh` to cross-compile release builds and package for itch.io (can't build for Mac; trigger CD for that instead).
 - (Non-Linux) Replicate the steps in `build.sh` by hand.
 - For VS Code users, `.vscode/tasks.json` provides IDE integration.

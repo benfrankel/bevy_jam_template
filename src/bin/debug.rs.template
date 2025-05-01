@@ -7,7 +7,7 @@ use bevy_mod_debugdump::schedule_graph::Settings;
 use bevy_mod_debugdump::schedule_graph_dot;
 
 // Usage: Disable logging with RUST_LOG=off, then pipe the output into `dot`.
-// Example: `RUST_LOG=off cargo run --release --bin debug_dump | dot -Tsvg | feh -`.
+// Example: `RUST_LOG=off bevy run --bin debug --features bevy_mod_debugdump | dot -Tsvg | feh -`.
 fn main() {
     let mut app = App::new();
     app.add_plugins({{crate_name}}::plugin);

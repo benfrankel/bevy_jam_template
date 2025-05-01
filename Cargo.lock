@@ -329,7 +329,7 @@ checksum = "ace50bade8e6234aa140d9a2f552bbee1db4d353f69b8217bc503490fc1a9f26"
 [[package]]
 name = "avian2d"
 version = "0.2.0"
-source = "git+https://github.com/Jondolf/avian.git#9511076d933fdc56015c93665f37b1804a2b08bd"
+source = "git+https://github.com/Jondolf/avian.git#910ab042828986e27f32fc2e27f6f2ee5576df1e"
 dependencies = [
  "arrayvec",
  "avian_derive",
@@ -349,7 +349,7 @@ dependencies = [
 [[package]]
 name = "avian_derive"
 version = "0.2.2"
-source = "git+https://github.com/Jondolf/avian.git#9511076d933fdc56015c93665f37b1804a2b08bd"
+source = "git+https://github.com/Jondolf/avian.git#910ab042828986e27f32fc2e27f6f2ee5576df1e"
 dependencies = [
  "proc-macro-error2",
  "proc-macro2",
@@ -2605,9 +2605,9 @@ dependencies = [
 
 [[package]]
 name = "hashbrown"
-version = "0.15.2"
+version = "0.15.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bf151400ff0baff5465007dd2f3e717f3fe502074ca563069ce3a6629d07b289"
+checksum = "84b26c544d002229e640969970a2e74021aadf6e2f96372b9c58eff97de08eb3"
 dependencies = [
  "allocator-api2",
  "equivalent",
@@ -3970,7 +3970,7 @@ dependencies = [
 [[package]]
 name = "pyri_state"
 version = "0.4.0"
-source = "git+https://github.com/benfrankel/pyri_state.git#49675793f66e03cb8447364052e2cc411be9af33"
+source = "git+https://github.com/benfrankel/pyri_state.git#82f2a70fd64beca99c8da947c090b46b1673e5a2"
 dependencies = [
  "bevy_app",
  "bevy_diagnostic",
@@ -3985,7 +3985,7 @@ dependencies = [
 [[package]]
 name = "pyri_state_derive"
 version = "0.4.0"
-source = "git+https://github.com/benfrankel/pyri_state.git#49675793f66e03cb8447364052e2cc411be9af33"
+source = "git+https://github.com/benfrankel/pyri_state.git#82f2a70fd64beca99c8da947c090b46b1673e5a2"
 dependencies = [
  "bevy_macro_utils",
  "proc-macro2",
@@ -3996,7 +3996,7 @@ dependencies = [
 [[package]]
 name = "pyri_tooltip"
 version = "0.3.0"
-source = "git+https://github.com/benfrankel/pyri_tooltip.git#70210811e72ee6b5032721fd78373b5b3db7cd2e"
+source = "git+https://github.com/benfrankel/pyri_tooltip.git#5036600d2c8b14e9b2eac9cce8d400eff6ba8e71"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -5283,9 +5283,9 @@ dependencies = [
 
 [[package]]
 name = "wayland-backend"
-version = "0.3.9"
+version = "0.3.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c2bea670be0e24795f39416e5461ccef0185b47df2749ed2b226b8a7557ac871"
+checksum = "fe770181423e5fc79d3e2a7f4410b7799d5aab1de4372853de3c6aa13ca24121"
 dependencies = [
  "cc",
  "downcast-rs 1.2.1",
@@ -5297,9 +5297,9 @@ dependencies = [
 
 [[package]]
 name = "wayland-client"
-version = "0.31.9"
+version = "0.31.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5029b0ff4f7be961c326169ee8e247d534d8507dbe390cac6aa3d2cc7c268825"
+checksum = "978fa7c67b0847dbd6a9f350ca2569174974cd4082737054dbb7fbb79d7d9a61"
 dependencies = [
  "bitflags 2.9.0",
  "rustix",
@@ -5320,9 +5320,9 @@ dependencies = [
 
 [[package]]
 name = "wayland-cursor"
-version = "0.31.9"
+version = "0.31.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "28d6ec438d7c38bde05a10e80c3e3a1212d85f941be9fc9f80c86e6f5f498252"
+checksum = "a65317158dec28d00416cb16705934070aef4f8393353d41126c54264ae0f182"
 dependencies = [
  "rustix",
  "wayland-client",
@@ -5331,9 +5331,9 @@ dependencies = [
 
 [[package]]
 name = "wayland-protocols"
-version = "0.32.7"
+version = "0.32.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ba8de1f9dda5e589d08848af3ad4cd694bbfd059c3eb3c6d89c7120e8c0efa71"
+checksum = "779075454e1e9a521794fed15886323ea0feda3f8b0fc1390f5398141310422a"
 dependencies = [
  "bitflags 2.9.0",
  "wayland-backend",
@@ -5343,9 +5343,9 @@ dependencies = [
 
 [[package]]
 name = "wayland-protocols-plasma"
-version = "0.3.7"
+version = "0.3.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "87e10c27e3290310d7e0d3221bc4e945d9b296b249577af2eb595726b546a3f8"
+checksum = "4fd38cdad69b56ace413c6bcc1fbf5acc5e2ef4af9d5f8f1f9570c0c83eae175"
 dependencies = [
  "bitflags 2.9.0",
  "wayland-backend",
@@ -5356,9 +5356,9 @@ dependencies = [
 
 [[package]]
 name = "wayland-protocols-wlr"
-version = "0.3.7"
+version = "0.3.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f3334ee752fbe3c228adfda339a9e7a03e0ba65a78806d8d464b69928cf4ef2"
+checksum = "1cb6cdc73399c0e06504c437fe3cf886f25568dd5454473d565085b36d6a8bbf"
 dependencies = [
  "bitflags 2.9.0",
  "wayland-backend",
@@ -6005,9 +6005,9 @@ checksum = "589f6da84c646204747d1270a2a5661ea66ed1cced2631d546fdfb155959f9ec"
 
 [[package]]
 name = "winit"
-version = "0.30.9"
+version = "0.30.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a809eacf18c8eca8b6635091543f02a5a06ddf3dad846398795460e6e0ae3cc0"
+checksum = "b0d05bd8908e14618c9609471db04007e644fd9cce6529756046cfc577f9155e"
 dependencies = [
  "ahash",
  "android-activity",
