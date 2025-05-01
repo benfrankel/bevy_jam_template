@@ -99,7 +99,7 @@ fn update_loading(
     }
     *last_done = done;
 
-    // Continue to next screen when ready.
+    // Continue to the next screen when ready.
     if done == total {
         commands.spawn(fade_out(Screen::Gameplay));
     }

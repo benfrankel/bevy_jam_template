@@ -6,7 +6,6 @@ file::rename("assets/config/window.ron.template", "assets/config/window.ron");
 file::rename("build.sh.template", "build.sh");
 file::rename("src/bin/run.rs.template", "src/bin/run.rs");
 file::rename("src/bin/debug.rs.template", "src/bin/debug.rs");
-file::rename("src/screen/splash.rs.template", "src/screen/splash.rs");
 file::rename("src/screen/title.rs.template", "src/screen/title.rs");
 
 // Generate `Cargo.lock`.

@@ -1,4 +1,3 @@
-use bevy::asset::embedded_asset;
 use bevy::diagnostic::FrameCount;
 use bevy::image::ImageLoaderSettings;
 use bevy::image::ImageSampler;
@@ -16,8 +15,6 @@ use crate::screen::wait_in_screen;
 use crate::theme::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    embedded_asset!(app, "splash/splash.png");
-
     app.add_loading_state(
         LoadingState::new(Screen::Splash.bevy()).load_collection::<TitleScreenAssets>(),
     );
@@ -57,7 +54,8 @@ fn splash_image(asset_server: &AssetServer) -> impl Bundle {
     (
         Name::new("SplashImage"),
         ImageNode::new(asset_server.load_with_settings(
-            "embedded://bevy_jam_template/screen/splash/splash.png",
+            // TODO: Use `embedded_asset!` when https://github.com/bevyengine/bevy/issues/14246 is fixed.
+            "image/splash.png",
             |settings: &mut ImageLoaderSettings| {
                 settings.sampler = ImageSampler::linear();
             },
@@ -83,7 +81,7 @@ fn update_splash(
     }
     *last_done = done;
 
-    // Continue to next screen when ready.
+    // Continue to the next screen when ready.
     if done == total {
         commands.spawn(fade_out(Screen::Title));
     }
