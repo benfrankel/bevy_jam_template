@@ -96,7 +96,6 @@ rand = { version = "0.8", features = ["small_rng"] }
 ron = "0.10"
 serde = "1"
 strum = { version = "0.27", features = ["derive"] }
-tap = "1"
 tiny_bail = "0.4"
 # Compile low-severity logs out of web builds for performance.
 tracing = { version = "0.1", features = [
