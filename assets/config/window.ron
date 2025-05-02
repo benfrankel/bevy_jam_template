@@ -1,5 +1,5 @@
 (
-    title: "bevy_jam_template",
+    title: "Bevy Jam Template",
     window_mode: Windowed,
     present_mode: AutoVsync,
 )

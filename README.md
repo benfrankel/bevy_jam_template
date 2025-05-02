@@ -1,58 +1,75 @@
 # Bevy Jam Template
 
+This template is optimized for game jams, with 3rd-party dependencies and some more opinionated patterns.
+
+You can [try this template in your browser](https://pyrious.itch.io/bevy-jam-template)!
+
+## Comparison to Bevy New 2D
+
+This template builds on top of Bevy New 2D with a few additions.
+
+- **Features:**
+    - Hot-reloaded [config files](./assets/config/)
+    - Screen transition animations (fade in / out)
+    - Press P or Escape to pause
+    - Press R to restart
+    - Basic rich text parsing
+    - Dynamic font size
+- **3rd-party crates:**
+    - [`avian2d`](https://github.com/Jondolf/avian/) for physics
+    - [`bevy_editor_pls`](https://github.com/jakobhellermann/bevy_editor_pls) for a live inspector window
+    - [`leafwing-input-manager`](https://github.com/Leafwing-Studios/leafwing-input-manager/) for input to action mapping
+    - [`pyri_tooltip`](https://github.com/benfrankel/pyri_tooltip/) for tooltips
+    - [`pyri_state`](https://github.com/benfrankel/pyri_state) for flexible game states
+    - [`tiny_bail`](https://github.com/benfrankel/tiny_bail) for error handling ergonomics
+    - And a few more...
+- **Assets:**
+    - [`pypx`](https://pyrious.itch.io/pypx-fonts) pixel fonts
+
 ## Getting started
 
-1. Generate a new project using the [Bevy CLI](https://github.com/TheBevyFlock/bevy_cli): `bevy new my_game -t https://github.com/benfrankel/bevy_jam_template`.
-2. Navigate to your project: `cd my_game`.
-3. Set up version control: `git commit -am 'Initial commit'`
+Use [Bevy CLI](https://github.com/TheBevyFlock/bevy_cli) to create a new game:
 
-## Enable CI / CD
+```shell
+bevy new game -t benfrankel/bevy_jam_template`
+cd game
+git commit -am 'Initial commit'
+```
 
-1. Create a GitHub repo for your project.
-2. Link your local repo to the GitHub repo.
-3. Configure the GitHub repo:
-    1. Settings > General > Default branch = `main`
-    2. Settings > Secrets and variables > Actions > New repository secret
-        - Name = `BUTLER_CREDENTIALS`
-        - Secret = `<itch.io API key>`
-4. Create an itch.io page for your project.
-5. Point the `ITCH_TARGET` value in `.github/workflows/release.yaml` to your itch.io page.
-6. To trigger CI, push a commit to `main`.
-7. To trigger CD, push a release tag in the format `v1.2.3`. Consider releasing daily during a game jam!
+Next, create a new GitHub repository and upload your game to it. Set up [GitHub workflows](https://docs.github.com/en/actions/writing-workflows) by following the steps described in [Bevy New 2D's documentation](https://github.com/TheBevyFlock/bevy_new_2d/blob/main/docs/workflows.md).
 
-## Build your project
+## Run your game
 
-- Use `bevy build` for native dev builds (or `bevy run`, etc.).
-- (Linux) Use `./build.sh` to cross-compile release builds and package for itch.io (can't build for Mac; trigger CD for that instead).
-- (Non-Linux) Replicate the steps in `build.sh` by hand.
-- For VS Code users, `.vscode/tasks.json` provides IDE integration.
+Use the following commands to run your game:
 
-# Features
+```shell
+bevy run
+bevy run web
+bevy run --release
+bevy run --release web
+```
 
-- [Web release (WASM)](https://pyrious.itch.io/bevy-jam-template) support
-    - [CSS spinner](./web/style.css) before the game starts
-- [Github CI / CD workflows](./.github/workflows/), including itch.io upload
-- [VS Code tasks](./.vscode/tasks.json)
-- [Game logic system ordering](./src/core.rs) (via `UpdateSet` system set)
-- [Main screen sequence](./src/screen.rs) (via `Screen` state)
-    - Screen fade in / out animations on transition
-    - Restart game on R press
-- [Config files](./assets/config/) with [hot-reloading](./src/util/config.rs) (via `apply_config<C>` system)
-    - [Window settings](./src/core/window.rs)
-    - [Color palette](./src/core/theme.rs) (via `ThemeColorFor<C>` components)
-- [UI utilities](./src/util/theme.rs)
-    - [Built-in pixel fonts](./assets/font/)
-    - [Dynamic font size](./src/theme/text.rs) (via `DynamicFontSize` component)
-    - [Basic "rich text" parsing](./src/theme/text.rs) (via `parse_rich`)
-    - [Interactive buttons](./src/theme/interaction.rs) (via `bevy_picking` and the `InteractionTable` component)
-    - [Tooltip on hover](./src/theme/tooltip.rs) (via `Tooltip` component)
-- [Debug mode](./src/core/debug.rs) for dev builds
-    - Live inspector window (via [`bevy_editor_pls`](https://github.com/jakobhellermann/bevy_editor_pls))
-    - Physics wireframes and picking tooltips (F3 to toggle)
-    - Some helpful logging
+For VS Code users, [`.vscode/tasks.json`](./.vscode/tasks.json) provides IDE integration.
 
-# Credit
+## Release your game
+
+The easiest way to release your game is by triggering the [release workflow](./.github/workflows/release.yaml).
+
+Alternatively, you can cross-compile locally from Linux with [`./build.sh`](./build.sh). If you're not on Linux, you can manually follow the steps in the shell script.
+  
+Note: `./build.sh mac` is currently not implemented.
+
+# License
+
+The source code in this repository is licensed under any of the following at your option:
+
+- [CC0-1.0 License](./LICENSE-CC0-1.0.txt)
+- [0BSD License](./LICENSE-0BSD.txt)
+
+# Credits
 
 - The [splash screen image](https://github.com/bevyengine/bevy/blob/main/assets/branding/bevy_logo_dark.png) belongs to the Bevy Foundation and is not covered by any of the licenses in this repository.
-- The [pixel fonts](https://pyrious.itch.io/pypx-fonts) are CC0-licensed.
-- The remainder of this template is made available under [CC0](./LICENSE-CC0-1.0.txt) or [0BSD](./LICENSE-0BSD.txt) at your choice.
+- The [pixel fonts](https://pyrious.itch.io/pypx-fonts) are CC0.
+- The sound effects are CC0:
+    - [Button click](https://freesound.org/people/suntemple/sounds/253168/)
+    - [Button hover](https://freesound.org/people/deadsillyrabbit/sounds/251390/)
