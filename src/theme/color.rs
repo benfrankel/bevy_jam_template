@@ -97,7 +97,7 @@ impl<C: ColorMut + TypePath> Configure for ThemeColorFor<C> {
     }
 }
 
-#[derive(Component, Reflect, Default)]
+#[derive(Component, Reflect, Default, Clone)]
 pub struct ThemeColorForText(pub Vec<ThemeColor>);
 
 impl Configure for ThemeColorForText {

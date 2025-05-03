@@ -45,15 +45,15 @@ where
         },
         BorderRadius::MAX,
         ThemeColor::default().set::<BackgroundColor>(),
-        InteractionTable {
+        InteractionTheme {
             none: ThemeColor::Primary.set::<BackgroundColor>(),
             hovered: ThemeColor::PrimaryHovered.set::<BackgroundColor>(),
             pressed: ThemeColor::PrimaryPressed.set::<BackgroundColor>(),
             disabled: ThemeColor::PrimaryDisabled.set::<BackgroundColor>(),
         },
         Offset::default(),
-        InteractionTable {
-            hovered: Offset(Vec2::new(0.0, -4.0)),
+        InteractionTheme {
+            hovered: Offset(Vec2::new(0.0, -6.0)),
             pressed: Offset(Vec2::new(0.0, 2.0)),
             ..default()
         },

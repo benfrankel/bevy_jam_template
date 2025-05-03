@@ -10,9 +10,11 @@ use crate::theme::ThemeAssets;
 pub(super) fn plugin(app: &mut App) {
     app.configure::<(
         InteractionDisabled,
+        InteractionTheme<ThemeColorFor<BackgroundColor>>,
+        InteractionTheme<Offset>,
+        TargetInteractionTheme<ThemeColorForText>,
+        TargetInteractionTheme<Offset>,
         Previous<Interaction>,
-        InteractionTable<ThemeColorFor<BackgroundColor>>,
-        InteractionTable<Offset>,
         InteractionSfx,
     )>();
 }
@@ -26,12 +28,10 @@ impl Configure for InteractionDisabled {
     }
 }
 
-// TODO: Text labels are usually child entities, so this is annoying to implement for text colors.
-// TODO: Could solve this with a `ParentInteractionTable` component that checks the parent's interaction state.
-/// Different values of a component to set for each [`Interaction`] state.
+/// Values to set a component to by interaction state.
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
-pub struct InteractionTable<C: Component<Mutability = Mutable>> {
+pub struct InteractionTheme<C: Component<Mutability = Mutable> + Clone> {
     pub none: C,
     pub hovered: C,
     pub pressed: C,
@@ -39,31 +39,77 @@ pub struct InteractionTable<C: Component<Mutability = Mutable>> {
 }
 
 impl<C: Component<Mutability = Mutable> + Clone + Typed + FromReflect + GetTypeRegistration>
-    Configure for InteractionTable<C>
+    Configure for InteractionTheme<C>
 {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
         app.add_systems(
             Update,
-            apply_interaction_table::<C>.in_set(UpdateSystems::RecordInput),
+            apply_interaction_theme::<C>.in_set(UpdateSystems::RecordInput),
         );
     }
 }
 
-fn apply_interaction_table<C: Component<Mutability = Mutable> + Clone>(
+fn apply_interaction_theme<C: Component<Mutability = Mutable> + Clone>(
     mut interaction_query: Query<
         (
             Option<&InteractionDisabled>,
             &Interaction,
-            &InteractionTable<C>,
+            &InteractionTheme<C>,
             &mut C,
         ),
         Or<(Changed<Interaction>, Changed<InteractionDisabled>)>,
     >,
 ) {
-    for (is_disabled, interaction, table, mut target) in &mut interaction_query {
-        // Clone the component from the current `Interaction` state.
-        *target = if matches!(is_disabled, Some(InteractionDisabled(true))) {
+    for (is_disabled, interaction, table, mut value) in &mut interaction_query {
+        // Clone the field corresponding to the current interaction state.
+        *value = if matches!(is_disabled, Some(InteractionDisabled(true))) {
+            &table.disabled
+        } else {
+            match interaction {
+                Interaction::None => &table.none,
+                Interaction::Hovered => &table.hovered,
+                Interaction::Pressed => &table.pressed,
+            }
+        }
+        .clone();
+    }
+}
+
+/// Values to set a component to by a target entity's interaction state.
+#[derive(Component, Reflect)]
+#[reflect(Component)]
+pub struct TargetInteractionTheme<C: Component<Mutability = Mutable> + Clone> {
+    pub target: Entity,
+    pub none: C,
+    pub hovered: C,
+    pub pressed: C,
+    pub disabled: C,
+}
+
+impl<C: Component<Mutability = Mutable> + Clone + Typed + FromReflect + GetTypeRegistration>
+    Configure for TargetInteractionTheme<C>
+{
+    fn configure(app: &mut App) {
+        app.register_type::<Self>();
+        app.add_systems(
+            Update,
+            apply_target_interaction_theme::<C>.in_set(UpdateSystems::RecordInput),
+        );
+    }
+}
+
+fn apply_target_interaction_theme<C: Component<Mutability = Mutable> + Clone>(
+    mut table_query: Query<(&TargetInteractionTheme<C>, &mut C)>,
+    interaction_query: Query<
+        (Option<&InteractionDisabled>, &Interaction),
+        Or<(Changed<Interaction>, Changed<InteractionDisabled>)>,
+    >,
+) {
+    for (table, mut value) in &mut table_query {
+        let (is_disabled, interaction) = cq!(interaction_query.get(table.target));
+        // Clone the field corresponding to the current interaction state.
+        *value = if matches!(is_disabled, Some(InteractionDisabled(true))) {
             &table.disabled
         } else {
             match interaction {

@@ -16,7 +16,7 @@ pub mod prelude {
     pub use super::color::ThemeColorForText;
     pub use super::interaction::InteractionDisabled;
     pub use super::interaction::InteractionSfx;
-    pub use super::interaction::InteractionTable;
+    pub use super::interaction::InteractionTheme;
     pub use super::layout::NodeExtLayout as _;
     pub use super::text::BOLD_FONT_HANDLE;
     pub use super::text::DynamicFontSize;
