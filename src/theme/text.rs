@@ -5,7 +5,7 @@ use bevy::prelude::*;
 use lazy_regex::regex;
 use pyri_tooltip::prelude::*;
 
-use crate::core::UpdateSet;
+use crate::core::UpdateSystems;
 use crate::core::window::WindowRoot;
 use crate::util::prelude::*;
 
@@ -46,7 +46,7 @@ pub struct DynamicFontSize {
 impl Configure for DynamicFontSize {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.add_systems(Update, apply_dynamic_font_size.in_set(UpdateSet::SyncLate));
+        app.add_systems(Update, apply_dynamic_font_size.in_set(UpdateSystems::SyncLate));
     }
 }
 

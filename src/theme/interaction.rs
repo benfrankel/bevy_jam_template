@@ -6,7 +6,7 @@ use bevy_kira_audio::prelude::*;
 use rand::prelude::*;
 
 use crate::animation::offset::Offset;
-use crate::core::UpdateSet;
+use crate::core::UpdateSystems;
 use crate::core::audio::AudioConfig;
 use crate::theme::ThemeAssets;
 use crate::theme::prelude::*;
@@ -49,7 +49,7 @@ impl<C: Component<Mutability = Mutable> + Clone + Typed + FromReflect + GetTypeR
         app.register_type::<Self>();
         app.add_systems(
             Update,
-            apply_interaction_table::<C>.in_set(UpdateSet::RecordInput),
+            apply_interaction_table::<C>.in_set(UpdateSystems::RecordInput),
         );
     }
 }
@@ -87,7 +87,10 @@ pub struct InteractionSfx;
 impl Configure for InteractionSfx {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.add_systems(Update, play_interaction_sfx.in_set(UpdateSet::RecordInput));
+        app.add_systems(
+            Update,
+            play_interaction_sfx.in_set(UpdateSystems::RecordInput),
+        );
     }
 }
 

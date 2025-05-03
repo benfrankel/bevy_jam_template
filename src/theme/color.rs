@@ -8,7 +8,7 @@ use serde::Deserialize;
 use serde::Serialize;
 use strum::EnumCount;
 
-use crate::core::UpdateSet;
+use crate::core::UpdateSystems;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
@@ -98,7 +98,7 @@ impl<C: ColorMut + TypePath> Configure for ThemeColorFor<C> {
         app.register_type::<Self>();
         app.add_systems(
             Update,
-            apply_theme_color_for::<C>.in_set(UpdateSet::SyncLate),
+            apply_theme_color_for::<C>.in_set(UpdateSystems::SyncLate),
         );
     }
 }
@@ -111,7 +111,7 @@ impl Configure for ThemeColorForText {
         app.register_type::<Self>();
         app.add_systems(
             Update,
-            apply_theme_color_for_text.in_set(UpdateSet::SyncLate),
+            apply_theme_color_for_text.in_set(UpdateSystems::SyncLate),
         );
     }
 }

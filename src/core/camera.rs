@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use pyri_state::prelude::*;
 
-use crate::core::UpdateSet;
+use crate::core::UpdateSystems;
 use crate::core::pause::Pause;
 use crate::util::prelude::*;
 
@@ -89,7 +89,7 @@ pub struct AbsoluteScale(pub Vec3);
 impl Configure for AbsoluteScale {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.add_systems(Update, apply_absolute_scale.in_set(UpdateSet::SyncLate));
+        app.add_systems(Update, apply_absolute_scale.in_set(UpdateSystems::SyncLate));
     }
 }
 

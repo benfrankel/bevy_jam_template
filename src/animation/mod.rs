@@ -8,15 +8,15 @@ use bevy::ui::UiSystem;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.configure::<(SaveBackupSet, PostTransformSet, PostColorSet)>();
+    app.configure::<(SaveBackupSystems, PostTransformSystems, PostColorSystems)>();
 
     app.add_plugins((backup::plugin, offset::plugin));
 }
 
 #[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
-struct SaveBackupSet;
+struct SaveBackupSystems;
 
-impl Configure for SaveBackupSet {
+impl Configure for SaveBackupSystems {
     fn configure(app: &mut App) {
         app.configure_sets(
             PostUpdate,
@@ -25,9 +25,9 @@ impl Configure for SaveBackupSet {
     }
 }
 
-/// [`Transform`] post-processing system ordering in the [`PostUpdate`] schedule.
+/// [`Transform`] post-processing steps in the [`PostUpdate`] schedule.
 #[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
-pub enum PostTransformSet {
+pub enum PostTransformSystems {
     /// Blend via transform multplication (add translation, add rotation, multiply scale).
     Blend,
     /// Apply facing (may multiply translation.x by -1).
@@ -36,12 +36,12 @@ pub enum PostTransformSet {
     Finish,
 }
 
-impl Configure for PostTransformSet {
+impl Configure for PostTransformSystems {
     fn configure(app: &mut App) {
         app.configure_sets(
             PostUpdate,
             (
-                SaveBackupSet,
+                SaveBackupSystems,
                 Self::Blend,
                 Self::ApplyFacing,
                 TransformSystem::TransformPropagate,
@@ -53,15 +53,15 @@ impl Configure for PostTransformSet {
     }
 }
 
-/// [`Color`] post-processing system ordering in the [`PostUpdate`] schedule.
+/// [`Color`] post-processing steps in the [`PostUpdate`] schedule.
 #[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
-pub enum PostColorSet {
+pub enum PostColorSystems {
     /// Blend via color multiplication (multiply RGBA).
     Blend,
 }
 
-impl Configure for PostColorSet {
+impl Configure for PostColorSystems {
     fn configure(app: &mut App) {
-        app.configure_sets(PostUpdate, (SaveBackupSet, Self::Blend).chain());
+        app.configure_sets(PostUpdate, (SaveBackupSystems, Self::Blend).chain());
     }
 }

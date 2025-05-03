@@ -16,7 +16,7 @@ use bevy::prelude::*;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.configure::<UpdateSet>();
+    app.configure::<UpdateSystems>();
 
     // Add Bevy plugins.
     app.add_plugins(
@@ -41,9 +41,9 @@ pub(super) fn plugin(app: &mut App) {
     ));
 }
 
-/// Game logic steps for the [`Update`] schedule.
+/// Game logic steps in the [`Update`] schedule.
 #[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
-pub enum UpdateSet {
+pub enum UpdateSystems {
     /// Synchronize start-of-frame values.
     SyncEarly,
     /// Tick timers.
@@ -60,7 +60,7 @@ pub enum UpdateSet {
     SyncLate,
 }
 
-impl Configure for UpdateSet {
+impl Configure for UpdateSystems {
     fn configure(app: &mut App) {
         app.configure_sets(
             Update,

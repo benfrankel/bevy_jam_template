@@ -6,7 +6,7 @@ use bevy::transform::systems::mark_dirty_trees;
 use bevy::transform::systems::propagate_parent_transforms;
 use bevy::transform::systems::sync_simple_transforms;
 
-use crate::animation::SaveBackupSet;
+use crate::animation::SaveBackupSystems;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
@@ -37,7 +37,7 @@ impl<C: Component<Mutability = Mutable> + Clone + Typed + FromReflect + GetTypeR
         // This has to run before `UiSystem::Focus` in `PreUpdate` anyways, so may as well
         // go all the way back to `First`.
         app.add_systems(First, restore_backup::<C>);
-        app.add_systems(PostUpdate, save_backup::<C>.in_set(SaveBackupSet));
+        app.add_systems(PostUpdate, save_backup::<C>.in_set(SaveBackupSystems));
     }
 }
 

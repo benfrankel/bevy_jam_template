@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::animation::PostTransformSet;
+use crate::animation::PostTransformSystems;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
@@ -14,7 +14,7 @@ pub struct Offset(pub Vec2);
 impl Configure for Offset {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.add_systems(PostUpdate, apply_offset.in_set(PostTransformSet::Blend));
+        app.add_systems(PostUpdate, apply_offset.in_set(PostTransformSystems::Blend));
     }
 }
 

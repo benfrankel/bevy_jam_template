@@ -4,14 +4,14 @@ use bevy::ecs::system::SystemParam;
 use bevy::ecs::world::CommandQueue;
 use bevy::prelude::*;
 
-use crate::core::UpdateSet;
+use crate::core::UpdateSystems;
 use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.configure::<LateCommandBuffer>();
 }
 
-/// Like [`Commands`], but applied during [`UpdateSet::ApplyCommands`] instead of
+/// Like [`Commands`], but applied during [`UpdateSystems::ApplyCommands`] instead of
 /// at the next sync point.
 ///
 /// Example usage: `late.commands().entity(entity).despawn_recursive()`.
@@ -45,7 +45,10 @@ struct LateCommandBuffer(CommandQueue);
 impl Configure for LateCommandBuffer {
     fn configure(app: &mut App) {
         app.init_resource::<Self>();
-        app.add_systems(Update, apply_late_commands.in_set(UpdateSet::ApplyCommands));
+        app.add_systems(
+            Update,
+            apply_late_commands.in_set(UpdateSystems::ApplyCommands),
+        );
     }
 }
 

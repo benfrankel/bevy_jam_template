@@ -7,7 +7,7 @@ use leafwing_input_manager::common_conditions::action_just_pressed;
 use leafwing_input_manager::prelude::*;
 use pyri_state::prelude::*;
 
-use crate::core::UpdateSet;
+use crate::core::UpdateSystems;
 use crate::core::pause::Pause;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
@@ -96,7 +96,7 @@ impl Configure for MenuAction {
         app.add_systems(
             Update,
             Menu::pop
-                .in_set(UpdateSet::RecordInput)
+                .in_set(UpdateSystems::RecordInput)
                 .run_if(action_just_pressed(Self::Back).and(Menu::is_enabled)),
         );
     }

@@ -4,7 +4,7 @@ use leafwing_input_manager::common_conditions::action_just_pressed;
 use leafwing_input_manager::prelude::*;
 use pyri_state::prelude::*;
 
-use crate::core::UpdateSet;
+use crate::core::UpdateSystems;
 use crate::menu::Menu;
 use crate::screen::Screen;
 use crate::util::prelude::*;
@@ -42,10 +42,13 @@ impl Configure for GameplayAction {
         app.add_systems(
             Update,
             Screen::Gameplay.on_update(
-                Menu::Pause.toggle().in_set(UpdateSet::RecordInput).run_if(
-                    action_just_pressed(Self::TogglePause)
-                        .and(Menu::is_disabled.or(Menu::Pause.will_update())),
-                ),
+                Menu::Pause
+                    .toggle()
+                    .in_set(UpdateSystems::RecordInput)
+                    .run_if(
+                        action_just_pressed(Self::TogglePause)
+                            .and(Menu::is_disabled.or(Menu::Pause.will_update())),
+                    ),
             ),
         );
     }

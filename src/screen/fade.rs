@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use pyri_state::prelude::*;
 
-use crate::animation::PostColorSet;
+use crate::animation::PostColorSystems;
 use crate::screen::Screen;
 use crate::theme::prelude::*;
 use crate::util::prelude::*;
@@ -22,7 +22,7 @@ struct FadeIn {
 impl Configure for FadeIn {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.add_systems(PostUpdate, apply_fade_in.in_set(PostColorSet::Blend));
+        app.add_systems(PostUpdate, apply_fade_in.in_set(PostColorSystems::Blend));
         app.add_systems(StateFlush, Screen::ANY.on_enter(spawn_fade_in));
     }
 }
@@ -76,7 +76,7 @@ struct FadeOut {
 impl Configure for FadeOut {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.add_systems(PostUpdate, apply_fade_out.in_set(PostColorSet::Blend));
+        app.add_systems(PostUpdate, apply_fade_out.in_set(PostColorSystems::Blend));
     }
 }
 
