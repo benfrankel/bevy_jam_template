@@ -23,6 +23,26 @@ pub fn blocking_overlay(z: i32) -> impl Bundle {
 }
 
 #[tweak_fn]
+pub fn big_button<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
+where
+    E: Event,
+    B: Bundle,
+    I: IntoObserverSystem<E, B, M>,
+{
+    button(Vw(38.0), Vw(11.0), Vw(4.0), text, action)
+}
+
+#[tweak_fn]
+pub fn small_button<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
+where
+    E: Event,
+    B: Bundle,
+    I: IntoObserverSystem<E, B, M>,
+{
+    button(Vw(38.0), Vw(7.0), Vw(3.0), text, action)
+}
+
+#[tweak_fn]
 fn button<E, B, M, I>(
     width: Val,
     height: Val,
@@ -78,24 +98,4 @@ where
             SpawnObserver::new(action),
         )),
     )
-}
-
-#[tweak_fn]
-pub fn big_button<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
-where
-    E: Event,
-    B: Bundle,
-    I: IntoObserverSystem<E, B, M>,
-{
-    button(Vw(38.0), Vw(11.0), Vw(4.0), text, action)
-}
-
-#[tweak_fn]
-pub fn small_button<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
-where
-    E: Event,
-    B: Bundle,
-    I: IntoObserverSystem<E, B, M>,
-{
-    button(Vw(38.0), Vw(7.0), Vw(3.0), text, action)
 }
