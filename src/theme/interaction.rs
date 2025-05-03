@@ -123,14 +123,14 @@ fn play_interaction_sfx(
                 audio
                     .play(assets.sfx_hover.clone())
                     .with_volume(2.0 * audio_config.ui_volume)
-                    .with_playback_rate(thread_rng().gen_range(0.7..1.6));
+                    .with_playback_rate(thread_rng().gen_range(0.9..1.5));
             },
             // TODO: This plays a sound on mouse down, not on click.
             (_, Interaction::Pressed) => {
                 audio
                     .play(assets.sfx_click.clone())
                     .with_volume(4.0 * audio_config.ui_volume)
-                    .with_playback_rate(thread_rng().gen_range(0.7..1.6));
+                    .with_playback_rate(thread_rng().gen_range(0.9..1.5));
             },
             _ => (),
         }
