@@ -1,4 +1,5 @@
 use crate::animation::PostTransformSystems;
+use crate::animation::backup::Backup;
 use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
@@ -7,6 +8,7 @@ pub(super) fn plugin(app: &mut App) {
 
 #[derive(Component, Reflect, Copy, Clone, Default)]
 #[reflect(Component)]
+#[require(Backup<Transform>)]
 pub struct Offset(pub Vec2);
 
 impl Configure for Offset {

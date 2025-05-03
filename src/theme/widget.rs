@@ -1,6 +1,5 @@
 use bevy::ecs::system::IntoObserverSystem;
 
-use crate::animation::backup::Backup;
 use crate::animation::offset::Offset;
 use crate::prelude::*;
 
@@ -50,13 +49,11 @@ where
             disabled: ThemeColor::PrimaryDisabled.set::<BackgroundColor>(),
         },
         Offset::default(),
-        Backup::<Transform>::default(),
         InteractionTable {
             hovered: Offset(Vec2::new(0.0, -4.0)),
             pressed: Offset(Vec2::new(0.0, 2.0)),
             ..default()
         },
-        Previous(Interaction::None),
         InteractionSfx,
         Children::spawn((
             Spawn((

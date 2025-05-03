@@ -78,6 +78,7 @@ fn apply_interaction_table<C: Component<Mutability = Mutable> + Clone>(
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
+#[require(Previous<Interaction>)]
 pub struct InteractionSfx;
 
 impl Configure for InteractionSfx {

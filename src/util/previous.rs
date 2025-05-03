@@ -4,7 +4,7 @@ use bevy::reflect::Typed;
 use crate::prelude::*;
 
 /// Saves the start-of-frame value of another component.
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Default)]
 #[reflect(Component)]
 pub struct Previous<C: Component + Clone>(pub C);
 
