@@ -25,7 +25,7 @@ impl Configure for SaveBackupSystems {
     }
 }
 
-/// [`Transform`] post-processing steps in the [`PostUpdate`] schedule.
+/// [`Transform`] post-processing steps for the [`PostUpdate`] schedule.
 #[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum PostTransformSystems {
     /// Blend via transform multplication (add translation, add rotation, multiply scale).
@@ -53,7 +53,7 @@ impl Configure for PostTransformSystems {
     }
 }
 
-/// [`Color`] post-processing steps in the [`PostUpdate`] schedule.
+/// [`Color`] post-processing steps for the [`PostUpdate`] schedule.
 #[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum PostColorSystems {
     /// Blend via color multiplication (multiply RGBA).

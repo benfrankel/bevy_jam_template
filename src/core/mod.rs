@@ -30,7 +30,7 @@ pub(super) fn plugin(app: &mut App) {
             .set(ImagePlugin::default_nearest()),
     );
 
-    // Add other plugins.
+    // Add other core plugins.
     app.add_plugins((
         audio::plugin,
         camera::plugin,
@@ -41,7 +41,7 @@ pub(super) fn plugin(app: &mut App) {
     ));
 }
 
-/// Game logic steps in the [`Update`] schedule.
+/// Game logic steps for the [`Update`] schedule.
 #[derive(SystemSet, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum UpdateSystems {
     /// Synchronize start-of-frame values.
