@@ -9,12 +9,12 @@ use crate::theme::ThemeAssets;
 
 pub(super) fn plugin(app: &mut App) {
     app.configure::<(
+        Previous<Interaction>,
         InteractionDisabled,
         InteractionTheme<ThemeColorFor<BackgroundColor>>,
         InteractionTheme<NodeOffset>,
         TargetInteractionTheme<ThemeColorForText>,
         TargetInteractionTheme<NodeOffset>,
-        Previous<Interaction>,
         InteractionSfx,
     )>();
 }
@@ -31,6 +31,7 @@ impl Configure for InteractionDisabled {
 /// Values to set a component to by interaction state.
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
+#[require(Interaction, Previous<Interaction>)]
 pub struct InteractionTheme<C: Component<Mutability = Mutable> + Clone> {
     pub none: C,
     pub hovered: C,
@@ -54,19 +55,30 @@ fn apply_interaction_theme<C: Component<Mutability = Mutable> + Clone>(
     mut interaction_query: Query<
         (
             Option<&InteractionDisabled>,
+            &Previous<Interaction>,
             &Interaction,
             &InteractionTheme<C>,
             &mut C,
         ),
-        Or<(Changed<Interaction>, Changed<InteractionDisabled>)>,
+        Or<(
+            Changed<InteractionDisabled>,
+            Changed<Previous<Interaction>>,
+            Changed<Interaction>,
+        )>,
     >,
 ) {
-    for (is_disabled, interaction, table, mut value) in &mut interaction_query {
+    for (is_disabled, previous, current, table, mut value) in &mut interaction_query {
+        // Add 1 frame of delay when going from pressed -> hovered.
+        cq!(!matches!(
+            (previous.0, current),
+            (Interaction::Pressed, Interaction::Hovered),
+        ));
+
         // Clone the field corresponding to the current interaction state.
         *value = if matches!(is_disabled, Some(InteractionDisabled(true))) {
             &table.disabled
         } else {
-            match interaction {
+            match current {
                 Interaction::None => &table.none,
                 Interaction::Hovered => &table.hovered,
                 Interaction::Pressed => &table.pressed,
@@ -102,17 +114,31 @@ impl<C: Component<Mutability = Mutable> + Clone + Typed + FromReflect + GetTypeR
 fn apply_target_interaction_theme<C: Component<Mutability = Mutable> + Clone>(
     mut table_query: Query<(&TargetInteractionTheme<C>, &mut C)>,
     interaction_query: Query<
-        (Option<&InteractionDisabled>, &Interaction),
-        Or<(Changed<Interaction>, Changed<InteractionDisabled>)>,
+        (
+            Option<&InteractionDisabled>,
+            &Previous<Interaction>,
+            &Interaction,
+        ),
+        Or<(
+            Changed<InteractionDisabled>,
+            Changed<Previous<Interaction>>,
+            Changed<Interaction>,
+        )>,
     >,
 ) {
     for (table, mut value) in &mut table_query {
-        let (is_disabled, interaction) = cq!(interaction_query.get(table.target));
+        let (is_disabled, previous, current) = cq!(interaction_query.get(table.target));
+        // Add 1 frame of delay when going from pressed -> hovered.
+        cq!(!matches!(
+            (previous.0, current),
+            (Interaction::Pressed, Interaction::Hovered),
+        ));
+
         // Clone the field corresponding to the current interaction state.
         *value = if matches!(is_disabled, Some(InteractionDisabled(true))) {
             &table.disabled
         } else {
-            match interaction {
+            match current {
                 Interaction::None => &table.none,
                 Interaction::Hovered => &table.hovered,
                 Interaction::Pressed => &table.pressed,

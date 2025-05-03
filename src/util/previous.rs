@@ -15,7 +15,9 @@ impl<C: Component + Clone + Typed + FromReflect + GetTypeRegistration> Configure
     }
 }
 
-fn save_to_previous<C: Component + Clone>(mut previous_query: Query<(&mut Previous<C>, &C)>) {
+fn save_to_previous<C: Component + Clone>(
+    mut previous_query: Query<(&mut Previous<C>, &C), Changed<C>>,
+) {
     for (mut previous, current) in &mut previous_query {
         previous.0 = current.clone();
     }
