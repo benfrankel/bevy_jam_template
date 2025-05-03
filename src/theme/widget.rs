@@ -64,6 +64,7 @@ where
         InteractionTheme {
             hovered: NodeOffset::new(Val::ZERO, Vw(-0.8)),
             pressed: NodeOffset::new(Val::ZERO, Vw(0.2)),
+            disabled: NodeOffset::new(Val::ZERO, Vw(0.2)),
             ..default()
         },
         InteractionSfx,
