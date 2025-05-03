@@ -1,6 +1,7 @@
 use bevy::ecs::system::IntoObserverSystem;
 
-use crate::animation::offset::Offset;
+use crate::animation::backup::Backup;
+use crate::animation::offset::NodeOffset;
 use crate::prelude::*;
 
 #[tweak_fn]
@@ -48,20 +49,21 @@ where
         BoxShadow::from(ShadowStyle {
             color: Color::BLACK.with_alpha(0.5),
             x_offset: Val::ZERO,
-            y_offset: Vw(1.0),
-            spread_radius: Vw(0.9),
-            blur_radius: Vw(0.7),
+            y_offset: Vw(0.7),
+            spread_radius: Vw(0.5),
+            blur_radius: Vw(0.5),
         }),
+        Backup::<BoxShadow>::default(),
         InteractionTheme {
             none: ThemeColor::Primary.set::<BackgroundColor>(),
             hovered: ThemeColor::PrimaryHovered.set::<BackgroundColor>(),
             pressed: ThemeColor::PrimaryPressed.set::<BackgroundColor>(),
             disabled: ThemeColor::PrimaryDisabled.set::<BackgroundColor>(),
         },
-        Offset::default(),
+        NodeOffset::default(),
         InteractionTheme {
-            hovered: Offset(Vec2::new(0.0, -6.0)),
-            pressed: Offset(Vec2::new(0.0, 2.0)),
+            hovered: NodeOffset::new(Val::ZERO, Vw(-0.8)),
+            pressed: NodeOffset::new(Val::ZERO, Vw(0.2)),
             ..default()
         },
         InteractionSfx,

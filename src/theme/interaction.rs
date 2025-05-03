@@ -2,7 +2,7 @@ use bevy::ecs::component::Mutable;
 use bevy::reflect::GetTypeRegistration;
 use bevy::reflect::Typed;
 
-use crate::animation::offset::Offset;
+use crate::animation::offset::NodeOffset;
 use crate::core::audio::AudioConfig;
 use crate::prelude::*;
 use crate::theme::ThemeAssets;
@@ -11,9 +11,9 @@ pub(super) fn plugin(app: &mut App) {
     app.configure::<(
         InteractionDisabled,
         InteractionTheme<ThemeColorFor<BackgroundColor>>,
-        InteractionTheme<Offset>,
+        InteractionTheme<NodeOffset>,
         TargetInteractionTheme<ThemeColorForText>,
-        TargetInteractionTheme<Offset>,
+        TargetInteractionTheme<NodeOffset>,
         Previous<Interaction>,
         InteractionSfx,
     )>();

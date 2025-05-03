@@ -9,7 +9,7 @@ use crate::animation::SaveBackupSystems;
 use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.configure::<Backup<Transform>>();
+    app.configure::<(Backup<Transform>, Backup<BoxShadow>)>();
 
     // Restore `GlobalTransform` after restoring `Transform`.
     app.add_systems(
