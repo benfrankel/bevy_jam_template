@@ -1,7 +1,7 @@
 use bevy::ecs::schedule::LogLevel;
-use bevy::prelude::*;
 
 use crate::core::dev::DevConfig;
+use crate::prelude::*;
 
 // TODO: Ambiguity detection only runs on startup, so this doesn't really work like it should.
 pub(super) fn on_load(config: &DevConfig, world: &mut World) {

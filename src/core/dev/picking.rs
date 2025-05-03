@@ -1,7 +1,8 @@
 use bevy::dev_tools::picking_debug::DebugPickingMode;
 use bevy::dev_tools::picking_debug::DebugPickingPlugin;
 use bevy::input::common_conditions::input_just_pressed;
-use bevy::prelude::*;
+
+use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(DebugPickingPlugin);

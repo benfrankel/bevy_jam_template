@@ -1,11 +1,12 @@
 mod animation;
 mod core;
 mod menu;
+mod prelude;
 mod screen;
 mod theme;
 mod util;
 
-use bevy::prelude::*;
+use crate::prelude::*;
 
 pub fn plugin(app: &mut App) {
     // Add core plugins.

@@ -32,11 +32,10 @@ pub mod prelude {
     pub use super::widget;
 }
 
-use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
 use bevy_kira_audio::prelude::*;
 
-use crate::util::prelude::*;
+use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.configure::<ThemeAssets>();

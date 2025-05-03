@@ -1,12 +1,10 @@
 use bevy::ecs::system::IntoObserverSystem;
-use bevy::prelude::*;
 use bevy::ui::FocusPolicy;
 use bevy_spawn_observer::SpawnObserver;
 
 use crate::animation::backup::Backup;
 use crate::animation::offset::Offset;
-use crate::theme::prelude::*;
-use crate::util::prelude::*;
+use crate::prelude::*;
 
 pub fn overlay(z: i32) -> impl Bundle {
     (

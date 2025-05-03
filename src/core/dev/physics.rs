@@ -1,6 +1,7 @@
 use avian2d::prelude::*;
 use bevy::input::common_conditions::input_just_pressed;
-use bevy::prelude::*;
+
+use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(PhysicsDebugPlugin::default());

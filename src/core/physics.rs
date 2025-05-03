@@ -1,8 +1,8 @@
 use avian2d::prelude::*;
-use bevy::prelude::*;
 use pyri_state::prelude::*;
 
 use crate::core::pause::Pause;
+use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(PhysicsPlugins::default().with_length_unit(PIXELS_PER_METER));

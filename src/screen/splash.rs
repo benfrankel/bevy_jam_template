@@ -1,18 +1,17 @@
 use bevy::diagnostic::FrameCount;
 use bevy::image::ImageLoaderSettings;
 use bevy::image::ImageSampler;
-use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
 use iyes_progress::prelude::*;
 use pyri_state::prelude::*;
 
+use crate::prelude::*;
 use crate::screen::Screen;
 use crate::screen::ScreenRoot;
 use crate::screen::fade::FADE_IN_SECS;
 use crate::screen::fade::fade_out;
 use crate::screen::title::TitleScreenAssets;
 use crate::screen::wait_in_screen;
-use crate::theme::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_loading_state(

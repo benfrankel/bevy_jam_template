@@ -1,9 +1,8 @@
-use bevy::prelude::*;
 use pyri_state::prelude::*;
 
 use crate::menu::Menu;
 use crate::menu::MenuRoot;
-use crate::theme::prelude::*;
+use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(StateFlush, Menu::Settings.on_enter(spawn_settings_menu));

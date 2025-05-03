@@ -21,7 +21,7 @@ pub mod prelude {
     pub use super::selection::Selection;
 }
 
-use bevy::prelude::*;
+use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins((late_commands::plugin, selection::plugin));

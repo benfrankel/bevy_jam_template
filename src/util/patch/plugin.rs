@@ -1,5 +1,6 @@
 use bevy::app::PluginGroupBuilder;
-use bevy::prelude::*;
+
+use crate::prelude::*;
 
 // TODO: Workaround for https://github.com/bevyengine/bevy/issues/14261.
 pub trait Configure {

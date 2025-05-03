@@ -1,15 +1,13 @@
 use bevy::diagnostic::FrameCount;
-use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
 use iyes_progress::prelude::*;
 use pyri_state::prelude::*;
 
+use crate::prelude::*;
 use crate::screen::Screen;
 use crate::screen::ScreenRoot;
 use crate::screen::fade::fade_out;
 use crate::screen::gameplay::GameplayAssets;
-use crate::theme::prelude::*;
-use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_loading_state(

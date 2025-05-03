@@ -1,12 +1,10 @@
-use bevy::prelude::*;
 use bevy_asset_loader::prelude::*;
 use pyri_state::prelude::*;
 
+use crate::prelude::*;
 use crate::screen::Screen;
 use crate::screen::ScreenRoot;
 use crate::screen::fade::fade_out;
-use crate::theme::prelude::*;
-use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(StateFlush, Screen::Title.on_enter(spawn_title_screen));

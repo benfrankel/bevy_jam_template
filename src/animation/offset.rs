@@ -1,7 +1,5 @@
-use bevy::prelude::*;
-
 use crate::animation::PostTransformSystems;
-use crate::util::prelude::*;
+use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.configure::<Offset>();

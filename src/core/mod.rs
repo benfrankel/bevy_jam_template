@@ -11,9 +11,8 @@ pub mod state;
 pub mod window;
 
 use bevy::log::LogPlugin;
-use bevy::prelude::*;
 
-use crate::util::prelude::*;
+use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.configure::<UpdateSystems>();

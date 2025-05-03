@@ -1,6 +1,7 @@
 use bevy::input::common_conditions::input_just_pressed;
-use bevy::prelude::*;
 use bevy::ui::UiDebugOptions;
+
+use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(

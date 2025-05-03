@@ -9,12 +9,11 @@ mod state;
 mod ui;
 
 use bevy::diagnostic::FrameCount;
-use bevy::prelude::*;
 use serde::Deserialize;
 use serde::Serialize;
 
+use crate::prelude::*;
 use crate::screen::Screen;
-use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.configure::<ConfigHandle<DevConfig>>();

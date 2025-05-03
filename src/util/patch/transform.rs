@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use crate::prelude::*;
 
 // TODO: Workaround for https://github.com/bevyengine/bevy/issues/14525.
 pub trait Dir2ExtToQuat {

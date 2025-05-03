@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use crate::prelude::*;
 
 // TODO: Workaround for https://github.com/bevyengine/bevy/issues/14236.
 pub trait TriggerExtGetTarget {

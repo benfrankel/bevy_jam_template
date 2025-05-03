@@ -1,7 +1,6 @@
-use bevy::prelude::*;
 use pyri_state::prelude::*;
 
-use crate::util::prelude::*;
+use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.configure::<Pause>();

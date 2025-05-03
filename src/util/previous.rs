@@ -1,8 +1,7 @@
-use bevy::prelude::*;
 use bevy::reflect::GetTypeRegistration;
 use bevy::reflect::Typed;
 
-use crate::util::prelude::*;
+use crate::prelude::*;
 
 /// Saves the start-of-frame value of another component.
 #[derive(Component, Reflect)]

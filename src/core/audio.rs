@@ -1,9 +1,8 @@
-use bevy::prelude::*;
 use bevy_kira_audio::prelude::*;
 use serde::Deserialize;
 use serde::Serialize;
 
-use crate::util::prelude::*;
+use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.configure::<ConfigHandle<AudioConfig>>();

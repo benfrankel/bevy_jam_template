@@ -9,7 +9,6 @@ use std::time::Duration;
 
 use bevy::ecs::schedule::ScheduleConfigs;
 use bevy::ecs::system::ScheduleSystem;
-use bevy::prelude::*;
 use bevy::ui::FocusPolicy;
 use iyes_progress::prelude::*;
 use pyri_state::prelude::*;
@@ -20,8 +19,7 @@ use crate::core::camera::CameraRoot;
 use crate::core::pause::Pause;
 use crate::core::window::WindowReady;
 use crate::menu::Menu;
-use crate::theme::prelude::*;
-use crate::util::prelude::*;
+use crate::prelude::*;
 
 pub fn plugin(app: &mut App) {
     app.configure::<(ScreenRoot, Screen, ScreenTime)>();

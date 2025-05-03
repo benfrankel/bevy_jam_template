@@ -2,10 +2,8 @@ use bevy::ecs::entity::Entities;
 use bevy::ecs::system::SystemBuffer;
 use bevy::ecs::system::SystemParam;
 use bevy::ecs::world::CommandQueue;
-use bevy::prelude::*;
 
-use crate::core::UpdateSystems;
-use crate::util::prelude::*;
+use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.configure::<LateCommandBuffer>();

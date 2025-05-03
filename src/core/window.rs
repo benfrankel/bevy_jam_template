@@ -1,4 +1,3 @@
-use bevy::prelude::*;
 use bevy::window::ExitCondition;
 use bevy::window::PresentMode;
 use bevy::window::PrimaryWindow;
@@ -8,7 +7,7 @@ use pyri_state::prelude::*;
 use serde::Deserialize;
 use serde::Serialize;
 
-use crate::util::prelude::*;
+use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins(BevyWindowPlugin {

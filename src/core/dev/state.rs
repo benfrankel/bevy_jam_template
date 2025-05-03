@@ -1,12 +1,11 @@
-use bevy::prelude::*;
 use iyes_progress::prelude::*;
 use pyri_state::prelude::*;
 use pyri_state::schedule::ResolveStateSet;
 
 use crate::core::dev::DevConfig;
+use crate::prelude::*;
 use crate::screen::Screen;
 use crate::screen::ScreenTime;
-use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.init_resource::<StateDebugSettings>();

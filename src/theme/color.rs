@@ -2,14 +2,13 @@ use std::marker::PhantomData;
 use std::ops::Index;
 
 use bevy::ecs::component::Mutable;
-use bevy::prelude::*;
 use pyri_tooltip::prelude::*;
 use serde::Deserialize;
 use serde::Serialize;
 use strum::EnumCount;
 
 use crate::core::UpdateSystems;
-use crate::util::prelude::*;
+use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     // Default to Bevy logo grey instead of Bevy website code block grey.

@@ -3,10 +3,9 @@ use bevy::diagnostic::EntityCountDiagnosticsPlugin;
 use bevy::diagnostic::FrameTimeDiagnosticsPlugin;
 use bevy::diagnostic::LogDiagnosticsPlugin;
 use bevy::diagnostic::SystemInformationDiagnosticsPlugin;
-use bevy::prelude::*;
 
 use crate::core::dev::DevConfig;
-use crate::util::prelude::*;
+use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins((

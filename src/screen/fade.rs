@@ -1,10 +1,8 @@
-use bevy::prelude::*;
 use pyri_state::prelude::*;
 
 use crate::animation::PostColorSystems;
+use crate::prelude::*;
 use crate::screen::Screen;
-use crate::theme::prelude::*;
-use crate::util::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.configure::<(FadeIn, FadeOut)>();

@@ -1,9 +1,8 @@
 //use bevy_editor_pls::EditorPlugin;
 //use bevy_editor_pls::EditorWindowPlacement;
 use bevy::input::common_conditions::input_just_pressed;
-use bevy::prelude::*;
 
-use crate::util::prelude::*;
+use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.configure::<IsEditorWindow>();
