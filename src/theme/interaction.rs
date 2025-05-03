@@ -15,6 +15,7 @@ use crate::util::prelude::*;
 pub(super) fn plugin(app: &mut App) {
     app.configure::<(
         InteractionDisabled,
+        Previous<Interaction>,
         InteractionTable<ThemeColorFor<BackgroundColor>>,
         InteractionTable<Offset>,
         InteractionSfx,
@@ -101,7 +102,7 @@ fn play_interaction_sfx(
     interaction_query: Query<
         (
             Option<&InteractionDisabled>,
-            &Old<Interaction>,
+            &Previous<Interaction>,
             &Interaction,
         ),
         (
@@ -112,12 +113,12 @@ fn play_interaction_sfx(
 ) {
     let audio_config = r!(audio_config.get());
 
-    for (is_disabled, old, new) in &interaction_query {
+    for (is_disabled, previous, current) in &interaction_query {
         if matches!(is_disabled, Some(InteractionDisabled(true))) {
             continue;
         }
 
-        match (old.0, new) {
+        match (previous.0, current) {
             (Interaction::None, Interaction::Hovered) => {
                 audio
                     .play(assets.sfx_hover.clone())

@@ -21,10 +21,11 @@ pub(super) fn plugin(app: &mut App) {
             propagate_parent_transforms,
         )
             .chain()
-            .after(restore_backup::<Transform>),
+            .after(restore_from_backup::<Transform>),
     );
 }
 
+/// Saves the pre-animation value of another component to be restored next frame.
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
 pub struct Backup<C: Component<Mutability = Mutable> + Clone>(Option<C>);
@@ -36,12 +37,12 @@ impl<C: Component<Mutability = Mutable> + Clone + Typed + FromReflect + GetTypeR
         app.register_type::<Self>();
         // This has to run before `UiSystem::Focus` in `PreUpdate` anyways, so may as well
         // go all the way back to `First`.
-        app.add_systems(First, restore_backup::<C>);
-        app.add_systems(PostUpdate, save_backup::<C>.in_set(SaveBackupSystems));
+        app.add_systems(First, restore_from_backup::<C>);
+        app.add_systems(PostUpdate, save_to_backup::<C>.in_set(SaveBackupSystems));
     }
 }
 
-fn restore_backup<C: Component<Mutability = Mutable> + Clone>(
+fn restore_from_backup<C: Component<Mutability = Mutable> + Clone>(
     mut backup_query: Query<(&mut Backup<C>, &mut C)>,
 ) {
     for (mut backup, mut target) in &mut backup_query {
@@ -49,7 +50,7 @@ fn restore_backup<C: Component<Mutability = Mutable> + Clone>(
     }
 }
 
-fn save_backup<C: Component<Mutability = Mutable> + Clone>(
+fn save_to_backup<C: Component<Mutability = Mutable> + Clone>(
     mut backup_query: Query<(&mut Backup<C>, &C)>,
 ) {
     for (mut backup, target) in &mut backup_query {

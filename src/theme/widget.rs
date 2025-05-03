@@ -60,7 +60,7 @@ where
             pressed: Offset(Vec2::new(0.0, 2.0)),
             ..default()
         },
-        Old(Interaction::None),
+        Previous(Interaction::None),
         InteractionSfx,
         Children::spawn((
             Spawn((
