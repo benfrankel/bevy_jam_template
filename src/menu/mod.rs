@@ -62,6 +62,7 @@ fn spawn_menu_overlay(mut commands: Commands, menu_root: Res<MenuRoot>) {
     commands.entity(menu_root.ui).with_child(menu_overlay());
 }
 
+#[tweak_fn]
 fn menu_overlay() -> impl Bundle {
     (
         Name::new("MenuOverlay"),

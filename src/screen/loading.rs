@@ -17,6 +17,7 @@ fn spawn_loading_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
     commands.entity(screen_root.ui).with_child(loading());
 }
 
+#[tweak_fn]
 fn loading() -> impl Bundle {
     (
         Name::new("Loading"),
@@ -25,6 +26,7 @@ fn loading() -> impl Bundle {
     )
 }
 
+#[tweak_fn]
 fn loading_text() -> impl Bundle {
     (
         Name::new("LoadingText"),
@@ -38,6 +40,7 @@ fn loading_text() -> impl Bundle {
     )
 }
 
+#[tweak_fn]
 fn loading_bar() -> impl Bundle {
     (
         Name::new("LoadingBar"),
@@ -54,6 +57,7 @@ fn loading_bar() -> impl Bundle {
     )
 }
 
+#[tweak_fn]
 fn loading_bar_fill() -> impl Bundle {
     (
         Name::new("LoadingBarFill"),

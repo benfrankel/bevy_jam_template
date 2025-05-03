@@ -53,6 +53,7 @@ fn spawn_fade_in(mut commands: Commands) {
 }
 
 /// A screen transition animation for entering the current [`Screen`].
+#[tweak_fn]
 pub fn fade_in() -> impl Bundle {
     (
         Name::new("FadeIn"),
@@ -107,6 +108,7 @@ fn apply_fade_out(
 }
 
 /// A screen transition animation for exiting the current [`Screen`].
+#[tweak_fn]
 pub fn fade_out(to_screen: Screen) -> impl Bundle {
     (
         Name::new("FadeOut"),

@@ -12,6 +12,7 @@ fn spawn_pause_menu(mut commands: Commands, menu_root: Res<MenuRoot>) {
     commands.entity(menu_root.ui).with_child(pause());
 }
 
+#[tweak_fn]
 fn pause() -> impl Bundle {
     (
         Name::new("Pause"),
@@ -25,6 +26,7 @@ fn pause() -> impl Bundle {
     )
 }
 
+#[tweak_fn]
 fn header() -> impl Bundle {
     (
         Name::new("Header"),
@@ -38,6 +40,7 @@ fn header() -> impl Bundle {
     )
 }
 
+#[tweak_fn]
 fn buttons() -> impl Bundle {
     (
         Name::new("Buttons"),

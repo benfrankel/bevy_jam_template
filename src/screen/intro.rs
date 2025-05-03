@@ -15,6 +15,7 @@ fn spawn_intro_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
     commands.entity(screen_root.ui).with_child(intro());
 }
 
+#[tweak_fn]
 fn intro() -> impl Bundle {
     (
         Name::new("Intro"),
@@ -23,6 +24,7 @@ fn intro() -> impl Bundle {
     )
 }
 
+#[tweak_fn]
 fn header() -> impl Bundle {
     (
         Name::new("Header"),
@@ -36,6 +38,7 @@ fn header() -> impl Bundle {
     )
 }
 
+#[tweak_fn]
 fn body() -> impl Bundle {
     (
         Name::new("Body"),
@@ -59,6 +62,7 @@ fn body() -> impl Bundle {
     )
 }
 
+#[tweak_fn]
 fn buttons() -> impl Bundle {
     (
         Name::new("Buttons"),

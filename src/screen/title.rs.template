@@ -24,6 +24,7 @@ fn spawn_title_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
     commands.entity(screen_root.ui).with_child(title());
 }
 
+#[tweak_fn]
 fn title() -> impl Bundle {
     (
         Name::new("Title"),
@@ -32,6 +33,7 @@ fn title() -> impl Bundle {
     )
 }
 
+#[tweak_fn]
 fn header() -> impl Bundle {
     (
         Name::new("Header"),
@@ -45,6 +47,7 @@ fn header() -> impl Bundle {
     )
 }
 
+#[tweak_fn]
 fn buttons() -> impl Bundle {
     (
         Name::new("Buttons"),

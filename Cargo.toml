@@ -76,6 +76,7 @@ bevy_kira_audio = "0.23"
 bevy_mod_debugdump = { version = "0.12", optional = true }
 bevy_spawn_observer = "0.1"
 bevy_state = "0.16"
+inline_tweak = { version = "1", features = ["derive"] }
 iyes_progress = "0.14"
 lazy-regex = { version = "3", features = ["lite"] }
 leafwing-input-manager = "0.16"

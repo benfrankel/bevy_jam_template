@@ -38,6 +38,7 @@ fn spawn_splash_screen(
         .with_child(splash(&asset_server));
 }
 
+#[tweak_fn]
 fn splash(asset_server: &AssetServer) -> impl Bundle {
     (
         Name::new("Splash"),
@@ -46,6 +47,7 @@ fn splash(asset_server: &AssetServer) -> impl Bundle {
     )
 }
 
+#[tweak_fn]
 fn splash_image(asset_server: &AssetServer) -> impl Bundle {
     (
         Name::new("SplashImage"),

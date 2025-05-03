@@ -3,6 +3,7 @@ use bevy::ecs::system::IntoObserverSystem;
 use crate::animation::offset::Offset;
 use crate::prelude::*;
 
+#[tweak_fn]
 pub fn overlay(z: i32) -> impl Bundle {
     (
         Node::DEFAULT.abs().full_size(),
@@ -11,6 +12,7 @@ pub fn overlay(z: i32) -> impl Bundle {
     )
 }
 
+#[tweak_fn]
 pub fn blocking_overlay(z: i32) -> impl Bundle {
     (
         Node::DEFAULT.abs().full_size(),
@@ -19,6 +21,7 @@ pub fn blocking_overlay(z: i32) -> impl Bundle {
     )
 }
 
+#[tweak_fn]
 fn button<E, B, M, I>(
     width: Val,
     height: Val,
@@ -67,6 +70,7 @@ where
     )
 }
 
+#[tweak_fn]
 pub fn big_button<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
 where
     E: Event,
@@ -76,6 +80,7 @@ where
     button(Vw(38.0), Vw(11.0), Vw(4.0), text, action)
 }
 
+#[tweak_fn]
 pub fn small_button<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
 where
     E: Event,

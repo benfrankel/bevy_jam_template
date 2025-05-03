@@ -10,6 +10,7 @@ fn spawn_settings_menu(mut commands: Commands, menu_root: Res<MenuRoot>) {
     commands.entity(menu_root.ui).with_child(settings());
 }
 
+#[tweak_fn]
 fn settings() -> impl Bundle {
     (
         Name::new("Settings"),
@@ -25,6 +26,7 @@ fn settings() -> impl Bundle {
 
 const HEADER: &str = "[b]Settings";
 
+#[tweak_fn]
 fn header() -> impl Bundle {
     (
         Name::new("Header"),
@@ -38,6 +40,7 @@ fn header() -> impl Bundle {
     )
 }
 
+#[tweak_fn]
 fn buttons() -> impl Bundle {
     (
         Name::new("Buttons"),
