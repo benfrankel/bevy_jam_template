@@ -1,11 +1,8 @@
 use bevy::ecs::component::Mutable;
 use bevy::reflect::GetTypeRegistration;
 use bevy::reflect::Typed;
-use bevy_kira_audio::prelude::*;
-use rand::prelude::*;
 
 use crate::animation::offset::Offset;
-use crate::core::UpdateSystems;
 use crate::core::audio::AudioConfig;
 use crate::prelude::*;
 use crate::theme::ThemeAssets;

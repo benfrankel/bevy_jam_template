@@ -5,18 +5,10 @@ mod loading;
 mod splash;
 mod title;
 
-use std::time::Duration;
-
 use bevy::ecs::schedule::ScheduleConfigs;
 use bevy::ecs::system::ScheduleSystem;
-use bevy::ui::FocusPolicy;
-use iyes_progress::prelude::*;
-use pyri_state::prelude::*;
-use serde::Deserialize;
-use serde::Serialize;
 
 use crate::core::camera::CameraRoot;
-use crate::core::pause::Pause;
 use crate::core::window::WindowReady;
 use crate::menu::Menu;
 use crate::prelude::*;

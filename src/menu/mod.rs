@@ -1,13 +1,6 @@
 pub mod pause;
 pub mod settings;
 
-use bevy::ui::FocusPolicy;
-use leafwing_input_manager::common_conditions::action_just_pressed;
-use leafwing_input_manager::prelude::*;
-use pyri_state::prelude::*;
-
-use crate::core::UpdateSystems;
-use crate::core::pause::Pause;
 use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {

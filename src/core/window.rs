@@ -3,9 +3,6 @@ use bevy::window::PresentMode;
 use bevy::window::PrimaryWindow;
 use bevy::window::WindowMode;
 use bevy::window::WindowPlugin as BevyWindowPlugin;
-use pyri_state::prelude::*;
-use serde::Deserialize;
-use serde::Serialize;
 
 use crate::prelude::*;
 

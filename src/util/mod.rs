@@ -10,8 +10,6 @@ pub mod selection;
 
 #[allow(unused_imports)]
 pub mod prelude {
-    pub use tiny_bail::prelude::*;
-
     pub use super::config::Config;
     pub use super::config::ConfigHandle;
     pub use super::config::ConfigRef;

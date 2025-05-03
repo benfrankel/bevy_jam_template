@@ -4,9 +4,6 @@ use bevy::diagnostic::FrameCount;
 use bevy::ecs::event::EventCursor;
 use bevy::ecs::system::SystemParam;
 use bevy_common_assets::ron::RonAssetPlugin;
-use iyes_progress::prelude::*;
-use serde::Deserialize;
-use serde::Serialize;
 
 use crate::prelude::*;
 

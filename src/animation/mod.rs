@@ -1,7 +1,6 @@
 pub mod backup;
 pub mod offset;
 
-use avian2d::prelude::*;
 use bevy::ui::UiSystem;
 
 use crate::prelude::*;

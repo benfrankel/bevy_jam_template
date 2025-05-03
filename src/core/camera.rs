@@ -1,7 +1,3 @@
-use pyri_state::prelude::*;
-
-use crate::core::UpdateSystems;
-use crate::core::pause::Pause;
 use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {

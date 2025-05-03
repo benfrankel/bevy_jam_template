@@ -1,6 +1,4 @@
 use bevy::ecs::system::IntoObserverSystem;
-use bevy::ui::FocusPolicy;
-use bevy_spawn_observer::SpawnObserver;
 
 use crate::animation::backup::Backup;
 use crate::animation::offset::Offset;

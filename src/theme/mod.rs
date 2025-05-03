@@ -11,11 +11,6 @@ pub mod widget;
 
 #[allow(unused_imports)]
 pub mod prelude {
-    pub use bevy::color::palettes::tailwind::*;
-    pub use bevy::sprite::Anchor;
-    pub use bevy::ui::Val::*;
-    pub use pyri_tooltip::prelude::*;
-
     pub use super::color::ThemeColor;
     pub use super::color::ThemeColorFor;
     pub use super::color::ThemeColorForText;
@@ -31,9 +26,6 @@ pub mod prelude {
     pub use super::text::parse_rich_custom;
     pub use super::widget;
 }
-
-use bevy_asset_loader::prelude::*;
-use bevy_kira_audio::prelude::*;
 
 use crate::prelude::*;
 

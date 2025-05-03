@@ -1,13 +1,8 @@
-use std::marker::PhantomData;
 use std::ops::Index;
 
 use bevy::ecs::component::Mutable;
-use pyri_tooltip::prelude::*;
-use serde::Deserialize;
-use serde::Serialize;
 use strum::EnumCount;
 
-use crate::core::UpdateSystems;
 use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {

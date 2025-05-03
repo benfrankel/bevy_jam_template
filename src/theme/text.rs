@@ -1,10 +1,6 @@
 use bevy::asset::load_internal_binary_asset;
 use bevy::asset::weak_handle;
-use bevy::platform::collections::HashMap;
-use lazy_regex::regex;
-use pyri_tooltip::prelude::*;
 
-use crate::core::UpdateSystems;
 use crate::core::window::WindowRoot;
 use crate::prelude::*;
 

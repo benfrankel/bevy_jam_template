@@ -1,6 +1,3 @@
-use avian2d::prelude::*;
-use bevy::input::common_conditions::input_just_pressed;
-
 use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
