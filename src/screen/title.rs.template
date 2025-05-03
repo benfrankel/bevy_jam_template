@@ -69,5 +69,7 @@ fn play_game(_: Trigger<Pointer<Click>>, mut commands: Commands) {
 }
 
 fn quit_to_desktop(_: Trigger<Pointer<Click>>, mut app_exit: EventWriter<AppExit>) {
-    app_exit.write(AppExit::Success);
+    if cfg!(not(feature = "web")) {
+        app_exit.write(AppExit::Success);
+    }
 }
