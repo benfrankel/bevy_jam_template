@@ -45,6 +45,13 @@ where
         },
         BorderRadius::MAX,
         ThemeColor::default().set::<BackgroundColor>(),
+        BoxShadow::from(ShadowStyle {
+            color: Color::BLACK.with_alpha(0.5),
+            x_offset: Val::ZERO,
+            y_offset: Vw(1.0),
+            spread_radius: Vw(0.9),
+            blur_radius: Vw(0.7),
+        }),
         InteractionTheme {
             none: ThemeColor::Primary.set::<BackgroundColor>(),
             hovered: ThemeColor::PrimaryHovered.set::<BackgroundColor>(),
