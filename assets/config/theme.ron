@@ -13,7 +13,7 @@
         // Primary
         Srgba(Srgba(red: 0.700, green: 0.400, blue: 0.700, alpha: 1.000)),
         // PrimaryHovered
-        Srgba(Srgba(red: 0.850, green: 0.500, blue: 0.850, alpha: 1.000)),
+        Srgba(Srgba(red: 0.850, green: 0.500, blue: 0.820, alpha: 1.000)),
         // PrimaryPressed
         Srgba(Srgba(red: 0.500, green: 0.300, blue: 0.500, alpha: 1.000)),
         // PrimaryDisabled

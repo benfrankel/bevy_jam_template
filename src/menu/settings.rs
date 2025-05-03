@@ -15,7 +15,7 @@ fn settings() -> impl Bundle {
     (
         Name::new("Settings"),
         Node {
-            padding: UiRect::all(Vw(4.0)),
+            padding: UiRect::all(Vw(3.5)),
             ..Node::COLUMN_MID.full_size().abs()
         },
         GlobalZIndex(2),
@@ -34,7 +34,7 @@ fn header() -> impl Bundle {
         DynamicFontSize::new(Vw(5.0)).with_step(8.0),
         ThemeColorForText(vec![ThemeColor::BodyText]),
         Node {
-            margin: UiRect::bottom(Vw(2.0)),
+            margin: UiRect::bottom(Vw(5.0)),
             ..default()
         },
     )
@@ -45,7 +45,6 @@ fn buttons() -> impl Bundle {
     (
         Name::new("Buttons"),
         Node {
-            margin: UiRect::top(VMin(4.0)),
             row_gap: Vw(2.5),
             ..Node::COLUMN_CENTER
         },
