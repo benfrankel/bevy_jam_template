@@ -2,7 +2,7 @@ use bevy::app::PluginGroupBuilder;
 
 use crate::prelude::*;
 
-// TODO: Workaround for https://github.com/bevyengine/bevy/issues/14261.
+// TODO: Workaround for <https://github.com/bevyengine/bevy/issues/14261>.
 pub trait Configure {
     fn configure(app: &mut App);
 }
@@ -31,7 +31,7 @@ impl AppExtConfigure for App {
     }
 }
 
-// TODO: Workaround for https://github.com/bevyengine/bevy/issues/14262.
+// TODO: Workaround for <https://github.com/bevyengine/bevy/issues/14262>.
 pub trait PluginGroupBuilderExtReplace {
     fn replace<Target: Plugin>(self, plugin: impl Plugin) -> Self;
 }

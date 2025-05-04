@@ -52,7 +52,8 @@ fn splash_image(asset_server: &AssetServer) -> impl Bundle {
     (
         Name::new("SplashImage"),
         ImageNode::new(asset_server.load_with_settings(
-            // TODO: Use `embedded_asset!` when https://github.com/bevyengine/bevy/issues/14246 is fixed.
+            // TODO: Workaround for <https://github.com/bevyengine/bevy/issues/14246>.
+            //       Use `embedded_asset!` once that's fixed.
             "image/splash.png",
             |settings: &mut ImageLoaderSettings| {
                 settings.sampler = ImageSampler::linear();

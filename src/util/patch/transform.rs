@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-// TODO: Workaround for https://github.com/bevyengine/bevy/issues/14525.
+// TODO: Workaround for <https://github.com/bevyengine/bevy/issues/14525>.
 pub trait Dir2ExtToQuat {
     fn to_quat(self) -> Quat;
 }

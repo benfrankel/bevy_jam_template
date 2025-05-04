@@ -6,7 +6,6 @@ default-run = "run"
 
 
 [features]
-default = ["native_dev"]
 dev = [
     #"dep:bevy_editor_pls",
     "avian2d/debug-plugin",
@@ -27,6 +26,20 @@ web = []
 web_dev = ["web", "dev"]
 trace = ["bevy/trace", "bevy/trace_tracy"]
 bevy_mod_debugdump = ["dep:bevy_mod_debugdump"]
+
+[package.metadata.bevy_cli.native]
+features = ["native"]
+
+[package.metadata.bevy_cli.native.dev]
+features = ["native_dev"]
+
+[package.metadata.bevy_cli.web]
+features = ["web"]
+# Use the `wasm_js` backend for randomness on web.
+rustflags = ["--cfg", "getrandom_backend=\"wasm_js\""]
+
+[package.metadata.bevy_cli.web.dev]
+features = ["web_dev"]
 
 
 [dependencies]
@@ -63,6 +76,7 @@ bevy_kira_audio = "0.23"
 bevy_mod_debugdump = { version = "0.12", optional = true }
 bevy_spawn_observer = "0.1"
 bevy_state = "0.16"
+inline_tweak = { version = "1", features = ["derive"] }
 iyes_progress = "0.14"
 lazy-regex = { version = "3", features = ["lite"] }
 leafwing-input-manager = "0.16"
@@ -83,7 +97,6 @@ rand = { version = "0.8", features = ["small_rng"] }
 ron = "0.10"
 serde = "1"
 strum = { version = "0.27", features = ["derive"] }
-tap = "1"
 tiny_bail = "0.4"
 # Compile low-severity logs out of web builds for performance.
 tracing = { version = "0.1", features = [

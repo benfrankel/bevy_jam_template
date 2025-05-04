@@ -1,5 +1,6 @@
 use crate::prelude::*;
 
+// TODO: Workaround for <https://github.com/bevyengine/bevy/issues/5893>.
 pub trait ValExtAdd: Sized {
     fn add(
         &self,
