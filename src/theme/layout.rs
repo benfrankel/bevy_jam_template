@@ -20,6 +20,8 @@ pub trait NodeExtLayout {
     fn full_height(self) -> Self;
 
     fn full_size(self) -> Self;
+
+    fn centered(self) -> Self;
 }
 
 impl NodeExtLayout for Node {
@@ -98,5 +100,11 @@ impl NodeExtLayout for Node {
 
     fn full_size(self) -> Self {
         self.full_width().full_height()
+    }
+
+    fn centered(mut self) -> Self {
+        self.align_self = AlignSelf::Center;
+        self.justify_self = JustifySelf::Center;
+        self
     }
 }
