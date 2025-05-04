@@ -94,6 +94,7 @@ where
                 RichText::from_sections(parse_rich(&text)),
                 DynamicFontSize::new(font_size).with_step(8.0),
                 ThemeColorForText(vec![ThemeColor::PrimaryText]),
+                Pickable::IGNORE,
             )),
             SpawnObserver::new(action),
         )),
