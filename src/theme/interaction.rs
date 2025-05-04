@@ -156,51 +156,43 @@ pub struct InteractionSfx;
 impl Configure for InteractionSfx {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.add_systems(
-            Update,
-            play_interaction_sfx.in_set(UpdateSystems::RecordInput),
-        );
+        app.add_observer(play_hover_sfx);
+        app.add_observer(play_click_sfx);
     }
 }
 
-fn play_interaction_sfx(
+fn play_hover_sfx(
+    trigger: Trigger<Pointer<Over>>,
     audio_config: ConfigRef<AudioConfig>,
     assets: Res<ThemeAssets>,
     audio: Res<Audio>,
-    interaction_query: Query<
-        (
-            Option<&InteractionDisabled>,
-            &Previous<Interaction>,
-            &Interaction,
-        ),
-        (
-            With<InteractionSfx>,
-            Or<(Changed<Interaction>, Changed<InteractionDisabled>)>,
-        ),
-    >,
+    sfx_query: Query<Option<&InteractionDisabled>, With<InteractionSfx>>,
 ) {
     let audio_config = r!(audio_config.get());
+    let target = r!(trigger.get_target());
+    let disabled = rq!(sfx_query.get(target));
+    rq!(!matches!(disabled, Some(InteractionDisabled(true))));
 
-    for (is_disabled, previous, current) in &interaction_query {
-        if matches!(is_disabled, Some(InteractionDisabled(true))) {
-            continue;
-        }
+    audio
+        .play(assets.sfx_hover.clone())
+        .with_volume(4.0 * audio_config.ui_volume)
+        .with_playback_rate(thread_rng().gen_range(0.9..1.5));
+}
 
-        match (previous.0, current) {
-            (Interaction::None, Interaction::Hovered) => {
-                audio
-                    .play(assets.sfx_hover.clone())
-                    .with_volume(2.0 * audio_config.ui_volume)
-                    .with_playback_rate(thread_rng().gen_range(0.9..1.5));
-            },
-            // TODO: This plays a sound on mouse down, not on click.
-            (_, Interaction::Pressed) => {
-                audio
-                    .play(assets.sfx_click.clone())
-                    .with_volume(4.0 * audio_config.ui_volume)
-                    .with_playback_rate(thread_rng().gen_range(0.9..1.5));
-            },
-            _ => (),
-        }
-    }
+fn play_click_sfx(
+    trigger: Trigger<Pointer<Click>>,
+    audio_config: ConfigRef<AudioConfig>,
+    assets: Res<ThemeAssets>,
+    audio: Res<Audio>,
+    sfx_query: Query<Option<&InteractionDisabled>, With<InteractionSfx>>,
+) {
+    let audio_config = r!(audio_config.get());
+    let target = r!(trigger.get_target());
+    let disabled = rq!(sfx_query.get(target));
+    rq!(!matches!(disabled, Some(InteractionDisabled(true))));
+
+    audio
+        .play(assets.sfx_click.clone())
+        .with_volume(4.0 * audio_config.ui_volume)
+        .with_playback_rate(thread_rng().gen_range(0.9..1.5));
 }

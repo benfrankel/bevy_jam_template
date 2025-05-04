@@ -27,7 +27,7 @@ impl FromWorld for MenuRoot {
                 .spawn((
                     Name::new("Menu"),
                     Node::DEFAULT.full_size(),
-                    FocusPolicy::Pass,
+                    Pickable::IGNORE,
                     DespawnOnDisableState::<Menu>::Descendants,
                 ))
                 .id(),

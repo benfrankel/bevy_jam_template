@@ -39,7 +39,7 @@ impl FromWorld for ScreenRoot {
                 .spawn((
                     Name::new("Screen"),
                     Node::DEFAULT.full_size(),
-                    FocusPolicy::Pass,
+                    Pickable::IGNORE,
                     DespawnOnExitState::<Screen>::Descendants,
                 ))
                 .id(),
