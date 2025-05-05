@@ -1,8 +1,18 @@
+use std::fs;
+
+use bevy_simple_prefs::Prefs;
+use bevy_simple_prefs::PrefsPlugin;
+
 use crate::menu::Menu;
 use crate::menu::MenuRoot;
 use crate::prelude::*;
 
+#[derive(Prefs, Reflect, Default)]
+struct Preferences {}
+
 pub(super) fn plugin(app: &mut App) {
+    initialize_prefs_persist(app);
+
     app.add_systems(StateFlush, Menu::Settings.on_enter(spawn_settings_menu));
 }
 
@@ -54,4 +64,15 @@ fn buttons() -> impl Bundle {
 
 fn go_back(_: Trigger<Pointer<Click>>, mut menu: ResMut<NextStateStack<Menu>>) {
     menu.pop();
+}
+
+fn initialize_prefs_persist(app: &mut App) {
+    let config_path = r!(dirs::config_dir()).join(env!("CARGO_PKG_NAME"));
+    r!(fs::create_dir_all(&config_path).is_ok());
+    
+    app.add_plugins(PrefsPlugin::<Preferences> {
+        filename: "preferences.ron".to_string(),
+        path: config_path,
+        ..default()
+    });
 }
