@@ -8,6 +8,7 @@ use bevy::ecs::schedule::ScheduleLabel;
 use bevy::prelude::*;
 use bevy_mod_debugdump::schedule_graph::Settings;
 use bevy_mod_debugdump::schedule_graph_dot;
+use tiny_bail::prelude::*;
 
 // Usage: Disable logging with RUST_LOG=off, then pipe the output into `dot`.
 // Example: `RUST_LOG=off bevy run --bin debug --features bevy_mod_debugdump | dot -Tsvg | feh -`.
@@ -15,18 +16,14 @@ fn main() {
     let mut app = App::new();
     app.add_plugins(bevy_jam_template::plugin);
 
-    let mut labels = app
-        .world()
-        .resource::<Schedules>()
+    let mut labels = r!(app.world().get_resource::<Schedules>())
         .iter()
         .map(|(label, _)| format!("{label:?}"))
         .collect::<Vec<_>>();
     labels.sort();
     println!("All schedules: {}\n", labels.join(", "));
 
-    let main_labels = app
-        .world()
-        .resource::<MainScheduleOrder>()
+    let main_labels = r!(app.world().get_resource::<MainScheduleOrder>())
         .labels
         .iter()
         .map(|label| format!("{label:?}"))
