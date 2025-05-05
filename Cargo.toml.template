@@ -40,7 +40,7 @@ bevy_mod_debugdump = { version = "0.12", optional = true }
 bevy_simple_prefs = "0.5"
 bevy_spawn_observer = "0.1"
 bevy_state = "0.16"
-dirs = "6"
+dirs = { version = "6", optional = true }
 inline_tweak = { version = "1", features = ["derive"] }
 iyes_progress = "0.14"
 lazy-regex = { version = "3", features = ["lite"] }
@@ -95,7 +95,7 @@ dev = [
     "bevy/track_location",
     "pyri_state/debug",
 ]
-native = ["avian2d/parallel"]
+native = ["dep:dirs", "avian2d/parallel"]
 native_dev = ["native", "dev", "bevy/file_watcher", "bevy/embedded_watcher"]
 web = []
 web_dev = ["web", "dev"]

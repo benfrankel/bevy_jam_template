@@ -1,5 +1,10 @@
 {
-    // Allow `rust-analyzer` and `cargo` to run simultaneously.
+    // Run rust-analyzer with cargo features enabled.
+    "rust-analyzer.cargo.features": [
+        "native",
+        "dev",
+    ],
+    // Allow rust-analyzer and cargo to run simultaneously.
     // This uses a heavy amount of storage space, so consider commenting it out.
     "rust-analyzer.cargo.targetDir": true,
     // Prepend `mod.rs` files with their parent directory.

@@ -1,5 +1,3 @@
-use std::fs;
-
 use bevy_simple_prefs::Prefs;
 use bevy_simple_prefs::PrefsPlugin;
 
@@ -19,13 +17,13 @@ struct Settings {}
 impl Configure for Settings {
     fn configure(app: &mut App) {
         // Create the config folder if necessary.
-        #[cfg(feature = "web")]
+        #[cfg(not(feature = "native"))]
         let path = default();
-        #[cfg(not(feature = "web"))]
+        #[cfg(feature = "native")]
         let path = {
             let path = r!(dirs::config_local_dir()).join(env!("CARGO_PKG_NAME"));
-            r!(fs::create_dir_all(&path).is_ok());
-            r!(fs::exists(&path));
+            r!(std::fs::create_dir_all(&path).is_ok());
+            r!(std::fs::exists(&path));
             path
         };
 
