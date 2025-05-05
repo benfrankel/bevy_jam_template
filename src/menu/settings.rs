@@ -1,5 +1,8 @@
 use std::fs;
-use std::path::Path;
+
+use bevy_simple_prefs::Prefs;
+use bevy_simple_prefs::PrefsPlugin;
+
 use crate::menu::Menu;
 use crate::menu::MenuRoot;
 use crate::prelude::*;
@@ -9,9 +12,9 @@ struct Preferences {}
 
 pub(super) fn plugin(app: &mut App) {
     let config_path = dirs::config_dir().unwrap().join(env!("CARGO_PKG_NAME"));
-
     let _ = fs::create_dir_all(&config_path);
-    if fs::exists(&config_path) {
+
+    if fs::exists(&config_path).is_ok() {
         app.add_plugins(PrefsPlugin::<Preferences> {
             filename: "preferences.ron".to_string(),
             path: config_path,
