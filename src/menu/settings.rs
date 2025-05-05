@@ -10,7 +10,8 @@ struct Preferences {}
 pub(super) fn plugin(app: &mut App) {
     let config_path = dirs::config_dir().unwrap().join(env!("CARGO_PKG_NAME"));
 
-    if Path::new(&config_path).exists() || fs::create_dir(&config_path).is_ok() {
+    let _ = fs::create_dir_all(&config_path);
+    if fs::exists(&config_path) {
         app.add_plugins(PrefsPlugin::<Preferences> {
             filename: "preferences.ron".to_string(),
             path: config_path,
