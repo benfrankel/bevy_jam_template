@@ -107,7 +107,7 @@ variadics_please = "1"
 
 [patch.crates-io]
 avian2d = { git = "https://github.com/Jondolf/avian.git" }
-# TODO: Workaround for https://github.com/NiklasEi/bevy_asset_loader/issues/219.
+# TODO: Workaround for <https://github.com/NiklasEi/bevy_asset_loader/issues/219>.
 bevy_asset_loader = { git = "https://github.com/benfrankel/bevy_asset_loader.git", branch = "direct-depend" }
 bevy_mod_debugdump = { git = "https://github.com/jakobhellermann/bevy_mod_debugdump.git" }
 iyes_progress = { git = "https://github.com/benfrankel/iyes_progress.git", branch = "bevy-0-16" }
@@ -115,6 +115,10 @@ leafwing-input-manager = { git = "https://github.com/Leafwing-Studios/leafwing-i
 pyri_state = { git = "https://github.com/benfrankel/pyri_state.git" }
 pyri_tooltip = { git = "https://github.com/benfrankel/pyri_tooltip.git" }
 
+
+[lints.rust]
+# Mark `bevy_lint` as a valid `cfg` for when `bevy_lint` runs.
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(bevy_lint)"] }
 
 [lints.clippy]
 # Bevy supplies arguments to systems via dependency injection, so it's natural for systems to
@@ -125,9 +129,14 @@ type_complexity = "allow"
 # Make sure macros use their standard braces, such as `[]` for `bevy_ecs::children!`.
 nonstandard_macro_braces = "warn"
 
+# See more Bevy lints here: <https://thebevyflock.github.io/bevy_cli/bevy_lint/lints>.
+[package.metadata.bevy_lint]
+restriction = "warn"
+pedantic = "warn"
+
 
 # Compile with Performance Optimizations:
-# https://bevyengine.org/learn/quick-start/getting-started/setup/#compile-with-performance-optimizations
+# <https://bevyengine.org/learn/quick-start/getting-started/setup/#compile-with-performance-optimizations>
 
 # Enable a small amount of optimization in the dev profile.
 [profile.dev]
@@ -137,7 +146,7 @@ opt-level = 1
 [profile.dev.package."*"]
 opt-level = 3
 
-# Remove expensive debug assertions due to https://github.com/bevyengine/bevy/issues/14291
+# Remove expensive debug assertions due to <https://github.com/bevyengine/bevy/issues/14291>.
 [profile.dev.package.wgpu-types]
 debug-assertions = false
 
