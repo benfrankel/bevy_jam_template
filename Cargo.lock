@@ -1199,7 +1199,7 @@ dependencies = [
 [[package]]
 name = "bevy_simple_prefs"
 version = "0.5.0"
-source = "git+https://github.com/jayclees/bevy_simple_prefs.git#3e3f494ab9c7222a5fe99424b1d601287f6c22bd"
+source = "git+https://github.com/rparrett/bevy_simple_prefs.git#51a58aa9232bf3932cb55166d47887b03bdfe8e7"
 dependencies = [
  "bevy",
  "bevy_simple_prefs_derive",
@@ -1211,7 +1211,7 @@ dependencies = [
 [[package]]
 name = "bevy_simple_prefs_derive"
 version = "0.5.0"
-source = "git+https://github.com/jayclees/bevy_simple_prefs.git#3e3f494ab9c7222a5fe99424b1d601287f6c22bd"
+source = "git+https://github.com/rparrett/bevy_simple_prefs.git#51a58aa9232bf3932cb55166d47887b03bdfe8e7"
 dependencies = [
  "bevy",
  "quote",
