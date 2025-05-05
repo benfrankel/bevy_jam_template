@@ -1,3 +1,6 @@
+// Support configuring Bevy lints within code.
+#![cfg_attr(bevy_lint, feature(register_tool), register_tool(bevy))]
+// Silence dead code warnings while writing debugging code.
 #![allow(dead_code)]
 
 use bevy::app::MainScheduleOrder;
