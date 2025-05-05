@@ -74,6 +74,7 @@ bevy_common_assets = { version = "0.13", features = ["ron"] }
 #bevy_editor_pls = { version = "0.12", optional = true }
 bevy_kira_audio = "0.23"
 bevy_mod_debugdump = { version = "0.12", optional = true }
+bevy_simple_prefs = "0.5.0"
 bevy_spawn_observer = "0.1"
 bevy_state = "0.16"
 inline_tweak = { version = "1", features = ["derive"] }
@@ -104,6 +105,7 @@ tracing = { version = "0.1", features = [
     "release_max_level_warn",
 ] }
 variadics_please = "1"
+dirs = "6.0.0"
 
 [patch.crates-io]
 avian2d = { git = "https://github.com/Jondolf/avian.git" }
@@ -114,6 +116,7 @@ iyes_progress = { git = "https://github.com/benfrankel/iyes_progress.git", branc
 leafwing-input-manager = { git = "https://github.com/Leafwing-Studios/leafwing-input-manager.git" }
 pyri_state = { git = "https://github.com/benfrankel/pyri_state.git" }
 pyri_tooltip = { git = "https://github.com/benfrankel/pyri_tooltip.git" }
+bevy_simple_prefs = { git = "https://github.com/jayclees/bevy_simple_prefs.git" }
 
 
 [lints.clippy]

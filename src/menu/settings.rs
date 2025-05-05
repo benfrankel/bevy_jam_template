@@ -1,8 +1,23 @@
+use std::fs;
+use std::path::Path;
 use crate::menu::Menu;
 use crate::menu::MenuRoot;
 use crate::prelude::*;
 
+#[derive(Prefs, Reflect, Default)]
+struct Preferences {}
+
 pub(super) fn plugin(app: &mut App) {
+    let config_path = dirs::config_dir().unwrap().join(env!("CARGO_PKG_NAME"));
+
+    if Path::new(&config_path).exists() || fs::create_dir(&config_path).is_ok() {
+        app.add_plugins(PrefsPlugin::<Preferences> {
+            filename: "preferences.ron".to_string(),
+            path: config_path,
+            ..default()
+        });
+    }
+
     app.add_systems(StateFlush, Menu::Settings.on_enter(spawn_settings_menu));
 }
 
