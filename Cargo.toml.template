@@ -5,6 +5,81 @@ edition = "2024"
 default-run = "run"
 
 
+[dependencies]
+avian2d = { version = "0.2", default-features = false, features = [
+    "2d",
+    "f32",
+    "parry-f32",
+] }
+bevy = { version = "0.16", default-features = false, features = [
+    # Core features
+    "bevy_winit",
+    "bevy_ui",
+    "bevy_ui_picking_backend",
+
+    # Extra features
+    "async_executor",
+    #"custom_cursor",
+    #"default_font",
+    "multi_threaded",
+    "tonemapping_luts",
+
+    # Platform features
+    "wayland",
+    "webgl2",
+    "x11",
+
+    # File formats
+    "png",
+] }
+bevy_asset_loader = { version = "0.23", features = ["2d", "progress_tracking"] }
+bevy_common_assets = { version = "0.13", features = ["ron"] }
+#bevy_editor_pls = { version = "0.12", optional = true }
+bevy_kira_audio = "0.23"
+bevy_mod_debugdump = { version = "0.12", optional = true }
+bevy_simple_prefs = "0.5"
+bevy_spawn_observer = "0.1"
+bevy_state = "0.16"
+dirs = "6"
+inline_tweak = { version = "1", features = ["derive"] }
+iyes_progress = "0.14"
+lazy-regex = { version = "3", features = ["lite"] }
+leafwing-input-manager = "0.17"
+# Compile low-severity logs out of native builds for performance.
+log = { version = "0.4", features = [
+    "max_level_debug",
+    "release_max_level_warn",
+] }
+pyri_state = { version = "0.4", default-features = false, features = [
+    "bevy_app",
+    "bevy_reflect",
+    "bevy_state",
+    "react",
+    "stack",
+] }
+pyri_tooltip = "0.3"
+rand = { version = "0.8", features = ["small_rng"] }
+ron = "0.10"
+serde = "1"
+strum = { version = "0.27", features = ["derive"] }
+tiny_bail = "0.4"
+# Compile low-severity logs out of web builds for performance.
+tracing = { version = "0.1", features = [
+    "max_level_debug",
+    "release_max_level_warn",
+] }
+variadics_please = "1"
+
+[patch.crates-io]
+avian2d = { git = "https://github.com/Jondolf/avian.git" }
+# TODO: Workaround for <https://github.com/NiklasEi/bevy_asset_loader/issues/219>.
+bevy_asset_loader = { git = "https://github.com/benfrankel/bevy_asset_loader.git", branch = "direct-depend" }
+bevy_mod_debugdump = { git = "https://github.com/jakobhellermann/bevy_mod_debugdump.git" }
+iyes_progress = { git = "https://github.com/benfrankel/iyes_progress.git", branch = "bevy-0-16" }
+pyri_state = { git = "https://github.com/benfrankel/pyri_state.git" }
+pyri_tooltip = { git = "https://github.com/benfrankel/pyri_tooltip.git" }
+
+
 [features]
 dev = [
     #"dep:bevy_editor_pls",
@@ -42,80 +117,6 @@ rustflags = ["--cfg", "getrandom_backend=\"wasm_js\""]
 features = ["web_dev"]
 
 
-[dependencies]
-avian2d = { version = "0.2", default-features = false, features = [
-    "2d",
-    "f32",
-    "parry-f32",
-] }
-bevy = { version = "0.16", default-features = false, features = [
-    # Core features
-    "bevy_winit",
-    "bevy_ui",
-    "bevy_ui_picking_backend",
-
-    # Extra features
-    "async_executor",
-    #"custom_cursor",
-    #"default_font",
-    "multi_threaded",
-    "tonemapping_luts",
-
-    # Platform features
-    "wayland",
-    "webgl2",
-    "x11",
-
-    # File formats
-    "png",
-] }
-bevy_asset_loader = { version = "0.23", features = ["2d", "progress_tracking"] }
-bevy_common_assets = { version = "0.13", features = ["ron"] }
-#bevy_editor_pls = { version = "0.12", optional = true }
-bevy_kira_audio = "0.23"
-bevy_mod_debugdump = { version = "0.12", optional = true }
-bevy_spawn_observer = "0.1"
-bevy_state = "0.16"
-inline_tweak = { version = "1", features = ["derive"] }
-iyes_progress = "0.14"
-lazy-regex = { version = "3", features = ["lite"] }
-leafwing-input-manager = "0.16"
-# Compile low-severity logs out of native builds for performance.
-log = { version = "0.4", features = [
-    "max_level_debug",
-    "release_max_level_warn",
-] }
-pyri_state = { version = "0.4", default-features = false, features = [
-    "bevy_app",
-    "bevy_reflect",
-    "bevy_state",
-    "react",
-    "stack",
-] }
-pyri_tooltip = "0.3"
-rand = { version = "0.8", features = ["small_rng"] }
-ron = "0.10"
-serde = "1"
-strum = { version = "0.27", features = ["derive"] }
-tiny_bail = "0.4"
-# Compile low-severity logs out of web builds for performance.
-tracing = { version = "0.1", features = [
-    "max_level_debug",
-    "release_max_level_warn",
-] }
-variadics_please = "1"
-
-[patch.crates-io]
-avian2d = { git = "https://github.com/Jondolf/avian.git" }
-# TODO: Workaround for <https://github.com/NiklasEi/bevy_asset_loader/issues/219>.
-bevy_asset_loader = { git = "https://github.com/benfrankel/bevy_asset_loader.git", branch = "direct-depend" }
-bevy_mod_debugdump = { git = "https://github.com/jakobhellermann/bevy_mod_debugdump.git" }
-iyes_progress = { git = "https://github.com/benfrankel/iyes_progress.git", branch = "bevy-0-16" }
-leafwing-input-manager = { git = "https://github.com/Leafwing-Studios/leafwing-input-manager.git" }
-pyri_state = { git = "https://github.com/benfrankel/pyri_state.git" }
-pyri_tooltip = { git = "https://github.com/benfrankel/pyri_tooltip.git" }
-
-
 [lints.rust]
 # Mark `bevy_lint` as a valid `cfg` for when `bevy_lint` runs.
 unexpected_cfgs = { level = "warn", check-cfg = ["cfg(bevy_lint)"] }
@@ -128,6 +129,11 @@ too_many_arguments = "allow"
 type_complexity = "allow"
 # Make sure macros use their standard braces, such as `[]` for `bevy_ecs::children!`.
 nonstandard_macro_braces = "warn"
+
+# See more Bevy lints here: <https://thebevyflock.github.io/bevy_cli/bevy_lint/lints>.
+[package.metadata.bevy_lint]
+#restriction = "warn"
+pedantic = "warn"
 
 
 # Compile with Performance Optimizations:

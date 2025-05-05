@@ -329,7 +329,7 @@ checksum = "ace50bade8e6234aa140d9a2f552bbee1db4d353f69b8217bc503490fc1a9f26"
 [[package]]
 name = "avian2d"
 version = "0.2.0"
-source = "git+https://github.com/Jondolf/avian.git#910ab042828986e27f32fc2e27f6f2ee5576df1e"
+source = "git+https://github.com/Jondolf/avian.git#c505c9d66d165576f649457f09c9804e09ced8a8"
 dependencies = [
  "arrayvec",
  "avian_derive",
@@ -349,7 +349,7 @@ dependencies = [
 [[package]]
 name = "avian_derive"
 version = "0.2.2"
-source = "git+https://github.com/Jondolf/avian.git#910ab042828986e27f32fc2e27f6f2ee5576df1e"
+source = "git+https://github.com/Jondolf/avian.git#c505c9d66d165576f649457f09c9804e09ced8a8"
 dependencies = [
  "proc-macro-error2",
  "proc-macro2",
@@ -1198,8 +1198,9 @@ dependencies = [
 
 [[package]]
 name = "bevy_simple_prefs"
-version = "0.5.0"
-source = "git+https://github.com/rparrett/bevy_simple_prefs.git#51a58aa9232bf3932cb55166d47887b03bdfe8e7"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b999ce5844e3236342e74ba6c8b032a014f0bc76f108c1b6b8ee439c5270c4fd"
 dependencies = [
  "bevy",
  "bevy_simple_prefs_derive",
@@ -1210,8 +1211,9 @@ dependencies = [
 
 [[package]]
 name = "bevy_simple_prefs_derive"
-version = "0.5.0"
-source = "git+https://github.com/rparrett/bevy_simple_prefs.git#51a58aa9232bf3932cb55166d47887b03bdfe8e7"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5a12bf924632c35e93516f0d0198c97b8680844e1d173f036a3bf82ec09b3654"
 dependencies = [
  "bevy",
  "quote",
@@ -2957,8 +2959,9 @@ checksum = "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe"
 
 [[package]]
 name = "leafwing-input-manager"
-version = "0.16.0"
-source = "git+https://github.com/Leafwing-Studios/leafwing-input-manager.git#f337a7fa900bf8706f5afc7d15cf13101606d0ea"
+version = "0.17.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5e5921290ac62f78a4f2f2f9fe3a31c73bbf4309b013bf25f91514ac111e3976"
 dependencies = [
  "bevy",
  "dyn-clone",
@@ -2972,8 +2975,9 @@ dependencies = [
 
 [[package]]
 name = "leafwing_input_manager_macros"
-version = "0.16.0"
-source = "git+https://github.com/Leafwing-Studios/leafwing-input-manager.git#f337a7fa900bf8706f5afc7d15cf13101606d0ea"
+version = "0.17.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2226cb83129176a6c634f2ce0828c2c29896ea0898fc198636f98696b8056890"
 dependencies = [
  "proc-macro-crate",
  "proc-macro2",
@@ -3005,9 +3009,9 @@ dependencies = [
 
 [[package]]
 name = "libm"
-version = "0.2.13"
+version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c9627da5196e5d8ed0b0495e61e518847578da83483c37288316d9b2e03a7f72"
+checksum = "a25169bd5913a4b437588a7e3d127cd6e90127b60e0ffbd834a38f1599e016b8"
 
 [[package]]
 name = "libredox"
@@ -5118,9 +5122,9 @@ dependencies = [
 
 [[package]]
 name = "triple_buffer"
-version = "8.1.0"
+version = "8.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "de7a7d39da903eaef0d0fd14aae8c8c36cdd7dc1d5a251f88c84b676e8dc0a14"
+checksum = "420466259f9fa5decc654c490b9ab538400e5420df8237f84ecbe20368bcf72b"
 dependencies = [
  "crossbeam-utils",
 ]
