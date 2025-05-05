@@ -75,13 +75,13 @@ impl Config for DevConfig {
 }
 
 fn debug_start(world: &mut World) {
-    let frame = r!(world.get_resource::<FrameCount>().0);
+    let frame = r!(world.get_resource::<FrameCount>()).0;
     let prefix = format!("[Frame {frame} start] ");
     let _ = prefix;
 }
 
 fn debug_end(world: &mut World) {
-    let frame = r!(world.get_resource::<FrameCount>().0);
+    let frame = r!(world.get_resource::<FrameCount>()).0;
     let prefix = format!("[Frame {frame} end] ");
     let _ = prefix;
 }

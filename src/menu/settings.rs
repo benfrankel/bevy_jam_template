@@ -18,12 +18,21 @@ struct Settings {}
 
 impl Configure for Settings {
     fn configure(app: &mut App) {
-        let config_path = r!(dirs::config_dir()).join(env!("CARGO_PKG_NAME"));
-        r!(fs::create_dir_all(&config_path).is_ok());
+        // Create the config folder if necessary.
+        #[cfg(feature = "web")]
+        let path = default();
+        #[cfg(not(feature = "web"))]
+        let path = {
+            let path = r!(dirs::config_local_dir()).join(env!("CARGO_PKG_NAME"));
+            r!(fs::create_dir_all(&path).is_ok());
+            r!(fs::exists(&path));
+            path
+        };
 
+        // If there were no issues, initialize settings.
         app.add_plugins(PrefsPlugin::<Settings> {
-            filename: "preferences.ron".to_string(),
-            path: config_path,
+            filename: "settings.ron".to_string(),
+            path,
             ..default()
         });
     }
