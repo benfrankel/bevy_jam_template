@@ -4,10 +4,14 @@
         "native",
         "dev",
     ],
+    // Run rust-analyzer for `src/bin/` files.
+    "rust-analyzer.check.extraArgs": [
+        "--bins"
+    ],
     // Allow rust-analyzer and cargo to run simultaneously.
     // This uses a heavy amount of storage space, so consider commenting it out.
     "rust-analyzer.cargo.targetDir": true,
-    // Prepend `mod.rs` files with their parent directory.
+    // Differentaite `mod.rs` files in the editor tab by their parent directory.
     "workbench.editor.customLabels.patterns": {
         "**/mod.rs": "${dirname}/mod.rs"
     },
