@@ -11,16 +11,7 @@ use crate::prelude::*;
 struct Preferences {}
 
 pub(super) fn plugin(app: &mut App) {
-    let config_path = dirs::config_dir().unwrap().join(env!("CARGO_PKG_NAME"));
-    let _ = fs::create_dir_all(&config_path);
-
-    if fs::exists(&config_path).is_ok() {
-        app.add_plugins(PrefsPlugin::<Preferences> {
-            filename: "preferences.ron".to_string(),
-            path: config_path,
-            ..default()
-        });
-    }
+    initialize_prefs_persist(app);
 
     app.add_systems(StateFlush, Menu::Settings.on_enter(spawn_settings_menu));
 }
@@ -73,4 +64,18 @@ fn buttons() -> impl Bundle {
 
 fn go_back(_: Trigger<Pointer<Click>>, mut menu: ResMut<NextStateStack<Menu>>) {
     menu.pop();
+}
+
+fn initialize_prefs_persist(app: &mut App) {
+    let config_path = r!(dirs::config_dir()).join(env!("CARGO_PKG_NAME"));
+
+    if let Ok(_) = fs::create_dir_all(&config_path) {
+        app.add_plugins(PrefsPlugin::<Preferences> {
+            filename: "preferences.ron".to_string(),
+            path: config_path,
+            ..default()
+        });
+    } else {
+        warn!("Failed to initialize bevy_simple_prefs.");
+    }
 }
