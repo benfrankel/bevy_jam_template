@@ -69,7 +69,7 @@ fn go_back(_: Trigger<Pointer<Click>>, mut menu: ResMut<NextStateStack<Menu>>) {
 fn initialize_prefs_persist(app: &mut App) {
     let config_path = r!(dirs::config_dir()).join(env!("CARGO_PKG_NAME"));
 
-    if let Ok(_) = fs::create_dir_all(&config_path) {
+    if fs::create_dir_all(&config_path).is_ok() {
         app.add_plugins(PrefsPlugin::<Preferences> {
             filename: "preferences.ron".to_string(),
             path: config_path,
