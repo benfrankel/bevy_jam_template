@@ -11,7 +11,7 @@ pub(super) fn on_load(config: &DevConfig, world: &mut World) {
         LogLevel::Ignore
     };
 
-    for (_, schedule) in world.resource_mut::<Schedules>().iter_mut() {
+    for (_, schedule) in r!(world.get_resource_mut::<Schedules>()).iter_mut() {
         let mut settings = schedule.get_build_settings();
         settings.ambiguity_detection = level.clone();
         schedule.set_build_settings(settings);

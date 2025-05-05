@@ -17,7 +17,7 @@ pub(super) fn plugin(app: &mut App) {
     ));
 
     // Disable all diagnostics by default.
-    let mut store = app.world_mut().resource_mut::<DiagnosticsStore>();
+    let mut store = r!(app.world_mut().get_resource_mut::<DiagnosticsStore>());
     for diagnostic in store.iter_mut() {
         diagnostic.is_enabled = false;
     }
@@ -26,7 +26,7 @@ pub(super) fn plugin(app: &mut App) {
 /// Enable diagnostics determined by the loaded config.
 pub(super) fn on_load(config: &DevConfig, world: &mut World) {
     // Disable all diagnostics first.
-    let mut store = world.resource_mut::<DiagnosticsStore>();
+    let mut store = r!(world.get_resource_mut::<DiagnosticsStore>());
     for diagnostic in store.iter_mut() {
         diagnostic.is_enabled = false;
     }
@@ -53,7 +53,6 @@ pub(super) fn on_load(config: &DevConfig, world: &mut World) {
     }
 
     // Re-enable the configured diagnostics.
-    let mut store = world.resource_mut::<DiagnosticsStore>();
     for path in to_enable {
         c!(store.get_mut(&path)).is_enabled = true;
     }

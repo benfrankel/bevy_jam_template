@@ -30,18 +30,19 @@ struct LateCommandQueue(CommandQueue);
 
 impl SystemBuffer for LateCommandQueue {
     fn apply(&mut self, _system_meta: &bevy::ecs::system::SystemMeta, world: &mut World) {
-        world
-            .resource_mut::<LateCommandBuffer>()
+        r!(world.get_resource_mut::<LateCommandBuffer>())
             .0
             .append(&mut self.0);
     }
 }
 
-#[derive(Resource, Default)]
-struct LateCommandBuffer(CommandQueue);
+#[derive(Resource, Reflect, Default)]
+#[reflect(Resource)]
+struct LateCommandBuffer(#[reflect(ignore)] CommandQueue);
 
 impl Configure for LateCommandBuffer {
     fn configure(app: &mut App) {
+        app.register_type::<Self>();
         app.init_resource::<Self>();
         app.add_systems(
             Update,

@@ -79,6 +79,7 @@ fn apply_smooth_follow(
 // Camera zoom-independent scale.
 // (workaround for <https://github.com/bevyengine/bevy/issues/1890>)
 #[derive(Component, Reflect)]
+#[reflect(Component)]
 pub struct AbsoluteScale(pub Vec3);
 
 impl Configure for AbsoluteScale {

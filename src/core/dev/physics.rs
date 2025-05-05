@@ -8,8 +8,7 @@ pub(super) fn plugin(app: &mut App) {
     );
 
     // Disable debug physics by default.
-    app.world_mut()
-        .resource_mut::<GizmoConfigStore>()
+    r!(app.world_mut().get_resource_mut::<GizmoConfigStore>())
         .config_mut::<PhysicsGizmos>()
         .0
         .enabled = false;

@@ -45,27 +45,29 @@ impl<C: Config> Configure for ConfigHandle<C> {
 }
 
 fn load_config<C: Config>(world: &mut World) {
-    let handle = world
-        .resource_mut::<AssetServer>()
-        .load(format!("{}/{}", C::FOLDER, C::FILE));
+    let asset_server = r!(world.get_resource_mut::<AssetServer>());
+    let handle = asset_server.load(format!("{}/{}", C::FOLDER, C::FILE));
     world.insert_resource(ConfigHandle::<C>(handle));
 }
 
 fn apply_config<C: Config>(world: &mut World, mut cursor: Local<EventCursor<AssetEvent<C>>>) {
     if !cursor
-        .read(world.resource::<Events<AssetEvent<_>>>())
-        .any(|event| event.is_loaded_with_dependencies(&world.resource::<ConfigHandle<C>>().0))
+        .read(r!(world.get_resource::<Events<AssetEvent<_>>>()))
+        .any(|event| {
+            event.is_loaded_with_dependencies(&r!(world.get_resource::<ConfigHandle<C>>()).0)
+        })
     {
         return;
     }
 
     info!(
         "[Frame {}] Applying config: {}",
-        world.resource::<FrameCount>().0,
-        type_name::<C>()
+        r!(world.get_resource::<FrameCount>()).0,
+        type_name::<C>(),
     );
     world.resource_scope(|world, mut config: Mut<Assets<C>>| {
-        let config = r!(config.get_mut(&world.resource::<ConfigHandle<C>>().0));
+        let config_handle = r!(world.get_resource::<ConfigHandle<C>>());
+        let config = r!(config.get_mut(&config_handle.0));
         config.on_load(world);
     });
 }

@@ -17,7 +17,7 @@ impl Configure for GameplayAssets {
     }
 }
 
-#[derive(Actionlike, Copy, Clone, Eq, PartialEq, Hash, Reflect, Debug)]
+#[derive(Actionlike, Reflect, Copy, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum GameplayAction {
     TogglePause,
 }

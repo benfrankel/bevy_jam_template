@@ -30,7 +30,7 @@ impl Config for ThemeConfig {
     const FILE: &'static str = "theme.ron";
 
     fn on_load(&mut self, world: &mut World) {
-        world.resource_mut::<ClearColor>().0 = self.colors[ThemeColor::Body];
+        r!(world.get_resource_mut::<ClearColor>()).0 = self.colors[ThemeColor::Body];
     }
 }
 
@@ -75,17 +75,8 @@ impl ThemeColor {
 }
 
 #[derive(Component, Reflect, Clone, Default)]
+#[reflect(Component)]
 pub struct ThemeColorFor<C: ColorMut>(pub ThemeColor, #[reflect(ignore)] PhantomData<C>);
-
-fn apply_theme_color_for<C: ColorMut>(
-    config: ConfigRef<ThemeConfig>,
-    mut color_query: Query<(&ThemeColorFor<C>, &mut C)>,
-) {
-    let palette = r!(config.get().map(|x| &x.colors));
-    for (theme_color, mut color) in &mut color_query {
-        *color.color_mut() = palette[theme_color.0];
-    }
-}
 
 impl<C: ColorMut + TypePath> Configure for ThemeColorFor<C> {
     fn configure(app: &mut App) {
@@ -97,7 +88,18 @@ impl<C: ColorMut + TypePath> Configure for ThemeColorFor<C> {
     }
 }
 
+fn apply_theme_color_for<C: ColorMut>(
+    config: ConfigRef<ThemeConfig>,
+    mut color_query: Query<(&ThemeColorFor<C>, &mut C)>,
+) {
+    let palette = r!(config.get().map(|x| &x.colors));
+    for (theme_color, mut color) in &mut color_query {
+        *color.color_mut() = palette[theme_color.0];
+    }
+}
+
 #[derive(Component, Reflect, Default, Clone)]
+#[reflect(Component)]
 pub struct ThemeColorForText(pub Vec<ThemeColor>);
 
 impl Configure for ThemeColorForText {

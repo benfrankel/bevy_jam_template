@@ -68,6 +68,7 @@ fn loading_bar_fill() -> impl Bundle {
 }
 
 #[derive(Component, Reflect)]
+#[reflect(Component)]
 struct IsLoadingBarFill;
 
 impl Configure for IsLoadingBarFill {

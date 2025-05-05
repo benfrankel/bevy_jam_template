@@ -56,25 +56,26 @@ impl Config for WindowConfig {
     const FILE: &'static str = "window.ron";
 
     fn on_load(&mut self, world: &mut World) {
-        world
-            .resource_mut::<NextStateBuffer<_>>()
-            .enable(WindowReady);
+        r!(world.get_resource_mut::<NextStateBuffer<_>>()).enable(WindowReady);
 
-        let mut window = r!(world.get_mut::<Window>(world.resource::<WindowRoot>().primary));
+        let window_root = r!(world.get_resource::<WindowRoot>());
+        let mut window = r!(world.get_mut::<Window>(window_root.primary));
         window.title.clone_from(&self.title);
         window.mode = self.window_mode;
         window.present_mode = self.present_mode;
     }
 }
 
-#[derive(State, Clone, PartialEq, Eq, Hash, Debug, Default)]
+#[derive(State, Reflect, Copy, Clone, Default, Eq, PartialEq, Debug)]
 #[state(log_flush)]
+#[reflect(Resource)]
 pub struct WindowReady;
 
 impl Configure for WindowReady {
     fn configure(app: &mut App) {
-        app.add_state::<WindowReady>();
-        app.add_systems(StateFlush, WindowReady.on_enter(show_window));
+        app.register_type::<Self>();
+        app.add_state::<Self>();
+        app.add_systems(StateFlush, Self.on_enter(show_window));
     }
 }
 

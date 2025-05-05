@@ -37,7 +37,7 @@ impl FromWorld for ScreenRoot {
         Self {
             ui: world
                 .spawn((
-                    Name::new("Screen"),
+                    Name::new("ScreenUi"),
                     Node::DEFAULT.full_size(),
                     Pickable::IGNORE,
                     DespawnOnExitState::<Screen>::Descendants,

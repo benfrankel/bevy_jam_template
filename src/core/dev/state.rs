@@ -28,7 +28,7 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 pub(super) fn on_load(config: &DevConfig, world: &mut World) {
-    world.resource_mut::<StateDebugSettings>().log_flush = config.log_state_flush;
+    r!(world.get_resource_mut::<StateDebugSettings>()).log_flush = config.log_state_flush;
 }
 
 fn enter_initial_screen(config: ConfigRef<DevConfig>, mut screen: NextMut<Screen>) {

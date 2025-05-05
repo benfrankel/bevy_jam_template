@@ -29,7 +29,7 @@
         "scope": "rust",
         "prefix": "resource",
         "body": [
-            "#[derive(Resource, Default, Reflect, Debug)]",
+            "#[derive(Resource, Reflect, Default, Debug)]",
             "#[reflect(Resource)]",
             "struct $1;",
             "",
@@ -115,7 +115,7 @@
         "scope": "rust",
         "prefix": "state",
         "body": [
-            "#[derive(State, Copy, Clone, Default, Eq, PartialEq, Reflect, Debug)]",
+            "#[derive(State, Reflect, Copy, Clone, Default, Eq, PartialEq, Debug)]",
             "#[state(log_flush)]",
             "#[reflect(Resource)]",
             "enum $1 {",
@@ -135,7 +135,7 @@
         "scope": "rust",
         "prefix": "actionlike",
         "body": [
-            "#[derive(Actionlike, Copy, Clone, Eq, PartialEq, Hash, Reflect, Debug)]",
+            "#[derive(Actionlike, Reflect, Copy, Clone, Eq, PartialEq, Hash, Debug)]",
             "enum $1 {",
             "\t$2",
             "}",
@@ -161,7 +161,7 @@
         "scope": "rust",
         "prefix": "assets",
         "body": [
-            "#[derive(AssetCollection, Resource, Default, Reflect, Debug)]",
+            "#[derive(AssetCollection, Resource, Reflect, Default, Debug)]",
             "#[reflect(Resource)]",
             "pub struct $1Assets {",
             "\t#[asset(path = \"$2\")]",
@@ -181,7 +181,7 @@
         "scope": "rust",
         "prefix": "config",
         "body": [
-            "#[derive(Asset, Default, Reflect, Serialize, Deserialize)]",
+            "#[derive(Asset, Reflect, Serialize, Deserialize, Default)]",
             "#[serde(deny_unknown_fields, default)]",
             "struct $1;",
             "",

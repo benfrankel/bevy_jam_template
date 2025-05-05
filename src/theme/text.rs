@@ -32,6 +32,7 @@ pub const BOLD_FONT_HANDLE: Handle<Font> = weak_handle!("b30e0c4e-52cb-4775-aaeb
 pub const THICK_FONT_HANDLE: Handle<Font> = weak_handle!("b099a4e0-1119-4ff7-b4c0-4a80ed5c5765");
 
 #[derive(Component, Reflect)]
+#[reflect(Component)]
 pub struct DynamicFontSize {
     pub size: Val,
     pub step: f32,

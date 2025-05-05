@@ -7,13 +7,26 @@ use crate::menu::Menu;
 use crate::menu::MenuRoot;
 use crate::prelude::*;
 
-#[derive(Prefs, Reflect, Default)]
-struct Preferences {}
-
 pub(super) fn plugin(app: &mut App) {
-    initialize_prefs_persist(app);
+    app.configure::<Settings>();
 
     app.add_systems(StateFlush, Menu::Settings.on_enter(spawn_settings_menu));
+}
+
+#[derive(Prefs, Reflect, Default)]
+struct Settings {}
+
+impl Configure for Settings {
+    fn configure(app: &mut App) {
+        let config_path = r!(dirs::config_dir()).join(env!("CARGO_PKG_NAME"));
+        r!(fs::create_dir_all(&config_path).is_ok());
+
+        app.add_plugins(PrefsPlugin::<Settings> {
+            filename: "preferences.ron".to_string(),
+            path: config_path,
+            ..default()
+        });
+    }
 }
 
 fn spawn_settings_menu(mut commands: Commands, menu_root: Res<MenuRoot>) {
@@ -64,15 +77,4 @@ fn buttons() -> impl Bundle {
 
 fn go_back(_: Trigger<Pointer<Click>>, mut menu: ResMut<NextStateStack<Menu>>) {
     menu.pop();
-}
-
-fn initialize_prefs_persist(app: &mut App) {
-    let config_path = r!(dirs::config_dir()).join(env!("CARGO_PKG_NAME"));
-    r!(fs::create_dir_all(&config_path).is_ok());
-    
-    app.add_plugins(PrefsPlugin::<Preferences> {
-        filename: "preferences.ron".to_string(),
-        path: config_path,
-        ..default()
-    });
 }

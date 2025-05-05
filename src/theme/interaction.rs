@@ -20,6 +20,7 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 #[derive(Component, Reflect)]
+#[reflect(Component)]
 pub struct InteractionDisabled(pub bool);
 
 impl Configure for InteractionDisabled {

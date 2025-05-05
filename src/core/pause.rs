@@ -4,7 +4,7 @@ pub(super) fn plugin(app: &mut App) {
     app.configure::<Pause>();
 }
 
-#[derive(State, Copy, Clone, Default, Eq, PartialEq, Debug, Reflect)]
+#[derive(State, Reflect, Copy, Clone, Default, Eq, PartialEq, Debug)]
 #[state(log_flush)]
 #[reflect(Resource)]
 pub struct Pause;

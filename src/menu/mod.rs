@@ -25,7 +25,7 @@ impl FromWorld for MenuRoot {
         Self {
             ui: world
                 .spawn((
-                    Name::new("Menu"),
+                    Name::new("MenuUi"),
                     Node::DEFAULT.full_size(),
                     Pickable::IGNORE,
                     DespawnOnDisableState::<Menu>::Descendants,
@@ -35,7 +35,7 @@ impl FromWorld for MenuRoot {
     }
 }
 
-#[derive(State, Copy, Clone, Eq, PartialEq, Debug, Reflect)]
+#[derive(State, Reflect, Copy, Clone, Eq, PartialEq, Debug)]
 #[state(before(Pause), next(NextStateStack<Self>), react, log_flush)]
 #[reflect(Resource)]
 pub enum Menu {
@@ -71,7 +71,7 @@ fn menu_overlay() -> impl Bundle {
     )
 }
 
-#[derive(Actionlike, Copy, Clone, Eq, PartialEq, Hash, Reflect, Debug)]
+#[derive(Actionlike, Reflect, Copy, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum MenuAction {
     Back,
 }
