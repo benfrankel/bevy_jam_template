@@ -85,6 +85,9 @@ env:
   # <https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage>
   git_lfs: false
 
+  # Strip unnecessary information from build artifacts to reduce cache size.
+  RUSTFLAGS: "-C debuginfo=0 -C incremental=no"
+
 {%- raw %}
 jobs:
   # Forward some environment variables as outputs of this job.
