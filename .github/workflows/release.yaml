@@ -1,33 +1,41 @@
 name: Release
 
 on:
-  # Trigger this workflow when a tag is pushed in the format `v1.2.3`.
+  # Build for web on any push to main.
   push:
-    tags:
-      # Pattern syntax: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#filter-pattern-cheat-sheet
-      - "v[0-9]+.[0-9]+.[0-9]+*"
-  # Trigger this workflow manually via workflow dispatch.
+    branches: [main]
+  # Build for the desired platforms on a manual workflow dispatch.
   workflow_dispatch:
     inputs:
       version:
         description: "Version number in the format `v1.2.3`"
         required: true
         type: string
+      build_for_web:
+        description: "Build for web?"
+        default: true
+        type: boolean
+      build_for_linux:
+        description: "Build for Linux?"
+        default: true
+        type: boolean
+      build_for_windows:
+        description: "Build for Windows?"
+        default: true
+        type: boolean
+      build_for_macos:
+        description: "Build for macOS?"
+        default: true
+        type: boolean
 
 # Configure the release workflow by editing the following values.
 env:
-  # TODO: This may become unnecessary: https://github.com/rust-lang/cargo/issues/6790
+  # TODO: This may become unnecessary: <https://github.com/rust-lang/cargo/issues/6790>.
   # The base filename of the binary produced by `cargo build`.
   cargo_build_binary_name: run
 
   # The path to the assets directory.
   assets_path: assets
-
-  # Whether to build and package a release for a given target platform.
-  build_for_web: true
-  build_for_linux: true
-  build_for_windows: true
-  build_for_macos: true
 
   # Whether to upload the packages produced by this workflow to a GitHub release.
   upload_to_github: true
@@ -42,7 +50,7 @@ env:
 
   # The ID of the app produced by this workflow.
   # Applies to macOS releases.
-  # Must contain only A-Z, a-z, 0-9, hyphen, and period: https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleidentifier
+  # Must contain only A-Z, a-z, 0-9, hyphen, and period: <https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleidentifier>.
   app_id: pyrious.bevy-jam-template
 
   # The base filename of the binary in the package produced by this workflow.
@@ -61,22 +69,18 @@ env:
 
   # The short display name of the app produced by this workflow.
   # Applies to macOS releases.
-  # Must be 15 or fewer characters: https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundlename
+  # Must be 15 or fewer characters: <https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundlename>.
   # Defaults to `app_display_name` if commented out.
   app_short_name: Bevy Template
 
   # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
-  # https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage
+  # <https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage>
   git_lfs: false
-
-  # Enabling this only helps with consecutive releases to the same tag (and takes up cache storage space).
-  # See: https://github.com/orgs/community/discussions/27059
-  use_github_cache: false
 
 jobs:
   # Forward some environment variables as outputs of this job.
   # This is needed because the `env` context can't be used in the `if:` condition of a job:
-  # https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
+  # <https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability>
   forward-env:
     runs-on: ubuntu-latest
     steps:
@@ -89,12 +93,12 @@ jobs:
   get-version:
     runs-on: ubuntu-latest
     steps:
-      - name: Get version number from tag
-        id: tag
-        run: echo "tag=${GITHUB_REF#refs/tags/}" >> "${GITHUB_OUTPUT}"
+      - name: Determine version number
+        id: ref
+        run: echo "ref=${GITHUB_REF#refs/*/}" >> "${GITHUB_OUTPUT}"
     outputs:
-      # Use the input from workflow dispatch, or fall back to the git tag.
-      version: ${{ inputs.version || steps.tag.outputs.tag }}
+      # Use the input from workflow dispatch, or fall back to the git ref.
+      version: ${{ inputs.version || steps.ref.outputs.ref }}
 
   # Build and package a release for each platform.
   build:
@@ -129,7 +133,7 @@ jobs:
             runner: macos-latest
     runs-on: ${{ matrix.runner }}
     permissions:
-      # Required to create a GitHub release: https://docs.github.com/en/rest/releases/releases#create-a-release
+      # Required to create a GitHub release: <https://docs.github.com/en/rest/releases/releases#create-a-release>.
       contents: write
     defaults:
       run:
@@ -149,17 +153,17 @@ jobs:
           echo "package=${app_package_name}-"'${{ matrix.platform }}${{ matrix.package_ext }}' >> "${GITHUB_ENV}"
 
           # macOS environment:
-          if [ '${{ matrix.platform }}' == 'macos' ]; then
+          if [ '${{ matrix.platform }}' = 'macos' ]; then
             echo 'MACOSX_DEPLOYMENT_TARGET=11.0' >> "${GITHUB_ENV}" # macOS 11.0 Big Sur is the first version to support universal binaries.
             echo "SDKROOT=$(xcrun --sdk macosx --show-sdk-path)" >> "${GITHUB_ENV}"
           fi
 
           # Check if building for this platform is enabled.
           echo 'is_platform_enabled=${{
-            (matrix.platform == 'web' && env.build_for_web == 'true') ||
-            (matrix.platform == 'linux' && env.build_for_linux == 'true') ||
-            (matrix.platform == 'windows' && env.build_for_windows == 'true') ||
-            (matrix.platform == 'macos' && env.build_for_macos == 'true')
+            (matrix.platform == 'web' && (inputs.build_for_web || github.event_name == 'push')) ||
+            (matrix.platform == 'linux' && inputs.build_for_linux) ||
+            (matrix.platform == 'windows' && inputs.build_for_windows) ||
+            (matrix.platform == 'macos' && inputs.build_for_macos)
           }}' >> "${GITHUB_ENV}"
 
       - name: Checkout repository
@@ -175,7 +179,8 @@ jobs:
           targets: ${{ matrix.targets }}
 
       - name: Restore Rust cache
-        if: ${{ env.is_platform_enabled == 'true' && env.use_github_cache == 'true' }}
+        # Manual releases are infrequent, so the cache would get stale and waste space.
+        if: ${{ env.is_platform_enabled == 'true' && github.event_name == 'push' }}
         uses: Swatinem/rust-cache@v2
         with:
           save-if: ${{ github.ref == 'refs/heads/main' }}
@@ -190,15 +195,15 @@ jobs:
 
       - name: Install Bevy CLI
         if: ${{ env.is_platform_enabled == 'true' }}
-        run: cargo install --locked --git=https://github.com/TheBevyFlock/bevy_cli bevy_cli
+        run: cargo install --locked --git='https://github.com/TheBevyFlock/bevy_cli' bevy_cli
 
-      - name: Build web bundle and add it to app (Web)
+      - name: Build and add web bundle to app (Web)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
         run: |
           bevy build --locked --release --features='${{ matrix.features }}' --yes web --bundle
           mv 'target/bevy_web/web-release/${{ env.cargo_build_binary_name }}' '${{ env.app }}'
 
-      - name: Build binaries and add them to app (non-Web)
+      - name: Build and add binaries to app (non-Web)
         if: ${{ env.is_platform_enabled == 'true' && matrix.platform != 'web' }}
         run: |
           for target in ${{ matrix.targets }}; do
