@@ -53,11 +53,9 @@ For VS Code users, [`.vscode/tasks.json`](./.vscode/tasks.json) provides IDE int
 
 ## Release your game
 
-The easiest way to release your game is by triggering the [release workflow](./.github/workflows/release.yaml).
+A web release will be created automatically on any commit to `main`.
 
-Alternatively, you can cross-compile locally from Linux with [`./build.sh`](./build.sh). If you're not on Linux, you can manually follow the steps in the shell script.
-  
-Note: `./build.sh mac` is currently not implemented.
+To trigger a full release, navigate to GitHub > Actions > Release > Run workflow.
 
 # License
 
