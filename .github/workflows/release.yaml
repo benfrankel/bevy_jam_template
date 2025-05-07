@@ -135,6 +135,10 @@ jobs:
             package_ext: .dmg
             runner: macos-latest
     runs-on: ${{ matrix.runner }}
+    # Cancel the release workflow if a new one starts for the same platform.
+    concurrency:
+      group: ${{ matrix.platform }}
+      cancel-in-progress: true
     permissions:
       # Required to create a GitHub release: <https://docs.github.com/en/rest/releases/releases#create-a-release>.
       contents: write
