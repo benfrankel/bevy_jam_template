@@ -41,35 +41,14 @@
             "}"
         ]
     },
-    "Bevy: New function Entity": {
-        "scope": "rust",
-        "prefix": "entityfn",
-        "body": [
-            "fn $1(In(id): In<Entity>, mut commands: Commands) {",
-            "\tcommands.entity(id).insert((",
-            "\t\tName::new(\"$2\"),",
-            "\t\t$0",
-            "\t));",
-            "}"
-        ]
-    },
     "Bevy: New Entity": {
         "scope": "rust",
         "prefix": "entity",
         "body": [
-            "struct $1;",
-            "",
-            "impl EntityCommand for $1 {",
-            "\tfn apply(self, id: Entity, world: &mut World) {",
-            "\t\tworld.run_system_once_with($2, (id, self));",
-            "\t}",
-            "}",
-            "",
-            "fn $2(In((id, this)): In<(Entity, $1)>, mut commands: Commands$3)",
-            "\tcommands.entity(id).insert((",
-            "\t\tName::new(\"$1\"),$0",
-            "\t\t$0",
-            "\t));",
+            "fn $1() -> impl Bundle {",
+            "\t(",
+            "\t\tName::new(\"$2\"),$0",
+            "\t)",
             "}"
         ]
     },
@@ -77,11 +56,12 @@
         "scope": "rust",
         "prefix": "event",
         "body": [
-            "#[derive(Event, Debug)]",
+            "#[derive(Event, Reflect, Debug)]",
             "struct $1;",
             "",
             "impl Configure for $1 {",
             "\tfn configure(app: &mut App) {",
+            "\t\tapp.register_type::<Self>();",
             "\t\tapp.add_event::<Self>();$0",
             "\t}",
             "}"
