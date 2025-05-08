@@ -1,4 +1,4 @@
-use pyri_state::schedule::ResolveStateSet;
+use pyri_state::schedule::ResolveStateSystems;
 
 use crate::core::dev::DevConfig;
 use crate::prelude::*;
@@ -12,7 +12,7 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         StateFlush,
         enter_initial_screen
-            .in_set(ResolveStateSet::<Screen>::Compute)
+            .in_set(ResolveStateSystems::<Screen>::Compute)
             .run_if(Screen::ANY.will_enable()),
     );
 

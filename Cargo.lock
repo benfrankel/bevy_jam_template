@@ -329,7 +329,7 @@ checksum = "ace50bade8e6234aa140d9a2f552bbee1db4d353f69b8217bc503490fc1a9f26"
 [[package]]
 name = "avian2d"
 version = "0.2.0"
-source = "git+https://github.com/Jondolf/avian.git#c505c9d66d165576f649457f09c9804e09ced8a8"
+source = "git+https://github.com/Jondolf/avian.git#f0d5b86b582c0d7074f0b084dd666e549acc767e"
 dependencies = [
  "arrayvec",
  "avian_derive",
@@ -349,7 +349,7 @@ dependencies = [
 [[package]]
 name = "avian_derive"
 version = "0.2.2"
-source = "git+https://github.com/Jondolf/avian.git#c505c9d66d165576f649457f09c9804e09ced8a8"
+source = "git+https://github.com/Jondolf/avian.git#f0d5b86b582c0d7074f0b084dd666e549acc767e"
 dependencies = [
  "proc-macro-error2",
  "proc-macro2",
@@ -975,8 +975,9 @@ dependencies = [
 
 [[package]]
 name = "bevy_mod_debugdump"
-version = "0.12.1"
-source = "git+https://github.com/jakobhellermann/bevy_mod_debugdump.git#ad310179be78abb3c16c581324d7d83b26275028"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a80c6401a6abbb4910f561affdb05bd850a945207db8f5184cdb5bce655ee137"
 dependencies = [
  "bevy_app",
  "bevy_color",
@@ -2900,9 +2901,9 @@ dependencies = [
 
 [[package]]
 name = "kqueue"
-version = "1.0.8"
+version = "1.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7447f1ca1b7b563588a205fe93dea8df60fd981423a768bc1c0ded35ed147d0c"
+checksum = "eac30106d7dce88daf4a3fcb4879ea939476d5074a9b7ddd0fb97fa4bed5596a"
 dependencies = [
  "kqueue-sys",
  "libc",
@@ -3009,9 +3010,9 @@ dependencies = [
 
 [[package]]
 name = "libm"
-version = "0.2.14"
+version = "0.2.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a25169bd5913a4b437588a7e3d127cd6e90127b60e0ffbd834a38f1599e016b8"
+checksum = "f9fbbcab51052fe104eb5e5d351cf728d30a5be1fe14d9be8a3b097481fb97de"
 
 [[package]]
 name = "libredox"
@@ -4047,7 +4048,7 @@ dependencies = [
 [[package]]
 name = "pyri_state"
 version = "0.4.0"
-source = "git+https://github.com/benfrankel/pyri_state.git#a505aa863d8045a6a6e716c2d656d14167d86bfc"
+source = "git+https://github.com/benfrankel/pyri_state.git#eef5cfad4e005b207201e966380b0a7d593a004c"
 dependencies = [
  "bevy_app",
  "bevy_diagnostic",
@@ -4057,12 +4058,13 @@ dependencies = [
  "bevy_render",
  "bevy_state",
  "pyri_state_derive",
+ "tiny_bail",
 ]
 
 [[package]]
 name = "pyri_state_derive"
 version = "0.4.0"
-source = "git+https://github.com/benfrankel/pyri_state.git#a505aa863d8045a6a6e716c2d656d14167d86bfc"
+source = "git+https://github.com/benfrankel/pyri_state.git#eef5cfad4e005b207201e966380b0a7d593a004c"
 dependencies = [
  "bevy_macro_utils",
  "proc-macro2",
@@ -4073,7 +4075,7 @@ dependencies = [
 [[package]]
 name = "pyri_tooltip"
 version = "0.3.0"
-source = "git+https://github.com/benfrankel/pyri_tooltip.git#5036600d2c8b14e9b2eac9cce8d400eff6ba8e71"
+source = "git+https://github.com/benfrankel/pyri_tooltip.git#7290ce027c3e66b67b9c4dab41051cb613227d39"
 dependencies = [
  "bevy_app",
  "bevy_asset",
@@ -6139,9 +6141,9 @@ dependencies = [
 
 [[package]]
 name = "winnow"
-version = "0.7.9"
+version = "0.7.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d9fb597c990f03753e08d3c29efbfcf2019a003b4bf4ba19225c158e1549f0f3"
+checksum = "c06928c8748d81b05c9be96aad92e1b6ff01833332f281e8cfca3be4b35fc9ec"
 dependencies = [
  "memchr",
 ]
