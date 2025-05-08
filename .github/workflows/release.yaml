@@ -78,7 +78,7 @@ env:
   git_lfs: false
 
   # Strip unnecessary information from build artifacts to reduce cache size.
-  RUSTFLAGS: -C debuginfo=0 -C incremental=no
+  RUSTFLAGS: --deny warnings -C incremental=no -C debuginfo=line-tables-only
 
 jobs:
   # Forward some environment variables as outputs of this job.

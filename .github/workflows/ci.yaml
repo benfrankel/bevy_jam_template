@@ -7,9 +7,10 @@ on:
     branches: [main]
 
 env:
-  CARGO_TERM_COLOR: always
-  RUSTFLAGS: --deny warnings -C debuginfo=0 -C incremental=no
+  # Strip unnecessary information from build artifacts to reduce cache size.
+  RUSTFLAGS: --deny warnings -C incremental=no -C debuginfo=line-tables-only
   RUSTDOCFLAGS: --deny warnings
+  LINTER_TOOLCHAIN: nightly-2025-04-03
 
 jobs:
   # Check formatting.
@@ -52,15 +53,13 @@ jobs:
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Run Clippy lints
-        run: cargo clippy --locked --workspace --all-features --all-targets --no-deps
+        run: cargo clippy --locked --workspace --all-targets --all-features
 
   # Run Bevy lints.
   bevy-lint:
     name: Bevy lints
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    env:
-      LINTER_TOOLCHAIN: nightly-2025-04-03
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -77,7 +76,7 @@ jobs:
         uses: TheBevyFlock/bevy_cli/bevy_lint@lint-v0.3.0
 
       - name: Run Bevy lints
-        run: bevy_lint --locked --workspace --all-features --all-targets
+        run: bevy_lint --locked --workspace --all-targets --all-features
 
   # Check documentation.
   doc:
@@ -100,7 +99,7 @@ jobs:
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Check documentation
-        run: cargo doc --locked --workspace --all-features --no-deps --document-private-items
+        run: cargo doc --locked --workspace --all-features --document-private-items --no-deps
 
   # Run tests.
   test:
