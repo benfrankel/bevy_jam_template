@@ -31,7 +31,7 @@ This template builds on top of Bevy New 2D with a few additions.
 Use [Bevy CLI](https://github.com/TheBevyFlock/bevy_cli) to create a new game:
 
 ```shell
-bevy new game -t benfrankel/pyri_new_jam`
+bevy new game -t benfrankel/pyri_new_jam
 cd game
 git commit -am 'Initial commit'
 ```
@@ -40,7 +40,7 @@ Next, create a new GitHub repository and upload your game to it. Set up [GitHub 
 
 ## Run your game
 
-Use the following commands to run your game:
+Use any of the following commands to run your game:
 
 ```shell
 bevy run
@@ -67,6 +67,6 @@ The source code in this repository is licensed under either of the following at 
 
 # Credits
 
-- The [splash screen image](https://github.com/bevyengine/bevy/blob/main/assets/branding/bevy_logo_dark.png) belongs to the Bevy Foundation and is not covered by any of the licenses in this repository.
+- The [splash screen image](https://github.com/bevyengine/bevy/blob/main/assets/branding/bevy_logo_dark.png) belongs to the [Bevy Foundation](https://bevyengine.org/foundation/).
 - The [pixel fonts](https://pyrious.itch.io/pypx-fonts) are CC0.
 - The sound effects are CC0: [click](https://freesound.org/people/suntemple/sounds/253168/), [hover](https://freesound.org/people/deadsillyrabbit/sounds/251390/).
