@@ -37,7 +37,7 @@ fn title() -> impl Bundle {
 fn header() -> impl Bundle {
     (
         Name::new("Header"),
-        RichText::from_sections(parse_rich("[b]Bevy Jam Template")),
+        RichText::from_sections(parse_rich("[b]Pyri New Jam")),
         DynamicFontSize::new(Vw(5.0)).with_step(8.0),
         ThemeColorForText(vec![ThemeColor::BodyText]),
         Node {

@@ -14,7 +14,7 @@ use tiny_bail::prelude::*;
 // Example: `RUST_LOG=off bevy run --bin debug --features bevy_mod_debugdump | dot -Tsvg | feh -`.
 fn main() {
     let mut app = App::new();
-    app.add_plugins(bevy_jam_template::plugin);
+    app.add_plugins(pyri_new_jam::plugin);
 
     let mut labels = r!(app.world().get_resource::<Schedules>())
         .iter()

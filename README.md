@@ -1,8 +1,8 @@
-# Bevy Jam Template
+# Pyri New Jam
 
 This template is optimized for game jams, with 3rd-party dependencies and some more opinionated patterns.
 
-You can [try this template in your browser](https://pyrious.itch.io/bevy-jam-template)!
+You can [try this template in your browser](https://pyrious.itch.io/pyri-new-jam)!
 
 ## Comparison to Bevy New 2D
 
@@ -31,7 +31,7 @@ This template builds on top of Bevy New 2D with a few additions.
 Use [Bevy CLI](https://github.com/TheBevyFlock/bevy_cli) to create a new game:
 
 ```shell
-bevy new game -t benfrankel/bevy_jam_template`
+bevy new game -t benfrankel/pyri_new_jam`
 cd game
 git commit -am 'Initial commit'
 ```

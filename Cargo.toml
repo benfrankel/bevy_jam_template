@@ -1,5 +1,5 @@
 [package]
-name = "bevy_jam_template"
+name = "pyri_new_jam"
 version = "0.1.0"
 edition = "2024"
 default-run = "run"

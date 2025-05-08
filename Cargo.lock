@@ -843,36 +843,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bevy_jam_template"
-version = "0.1.0"
-dependencies = [
- "avian2d",
- "bevy",
- "bevy_asset_loader",
- "bevy_common_assets",
- "bevy_kira_audio",
- "bevy_mod_debugdump",
- "bevy_simple_prefs",
- "bevy_spawn_observer",
- "bevy_state",
- "dirs",
- "inline_tweak",
- "iyes_progress",
- "lazy-regex",
- "leafwing-input-manager",
- "log",
- "pyri_state",
- "pyri_tooltip",
- "rand 0.8.5",
- "ron 0.10.1",
- "serde",
- "strum 0.27.1",
- "tiny_bail",
- "tracing",
- "variadics_please",
-]
-
-[[package]]
 name = "bevy_kira_audio"
 version = "0.23.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4043,6 +4013,36 @@ checksum = "a65f2e60fbf1063868558d69c6beacf412dc755f9fc020f514b7955fc914fe30"
 dependencies = [
  "quote",
  "syn",
+]
+
+[[package]]
+name = "pyri_new_jam"
+version = "0.1.0"
+dependencies = [
+ "avian2d",
+ "bevy",
+ "bevy_asset_loader",
+ "bevy_common_assets",
+ "bevy_kira_audio",
+ "bevy_mod_debugdump",
+ "bevy_simple_prefs",
+ "bevy_spawn_observer",
+ "bevy_state",
+ "dirs",
+ "inline_tweak",
+ "iyes_progress",
+ "lazy-regex",
+ "leafwing-input-manager",
+ "log",
+ "pyri_state",
+ "pyri_tooltip",
+ "rand 0.8.5",
+ "ron 0.10.1",
+ "serde",
+ "strum 0.27.1",
+ "tiny_bail",
+ "tracing",
+ "variadics_please",
 ]
 
 [[package]]

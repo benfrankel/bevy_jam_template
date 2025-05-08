@@ -6,5 +6,5 @@
 use bevy::prelude::*;
 
 fn main() -> AppExit {
-    App::new().add_plugins(bevy_jam_template::plugin).run()
+    App::new().add_plugins(pyri_new_jam::plugin).run()
 }
