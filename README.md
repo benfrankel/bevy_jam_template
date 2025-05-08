@@ -53,9 +53,9 @@ For VS Code users, [`.vscode/tasks.json`](./.vscode/tasks.json) provides IDE int
 
 ## Release your game
 
-A web release will be created automatically on any commit to `main`.
+To trigger a full release, navigate to `Actions` > `Release` > `Run workflow` in your GitHub repository.
 
-To trigger a full release, navigate to GitHub > Actions > Release > Run workflow.
+A web release is triggered automatically on every commit to `main`.
 
 # License
 
