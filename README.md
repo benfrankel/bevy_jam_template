@@ -55,11 +55,12 @@ For VS Code users, [`.vscode/tasks.json`](./.vscode/tasks.json) provides IDE int
 
 To trigger a full release, navigate to `Actions` > `Release` > `Run workflow` in your GitHub repository.
 
-A web release is triggered automatically on every commit to `main`.
+> [!NOTE]
+> A web release runs automatically on every commit to `main`.
 
 # License
 
-The source code in this repository is licensed under any of the following at your option:
+The source code in this repository is licensed under either of the following at your option:
 
 - [CC0-1.0 License](./LICENSE-CC0-1.0.txt)
 - [0BSD License](./LICENSE-0BSD.txt)
@@ -68,6 +69,4 @@ The source code in this repository is licensed under any of the following at you
 
 - The [splash screen image](https://github.com/bevyengine/bevy/blob/main/assets/branding/bevy_logo_dark.png) belongs to the Bevy Foundation and is not covered by any of the licenses in this repository.
 - The [pixel fonts](https://pyrious.itch.io/pypx-fonts) are CC0.
-- The sound effects are CC0:
-    - [Button click](https://freesound.org/people/suntemple/sounds/253168/)
-    - [Button hover](https://freesound.org/people/deadsillyrabbit/sounds/251390/)
+- The sound effects are CC0: [click](https://freesound.org/people/suntemple/sounds/253168/), [hover](https://freesound.org/people/deadsillyrabbit/sounds/251390/).
