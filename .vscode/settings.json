@@ -11,7 +11,7 @@
     // Allow rust-analyzer and cargo to run simultaneously.
     // This uses a heavy amount of storage space, so consider commenting it out.
     "rust-analyzer.cargo.targetDir": true,
-    // Differentaite `mod.rs` files in the editor tab by their parent directory.
+    // Display the directory of `mod.rs` files in the tab above the text editor.
     "workbench.editor.customLabels.patterns": {
         "**/mod.rs": "${dirname}/mod.rs"
     },
