@@ -10,8 +10,6 @@ pub mod physics;
 pub mod state;
 pub mod window;
 
-use bevy::log::LogPlugin;
-
 use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
@@ -21,12 +19,12 @@ pub(super) fn plugin(app: &mut App) {
     app.add_plugins(
         DefaultPlugins
             .build()
-            // TODO: Doing this instead of `.replace` because `window::plugin` requires `AssetPlugin` to load its config.
-            .disable::<AssetPlugin>()
-            .add_after::<LogPlugin>(asset::plugin)
-            .add_after::<LogPlugin>(state::plugin)
+            .set(ImagePlugin::default_nearest())
             .replace::<WindowPlugin>(window::plugin)
-            .set(ImagePlugin::default_nearest()),
+            // `window::plugin` requires the following plugins:
+            .disable::<AssetPlugin>()
+            .add_before::<WindowPlugin>(asset::plugin)
+            .add_before::<WindowPlugin>(state::plugin),
     );
 
     // Add other core plugins.

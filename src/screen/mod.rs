@@ -86,7 +86,7 @@ fn reset_screen_camera(camera_root: Res<CameraRoot>, mut camera_query: Query<&mu
     *transform = default();
 }
 
-// TODO: Screen timer. Then update `wait` to use it.
+/// The total time elapsed in the current screen.
 #[derive(Resource, Reflect, Default)]
 #[reflect(Resource)]
 pub struct ScreenTime(pub Duration);

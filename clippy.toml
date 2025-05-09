@@ -1,4 +1,4 @@
-# TODO: Workaround for https://github.com/rust-lang/rust-clippy/issues/10689.
+# TODO: Workaround for <https://github.com/rust-lang/rust-clippy/issues/10689>.
 avoid-breaking-exported-api = false
 # Require `bevy_ecs::children!` to use `[]` braces, instead of `()` or `{}`.
 standard-macro-braces = [{ name = "children", brace = "[" }]

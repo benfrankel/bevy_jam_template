@@ -20,7 +20,6 @@ pub(super) fn plugin(app: &mut App) {
         Update,
         Screen::Splash.on_update((
             wait_in_screen(FADE_IN_SECS + SPLASH_SCREEN_MIN_SECS),
-            // TODO: System ordering so this runs after all the track progress systems.
             update_splash,
         )),
     );

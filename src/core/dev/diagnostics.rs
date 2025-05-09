@@ -10,7 +10,7 @@ use crate::prelude::*;
 pub(super) fn plugin(app: &mut App) {
     app.add_plugins((
         FrameTimeDiagnosticsPlugin::default(),
-        // TODO: This is disabled by the `bevy/dynamic_linking` feature.
+        // Note: This is disabled by the `bevy/dynamic_linking` feature.
         SystemInformationDiagnosticsPlugin,
         EntityCountDiagnosticsPlugin,
         LogDiagnosticsPlugin::default(),

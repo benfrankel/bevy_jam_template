@@ -74,13 +74,7 @@ struct IsLoadingBarFill;
 impl Configure for IsLoadingBarFill {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.add_systems(
-            Update,
-            Screen::Loading.on_update(
-                // TODO: System ordering so this runs after all the track progress systems.
-                update_loading,
-            ),
-        );
+        app.add_systems(Update, Screen::Loading.on_update(update_loading));
     }
 }
 

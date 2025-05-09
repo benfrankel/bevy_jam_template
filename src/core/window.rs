@@ -2,12 +2,11 @@ use bevy::window::ExitCondition;
 use bevy::window::PresentMode;
 use bevy::window::PrimaryWindow;
 use bevy::window::WindowMode;
-use bevy::window::WindowPlugin as BevyWindowPlugin;
 
 use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_plugins(BevyWindowPlugin {
+    app.add_plugins(WindowPlugin {
         primary_window: Some(Window {
             fit_canvas_to_parent: true,
             visible: false,
