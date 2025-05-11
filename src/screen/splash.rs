@@ -15,7 +15,6 @@ pub(super) fn plugin(app: &mut App) {
         LoadingState::new(Screen::Splash.bevy()).load_collection::<TitleScreenAssets>(),
     );
     app.add_systems(StateFlush, Screen::Splash.on_enter(spawn_splash_screen));
-
     app.add_systems(
         Update,
         Screen::Splash.on_update((
@@ -34,37 +33,19 @@ fn spawn_splash_screen(
 ) {
     commands
         .entity(screen_root.ui)
-        .with_child(splash(&asset_server));
-}
-
-#[tweak_fn]
-fn splash(asset_server: &AssetServer) -> impl Bundle {
-    (
-        Name::new("Splash"),
-        Node::COLUMN_MID.full_size(),
-        children![splash_image(asset_server)],
-    )
-}
-
-#[tweak_fn]
-fn splash_image(asset_server: &AssetServer) -> impl Bundle {
-    (
-        Name::new("SplashImage"),
-        ImageNode::new(asset_server.load_with_settings(
-            // TODO: Workaround for <https://github.com/bevyengine/bevy/issues/14246>.
-            //       Use `embedded_asset!` once that's fixed.
-            "image/splash.png",
-            |settings: &mut ImageLoaderSettings| {
-                settings.sampler = ImageSampler::linear();
-            },
-        )),
-        Node {
-            margin: UiRect::all(Auto),
-            width: Percent(70.0),
-            ..default()
-        },
-        ThemeColor::BodyText.set::<ImageNode>(),
-    )
+        .with_child(widget::column_center(children![(
+            Name::new("SplashImage"),
+            ImageNode::new(asset_server.load_with_settings(
+                // TODO: Workaround for <https://github.com/bevyengine/bevy/issues/14246>.
+                //       Use `embedded_asset!` once that's fixed.
+                "image/splash.png",
+                |settings: &mut ImageLoaderSettings| {
+                    settings.sampler = ImageSampler::linear();
+                },
+            )),
+            Node::DEFAULT.width(70.0),
+            ThemeColor::BodyText.set::<ImageNode>(),
+        )]));
 }
 
 fn update_splash(

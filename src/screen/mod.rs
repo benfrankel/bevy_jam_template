@@ -2,6 +2,7 @@ pub mod fade;
 mod gameplay;
 mod intro;
 mod loading;
+mod settings;
 mod splash;
 mod title;
 
@@ -12,6 +13,7 @@ use crate::core::camera::CameraRoot;
 use crate::core::window::WindowReady;
 use crate::menu::Menu;
 use crate::prelude::*;
+use crate::theme::widget::IsLoadingBarFill;
 
 pub fn plugin(app: &mut App) {
     app.configure::<(ScreenRoot, Screen, ScreenTime)>();
@@ -55,6 +57,7 @@ pub enum Screen {
     #[default]
     Splash,
     Title,
+    Settings,
     Intro,
     Loading,
     Gameplay,
@@ -64,6 +67,7 @@ impl Configure for Screen {
     fn configure(app: &mut App) {
         app.add_state::<Self>();
         app.add_plugins(ProgressPlugin::<BevyState<Self>>::new());
+        app.configure::<IsLoadingBarFill<Self>>();
         app.add_systems(
             StateFlush,
             (
@@ -74,6 +78,7 @@ impl Configure for Screen {
         app.add_plugins((
             splash::plugin,
             title::plugin,
+            settings::plugin,
             intro::plugin,
             loading::plugin,
             gameplay::plugin,

@@ -20,8 +20,8 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         Update,
         (
-            Screen::Intro
-                .on_update(do_not_skip_loading_screen.track_progress::<BevyState<Screen>>()),
+            state!(Screen::Intro | Screen::Loading)
+                .on_update(force_loading_screen.track_progress::<BevyState<Screen>>()),
             Screen::Loading.on_update(extend_loading_screen.track_progress::<BevyState<Screen>>()),
         ),
     );
@@ -36,9 +36,9 @@ fn enter_initial_screen(config: ConfigRef<DevConfig>, mut screen: NextMut<Screen
     screen.enter(rq!(config.initial_screen));
 }
 
-fn do_not_skip_loading_screen(config: ConfigRef<DevConfig>) -> Progress {
+fn force_loading_screen(config: ConfigRef<DevConfig>, screen: CurrentRef<Screen>) -> Progress {
     let config = r!(config.get());
-    (config.extend_loading_screen <= 0.0).into()
+    (config.extend_loading_screen <= 0.0 || screen.is_in(&Screen::Loading)).into()
 }
 
 fn extend_loading_screen(config: ConfigRef<DevConfig>, screen_time: Res<ScreenTime>) -> Progress {

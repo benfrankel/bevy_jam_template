@@ -1,5 +1,7 @@
 #![allow(unused_imports)]
 
+pub use core::fmt::Debug;
+pub use core::hash::Hash;
 pub use core::marker::PhantomData;
 pub use core::time::Duration;
 

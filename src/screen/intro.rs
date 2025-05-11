@@ -12,67 +12,13 @@ pub(super) fn plugin(app: &mut App) {
 }
 
 fn spawn_intro_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
-    commands.entity(screen_root.ui).with_child(intro());
-}
-
-#[tweak_fn]
-fn intro() -> impl Bundle {
-    (
-        Name::new("Intro"),
-        Node::COLUMN_CENTER.full_size(),
-        children![header(), body(), buttons()],
-    )
-}
-
-#[tweak_fn]
-fn header() -> impl Bundle {
-    (
-        Name::new("Header"),
-        RichText::from_sections(parse_rich("[b]How to play:")),
-        DynamicFontSize::new(Vw(5.0)).with_step(8.0),
-        ThemeColorForText(vec![ThemeColor::BodyText]),
-        Node {
-            margin: UiRect::bottom(Vw(5.0)),
-            ..default()
-        },
-    )
-}
-
-#[tweak_fn]
-fn body() -> impl Bundle {
-    (
-        Name::new("Body"),
-        Node {
-            row_gap: Vw(1.4),
-            ..Node::COLUMN_MID
-        },
-        Children::spawn(SpawnIter(
-            ["Be skillful,", "win the game!", "Press P to pause."]
-                .into_iter()
-                .enumerate()
-                .map(|(i, text)| {
-                    (
-                        Name::new(format!("Span{i}")),
-                        RichText::from_sections(parse_rich(text)),
-                        DynamicFontSize::new(Vw(3.5)).with_step(8.0),
-                        ThemeColorForText(vec![ThemeColor::BodyText]),
-                    )
-                }),
-        )),
-    )
-}
-
-#[tweak_fn]
-fn buttons() -> impl Bundle {
-    (
-        Name::new("Buttons"),
-        Node {
-            margin: UiRect::vertical(VMin(9.0)),
-            column_gap: Vw(2.5),
-            ..Node::ROW
-        },
-        children![widget::big_button("Start", start_game)],
-    )
+    commands
+        .entity(screen_root.ui)
+        .with_child(widget::body(children![
+            widget::header("[b]How to play:"),
+            widget::paragraph("Be skillful,\nwin the game!\nPress P to pause."),
+            widget::button_column(children![widget::big_button("Start", start_game)]),
+        ]));
 }
 
 fn start_game(

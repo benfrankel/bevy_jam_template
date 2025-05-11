@@ -100,7 +100,7 @@ pub fn apply_dynamic_font_size(
 }
 
 /// Parses a "rich text" string with tags `"[r]"`, `"[b]"`, and `"[t]"`.
-pub fn parse_rich(text: &str) -> Vec<TextSection> {
+pub fn parse_rich(text: impl AsRef<str>) -> Vec<TextSection> {
     let styles = HashMap::from([
         (
             "r",
@@ -136,10 +136,11 @@ pub fn parse_rich(text: &str) -> Vec<TextSection> {
 /// - If `styles["tag"]` is not found, `"[tag]"` will be interpreted as literal text.
 /// - Tags cannot be escaped. To allow literal `"[tag]"`, don't use `"tag"` as a key.
 pub fn parse_rich_custom(
-    text: &str,
+    text: impl AsRef<str>,
     styles: &HashMap<&str, TextStyle>,
     start_tag: &str,
 ) -> Vec<TextSection> {
+    let text = text.as_ref();
     let mut sections = vec![];
 
     let mut lo = 0;

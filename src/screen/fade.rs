@@ -57,7 +57,6 @@ fn spawn_fade_in(mut commands: Commands) {
 #[tweak_fn]
 pub fn fade_in() -> impl Bundle {
     (
-        Name::new("FadeIn"),
         widget::overlay(1000),
         FadeIn::new(FADE_IN_SECS),
         ThemeColor::Body.set::<BackgroundColor>(),
@@ -113,7 +112,6 @@ fn apply_fade_out(
 #[tweak_fn]
 pub fn fade_out(to_screen: Screen) -> impl Bundle {
     (
-        Name::new("FadeOut"),
         widget::blocking_overlay(1000),
         FadeOut::new(FADE_OUT_SECS, to_screen),
         ThemeColor::Body.set::<BackgroundColor>(),

@@ -12,7 +12,7 @@ This template builds on top of Bevy New 2D with a few additions.
     - Hot-reloaded [config files](./assets/config/)
     - Screen transition animations (fade in / out)
     - Press P or Escape to pause
-    - Press R to restart
+    - Restart game from pause menu
     - Basic rich text parsing
     - Dynamic font size
 - **3rd-party crates:**

@@ -21,54 +21,28 @@ impl Configure for TitleScreenAssets {
 }
 
 fn spawn_title_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
-    commands.entity(screen_root.ui).with_child(title());
-}
-
-#[tweak_fn]
-fn title() -> impl Bundle {
-    (
-        Name::new("Title"),
-        Node::COLUMN_MID.full_size(),
-        children![header(), buttons()],
-    )
-}
-
-#[tweak_fn]
-fn header() -> impl Bundle {
-    (
-        Name::new("Header"),
-        RichText::from_sections(parse_rich("[b]Pyri New Jam")),
-        DynamicFontSize::new(Vw(5.0)).with_step(8.0),
-        ThemeColorForText(vec![ThemeColor::BodyText]),
-        Node {
-            margin: UiRect::vertical(Vw(5.0)),
-            ..default()
-        },
-    )
-}
-
-#[tweak_fn]
-fn buttons() -> impl Bundle {
-    (
-        Name::new("Buttons"),
-        Node {
-            margin: UiRect::vertical(VMin(9.0)),
-            row_gap: Vw(2.5),
-            ..Node::COLUMN_MID.full_width()
-        },
-        children![
-            widget::big_button("Play", play_game),
-            (
-                widget::big_button("Quit", quit_to_desktop),
-                #[cfg(feature = "web")]
-                InteractionDisabled(true),
-            )
-        ],
-    )
+    commands
+        .entity(screen_root.ui)
+        .with_child(widget::body(children![
+            widget::header("[b]Pyri New Jam"),
+            widget::button_column(children![
+                widget::big_button("Play", play_game),
+                widget::big_button("Settings", open_settings),
+                (
+                    widget::big_button("Quit", quit_to_desktop),
+                    #[cfg(feature = "web")]
+                    InteractionDisabled(true),
+                ),
+            ]),
+        ]));
 }
 
 fn play_game(_: Trigger<Pointer<Click>>, mut commands: Commands) {
     commands.spawn(fade_out(Screen::Intro));
+}
+
+fn open_settings(_: Trigger<Pointer<Click>>, mut commands: Commands) {
+    commands.spawn(fade_out(Screen::Settings));
 }
 
 fn quit_to_desktop(_: Trigger<Pointer<Click>>, mut app_exit: EventWriter<AppExit>) {

@@ -27,8 +27,9 @@ impl FromWorld for MenuRoot {
                 .spawn((
                     Name::new("MenuUi"),
                     Node::DEFAULT.full_size(),
+                    GlobalZIndex(2),
                     Pickable::IGNORE,
-                    DespawnOnDisableState::<Menu>::Descendants,
+                    DespawnOnExitState::<Menu>::Descendants,
                 ))
                 .id(),
         }
@@ -59,16 +60,10 @@ impl Configure for Menu {
 }
 
 fn spawn_menu_overlay(mut commands: Commands, menu_root: Res<MenuRoot>) {
-    commands.entity(menu_root.ui).with_child(menu_overlay());
-}
-
-#[tweak_fn]
-fn menu_overlay() -> impl Bundle {
-    (
-        Name::new("MenuOverlay"),
+    commands.entity(menu_root.ui).with_child((
         widget::blocking_overlay(1),
         ThemeColor::Overlay.set::<BackgroundColor>(),
-    )
+    ));
 }
 
 #[derive(Actionlike, Reflect, Copy, Clone, Eq, PartialEq, Hash, Debug)]
