@@ -6,7 +6,7 @@ default-run = "run"
 
 
 [dependencies]
-avian2d = { version = "0.2", default-features = false, features = [
+avian2d = { version = "0.3", default-features = false, features = [
     "2d",
     "f32",
     "parry-f32",
@@ -36,7 +36,7 @@ bevy_asset_loader = { version = "0.23", features = ["2d", "progress_tracking"] }
 bevy_common_assets = { version = "0.13", features = ["ron"] }
 #bevy_editor_pls = { version = "0.12", optional = true }
 bevy_kira_audio = "0.23"
-bevy_mod_debugdump = { version = "0.12", optional = true }
+bevy_mod_debugdump = { version = "0.13", optional = true }
 bevy_simple_prefs = "0.5"
 bevy_spawn_observer = "0.1"
 bevy_state = "0.16"
@@ -71,10 +71,8 @@ tracing = { version = "0.1", features = [
 variadics_please = "1"
 
 [patch.crates-io]
-avian2d = { git = "https://github.com/Jondolf/avian.git" }
 # TODO: Workaround for <https://github.com/NiklasEi/bevy_asset_loader/issues/219>.
 bevy_asset_loader = { git = "https://github.com/benfrankel/bevy_asset_loader.git", branch = "direct-depend" }
-bevy_mod_debugdump = { git = "https://github.com/jakobhellermann/bevy_mod_debugdump.git" }
 iyes_progress = { git = "https://github.com/benfrankel/iyes_progress.git", branch = "bevy-0-16" }
 pyri_state = { git = "https://github.com/benfrankel/pyri_state.git" }
 pyri_tooltip = { git = "https://github.com/benfrankel/pyri_tooltip.git" }
@@ -84,6 +82,7 @@ pyri_tooltip = { git = "https://github.com/benfrankel/pyri_tooltip.git" }
 dev = [
     #"dep:bevy_editor_pls",
     "avian2d/debug-plugin",
+    "avian2d/diagnostic_ui",
     "bevy/bevy_dev_tools",
     #"bevy/bevy_remote",
     "bevy/bevy_ui_debug",
@@ -99,8 +98,8 @@ native = ["dep:dirs", "avian2d/parallel"]
 native_dev = ["native", "dev", "bevy/file_watcher", "bevy/embedded_watcher"]
 web = []
 web_dev = ["web", "dev"]
-trace = ["bevy/trace", "bevy/trace_tracy"]
 bevy_mod_debugdump = ["dep:bevy_mod_debugdump"]
+trace = ["bevy/trace", "bevy/trace_tracy"]
 
 [package.metadata.bevy_cli.native]
 features = ["native"]

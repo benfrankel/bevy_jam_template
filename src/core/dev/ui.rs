@@ -9,7 +9,7 @@ pub(super) fn plugin(app: &mut App) {
     );
 }
 
-const TOGGLE_KEY: KeyCode = KeyCode::F3;
+const TOGGLE_KEY: KeyCode = KeyCode::F1;
 
 fn toggle_debug_ui(mut options: ResMut<UiDebugOptions>) {
     options.toggle();

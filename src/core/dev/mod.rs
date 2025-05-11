@@ -35,9 +35,9 @@ pub(super) fn plugin(app: &mut App) {
 #[serde(deny_unknown_fields, default)]
 struct DevConfig {
     // Diagnostics:
-    pub frame_time_diagnostics: bool,
-    pub system_information_diagnostics: bool,
-    pub entity_count_diagnostics: bool,
+    pub log_frame_time: bool,
+    pub log_system_information: bool,
+    pub log_entity_count: bool,
 
     // Ambiguity:
     pub log_ambiguity_detection: bool,
@@ -51,9 +51,9 @@ struct DevConfig {
 impl Default for DevConfig {
     fn default() -> Self {
         Self {
-            frame_time_diagnostics: false,
-            system_information_diagnostics: false,
-            entity_count_diagnostics: false,
+            log_frame_time: false,
+            log_system_information: false,
+            log_entity_count: false,
 
             log_ambiguity_detection: false,
 

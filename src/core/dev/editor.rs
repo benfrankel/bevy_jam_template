@@ -25,6 +25,8 @@ pub(super) fn plugin(app: &mut App) {
     });*/
 }
 
+const TOGGLE_KEY: KeyCode = KeyCode::F3;
+
 #[derive(Component, Reflect)]
 #[reflect(Component)]
 struct IsEditorWindow;
@@ -44,5 +46,3 @@ fn toggle_editor_window(mut window_query: Query<&mut Window, With<IsEditorWindow
         window.visible ^= true;
     }
 }
-
-const TOGGLE_KEY: KeyCode = KeyCode::F4;

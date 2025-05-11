@@ -23,7 +23,7 @@ impl Configure for TitleScreenAssets {
 fn spawn_title_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
     commands
         .entity(screen_root.ui)
-        .with_child(widget::root(children![
+        .with_child(widget::body(children![
             widget::header("[b]{{project-name | title_case}}"),
             widget::button_column(children![
                 widget::big_button("Play", play_game),
