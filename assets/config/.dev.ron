@@ -4,9 +4,6 @@
     log_system_information: false,
     log_entity_count: false,
 
-    // Ambiguity:
-    log_ambiguity_detection: false,
-
     // State:
     log_state_flush: true,
     extend_loading_screen: 0.0,

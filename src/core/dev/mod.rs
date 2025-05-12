@@ -1,6 +1,5 @@
 //! Dev tools for dev builds.
 
-mod ambiguity;
 mod diagnostics;
 mod editor;
 mod physics;
@@ -23,7 +22,7 @@ pub(super) fn plugin(app: &mut App) {
         ui::plugin,
     ));
 
-    // Load the default configs.
+    // Apply the default config.
     DevConfig::default().on_load(app.world_mut());
 
     // Set up ad hoc debugging.
@@ -39,13 +38,10 @@ struct DevConfig {
     pub log_system_information: bool,
     pub log_entity_count: bool,
 
-    // Ambiguity:
-    pub log_ambiguity_detection: bool,
-
     // State:
     pub log_state_flush: bool,
-    pub initial_screen: Option<Screen>,
     pub extend_loading_screen: f32,
+    pub initial_screen: Option<Screen>,
 }
 
 impl Default for DevConfig {
@@ -54,8 +50,6 @@ impl Default for DevConfig {
             log_frame_time: false,
             log_system_information: false,
             log_entity_count: false,
-
-            log_ambiguity_detection: false,
 
             log_state_flush: true,
             extend_loading_screen: 0.0,
@@ -68,7 +62,6 @@ impl Config for DevConfig {
     const FILE: &'static str = ".dev.ron";
 
     fn on_load(&mut self, world: &mut World) {
-        ambiguity::on_load(self, world);
         diagnostics::on_load(self, world);
         state::on_load(self, world);
     }

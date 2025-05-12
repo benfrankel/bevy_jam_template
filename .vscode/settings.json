@@ -3,6 +3,7 @@
     "rust-analyzer.cargo.features": [
         "native",
         "dev",
+        "bevy_mod_debugdump",
     ],
     // Run rust-analyzer for `src/bin/` files.
     "rust-analyzer.check.extraArgs": [
