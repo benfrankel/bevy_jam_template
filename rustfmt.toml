@@ -1,11 +1,10 @@
 # Stable options:
-max_width = 100
 use_field_init_shorthand = true
 use_try_shorthand = true
+match_block_trailing_comma = true
 
 # Unstable options:
 group_imports = "StdExternalCrate"
 imports_granularity = "Item"
 imports_layout = "HorizontalVertical"
-match_block_trailing_comma = true
 normalize_doc_attributes = true
