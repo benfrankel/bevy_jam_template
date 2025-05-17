@@ -1,5 +1,6 @@
-pub mod pause;
-pub mod settings;
+mod main;
+mod pause;
+mod settings;
 
 use crate::prelude::*;
 
@@ -40,6 +41,7 @@ impl FromWorld for MenuRoot {
 #[state(before(Pause), next(NextStateStack<Self>), react, log_flush)]
 #[reflect(Resource)]
 pub enum Menu {
+    Main,
     Pause,
     Settings,
 }
@@ -55,7 +57,7 @@ impl Configure for Menu {
                 Menu::ANY.on_enable((Pause::enable_default, spawn_menu_overlay)),
             ),
         );
-        app.add_plugins((pause::plugin, settings::plugin));
+        app.add_plugins((main::plugin, pause::plugin, settings::plugin));
     }
 }
 
@@ -82,9 +84,11 @@ impl Configure for MenuAction {
         app.add_plugins(InputManagerPlugin::<Self>::default());
         app.add_systems(
             Update,
-            Menu::pop
-                .in_set(UpdateSystems::RecordInput)
-                .run_if(action_just_pressed(Self::Back).and(Menu::is_enabled)),
+            Menu::with(|&x| x != Menu::Main).on_update(
+                Menu::pop
+                    .in_set(UpdateSystems::RecordInput)
+                    .run_if(action_just_pressed(Self::Back)),
+            ),
         );
     }
 }

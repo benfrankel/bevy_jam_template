@@ -1,10 +1,9 @@
+use crate::menu::Menu;
 use crate::prelude::*;
 use crate::screen::Screen;
-use crate::screen::ScreenRoot;
-use crate::screen::fade::fade_out;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(StateFlush, Screen::Title.on_enter(spawn_title_screen));
+    app.add_systems(StateFlush, Screen::Title.on_enter(Menu::Main.enter()));
 
     app.configure::<TitleScreenAssets>();
 }
@@ -17,36 +16,5 @@ impl Configure for TitleScreenAssets {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
         app.init_collection::<Self>();
-    }
-}
-
-fn spawn_title_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
-    commands
-        .entity(screen_root.ui)
-        .with_child(widget::body(children![
-            widget::header("[b]Pyri New Jam"),
-            widget::button_column(children![
-                widget::big_button("Play", play_game),
-                widget::big_button("Settings", open_settings),
-                (
-                    widget::big_button("Quit", quit_to_desktop),
-                    #[cfg(feature = "web")]
-                    InteractionDisabled(true),
-                ),
-            ]),
-        ]));
-}
-
-fn play_game(_: Trigger<Pointer<Click>>, mut commands: Commands) {
-    commands.spawn(fade_out(Screen::Intro));
-}
-
-fn open_settings(_: Trigger<Pointer<Click>>, mut commands: Commands) {
-    commands.spawn(fade_out(Screen::Settings));
-}
-
-fn quit_to_desktop(_: Trigger<Pointer<Click>>, mut app_exit: EventWriter<AppExit>) {
-    if cfg!(not(feature = "web")) {
-        app_exit.write(AppExit::Success);
     }
 }

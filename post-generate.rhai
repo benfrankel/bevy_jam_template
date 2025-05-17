@@ -6,7 +6,7 @@ file::rename("README.md.template", "README.md");
 file::rename("assets/config/window.ron.template", "assets/config/window.ron");
 file::rename("src/bin/run.rs.template", "src/bin/run.rs");
 file::rename("src/bin/debug.rs.template", "src/bin/debug.rs");
-file::rename("src/screen/title.rs.template", "src/screen/title.rs");
+file::rename("src/menu/main.rs.template", "src/menu/main.rs");
 
 // Generate `Cargo.lock`.
 system::command("cargo", ["update", "--package", variable::get("project-name")]);

@@ -1,30 +1,18 @@
+use crate::menu::Menu;
+use crate::menu::MenuRoot;
 use crate::prelude::*;
 use crate::screen::Screen;
-use crate::screen::ScreenRoot;
 use crate::screen::fade::fade_out;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(StateFlush, Screen::Title.on_enter(spawn_title_screen));
-
-    app.configure::<TitleScreenAssets>();
+    app.add_systems(StateFlush, Menu::Main.on_enter(spawn_main_menu));
 }
 
-#[derive(AssetCollection, Resource, Reflect, Default)]
-#[reflect(Resource)]
-pub struct TitleScreenAssets {}
-
-impl Configure for TitleScreenAssets {
-    fn configure(app: &mut App) {
-        app.register_type::<Self>();
-        app.init_collection::<Self>();
-    }
-}
-
-fn spawn_title_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
+fn spawn_main_menu(mut commands: Commands, menu_root: Res<MenuRoot>) {
     commands
-        .entity(screen_root.ui)
+        .entity(menu_root.ui)
         .with_child(widget::body(children![
-            widget::header("[b]{{project-name | title_case}}"),
+            widget::header("[b]Pyri New Jam"),
             widget::button_column(children![
                 widget::big_button("Play", play_game),
                 widget::big_button("Settings", open_settings),
@@ -41,8 +29,8 @@ fn play_game(_: Trigger<Pointer<Click>>, mut commands: Commands) {
     commands.spawn(fade_out(Screen::Intro));
 }
 
-fn open_settings(_: Trigger<Pointer<Click>>, mut commands: Commands) {
-    commands.spawn(fade_out(Screen::Settings));
+fn open_settings(_: Trigger<Pointer<Click>>, mut menu: ResMut<NextStateStack<Menu>>) {
+    menu.push(Menu::Settings);
 }
 
 fn quit_to_desktop(_: Trigger<Pointer<Click>>, mut app_exit: EventWriter<AppExit>) {
