@@ -152,22 +152,20 @@ debug-assertions = false
 
 # Enable more optimization in the release profile at the cost of compile time.
 [profile.release]
-# Compile the entire crate as one unit.
-# Slows compile times, marginal improvements.
+# Compile the entire crate as a single unit.
+# Increases build time for large crates; marginal improvements to performance and size.
 codegen-units = 1
 # Do a second optimization pass over the entire program, including dependencies.
-# Slows compile times, marginal improvements.
-lto = "thin"
+# Increases build time immensely; minimal improvements to performance and size.
+#lto = "fat"
 
-# Optimize for size in the web-release profile to reduce load times and bandwidth usage on web.
+# This profile will be used by `bevy run web` automatically.
 [profile.web-release]
 # Default to release profile values.
 inherits = "release"
-# Optimize with size in mind (also try "z", sometimes it is better).
-# Slightly slows compile times, great improvements to file size and runtime performance.
-opt-level = "s"
-# Strip all debugging information from the binary to slightly reduce file size.
-strip = "debuginfo"
+# Optimize with size in mind.
+# Reduces performance slightly; significant improvements to build time and size.
+#opt-level = "s"
 
 
 [[bin]]
