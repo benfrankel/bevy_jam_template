@@ -1,3 +1,4 @@
+pub mod node;
 pub mod plugin;
 pub mod transform;
 pub mod trigger;
@@ -5,6 +6,7 @@ pub mod val;
 
 #[allow(unused_imports)]
 pub mod prelude {
+    pub use super::node::NodeExtLayout;
     pub use super::plugin::AppExtConfigure as _;
     pub use super::plugin::Configure;
     pub use super::plugin::PluginGroupBuilderExtReplace as _;

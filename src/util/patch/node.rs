@@ -14,17 +14,11 @@ pub trait NodeExtLayout {
     const COLUMN_CENTER: Self;
 
     fn abs(self) -> Self;
-
     fn width(self, percent: f32) -> Self;
-
     fn full_width(self) -> Self;
-
     fn height(self, percent: f32) -> Self;
-
     fn full_height(self) -> Self;
-
     fn full_size(self) -> Self;
-
     fn centered(self) -> Self;
 }
 

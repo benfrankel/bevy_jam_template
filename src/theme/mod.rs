@@ -4,7 +4,6 @@
 
 pub mod color;
 pub mod interaction;
-pub mod layout;
 pub mod text;
 pub mod tooltip;
 pub mod widget;
@@ -17,7 +16,6 @@ pub mod prelude {
     pub use super::interaction::InteractionDisabled;
     pub use super::interaction::InteractionSfx;
     pub use super::interaction::InteractionTheme;
-    pub use super::layout::NodeExtLayout as _;
     pub use super::text::BOLD_FONT_HANDLE;
     pub use super::text::DynamicFontSize;
     pub use super::text::FONT_HANDLE;
