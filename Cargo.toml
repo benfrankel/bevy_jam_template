@@ -34,7 +34,7 @@ bevy = { version = "0.16", default-features = false, features = [
 ] }
 bevy_asset_loader = { version = "0.23", features = ["2d", "progress_tracking"] }
 bevy_common_assets = { version = "0.13", features = ["ron"] }
-#bevy_editor_pls = { version = "0.12", optional = true }
+bevy_editor_pls = { version = "0.12", optional = true }
 bevy_kira_audio = "0.23"
 bevy_mod_debugdump = { version = "0.13", optional = true }
 bevy_simple_prefs = "0.5"
@@ -73,14 +73,12 @@ variadics_please = "1"
 [patch.crates-io]
 # TODO: Workaround for <https://github.com/NiklasEi/bevy_asset_loader/issues/219>.
 bevy_asset_loader = { git = "https://github.com/benfrankel/bevy_asset_loader.git", branch = "direct-depend" }
-iyes_progress = { git = "https://github.com/benfrankel/iyes_progress.git", branch = "bevy-0-16" }
-pyri_state = { git = "https://github.com/benfrankel/pyri_state.git" }
-pyri_tooltip = { git = "https://github.com/benfrankel/pyri_tooltip.git" }
+bevy_editor_pls = { git = "https://github.com/benfrankel/bevy_editor_pls.git", branch = "bevy-0-16" }
 
 
 [features]
 dev = [
-    #"dep:bevy_editor_pls",
+    "dep:bevy_editor_pls",
     "avian2d/debug-plugin",
     "avian2d/diagnostic_ui",
     "bevy/bevy_dev_tools",
