@@ -4,6 +4,7 @@ use bevy::reflect::Typed;
 
 use crate::animation::offset::NodeOffset;
 use crate::core::audio::AudioConfig;
+use crate::core::audio::IsAudioUi;
 use crate::prelude::*;
 use crate::theme::ThemeAssets;
 
@@ -166,34 +167,42 @@ fn play_hover_sfx(
     trigger: Trigger<Pointer<Over>>,
     audio_config: ConfigRef<AudioConfig>,
     assets: Res<ThemeAssets>,
-    audio: Res<Audio>,
     sfx_query: Query<Option<&InteractionDisabled>, With<InteractionSfx>>,
+    mut commands: Commands,
 ) {
     let audio_config = r!(audio_config.get());
     let target = r!(trigger.get_target());
     let disabled = rq!(sfx_query.get(target));
     rq!(!matches!(disabled, Some(InteractionDisabled(true))));
 
-    audio
-        .play(assets.sfx_hover.clone())
-        .with_volume(4.0 * audio_config.ui_volume)
-        .with_playback_rate(thread_rng().gen_range(0.9..1.5));
+    commands.spawn((
+        Name::new("SfxHover"),
+        AudioPlayer(assets.sfx_hover.clone()),
+        PlaybackSettings::DESPAWN
+            .with_volume(Volume::Linear(audio_config.ui_volume))
+            .with_speed(thread_rng().gen_range(0.9..1.5)),
+        IsAudioUi,
+    ));
 }
 
 fn play_click_sfx(
     trigger: Trigger<Pointer<Click>>,
     audio_config: ConfigRef<AudioConfig>,
     assets: Res<ThemeAssets>,
-    audio: Res<Audio>,
     sfx_query: Query<Option<&InteractionDisabled>, With<InteractionSfx>>,
+    mut commands: Commands,
 ) {
     let audio_config = r!(audio_config.get());
     let target = r!(trigger.get_target());
     let disabled = rq!(sfx_query.get(target));
     rq!(!matches!(disabled, Some(InteractionDisabled(true))));
 
-    audio
-        .play(assets.sfx_click.clone())
-        .with_volume(4.0 * audio_config.ui_volume)
-        .with_playback_rate(thread_rng().gen_range(0.9..1.5));
+    commands.spawn((
+        Name::new("SfxClick"),
+        AudioPlayer(assets.sfx_click.clone()),
+        PlaybackSettings::DESPAWN
+            .with_volume(Volume::Linear(audio_config.ui_volume))
+            .with_speed(thread_rng().gen_range(0.9..1.5)),
+        IsAudioUi,
+    ));
 }
