@@ -21,7 +21,6 @@ pub use bevy::ui::FocusPolicy;
 pub use bevy::ui::Val::*;
 pub use bevy_asset_loader::prelude::*;
 pub use bevy_kira_audio::prelude::*;
-pub use bevy_spawn_observer::SpawnObserver;
 pub use inline_tweak::tweak;
 pub use inline_tweak::tweak_fn;
 pub use iyes_progress::prelude::*;

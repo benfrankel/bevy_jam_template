@@ -38,7 +38,6 @@ bevy_editor_pls = { version = "0.12", optional = true }
 bevy_kira_audio = "0.23"
 bevy_mod_debugdump = { version = "0.13", optional = true }
 bevy_simple_prefs = "0.5"
-bevy_spawn_observer = "0.1"
 bevy_state = "0.16"
 dirs = { version = "6", optional = true }
 inline_tweak = { version = "1", features = ["derive"] }

@@ -109,7 +109,7 @@ pub fn big_button<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
 where
     E: Event,
     B: Bundle,
-    I: IntoObserverSystem<E, B, M>,
+    I: Sync + IntoObserverSystem<E, B, M>,
 {
     button_helper(Vw(38.0), Vw(10.0), Vw(4.0), text, action)
 }
@@ -119,7 +119,7 @@ pub fn button<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
 where
     E: Event,
     B: Bundle,
-    I: IntoObserverSystem<E, B, M>,
+    I: Sync + IntoObserverSystem<E, B, M>,
 {
     button_helper(Vw(38.0), Vw(7.0), Vw(3.0), text, action)
 }
@@ -135,7 +135,7 @@ fn button_helper<E, B, M, I>(
 where
     E: Event,
     B: Bundle,
-    I: IntoObserverSystem<E, B, M>,
+    I: Sync + IntoObserverSystem<E, B, M>,
 {
     let text = text.into();
     (
@@ -169,13 +169,13 @@ where
             ..default()
         },
         InteractionSfx,
-        Children::spawn((
-            Spawn((
-                label_helper(font_size, ThemeColor::PrimaryText, text),
-                Pickable::IGNORE,
-            )),
-            SpawnObserver::new(action),
-        )),
+        children![(
+            label_helper(font_size, ThemeColor::PrimaryText, text),
+            Pickable::IGNORE,
+        )],
+        Patch(|entity| {
+            entity.observe(action);
+        }),
     )
 }
 

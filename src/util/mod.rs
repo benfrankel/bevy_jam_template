@@ -3,6 +3,7 @@
 #![allow(dead_code)]
 
 pub mod config;
+pub mod extend;
 pub mod late_commands;
 pub mod patch;
 pub mod previous;
@@ -13,8 +14,9 @@ pub mod prelude {
     pub use super::config::Config;
     pub use super::config::ConfigHandle;
     pub use super::config::ConfigRef;
+    pub use super::extend::prelude::*;
     pub use super::late_commands::LateCommands;
-    pub use super::patch::prelude::*;
+    pub use super::patch::Patch;
     pub use super::previous::Previous;
     pub use super::selection::Selection;
 }
