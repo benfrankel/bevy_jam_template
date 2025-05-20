@@ -84,7 +84,7 @@ pub fn apply_dynamic_font_size(
             .size
             .resolve(computed_node.size().x, viewport_size));
 
-        // Round to nearest multiple of step.
+        // Round down to the nearest multiple of step.
         let resolved = if font_size.step > 0.0 {
             (size / font_size.step).floor() * font_size.step
         } else {

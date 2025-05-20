@@ -61,17 +61,23 @@ pub fn button_column(children: impl Bundle) -> impl Bundle {
 
 #[tweak_fn]
 pub fn header(text: impl AsRef<str>) -> impl Bundle {
-    label_helper(Vw(5.0), UiRect::bottom(Vw(5.0)), text)
+    (
+        label_helper(Vw(5.0), ThemeColor::BodyText, text),
+        Node {
+            margin: UiRect::bottom(Vw(5.0)),
+            ..default()
+        },
+    )
 }
 
 #[tweak_fn]
 pub fn big_label(text: impl AsRef<str>) -> impl Bundle {
-    label_helper(Vw(5.0), UiRect::ZERO, text)
+    label_helper(Vw(5.0), ThemeColor::BodyText, text)
 }
 
 #[tweak_fn]
 pub fn label(text: impl AsRef<str>) -> impl Bundle {
-    label_helper(Vw(3.5), UiRect::ZERO, text)
+    label_helper(Vw(3.5), ThemeColor::BodyText, text)
 }
 
 #[tweak_fn]
@@ -88,17 +94,13 @@ pub fn paragraph(text: &'static str) -> impl Bundle {
 }
 
 #[tweak_fn]
-fn label_helper(font_size: Val, margin: UiRect, text: impl AsRef<str>) -> impl Bundle {
+fn label_helper(font_size: Val, text_color: ThemeColor, text: impl AsRef<str>) -> impl Bundle {
     let text = text.as_ref();
     (
         Name::new(format!("Label(\"{text}\")")),
         RichText::from_sections(parse_rich(text)).with_justify(JustifyText::Center),
         DynamicFontSize::new(font_size).with_step(8.0),
-        ThemeColorForText(vec![ThemeColor::BodyText]),
-        Node {
-            margin,
-            ..default()
-        },
+        ThemeColorForText(vec![text_color]),
     )
 }
 
@@ -169,10 +171,7 @@ where
         InteractionSfx,
         Children::spawn((
             Spawn((
-                Name::new("ButtonText"),
-                RichText::from_sections(parse_rich(&text)),
-                DynamicFontSize::new(font_size).with_step(8.0),
-                ThemeColorForText(vec![ThemeColor::PrimaryText]),
+                label_helper(font_size, ThemeColor::PrimaryText, text),
                 Pickable::IGNORE,
             )),
             SpawnObserver::new(action),
