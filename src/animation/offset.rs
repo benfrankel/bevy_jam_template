@@ -19,6 +19,7 @@ impl Configure for Offset {
     }
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn apply_offset(mut offset_query: Query<(&Offset, &mut Transform)>) {
     for (offset, mut transform) in &mut offset_query {
         transform.translation += offset.0.extend(0.0);
@@ -49,6 +50,7 @@ impl NodeOffset {
     }
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn apply_node_offset(
     window_root: Res<WindowRoot>,
     window_query: Query<&Window>,

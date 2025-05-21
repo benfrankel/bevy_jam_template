@@ -142,6 +142,7 @@ jobs:
       - name: Run tests
         run: cargo nextest run --locked --workspace --all-targets --no-fail-fast --no-tests=warn
 
+      # TODO: Workaround for <https://github.com/DioxusLabs/dioxus/issues/4160>.
       # TODO: Workaround for <https://github.com/rust-lang/cargo/issues/6669>.
-      - name: Run doctests
-        run: cargo test --locked --workspace --doc --no-fail-fast
+      #- name: Run doctests
+        #run: cargo test --locked --workspace --doc --no-fail-fast

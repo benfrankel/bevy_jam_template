@@ -36,7 +36,7 @@ concurrency:
 env:
   # TODO: Workaround for <https://github.com/rust-lang/cargo/issues/6790>.
   # The base filename of the binary produced by `cargo build`.
-  cargo_build_binary_name: run
+  cargo_build_binary_name: pyri_new_jam
 
   # The path to the assets directory.
   assets_path: assets

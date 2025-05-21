@@ -15,6 +15,7 @@ impl<C: Component + Clone + Typed + FromReflect + GetTypeRegistration> Configure
     }
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn save_to_previous<C: Component + Clone>(
     mut previous_query: Query<(&mut Previous<C>, &C), Changed<C>>,
 ) {

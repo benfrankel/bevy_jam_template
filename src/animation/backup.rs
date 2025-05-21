@@ -41,6 +41,7 @@ impl<C: Component<Mutability = Mutable> + Clone + Typed + FromReflect + GetTypeR
     }
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn restore_from_backup<C: Component<Mutability = Mutable> + Clone>(
     mut backup_query: Query<(&mut Backup<C>, &mut C)>,
 ) {
@@ -49,6 +50,7 @@ fn restore_from_backup<C: Component<Mutability = Mutable> + Clone>(
     }
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn save_to_backup<C: Component<Mutability = Mutable> + Clone>(
     mut backup_query: Query<(&mut Backup<C>, &C)>,
 ) {

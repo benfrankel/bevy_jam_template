@@ -17,6 +17,7 @@ pub(super) fn plugin(app: &mut App) {
     )>();
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn spawn_settings_menu(mut commands: Commands, menu_root: Res<MenuRoot>) {
     commands
         .entity(menu_root.ui)
@@ -31,7 +32,6 @@ fn go_back(_: Trigger<Pointer<Click>>, mut menu: ResMut<NextStateStack<Menu>>) {
     menu.pop();
 }
 
-#[tweak_fn]
 fn grid() -> impl Bundle {
     (
         Name::new("Grid"),
@@ -72,6 +72,7 @@ impl Configure for IsMasterVolumeLabel {
     }
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn update_master_volume_label(
     audio_config: ConfigRef<AudioConfig>,
     mut text_query: Query<&mut RichText, With<IsMasterVolumeLabel>>,
@@ -106,6 +107,7 @@ impl Configure for IsMusicVolumeLabel {
     }
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn update_music_volume_label(
     audio_config: ConfigRef<AudioConfig>,
     mut text_query: Query<&mut RichText, With<IsMusicVolumeLabel>>,
@@ -140,6 +142,7 @@ impl Configure for IsUiVolumeLabel {
     }
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn update_ui_volume_label(
     audio_config: ConfigRef<AudioConfig>,
     mut text_query: Query<&mut RichText, With<IsUiVolumeLabel>>,

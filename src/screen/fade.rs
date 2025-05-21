@@ -33,6 +33,7 @@ impl FadeIn {
     }
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn apply_fade_in(
     time: Res<Time>,
     mut late: LateCommands,
@@ -49,12 +50,12 @@ fn apply_fade_in(
     }
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn spawn_fade_in(mut commands: Commands) {
     commands.spawn(fade_in());
 }
 
 /// A screen transition animation for entering the current [`Screen`].
-#[tweak_fn]
 pub fn fade_in() -> impl Bundle {
     (
         widget::overlay(1000),
@@ -88,6 +89,7 @@ impl FadeOut {
     }
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn apply_fade_out(
     time: Res<Time>,
     mut late: LateCommands,
@@ -109,7 +111,6 @@ fn apply_fade_out(
 }
 
 /// A screen transition animation for exiting the current [`Screen`].
-#[tweak_fn]
 pub fn fade_out(to_screen: Screen) -> impl Bundle {
     (
         widget::blocking_overlay(1000),

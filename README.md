@@ -18,9 +18,10 @@ This template builds on top of Bevy New 2D with a few additions.
 - **3rd-party crates:**
     - [`avian2d`](https://github.com/Jondolf/avian/) for physics
     - [`bevy_editor_pls`](https://github.com/jakobhellermann/bevy_editor_pls) for a live inspector window
+    - [`bevy_simple_subsecond_system`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system) for function hot-patching
     - [`leafwing-input-manager`](https://github.com/Leafwing-Studios/leafwing-input-manager/) for input to action mapping
     - [`pyri_tooltip`](https://github.com/benfrankel/pyri_tooltip/) for tooltips
-    - [`pyri_state`](https://github.com/benfrankel/pyri_state) for flexible game states
+    - [`pyri_state`](https://github.com/benfrankel/pyri_state) for more flexible game states
     - [`tiny_bail`](https://github.com/benfrankel/tiny_bail) for error handling ergonomics
     - And a few more...
 - **Assets:**
@@ -50,6 +51,28 @@ bevy run --release web
 ```
 
 For VS Code users, [`.vscode/tasks.json`](./.vscode/tasks.json) provides IDE integration.
+
+<details>
+  <summary>Hot-patching with Dioxus</summary>
+
+  Follow the instructions in [`bevy_simple_subsecond_system`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/) to
+  install `dioxus-cli` and set up your linker.
+
+  Then use the following command to run your game with hot-patching enabled:
+
+  ```shell
+  dx serve --hot-patch --features native_dev --profile dev
+  ```
+  
+  Annotate any system you add to enable hot-patching:
+
+  ```rust
+  #[cfg_attr(feature = "native_dev", hot)]
+  fn my_system() {}
+  ```
+  
+  The functions called from your systems will also be hot-patched; no annotation required!
+</details>
 
 ## Release your game
 

@@ -11,6 +11,7 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(StateFlush, Screen::Intro.on_enter(spawn_intro_screen));
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn spawn_intro_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
     commands
         .entity(screen_root.ui)

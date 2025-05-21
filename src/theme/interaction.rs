@@ -52,6 +52,7 @@ impl<C: Component<Mutability = Mutable> + Clone + Typed + FromReflect + GetTypeR
     }
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn apply_interaction_theme<C: Component<Mutability = Mutable> + Clone>(
     mut interaction_query: Query<
         (
@@ -112,6 +113,7 @@ impl<C: Component<Mutability = Mutable> + Clone + Typed + FromReflect + GetTypeR
     }
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn apply_target_interaction_theme<C: Component<Mutability = Mutable> + Clone>(
     mut table_query: Query<(&TargetInteractionTheme<C>, &mut C)>,
     interaction_query: Query<

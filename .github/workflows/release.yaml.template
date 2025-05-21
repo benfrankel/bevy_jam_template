@@ -28,15 +28,17 @@ on:
         default: true
         type: boolean
 
+{% raw -%}
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
   cancel-in-progress: true
+{%- endraw %}
 
 # Configure the release workflow by editing the following values.
 env:
   # TODO: Workaround for <https://github.com/rust-lang/cargo/issues/6790>.
   # The base filename of the binary produced by `cargo build`.
-  cargo_build_binary_name: run
+  cargo_build_binary_name: {{crate_name}}
 
   # The path to the assets directory.
   assets_path: assets
@@ -92,7 +94,7 @@ env:
   # Reduce compile time.
   RUSTFLAGS: -Dwarnings -Zshare-generics=y -Zthreads=0
 
-{%- raw %}
+{% raw -%}
 jobs:
   # Forward some environment variables as outputs of this job.
   # This is needed because the `env` context can't be used in the `if:` condition of a job:
@@ -350,4 +352,4 @@ jobs:
               tmp/"${channel}"/* \
               '${{ env.upload_to_itch }}':"${channel#package-}"
           done
-{% endraw -%}
+{%- endraw %}

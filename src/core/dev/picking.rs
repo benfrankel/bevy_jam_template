@@ -13,6 +13,7 @@ pub(super) fn plugin(app: &mut App) {
 
 const TOGGLE_KEY: KeyCode = KeyCode::F1;
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn toggle_debug_picking(mut mode: ResMut<DebugPickingMode>) {
     *mode = match *mode {
         DebugPickingMode::Disabled => DebugPickingMode::Normal,

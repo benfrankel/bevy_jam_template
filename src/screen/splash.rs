@@ -26,6 +26,7 @@ pub(super) fn plugin(app: &mut App) {
 
 const SPLASH_SCREEN_MIN_SECS: f32 = 0.8;
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn spawn_splash_screen(
     mut commands: Commands,
     screen_root: Res<ScreenRoot>,
@@ -48,6 +49,7 @@ fn spawn_splash_screen(
         )]));
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn update_splash(
     mut commands: Commands,
     progress: Res<ProgressTracker<BevyState<Screen>>>,

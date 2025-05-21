@@ -2,6 +2,8 @@
 
 mod diagnostics;
 mod editor;
+#[cfg(feature = "native_dev")]
+mod hot_patch;
 mod physics;
 mod picking;
 mod state;
@@ -16,6 +18,8 @@ pub(super) fn plugin(app: &mut App) {
     app.add_plugins((
         diagnostics::plugin,
         editor::plugin,
+        #[cfg(feature = "native_dev")]
+        hot_patch::plugin,
         physics::plugin,
         picking::plugin,
         state::plugin,
@@ -67,12 +71,14 @@ impl Config for DevConfig {
     }
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn debug_start(world: &mut World) {
     let frame = r!(world.get_resource::<FrameCount>()).0;
     let prefix = format!("[Frame {frame} start] ");
     let _ = prefix;
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn debug_end(world: &mut World) {
     let frame = r!(world.get_resource::<FrameCount>()).0;
     let prefix = format!("[Frame {frame} end] ");

@@ -2,6 +2,32 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Run native dev (with hot-patching)",
+            "type": "process",
+            "command": "dx",
+            "args": [
+                "serve",
+                "--hot-patch",
+                "--features=native_dev",
+                "--profile=dev"
+            ],
+            "options": {
+                "env": {
+                    "RUST_BACKTRACE": "full"
+                }
+            },
+            "presentation": {
+                "clear": true
+            },
+            "problemMatcher": [
+                "$rustc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
             "label": "Run native dev",
             "type": "process",
             "command": "bevy",
@@ -20,8 +46,7 @@
                 "$rustc"
             ],
             "group": {
-                "kind": "build",
-                "isDefault": true
+                "kind": "build"
             }
         },
         {

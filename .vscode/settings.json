@@ -1,11 +1,10 @@
 {
     // Run rust-analyzer with cargo features enabled.
     "rust-analyzer.cargo.features": [
-        "native",
-        "dev",
+        "native_dev",
         "bevy_mod_debugdump",
     ],
-    // Run rust-analyzer for `src/bin/` files.
+    // Run rust-analyzer in `src/bin/` files.
     "rust-analyzer.check.extraArgs": [
         "--bins"
     ],

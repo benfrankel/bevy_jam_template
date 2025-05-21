@@ -7,7 +7,6 @@ use crate::core::audio::IsMusicAudio;
 use crate::core::audio::IsUiAudio;
 use crate::prelude::*;
 
-#[tweak_fn]
 pub fn overlay(z: i32) -> impl Bundle {
     (
         Name::new("Overlay"),
@@ -17,7 +16,6 @@ pub fn overlay(z: i32) -> impl Bundle {
     )
 }
 
-#[tweak_fn]
 pub fn blocking_overlay(z: i32) -> impl Bundle {
     (
         Name::new("BlockingOverlay"),
@@ -27,7 +25,6 @@ pub fn blocking_overlay(z: i32) -> impl Bundle {
     )
 }
 
-#[tweak_fn]
 pub fn body(children: impl Bundle) -> impl Bundle {
     (
         Name::new("Body"),
@@ -40,7 +37,6 @@ pub fn body(children: impl Bundle) -> impl Bundle {
     )
 }
 
-#[tweak_fn]
 pub fn column_center(children: impl Bundle) -> impl Bundle {
     (
         Name::new("ColumnCenter"),
@@ -49,7 +45,6 @@ pub fn column_center(children: impl Bundle) -> impl Bundle {
     )
 }
 
-#[tweak_fn]
 pub fn button_column(children: impl Bundle) -> impl Bundle {
     (
         Name::new("ButtonColumn"),
@@ -62,7 +57,6 @@ pub fn button_column(children: impl Bundle) -> impl Bundle {
     )
 }
 
-#[tweak_fn]
 pub fn stretch(children: impl Bundle) -> impl Bundle {
     (
         Name::new("Stretch"),
@@ -75,7 +69,6 @@ pub fn stretch(children: impl Bundle) -> impl Bundle {
     )
 }
 
-#[tweak_fn]
 pub fn header(text: impl AsRef<str>) -> impl Bundle {
     (
         label_helper(Vw(5.0), ThemeColor::BodyText, text),
@@ -86,17 +79,14 @@ pub fn header(text: impl AsRef<str>) -> impl Bundle {
     )
 }
 
-#[tweak_fn]
 pub fn big_label(text: impl AsRef<str>) -> impl Bundle {
     label_helper(Vw(5.0), ThemeColor::BodyText, text)
 }
 
-#[tweak_fn]
 pub fn label(text: impl AsRef<str>) -> impl Bundle {
     label_helper(Vw(3.5), ThemeColor::BodyText, text)
 }
 
-#[tweak_fn]
 pub fn paragraph(text: &'static str) -> impl Bundle {
     (
         Name::new("Paragraph"),
@@ -109,7 +99,6 @@ pub fn paragraph(text: &'static str) -> impl Bundle {
     )
 }
 
-#[tweak_fn]
 fn label_helper(font_size: Val, text_color: ThemeColor, text: impl AsRef<str>) -> impl Bundle {
     let text = text.as_ref();
     (
@@ -120,7 +109,6 @@ fn label_helper(font_size: Val, text_color: ThemeColor, text: impl AsRef<str>) -
     )
 }
 
-#[tweak_fn]
 pub fn small_button<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
 where
     E: Event,
@@ -130,7 +118,6 @@ where
     button_helper(Vw(3.0), Vw(4.0), Vw(3.0), text, action)
 }
 
-#[tweak_fn]
 pub fn button<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
 where
     E: Event,
@@ -140,7 +127,6 @@ where
     button_helper(Vw(38.0), Vw(7.0), Vw(3.0), text, action)
 }
 
-#[tweak_fn]
 pub fn big_button<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
 where
     E: Event,
@@ -150,7 +136,6 @@ where
     button_helper(Vw(38.0), Vw(10.0), Vw(4.0), text, action)
 }
 
-#[tweak_fn]
 fn button_helper<E, B, M, I>(
     width: Val,
     height: Val,
@@ -205,7 +190,6 @@ where
     )
 }
 
-#[tweak_fn]
 pub fn selector<E1, B1, M1, I1, C, E2, B2, M2, I2>(
     left_action: I1,
     label_marker: C,
@@ -234,7 +218,6 @@ where
     )
 }
 
-#[tweak_fn]
 pub fn loading_bar<S: State + Clone + PartialEq + Eq + Hash + Debug>() -> impl Bundle {
     (
         Name::new("LoadingBar"),
@@ -271,6 +254,7 @@ impl<S: State + Clone + PartialEq + Eq + Hash + Debug + TypePath> Configure
     }
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn update_loading_bar_fill<S: State + Clone + PartialEq + Eq + Hash + Debug>(
     progress: Res<ProgressTracker<BevyState<S>>>,
     mut fill_query: Query<&mut Node, With<IsLoadingBarFill<S>>>,
@@ -287,7 +271,6 @@ fn update_loading_bar_fill<S: State + Clone + PartialEq + Eq + Hash + Debug>(
     }
 }
 
-#[tweak_fn]
 pub fn music_audio(audio_config: &AudioConfig, handle: Handle<AudioSource>) -> impl Bundle {
     (
         Name::new("MusicAudio"),
@@ -297,7 +280,6 @@ pub fn music_audio(audio_config: &AudioConfig, handle: Handle<AudioSource>) -> i
     )
 }
 
-#[tweak_fn]
 pub fn ui_audio(audio_config: &AudioConfig, handle: Handle<AudioSource>) -> impl Bundle {
     (
         Name::new("UiAudio"),

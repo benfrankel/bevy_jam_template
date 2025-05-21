@@ -51,6 +51,7 @@ impl Configure for LateCommandBuffer {
     }
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn apply_late_commands(mut commands: Commands, mut late_commands: ResMut<LateCommandBuffer>) {
     commands.append(&mut late_commands.0);
 }

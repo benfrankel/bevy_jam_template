@@ -41,6 +41,7 @@ impl Configure for IsEditorWindow {
     }
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn toggle_editor_window(mut window_query: Query<&mut Window, With<IsEditorWindow>>) {
     for mut window in &mut window_query {
         window.visible ^= true;

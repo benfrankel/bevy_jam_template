@@ -88,6 +88,7 @@ impl<C: ColorMut + TypePath> Configure for ThemeColorFor<C> {
     }
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn apply_theme_color_for<C: ColorMut>(
     config: ConfigRef<ThemeConfig>,
     mut color_query: Query<(&ThemeColorFor<C>, &mut C)>,
@@ -112,6 +113,7 @@ impl Configure for ThemeColorForText {
     }
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn apply_theme_color_for_text(
     config: ConfigRef<ThemeConfig>,
     mut text_query: Query<(&ThemeColorForText, &mut RichText)>,

@@ -2,7 +2,8 @@
 name = "{{project-name}}"
 version = "0.1.0"
 edition = "2024"
-default-run = "run"
+# TODO: Workaround for <https://github.com/DioxusLabs/dioxus/issues/4160>.
+#default-run = "run"
 
 
 [dependencies]
@@ -36,12 +37,12 @@ bevy = { version = "0.16", default-features = false, features = [
 ] }
 bevy_asset_loader = { version = "0.23", features = ["2d", "progress_tracking"] }
 bevy_common_assets = { version = "0.13", features = ["ron"] }
-bevy_editor_pls = { version = "0.12", optional = true }
+bevy_editor_pls = { version = "0.11", optional = true }
 bevy_mod_debugdump = { version = "0.13", optional = true }
 bevy_simple_prefs = "0.5"
+bevy_simple_subsecond_system = { version = "0.1", optional = true }
 bevy_state = "0.16"
 dirs = { version = "6", optional = true }
-inline_tweak = { version = "1", features = ["derive"] }
 iyes_progress = "0.14"
 lazy-regex = { version = "3", features = ["lite"] }
 leafwing-input-manager = "0.17"
@@ -86,14 +87,21 @@ dev = [
     "bevy/bevy_ui_debug",
     #"bevy/configurable_error_handler",
     "bevy/default_font",
-    "bevy/dynamic_linking",
+    # TODO: Workaround for <https://github.com/DioxusLabs/dioxus/issues/4154>.
+    #"bevy/dynamic_linking",
     "bevy/glam_assert",
     "bevy/sysinfo_plugin",
     "bevy/track_location",
     "pyri_state/debug",
 ]
 native = ["dep:dirs", "avian2d/parallel"]
-native_dev = ["native", "dev", "bevy/file_watcher", "bevy/embedded_watcher"]
+native_dev = [
+    "native",
+    "dev",
+    "dep:bevy_simple_subsecond_system",
+    "bevy/file_watcher",
+    "bevy/embedded_watcher",
+]
 web = []
 web_dev = ["web", "dev"]
 bevy_mod_debugdump = ["dep:bevy_mod_debugdump"]
@@ -166,6 +174,7 @@ inherits = "release"
 #opt-level = "s"
 
 
-[[bin]]
-name = "debug"
-required-features = ["bevy_mod_debugdump"]
+# TODO: Workaround for <https://github.com/DioxusLabs/dioxus/issues/4160>.
+#[[bin]]
+#name = "debug"
+#required-features = ["bevy_mod_debugdump"]

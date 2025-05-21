@@ -61,6 +61,7 @@ impl Configure for Menu {
     }
 }
 
+#[cfg_attr(feature = "native_dev", hot)]
 fn spawn_menu_overlay(mut commands: Commands, menu_root: Res<MenuRoot>) {
     commands.entity(menu_root.ui).with_child((
         widget::blocking_overlay(1),
