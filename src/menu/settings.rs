@@ -58,36 +58,6 @@ fn grid() -> impl Bundle {
     )
 }
 
-fn master_volume_down(_: Trigger<Pointer<Click>>, mut audio_config: ConfigMut<AudioConfig>) {
-    let audio_config = r!(audio_config.get_mut());
-    audio_config.master_volume = (audio_config.master_volume - 0.1).max(0.0);
-}
-
-fn master_volume_up(_: Trigger<Pointer<Click>>, mut audio_config: ConfigMut<AudioConfig>) {
-    let audio_config = r!(audio_config.get_mut());
-    audio_config.master_volume = (audio_config.master_volume + 0.1).min(1.0);
-}
-
-fn music_volume_down(_: Trigger<Pointer<Click>>, mut audio_config: ConfigMut<AudioConfig>) {
-    let audio_config = r!(audio_config.get_mut());
-    audio_config.music_volume = (audio_config.music_volume - 0.1).max(0.0);
-}
-
-fn music_volume_up(_: Trigger<Pointer<Click>>, mut audio_config: ConfigMut<AudioConfig>) {
-    let audio_config = r!(audio_config.get_mut());
-    audio_config.music_volume = (audio_config.music_volume + 0.1).min(1.0);
-}
-
-fn ui_volume_down(_: Trigger<Pointer<Click>>, mut audio_config: ConfigMut<AudioConfig>) {
-    let audio_config = r!(audio_config.get_mut());
-    audio_config.ui_volume = (audio_config.ui_volume - 0.1).max(0.0);
-}
-
-fn ui_volume_up(_: Trigger<Pointer<Click>>, mut audio_config: ConfigMut<AudioConfig>) {
-    let audio_config = r!(audio_config.get_mut());
-    audio_config.ui_volume = (audio_config.ui_volume + 0.1).min(1.0);
-}
-
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
 struct IsMasterVolumeLabel;
@@ -97,7 +67,7 @@ impl Configure for IsMasterVolumeLabel {
         app.register_type::<Self>();
         app.add_systems(
             Update,
-            update_master_volume_label.in_set(UpdateSystems::Update),
+            Menu::Settings.on_update(update_master_volume_label.in_set(UpdateSystems::Update)),
         );
     }
 }
@@ -112,6 +82,16 @@ fn update_master_volume_label(
     }
 }
 
+fn master_volume_down(_: Trigger<Pointer<Click>>, mut audio_config: ConfigMut<AudioConfig>) {
+    let audio_config = r!(audio_config.get_mut());
+    audio_config.master_volume = (audio_config.master_volume - 0.1).max(0.0);
+}
+
+fn master_volume_up(_: Trigger<Pointer<Click>>, mut audio_config: ConfigMut<AudioConfig>) {
+    let audio_config = r!(audio_config.get_mut());
+    audio_config.master_volume = (audio_config.master_volume + 0.1).min(1.0);
+}
+
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
 struct IsMusicVolumeLabel;
@@ -121,7 +101,7 @@ impl Configure for IsMusicVolumeLabel {
         app.register_type::<Self>();
         app.add_systems(
             Update,
-            update_music_volume_label.in_set(UpdateSystems::Update),
+            Menu::Settings.on_update(update_music_volume_label.in_set(UpdateSystems::Update)),
         );
     }
 }
@@ -136,6 +116,16 @@ fn update_music_volume_label(
     }
 }
 
+fn music_volume_down(_: Trigger<Pointer<Click>>, mut audio_config: ConfigMut<AudioConfig>) {
+    let audio_config = r!(audio_config.get_mut());
+    audio_config.music_volume = (audio_config.music_volume - 0.1).max(0.0);
+}
+
+fn music_volume_up(_: Trigger<Pointer<Click>>, mut audio_config: ConfigMut<AudioConfig>) {
+    let audio_config = r!(audio_config.get_mut());
+    audio_config.music_volume = (audio_config.music_volume + 0.1).min(1.0);
+}
+
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
 struct IsUiVolumeLabel;
@@ -143,7 +133,10 @@ struct IsUiVolumeLabel;
 impl Configure for IsUiVolumeLabel {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.add_systems(Update, update_ui_volume_label.in_set(UpdateSystems::Update));
+        app.add_systems(
+            Update,
+            Menu::Settings.on_update(update_ui_volume_label.in_set(UpdateSystems::Update)),
+        );
     }
 }
 
@@ -155,6 +148,16 @@ fn update_ui_volume_label(
     for mut text in &mut text_query {
         text.sections = parse_rich(format!("{:.0}%", audio_config.ui_volume * 100.0));
     }
+}
+
+fn ui_volume_down(_: Trigger<Pointer<Click>>, mut audio_config: ConfigMut<AudioConfig>) {
+    let audio_config = r!(audio_config.get_mut());
+    audio_config.ui_volume = (audio_config.ui_volume - 0.1).max(0.0);
+}
+
+fn ui_volume_up(_: Trigger<Pointer<Click>>, mut audio_config: ConfigMut<AudioConfig>) {
+    let audio_config = r!(audio_config.get_mut());
+    audio_config.ui_volume = (audio_config.ui_volume + 0.1).min(1.0);
 }
 
 #[derive(Prefs, Reflect, Default)]

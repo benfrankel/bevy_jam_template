@@ -174,7 +174,7 @@ fn play_hover_sfx(
     let disabled = rq!(sfx_query.get(target));
     rq!(!matches!(disabled, Some(InteractionDisabled(true))));
 
-    commands.spawn(widget::ui_audio(&audio_config, assets.sfx_hover.clone()));
+    commands.spawn(widget::ui_audio(audio_config, assets.sfx_hover.clone()));
 }
 
 fn play_click_sfx(
@@ -189,5 +189,5 @@ fn play_click_sfx(
     let disabled = rq!(sfx_query.get(target));
     rq!(!matches!(disabled, Some(InteractionDisabled(true))));
 
-    commands.spawn(widget::ui_audio(&audio_config, assets.sfx_click.clone()));
+    commands.spawn(widget::ui_audio(audio_config, assets.sfx_click.clone()));
 }
