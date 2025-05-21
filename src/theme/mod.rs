@@ -3,6 +3,7 @@
 #![allow(dead_code)]
 
 pub mod color;
+pub mod grid;
 pub mod interaction;
 pub mod text;
 pub mod tooltip;
@@ -13,6 +14,7 @@ pub mod prelude {
     pub use super::color::ThemeColor;
     pub use super::color::ThemeColorFor;
     pub use super::color::ThemeColorForText;
+    pub use super::grid::GridAlignment;
     pub use super::interaction::InteractionDisabled;
     pub use super::interaction::InteractionSfx;
     pub use super::interaction::InteractionTheme;
@@ -32,6 +34,7 @@ pub(super) fn plugin(app: &mut App) {
 
     app.add_plugins((
         color::plugin,
+        grid::plugin,
         interaction::plugin,
         text::plugin,
         tooltip::plugin,

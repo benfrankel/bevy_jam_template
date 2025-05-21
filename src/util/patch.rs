@@ -12,16 +12,29 @@ use crate::prelude::*;
 /// A [`BundleEffect`] that applies an arbitrary function to its entity.
 pub struct Patch<F: FnOnce(&mut EntityWorldMut)>(pub F);
 
+// SAFETY: This internally relies on the `()` Bundle implementation, which is sound.
 unsafe impl<F: 'static + Send + Sync + FnOnce(&mut EntityWorldMut)> Bundle for Patch<F> {
-    fn component_ids(_: &mut ComponentsRegistrator, _: &mut impl FnMut(ComponentId)) {}
-    fn get_component_ids(_: &Components, _: &mut impl FnMut(Option<ComponentId>)) {}
-    fn register_required_components(_: &mut ComponentsRegistrator, _: &mut RequiredComponents) {}
+    fn component_ids(components: &mut ComponentsRegistrator, ids: &mut impl FnMut(ComponentId)) {
+        <() as Bundle>::component_ids(components, ids)
+    }
+
+    fn get_component_ids(components: &Components, ids: &mut impl FnMut(Option<ComponentId>)) {
+        <() as Bundle>::get_component_ids(components, ids)
+    }
+
+    fn register_required_components(
+        components: &mut ComponentsRegistrator,
+        required_components: &mut RequiredComponents,
+    ) {
+        <() as Bundle>::register_required_components(components, required_components)
+    }
 }
 
 impl<F: 'static + Send + Sync + FnOnce(&mut EntityWorldMut)> DynamicBundle for Patch<F> {
     type Effect = Self;
 
-    fn get_components(self, _: &mut impl FnMut(StorageType, OwningPtr<'_>)) -> Self::Effect {
+    fn get_components(self, func: &mut impl FnMut(StorageType, OwningPtr<'_>)) -> Self::Effect {
+        <() as DynamicBundle>::get_components((), func);
         self
     }
 }

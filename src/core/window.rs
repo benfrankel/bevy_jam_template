@@ -54,7 +54,7 @@ pub struct WindowConfig {
 impl Config for WindowConfig {
     const FILE: &'static str = "window.ron";
 
-    fn on_load(&mut self, world: &mut World) {
+    fn on_load(&self, world: &mut World) {
         r!(world.get_resource_mut::<NextStateBuffer<_>>()).enable(WindowReady);
 
         let window_root = r!(world.get_resource::<WindowRoot>());

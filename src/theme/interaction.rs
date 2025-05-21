@@ -4,7 +4,6 @@ use bevy::reflect::Typed;
 
 use crate::animation::offset::NodeOffset;
 use crate::core::audio::AudioConfig;
-use crate::core::audio::IsAudioUi;
 use crate::prelude::*;
 use crate::theme::ThemeAssets;
 
@@ -30,7 +29,7 @@ impl Configure for InteractionDisabled {
     }
 }
 
-/// Values to set a component to by interaction state.
+/// A table of values to set a component to by interaction state.
 #[derive(Component, Reflect, Default)]
 #[reflect(Component)]
 #[require(Interaction, Previous<Interaction>)]
@@ -175,14 +174,7 @@ fn play_hover_sfx(
     let disabled = rq!(sfx_query.get(target));
     rq!(!matches!(disabled, Some(InteractionDisabled(true))));
 
-    commands.spawn((
-        Name::new("SfxHover"),
-        AudioPlayer(assets.sfx_hover.clone()),
-        PlaybackSettings::DESPAWN
-            .with_volume(Volume::Linear(audio_config.ui_volume))
-            .with_speed(thread_rng().gen_range(0.9..1.5)),
-        IsAudioUi,
-    ));
+    commands.spawn(widget::ui_audio(&audio_config, assets.sfx_hover.clone()));
 }
 
 fn play_click_sfx(
@@ -197,12 +189,5 @@ fn play_click_sfx(
     let disabled = rq!(sfx_query.get(target));
     rq!(!matches!(disabled, Some(InteractionDisabled(true))));
 
-    commands.spawn((
-        Name::new("SfxClick"),
-        AudioPlayer(assets.sfx_click.clone()),
-        PlaybackSettings::DESPAWN
-            .with_volume(Volume::Linear(audio_config.ui_volume))
-            .with_speed(thread_rng().gen_range(0.9..1.5)),
-        IsAudioUi,
-    ));
+    commands.spawn(widget::ui_audio(&audio_config, assets.sfx_click.clone()));
 }

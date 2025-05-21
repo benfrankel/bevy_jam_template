@@ -2,6 +2,9 @@ use bevy::ecs::system::IntoObserverSystem;
 
 use crate::animation::backup::Backup;
 use crate::animation::offset::NodeOffset;
+use crate::core::audio::AudioConfig;
+use crate::core::audio::IsMusicAudio;
+use crate::core::audio::IsUiAudio;
 use crate::prelude::*;
 
 #[tweak_fn]
@@ -60,6 +63,19 @@ pub fn button_column(children: impl Bundle) -> impl Bundle {
 }
 
 #[tweak_fn]
+pub fn stretch(children: impl Bundle) -> impl Bundle {
+    (
+        Name::new("Stretch"),
+        Node {
+            justify_content: JustifyContent::Center,
+            flex_grow: 1.0,
+            ..Node::ROW
+        },
+        children,
+    )
+}
+
+#[tweak_fn]
 pub fn header(text: impl AsRef<str>) -> impl Bundle {
     (
         label_helper(Vw(5.0), ThemeColor::BodyText, text),
@@ -105,13 +121,13 @@ fn label_helper(font_size: Val, text_color: ThemeColor, text: impl AsRef<str>) -
 }
 
 #[tweak_fn]
-pub fn big_button<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
+pub fn small_button<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
 where
     E: Event,
     B: Bundle,
     I: Sync + IntoObserverSystem<E, B, M>,
 {
-    button_helper(Vw(38.0), Vw(10.0), Vw(4.0), text, action)
+    button_helper(Vw(3.0), Vw(4.0), Vw(3.0), text, action)
 }
 
 #[tweak_fn]
@@ -122,6 +138,16 @@ where
     I: Sync + IntoObserverSystem<E, B, M>,
 {
     button_helper(Vw(38.0), Vw(7.0), Vw(3.0), text, action)
+}
+
+#[tweak_fn]
+pub fn big_button<E, B, M, I>(text: impl Into<String>, action: I) -> impl Bundle
+where
+    E: Event,
+    B: Bundle,
+    I: Sync + IntoObserverSystem<E, B, M>,
+{
+    button_helper(Vw(38.0), Vw(10.0), Vw(4.0), text, action)
 }
 
 #[tweak_fn]
@@ -180,6 +206,35 @@ where
 }
 
 #[tweak_fn]
+pub fn selector<E1, B1, M1, I1, C, E2, B2, M2, I2>(
+    left_action: I1,
+    label_marker: C,
+    right_action: I2,
+) -> impl Bundle
+where
+    E1: Event,
+    B1: Bundle,
+    I1: Sync + IntoObserverSystem<E1, B1, M1>,
+    C: Component,
+    E2: Event,
+    B2: Bundle,
+    I2: Sync + IntoObserverSystem<E2, B2, M2>,
+{
+    (
+        Name::new("Selector"),
+        Node {
+            width: Vw(35.0),
+            ..Node::ROW
+        },
+        children![
+            small_button("<", left_action),
+            stretch(children![(label(""), label_marker)]),
+            small_button(">", right_action),
+        ],
+    )
+}
+
+#[tweak_fn]
 pub fn loading_bar<S: State + Clone + PartialEq + Eq + Hash + Debug>() -> impl Bundle {
     (
         Name::new("LoadingBar"),
@@ -230,4 +285,26 @@ fn update_loading_bar_fill<S: State + Clone + PartialEq + Eq + Hash + Debug>(
     for mut node in &mut fill_query {
         node.width = Percent(100.0 * done as f32 / total as f32);
     }
+}
+
+#[tweak_fn]
+pub fn music_audio(audio_config: &AudioConfig, handle: Handle<AudioSource>) -> impl Bundle {
+    (
+        Name::new("MusicAudio"),
+        AudioPlayer(handle),
+        PlaybackSettings::LOOP.with_volume(audio_config.music_volume()),
+        IsMusicAudio,
+    )
+}
+
+#[tweak_fn]
+pub fn ui_audio(audio_config: &AudioConfig, handle: Handle<AudioSource>) -> impl Bundle {
+    (
+        Name::new("UiAudio"),
+        AudioPlayer(handle),
+        PlaybackSettings::DESPAWN
+            .with_volume(audio_config.ui_volume())
+            .with_speed(thread_rng().gen_range(0.9..1.5)),
+        IsUiAudio,
+    )
 }

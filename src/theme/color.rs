@@ -29,7 +29,7 @@ pub struct ThemeConfig {
 impl Config for ThemeConfig {
     const FILE: &'static str = "theme.ron";
 
-    fn on_load(&mut self, world: &mut World) {
+    fn on_load(&self, world: &mut World) {
         r!(world.get_resource_mut::<ClearColor>()).0 = self.colors[ThemeColor::Body];
     }
 }

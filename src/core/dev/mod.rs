@@ -61,7 +61,7 @@ impl Default for DevConfig {
 impl Config for DevConfig {
     const FILE: &'static str = ".dev.ron";
 
-    fn on_load(&mut self, world: &mut World) {
+    fn on_load(&self, world: &mut World) {
         diagnostics::on_load(self, world);
         state::on_load(self, world);
     }
