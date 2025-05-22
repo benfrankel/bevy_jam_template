@@ -10,6 +10,16 @@
             "}"
         ]
     },
+    "Bevy: New System": {
+        "scope": "rust",
+        "prefix": "system",
+        "body": [
+            "#[cfg_attr(feature=\"native_dev\", hot)]",
+            "fn $1($2) {",
+            "\t$0",
+            "}"
+        ]
+    },
     "Bevy: New Component": {
         "scope": "rust",
         "prefix": "component",

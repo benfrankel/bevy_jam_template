@@ -2,7 +2,7 @@ use bevy::ecs::system::IntoObserverSystem;
 
 use crate::animation::backup::Backup;
 use crate::animation::offset::NodeOffset;
-use crate::core::audio::AudioConfig;
+use crate::core::audio::AudioSettings;
 use crate::core::audio::IsMusicAudio;
 use crate::core::audio::IsUiAudio;
 use crate::prelude::*;
@@ -271,7 +271,7 @@ fn update_loading_bar_fill<S: State + Clone + PartialEq + Eq + Hash + Debug>(
     }
 }
 
-pub fn music_audio(audio_config: &AudioConfig, handle: Handle<AudioSource>) -> impl Bundle {
+pub fn music_audio(audio_config: &AudioSettings, handle: Handle<AudioSource>) -> impl Bundle {
     (
         Name::new("MusicAudio"),
         AudioPlayer(handle),
@@ -280,7 +280,7 @@ pub fn music_audio(audio_config: &AudioConfig, handle: Handle<AudioSource>) -> i
     )
 }
 
-pub fn ui_audio(audio_config: &AudioConfig, handle: Handle<AudioSource>) -> impl Bundle {
+pub fn ui_audio(audio_config: &AudioSettings, handle: Handle<AudioSource>) -> impl Bundle {
     (
         Name::new("UiAudio"),
         AudioPlayer(handle),

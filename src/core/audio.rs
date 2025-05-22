@@ -3,20 +3,20 @@ use bevy::audio::AudioPlugin;
 use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.configure::<(ConfigHandle<AudioConfig>, IsMusicAudio, IsUiAudio)>();
+    app.configure::<(IsMusicAudio, IsUiAudio)>();
 
     app.add_plugins(AudioPlugin::default());
 }
 
-#[derive(Asset, Reflect, Serialize, Deserialize)]
-#[serde(deny_unknown_fields, default)]
-pub struct AudioConfig {
+#[derive(Resource, Reflect, Clone, Debug)]
+#[reflect(Resource)]
+pub struct AudioSettings {
     pub master_volume: f32,
     pub music_volume: f32,
     pub ui_volume: f32,
 }
 
-impl Default for AudioConfig {
+impl Default for AudioSettings {
     fn default() -> Self {
         Self {
             master_volume: 0.5,
@@ -26,29 +26,43 @@ impl Default for AudioConfig {
     }
 }
 
-impl Config for AudioConfig {
-    const FILE: &'static str = "audio.ron";
-
-    fn on_load(&self, world: &mut World) {
-        // Update the volume of currently-playing audio by type.
-        world
-            .query_filtered::<&mut AudioSink, With<IsMusicAudio>>()
-            .iter_mut(world)
-            .for_each(|mut sink| sink.set_volume(self.music_volume()));
-        world
-            .query_filtered::<&mut AudioSink, With<IsUiAudio>>()
-            .iter_mut(world)
-            .for_each(|mut sink| sink.set_volume(self.ui_volume()));
+impl Configure for AudioSettings {
+    fn configure(app: &mut App) {
+        app.register_type::<Self>();
+        app.init_resource::<Self>();
+        app.add_systems(
+            Update,
+            apply_audio_settings
+                .run_if(resource_changed::<AudioSettings>)
+                .in_set(UpdateSystems::Update),
+        );
     }
 }
 
-impl AudioConfig {
+impl AudioSettings {
     pub fn music_volume(&self) -> Volume {
         Volume::Linear(self.master_volume * self.music_volume)
     }
 
     pub fn ui_volume(&self) -> Volume {
         Volume::Linear(self.master_volume * self.ui_volume)
+    }
+}
+
+#[cfg_attr(feature = "native_dev", hot)]
+fn apply_audio_settings(
+    audio_settings: Res<AudioSettings>,
+    music_audio_query: Query<Entity, With<IsMusicAudio>>,
+    ui_audio_query: Query<Entity, With<IsUiAudio>>,
+    mut sink_query: Query<&mut AudioSink>,
+) {
+    for entity in &music_audio_query {
+        let mut sink = c!(sink_query.get_mut(entity));
+        sink.set_volume(audio_settings.music_volume());
+    }
+    for entity in &ui_audio_query {
+        let mut sink = c!(sink_query.get_mut(entity));
+        sink.set_volume(audio_settings.ui_volume());
     }
 }
 

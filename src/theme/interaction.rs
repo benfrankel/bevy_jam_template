@@ -3,7 +3,7 @@ use bevy::reflect::GetTypeRegistration;
 use bevy::reflect::Typed;
 
 use crate::animation::offset::NodeOffset;
-use crate::core::audio::AudioConfig;
+use crate::core::audio::AudioSettings;
 use crate::prelude::*;
 use crate::theme::ThemeAssets;
 
@@ -166,30 +166,28 @@ impl Configure for InteractionSfx {
 
 fn play_hover_sfx(
     trigger: Trigger<Pointer<Over>>,
-    audio_config: ConfigRef<AudioConfig>,
+    audio_settings: Res<AudioSettings>,
     assets: Res<ThemeAssets>,
     sfx_query: Query<Option<&InteractionDisabled>, With<InteractionSfx>>,
     mut commands: Commands,
 ) {
-    let audio_config = r!(audio_config.get());
     let target = r!(trigger.get_target());
     let disabled = rq!(sfx_query.get(target));
     rq!(!matches!(disabled, Some(InteractionDisabled(true))));
 
-    commands.spawn(widget::ui_audio(audio_config, assets.sfx_hover.clone()));
+    commands.spawn(widget::ui_audio(&audio_settings, assets.sfx_hover.clone()));
 }
 
 fn play_click_sfx(
     trigger: Trigger<Pointer<Click>>,
-    audio_config: ConfigRef<AudioConfig>,
+    audio_settings: Res<AudioSettings>,
     assets: Res<ThemeAssets>,
     sfx_query: Query<Option<&InteractionDisabled>, With<InteractionSfx>>,
     mut commands: Commands,
 ) {
-    let audio_config = r!(audio_config.get());
     let target = r!(trigger.get_target());
     let disabled = rq!(sfx_query.get(target));
     rq!(!matches!(disabled, Some(InteractionDisabled(true))));
 
-    commands.spawn(widget::ui_audio(audio_config, assets.sfx_click.clone()));
+    commands.spawn(widget::ui_audio(&audio_settings, assets.sfx_click.clone()));
 }
