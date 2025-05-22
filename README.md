@@ -6,26 +6,43 @@ You can [try this template in your browser](https://pyrious.itch.io/pyri-new-jam
 
 ## Comparison to Bevy New 2D
 
-This template builds on top of Bevy New 2D with a few additions.
+This template builds on top of [Bevy New 2D](https://github.com/TheBevyFlock/bevy_new_2d) with a few additions:
 
-- **Features:**
-    - Hot-reloaded [config files](./assets/config/)
-    - Screen transition animations (fade in / out)
-    - Press P or Escape to pause
-    - Restart game from pause menu
-    - Basic rich text parsing
-    - Dynamic font size
-- **3rd-party crates:**
-    - [`avian2d`](https://github.com/Jondolf/avian/) for physics
-    - [`bevy_editor_pls`](https://github.com/jakobhellermann/bevy_editor_pls) for a live inspector window
-    - [`bevy_simple_subsecond_system`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system) for function hot-patching
-    - [`leafwing-input-manager`](https://github.com/Leafwing-Studios/leafwing-input-manager/) for input to action mapping
-    - [`pyri_tooltip`](https://github.com/benfrankel/pyri_tooltip/) for tooltips
-    - [`pyri_state`](https://github.com/benfrankel/pyri_state) for more flexible game states
-    - [`tiny_bail`](https://github.com/benfrankel/tiny_bail) for error handling ergonomics
-    - And a few more...
-- **Assets:**
-    - [`pypx`](https://pyrious.itch.io/pypx-fonts) pixel fonts
+<details>
+  <summary><ins>Features</ins></summary>
+
+  - Hot-reloaded [config files](./assets/config)
+  - Screen transition animations (fade in / out)
+  - Fancy buttons (drop shadow, hover offset)
+  - Press P or Escape to pause
+  - Restart game from pause menu
+  - Basic rich text parsing
+  - Dynamic font size
+</details>
+
+<details>
+  <summary><ins>3rd-party crates</ins></summary>
+
+  - [`avian2d`](https://github.com/Jondolf/avian) for 2D physics
+  - [`bevy_asset_loader`](https://github.com/NiklasEi/bevy_asset_loader) for asset loading ergonomics
+  - [`bevy_common_assets`](https://github.com/NiklasEi/bevy_common_assets) for loading `.ron` assets
+  - [`bevy_editor_pls`](https://github.com/jakobhellermann/bevy_editor_pls) for a live inspector window
+  - [`bevy_mod_debugdump`](https://github.com/jakobhellermann/bevy_mod_debugdump) for inspecting the system graph
+  - [`bevy_simple_prefs`](https://github.com/rparrett/bevy_simple_prefs) for remembering settings
+  - [`bevy_simple_subsecond_system`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system) for function hot-patching
+  - [`iyes_progress`](https://github.com/IyesGames/iyes_progress) for loading bar progress tracking
+  - [`leafwing-input-manager`](https://github.com/Leafwing-Studios/leafwing-input-manager) for input-to-action mapping
+  - [`pyri_state`](https://github.com/benfrankel/pyri_state) for more flexible game states
+  - [`pyri_tooltip`](https://github.com/benfrankel/pyri_tooltip) for tooltips
+  - [`tiny_bail`](https://github.com/benfrankel/tiny_bail) for error handling ergonomics
+</details>
+
+<details>
+  <summary><ins>Assets</ins></summary>
+  
+  - [`pypx`](https://pyrious.itch.io/pypx-fonts) pixel fonts
+  - Different [click](https://freesound.org/people/suntemple/sounds/253168/) and [hover](https://freesound.org/people/deadsillyrabbit/sounds/251390/) sound effects
+</details>
 
 ## Getting started
 
@@ -53,30 +70,32 @@ bevy run --release web
 For VS Code users, [`.vscode/tasks.json`](./.vscode/tasks.json) provides IDE integration.
 
 <details>
-  <summary>Hot-patching with Dioxus</summary>
+  <summary><ins>Hot-patching with Dioxus</ins></summary>
 
-  Follow the instructions in [`bevy_simple_subsecond_system`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/) to
-  install `dioxus-cli` and set up your linker.
+  Follow the instructions in [`bevy_simple_subsecond_system`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/) to install `dioxus-cli` and set up your linker.
+  Make sure to read the [`Known Limitations`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/?tab=readme-ov-file#known-limitations) section.
 
-  Then use the following command to run your game with hot-patching enabled:
-
-  ```shell
-  dx serve --hot-patch --features native_dev --profile dev
-  ```
-  
-  Annotate any system you add to enable hot-patching:
+  Annotate your systems to enable hot-patching.
+  The functions they call can be hot-patched too; no additional annotations required!
 
   ```rust
   #[cfg_attr(feature = "native_dev", hot)]
   fn my_system() {}
   ```
-  
-  The functions called from your systems will also be hot-patched; no annotation required!
+
+  Run your game with hot-patching enabled:
+
+  ```shell
+  dx serve --hot-patch --features native_dev
+  ```
+
+  Now edit an annotated system's code while the game is running, and save the file.
+  You should see `Status: Hot-patching...` in the CLI if you've got it working.
 </details>
 
 ## Release your game
 
-To trigger a full release, navigate to `Actions` > `Release` > `Run workflow` in your GitHub repository.
+To trigger a full release, navigate to `Actions > Release > Run workflow` in your GitHub repository.
 
 > [!NOTE]
 > A web release runs automatically on every commit to `main`.
