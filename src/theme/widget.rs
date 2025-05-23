@@ -70,9 +70,10 @@ pub fn stretch(children: impl Bundle) -> impl Bundle {
     (
         Name::new("Stretch"),
         Node {
+            align_items: AlignItems::Center,
             justify_content: JustifyContent::Center,
             flex_grow: 1.0,
-            ..Node::ROW
+            ..default()
         },
         children,
     )
@@ -209,15 +210,15 @@ where
 }
 
 pub fn selector<E1, B1, M1, I1, C, E2, B2, M2, I2>(
+    marker: C,
     left_action: I1,
-    label_marker: C,
     right_action: I2,
 ) -> impl Bundle
 where
+    C: Component,
     E1: Event,
     B1: Bundle,
     I1: Sync + IntoObserverSystem<E1, B1, M1>,
-    C: Component,
     E2: Event,
     B2: Bundle,
     I2: Sync + IntoObserverSystem<E2, B2, M2>,
@@ -228,10 +229,11 @@ where
             width: Vw(35.0),
             ..Node::ROW
         },
+        marker,
         children![
-            small_button("<", left_action),
-            stretch(children![(label(""), label_marker)]),
-            small_button(">", right_action),
+            (small_button("<", left_action), InteractionDisabled(false)),
+            stretch(children![label("")]),
+            (small_button(">", right_action), InteractionDisabled(false)),
         ],
     )
 }

@@ -1,3 +1,4 @@
+{% raw -%}
 name: CI
 
 on:
@@ -150,3 +151,4 @@ jobs:
       # TODO: Workaround for <https://github.com/rust-lang/cargo/issues/6669>.
       #- name: Run doctests
         #run: cargo test --locked --workspace --doc --no-fail-fast
+{%- endraw %}

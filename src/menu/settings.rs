@@ -11,9 +11,9 @@ pub(super) fn plugin(app: &mut App) {
 
     app.configure::<(
         Settings,
-        IsMasterVolumeLabel,
-        IsMusicVolumeLabel,
-        IsUiVolumeLabel,
+        IsMasterVolumeSelector,
+        IsMusicVolumeSelector,
+        IsUiVolumeSelector,
     )>();
 }
 
@@ -49,36 +49,53 @@ fn grid() -> impl Bundle {
         GridAlignment::columns([JustifySelf::End, JustifySelf::Start]),
         children![
             widget::label("Master volume"),
-            widget::selector(master_volume_down, IsMasterVolumeLabel, master_volume_up),
+            widget::selector(IsMasterVolumeSelector, master_volume_down, master_volume_up),
             widget::label("Music volume"),
-            widget::selector(music_volume_down, IsMusicVolumeLabel, music_volume_up),
+            widget::selector(IsMusicVolumeSelector, music_volume_down, music_volume_up),
             widget::label("UI volume"),
-            widget::selector(ui_volume_down, IsUiVolumeLabel, ui_volume_up),
+            widget::selector(IsUiVolumeSelector, ui_volume_down, ui_volume_up),
         ],
     )
 }
 
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
-struct IsMasterVolumeLabel;
+struct IsMasterVolumeSelector;
 
-impl Configure for IsMasterVolumeLabel {
+impl Configure for IsMasterVolumeSelector {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
         app.add_systems(
             Update,
-            Menu::Settings.on_update(update_master_volume_label.in_set(UpdateSystems::Update)),
+            Menu::Settings.on_update(update_master_volume_selector.in_set(UpdateSystems::Update)),
         );
     }
 }
 
 #[cfg_attr(feature = "native_dev", hot)]
-fn update_master_volume_label(
+fn update_master_volume_selector(
     audio_settings: Res<AudioSettings>,
-    mut text_query: Query<&mut RichText, With<IsMasterVolumeLabel>>,
+    selector_query: Query<Entity, With<IsMasterVolumeSelector>>,
+    children_query: Query<&Children>,
+    mut text_query: Query<&mut RichText>,
+    mut disabled_query: Query<&mut InteractionDisabled>,
 ) {
-    for mut text in &mut text_query {
-        text.sections = parse_rich(format!("{:.0}%", audio_settings.master_volume * 100.0));
+    for entity in &selector_query {
+        let children = c!(children_query.get(entity))
+            .into_iter()
+            .collect::<Vec<_>>();
+
+        let left = **c!(children.get(0));
+        c!(disabled_query.get_mut(left)).0 = audio_settings.master_volume <= f32::EPSILON;
+
+        let mid = **c!(children.get(1));
+        let mid_children = c!(children_query.get(mid));
+        let label = *c!(mid_children.first());
+        c!(text_query.get_mut(label)).sections =
+            parse_rich(format!("{:.0}%", audio_settings.master_volume * 100.0));
+
+        let right = **c!(children.get(2));
+        c!(disabled_query.get_mut(right)).0 = audio_settings.master_volume >= 1.0 - f32::EPSILON;
     }
 }
 
@@ -92,25 +109,42 @@ fn master_volume_up(_: Trigger<Pointer<Click>>, mut audio_settings: ResMut<Audio
 
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
-struct IsMusicVolumeLabel;
+struct IsMusicVolumeSelector;
 
-impl Configure for IsMusicVolumeLabel {
+impl Configure for IsMusicVolumeSelector {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
         app.add_systems(
             Update,
-            Menu::Settings.on_update(update_music_volume_label.in_set(UpdateSystems::Update)),
+            Menu::Settings.on_update(update_music_volume_selector.in_set(UpdateSystems::Update)),
         );
     }
 }
 
 #[cfg_attr(feature = "native_dev", hot)]
-fn update_music_volume_label(
+fn update_music_volume_selector(
     audio_settings: Res<AudioSettings>,
-    mut text_query: Query<&mut RichText, With<IsMusicVolumeLabel>>,
+    selector_query: Query<Entity, With<IsMusicVolumeSelector>>,
+    children_query: Query<&Children>,
+    mut text_query: Query<&mut RichText>,
+    mut disabled_query: Query<&mut InteractionDisabled>,
 ) {
-    for mut text in &mut text_query {
-        text.sections = parse_rich(format!("{:.0}%", audio_settings.music_volume * 100.0));
+    for entity in &selector_query {
+        let children = c!(children_query.get(entity))
+            .into_iter()
+            .collect::<Vec<_>>();
+
+        let left = **c!(children.get(0));
+        c!(disabled_query.get_mut(left)).0 = audio_settings.music_volume <= f32::EPSILON;
+
+        let mid = **c!(children.get(1));
+        let mid_children = c!(children_query.get(mid));
+        let label = *c!(mid_children.first());
+        c!(text_query.get_mut(label)).sections =
+            parse_rich(format!("{:.0}%", audio_settings.music_volume * 100.0));
+
+        let right = **c!(children.get(2));
+        c!(disabled_query.get_mut(right)).0 = audio_settings.music_volume >= 1.0 - f32::EPSILON;
     }
 }
 
@@ -124,25 +158,42 @@ fn music_volume_up(_: Trigger<Pointer<Click>>, mut audio_settings: ResMut<AudioS
 
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
-struct IsUiVolumeLabel;
+struct IsUiVolumeSelector;
 
-impl Configure for IsUiVolumeLabel {
+impl Configure for IsUiVolumeSelector {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
         app.add_systems(
             Update,
-            Menu::Settings.on_update(update_ui_volume_label.in_set(UpdateSystems::Update)),
+            Menu::Settings.on_update(update_ui_volume_selector.in_set(UpdateSystems::Update)),
         );
     }
 }
 
 #[cfg_attr(feature = "native_dev", hot)]
-fn update_ui_volume_label(
+fn update_ui_volume_selector(
     audio_settings: Res<AudioSettings>,
-    mut text_query: Query<&mut RichText, With<IsUiVolumeLabel>>,
+    selector_query: Query<Entity, With<IsUiVolumeSelector>>,
+    children_query: Query<&Children>,
+    mut text_query: Query<&mut RichText>,
+    mut disabled_query: Query<&mut InteractionDisabled>,
 ) {
-    for mut text in &mut text_query {
-        text.sections = parse_rich(format!("{:.0}%", audio_settings.ui_volume * 100.0));
+    for entity in &selector_query {
+        let children = c!(children_query.get(entity))
+            .into_iter()
+            .collect::<Vec<_>>();
+
+        let left = **c!(children.get(0));
+        c!(disabled_query.get_mut(left)).0 = audio_settings.ui_volume <= f32::EPSILON;
+
+        let mid = **c!(children.get(1));
+        let mid_children = c!(children_query.get(mid));
+        let label = *c!(mid_children.first());
+        c!(text_query.get_mut(label)).sections =
+            parse_rich(format!("{:.0}%", audio_settings.ui_volume * 100.0));
+
+        let right = **c!(children.get(2));
+        c!(disabled_query.get_mut(right)).0 = audio_settings.ui_volume >= 1.0 - f32::EPSILON;
     }
 }
 
