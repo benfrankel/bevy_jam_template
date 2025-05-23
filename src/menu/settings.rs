@@ -85,7 +85,7 @@ fn update_master_volume_selector(
             .into_iter()
             .collect::<Vec<_>>();
 
-        let left = **c!(children.get(0));
+        let left = **c!(children.first());
         c!(disabled_query.get_mut(left)).0 = audio_settings.master_volume <= f32::EPSILON;
 
         let mid = **c!(children.get(1));
@@ -134,7 +134,7 @@ fn update_music_volume_selector(
             .into_iter()
             .collect::<Vec<_>>();
 
-        let left = **c!(children.get(0));
+        let left = **c!(children.first());
         c!(disabled_query.get_mut(left)).0 = audio_settings.music_volume <= f32::EPSILON;
 
         let mid = **c!(children.get(1));
@@ -183,7 +183,7 @@ fn update_ui_volume_selector(
             .into_iter()
             .collect::<Vec<_>>();
 
-        let left = **c!(children.get(0));
+        let left = **c!(children.first());
         c!(disabled_query.get_mut(left)).0 = audio_settings.ui_volume <= f32::EPSILON;
 
         let mid = **c!(children.get(1));
