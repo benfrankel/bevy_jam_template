@@ -274,7 +274,7 @@ impl<S: State + Clone + PartialEq + Eq + Hash + Debug + TypePath> Configure
     }
 }
 
-//#[cfg_attr(feature = "native_dev", hot)]
+#[cfg_attr(feature = "native_dev", hot)]
 fn update_loading_bar_fill<S: State + Clone + PartialEq + Eq + Hash + Debug>(
     progress: Res<ProgressTracker<BevyState<S>>>,
     mut fill_query: Query<&mut Node, With<IsLoadingBarFill<S>>>,

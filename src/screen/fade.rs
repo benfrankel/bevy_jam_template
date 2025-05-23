@@ -41,7 +41,6 @@ fn apply_fade_in(
 ) {
     let dt = time.delta_secs();
     for (entity, mut fade, mut color) in &mut fade_query {
-        // TODO: Non-linear alpha?
         color.0.set_alpha((fade.remaining / fade.duration).max(0.0));
         if fade.remaining <= 0.0 {
             late.commands().entity(entity).despawn();
@@ -98,7 +97,6 @@ fn apply_fade_out(
 ) {
     let dt = time.delta_secs();
     for (entity, mut fade, mut color) in &mut fade_query {
-        // TODO: Non-linear alpha?
         color
             .0
             .set_alpha(1.0 - (fade.remaining / fade.duration).max(0.0));

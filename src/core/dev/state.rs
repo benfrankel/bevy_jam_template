@@ -37,13 +37,13 @@ fn enter_initial_screen(config: ConfigRef<DevConfig>, mut screen: NextMut<Screen
     screen.enter(rq!(config.initial_screen));
 }
 
-//#[cfg_attr(feature = "native_dev", hot)]
+#[cfg_attr(feature = "native_dev", hot)]
 fn force_loading_screen(config: ConfigRef<DevConfig>, screen: CurrentRef<Screen>) -> Progress {
     let config = r!(config.get());
     (config.extend_loading_screen <= 0.0 || screen.is_in(&Screen::Loading)).into()
 }
 
-//#[cfg_attr(feature = "native_dev", hot)]
+#[cfg_attr(feature = "native_dev", hot)]
 fn extend_loading_screen(config: ConfigRef<DevConfig>, screen_time: Res<ScreenTime>) -> Progress {
     let config = r!(config.get());
     (screen_time.0.as_secs_f32() >= config.extend_loading_screen).into()

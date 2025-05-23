@@ -23,7 +23,6 @@ pub(super) fn plugin(app: &mut App) {
 #[serde(deny_unknown_fields)]
 pub struct ThemeConfig {
     pub colors: ThemeColorList,
-    // TODO: pub fonts: ThemeFontList,
 }
 
 impl Config for ThemeConfig {

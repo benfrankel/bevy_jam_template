@@ -1375,11 +1375,15 @@ dependencies = [
 
 [[package]]
 name = "bevy_simple_subsecond_system"
-version = "0.1.8"
+version = "0.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "06457a37e28cab051155c86f11dda3abfc63a9543beeb02332e287c26728d512"
+checksum = "43d9b47aee2818564e0d2205382728e20518522c0d72cf14b2ca20aa06588672"
 dependencies = [
- "bevy",
+ "bevy_app",
+ "bevy_ecs",
+ "bevy_ecs_macros",
+ "bevy_log",
+ "bevy_platform",
  "bevy_simple_subsecond_system_macros",
  "crossbeam-channel",
  "dioxus-devtools",
@@ -1387,9 +1391,9 @@ dependencies = [
 
 [[package]]
 name = "bevy_simple_subsecond_system_macros"
-version = "0.1.4"
+version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f76e78b73b9ee1b80a2769b88459c776b58b01cbf9dd268ce0340b279789d96a"
+checksum = "ddc0382f52d2913565490c369c66ff76aa2e6bd4121c411e40c7a6128ca330d9"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1860,9 +1864,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.2.23"
+version = "1.2.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5f4ac86a9e5bc1e2b3449ab9d7d3a6a405e3d1bb28d7b9be8614f55846ae3766"
+checksum = "16595d3be041c03b09d08d0858631facccee9221e579704070e6e9e4915d3bc7"
 dependencies = [
  "jobserver",
  "libc",
@@ -3207,9 +3211,9 @@ dependencies = [
 
 [[package]]
 name = "gpu-descriptor"
-version = "0.3.1"
+version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dcf29e94d6d243368b7a56caa16bc213e4f9f8ed38c4d9557069527b5d5281ca"
+checksum = "b89c83349105e3732062a895becfc71a8f921bb71ecbbdd8ff99263e3b53a0ca"
 dependencies = [
  "bitflags 2.9.1",
  "gpu-descriptor-types",
@@ -6299,9 +6303,9 @@ checksum = "09cc8ee72d2a9becf2f2febe0205bbed8fc6615b7cb429ad062dc7b7ddd036a9"
 
 [[package]]
 name = "uuid"
-version = "1.16.0"
+version = "1.17.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "458f7a779bf54acc9f347480ac654f68407d3aab21269a6e3c9f922acd9e2da9"
+checksum = "3cf4199d1e5d15ddd86a694e4d0dffa9c323ce759fea589f00fef9d81cc1931d"
 dependencies = [
  "getrandom 0.3.3",
  "js-sys",

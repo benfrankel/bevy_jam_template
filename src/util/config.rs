@@ -51,7 +51,7 @@ fn load_config<C: Config>(world: &mut World) {
     world.insert_resource(ConfigHandle::<C>(handle));
 }
 
-//#[cfg_attr(feature = "native_dev", hot)]
+#[cfg_attr(feature = "native_dev", hot)]
 fn apply_config<C: Config>(world: &mut World, mut cursor: Local<EventCursor<AssetEvent<C>>>) {
     if !cursor
         .read(r!(world.get_resource::<Events<AssetEvent<_>>>()))

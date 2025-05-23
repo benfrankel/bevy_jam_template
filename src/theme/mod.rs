@@ -41,11 +41,9 @@ pub(super) fn plugin(app: &mut App) {
     ));
 }
 
-// TODO: Link these assets dynamically via ThemeConfig, plus volume and pitch values.
 #[derive(AssetCollection, Resource, Reflect, Default)]
 #[reflect(Resource)]
 pub struct ThemeAssets {
-    // CC0 sounds from freesounds.org:
     #[asset(path = "audio/sfx/251390__deadsillyrabbit__button_hover-mp3.ogg")]
     pub sfx_hover: Handle<AudioSource>,
     #[asset(path = "audio/sfx/253168__suntemple__sfx-ui-button-click.ogg")]

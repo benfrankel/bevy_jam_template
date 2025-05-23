@@ -22,7 +22,7 @@ fn spawn_loading_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
         ]));
 }
 
-//#[cfg_attr(feature = "native_dev", hot)]
+#[cfg_attr(feature = "native_dev", hot)]
 fn update_loading(
     mut commands: Commands,
     progress: Res<ProgressTracker<BevyState<Screen>>>,
