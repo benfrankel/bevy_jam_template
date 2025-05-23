@@ -42,6 +42,7 @@ This template builds on top of [Bevy New 2D](https://github.com/TheBevyFlock/bev
   
   - [`pypx`](https://pyrious.itch.io/pypx-fonts) pixel fonts
   - Different [click](https://freesound.org/people/suntemple/sounds/253168/) and [hover](https://freesound.org/people/deadsillyrabbit/sounds/251390/) sound effects
+  - Different music for [title](https://freesound.org/people/edtijo/sounds/240376/) and [gameplay](https://freesound.org/people/Bertsz/sounds/545458/) screens
 </details>
 
 ## Getting started
@@ -70,7 +71,7 @@ bevy run --release web
 For VS Code users, [`.vscode/tasks.json`](./.vscode/tasks.json) provides IDE integration.
 
 <details>
-  <summary><ins>Hot-patching with Dioxus</ins></summary>
+  <summary><ins>Hot-patching with `subsecond`</ins></summary>
 
   Follow the instructions in [`bevy_simple_subsecond_system`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/) to install `dioxus-cli` and set up your linker.
   Make sure to read the [`Known Limitations`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/?tab=readme-ov-file#known-limitations) section.
@@ -111,4 +112,5 @@ The source code in this repository is licensed under either of the following at 
 
 - The [splash screen image](https://github.com/bevyengine/bevy/blob/main/assets/branding/bevy_logo_dark.png) belongs to the [Bevy Foundation](https://bevyengine.org/foundation/).
 - The [pixel fonts](https://pyrious.itch.io/pypx-fonts) are CC0.
-- The sound effects are CC0: [click](https://freesound.org/people/suntemple/sounds/253168/), [hover](https://freesound.org/people/deadsillyrabbit/sounds/251390/).
+- The [click](https://freesound.org/people/suntemple/sounds/253168/) and [hover](https://freesound.org/people/deadsillyrabbit/sounds/251390/) sound effects are CC0.
+- The [title](https://freesound.org/people/edtijo/sounds/240376/) and [gameplay](https://freesound.org/people/Bertsz/sounds/545458/) music tracks are CC0.

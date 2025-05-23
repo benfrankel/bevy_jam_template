@@ -20,7 +20,7 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(
         Update,
         (
-            state!(Screen::Intro | Screen::Loading)
+            state!(Screen::Title | Screen::Loading)
                 .on_update(force_loading_screen.track_progress::<BevyState<Screen>>()),
             Screen::Loading.on_update(extend_loading_screen.track_progress::<BevyState<Screen>>()),
         ),

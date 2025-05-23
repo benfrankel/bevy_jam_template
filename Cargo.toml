@@ -169,6 +169,16 @@ codegen-units = 1
 [profile.web-release]
 # Default to release profile values.
 inherits = "release"
+
+[profile.wasm-dev]
+inherits = "dev"
+opt-level = 1
+
+[profile.server-dev]
+inherits = "dev"
+
+[profile.android-dev]
+inherits = "dev"
 # Optimize with size in mind.
 # Reduces performance slightly; significant improvements to build time and size.
 #opt-level = "s"

@@ -8,8 +8,7 @@
             "args": [
                 "serve",
                 "--hot-patch",
-                "--features=native_dev",
-                "--profile=dev"
+                "--features=native_dev"
             ],
             "options": {
                 "env": {

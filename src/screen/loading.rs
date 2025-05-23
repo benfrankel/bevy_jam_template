@@ -17,7 +17,7 @@ fn spawn_loading_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
     commands
         .entity(screen_root.ui)
         .with_child(widget::column_center(children![
-            widget::big_label("[t]Loading..."),
+            widget::big_label("[b]Loading..."),
             widget::loading_bar::<Screen>(),
         ]));
 }

@@ -4,6 +4,7 @@ use bevy::reflect::Typed;
 
 use crate::animation::offset::NodeOffset;
 use crate::core::audio::AudioSettings;
+use crate::core::audio::ui_audio;
 use crate::prelude::*;
 use crate::theme::ThemeAssets;
 
@@ -175,7 +176,7 @@ fn play_hover_sfx(
     let disabled = rq!(sfx_query.get(target));
     rq!(!matches!(disabled, Some(InteractionDisabled(true))));
 
-    commands.spawn(widget::ui_audio(&audio_settings, assets.sfx_hover.clone()));
+    commands.spawn(ui_audio(&audio_settings, assets.sfx_hover.clone()));
 }
 
 fn play_click_sfx(
@@ -189,5 +190,5 @@ fn play_click_sfx(
     let disabled = rq!(sfx_query.get(target));
     rq!(!matches!(disabled, Some(InteractionDisabled(true))));
 
-    commands.spawn(widget::ui_audio(&audio_settings, assets.sfx_click.clone()));
+    commands.spawn(ui_audio(&audio_settings, assets.sfx_click.clone()));
 }

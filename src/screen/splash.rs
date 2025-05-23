@@ -7,12 +7,12 @@ use crate::screen::Screen;
 use crate::screen::ScreenRoot;
 use crate::screen::fade::FADE_IN_SECS;
 use crate::screen::fade::fade_out;
-use crate::screen::title::TitleScreenAssets;
+use crate::screen::title::TitleAssets;
 use crate::screen::wait_in_screen;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_loading_state(
-        LoadingState::new(Screen::Splash.bevy()).load_collection::<TitleScreenAssets>(),
+        LoadingState::new(Screen::Splash.bevy()).load_collection::<TitleAssets>(),
     );
     app.add_systems(StateFlush, Screen::Splash.on_enter(spawn_splash_screen));
     app.add_systems(

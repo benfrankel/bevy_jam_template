@@ -14,11 +14,11 @@ fn spawn_pause_menu(mut commands: Commands, menu_root: Res<MenuRoot>) {
         .entity(menu_root.ui)
         .with_child(widget::body(children![
             widget::header("[b]Game paused"),
-            widget::button_column(children![
-                widget::button("Settings", open_settings),
-                widget::button("Continue", disable_menu),
-                widget::button("Restart", restart_game),
-                widget::button("Quit to title", quit_to_title),
+            widget::column_of_buttons(children![
+                widget::wide_button("Settings", open_settings),
+                widget::wide_button("Continue", disable_menu),
+                widget::wide_button("Restart", restart_game),
+                widget::wide_button("Quit to title", quit_to_title),
             ])
         ]));
 }

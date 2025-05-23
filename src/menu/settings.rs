@@ -24,7 +24,7 @@ fn spawn_settings_menu(mut commands: Commands, menu_root: Res<MenuRoot>) {
         .with_child(widget::body(children![
             widget::header("[b]Settings"),
             grid(),
-            widget::button_column(children![widget::button("Back", go_back)]),
+            widget::row_of_buttons(children![widget::wide_button("Back", go_back)]),
         ]));
 }
 

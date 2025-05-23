@@ -1,6 +1,5 @@
 pub mod fade;
 mod gameplay;
-mod intro;
 mod loading;
 mod splash;
 mod title;
@@ -56,7 +55,6 @@ pub enum Screen {
     #[default]
     Splash,
     Title,
-    Intro,
     Loading,
     Gameplay,
 }
@@ -76,7 +74,6 @@ impl Configure for Screen {
         app.add_plugins((
             splash::plugin,
             title::plugin,
-            intro::plugin,
             loading::plugin,
             gameplay::plugin,
         ));

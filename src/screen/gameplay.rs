@@ -1,14 +1,32 @@
+use crate::core::audio::AudioSettings;
+use crate::core::audio::music_audio;
 use crate::menu::Menu;
 use crate::prelude::*;
 use crate::screen::Screen;
 
 pub(super) fn plugin(app: &mut App) {
+    app.add_systems(StateFlush, Screen::Gameplay.on_enter(spawn_gameplay_screen));
+
     app.configure::<(GameplayAssets, GameplayAction)>();
+}
+
+fn spawn_gameplay_screen(
+    mut commands: Commands,
+    assets: Res<GameplayAssets>,
+    audio_settings: Res<AudioSettings>,
+) {
+    commands.spawn((
+        music_audio(&audio_settings, assets.music.clone()),
+        DespawnOnExitState::<Screen>::Recursive,
+    ));
 }
 
 #[derive(AssetCollection, Resource, Reflect, Default)]
 #[reflect(Resource)]
-pub struct GameplayAssets {}
+pub struct GameplayAssets {
+    #[asset(path = "audio/music/545458__bertsz__bit-forest-evil-theme-music.ogg")]
+    music: Handle<AudioSource>,
+}
 
 impl Configure for GameplayAssets {
     fn configure(app: &mut App) {

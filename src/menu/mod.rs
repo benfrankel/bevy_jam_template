@@ -1,3 +1,4 @@
+mod intro;
 mod main;
 mod pause;
 mod settings;
@@ -42,6 +43,7 @@ impl FromWorld for MenuRoot {
 #[reflect(Resource)]
 pub enum Menu {
     Main,
+    Intro,
     Pause,
     Settings,
 }
@@ -57,7 +59,7 @@ impl Configure for Menu {
                 Menu::ANY.on_enable((Pause::enable_default, spawn_menu_overlay)),
             ),
         );
-        app.add_plugins((main::plugin, pause::plugin, settings::plugin));
+        app.add_plugins((main::plugin, intro::plugin, pause::plugin, settings::plugin));
     }
 }
 

@@ -3,7 +3,7 @@ use bevy::audio::AudioPlugin;
 use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.configure::<(IsMusicAudio, IsUiAudio)>();
+    app.configure::<(AudioSettings, IsMusicAudio, IsUiAudio)>();
 
     app.add_plugins(AudioPlugin::default());
 }
@@ -33,7 +33,7 @@ impl Configure for AudioSettings {
         app.add_systems(
             Update,
             apply_audio_settings
-                .run_if(resource_changed::<AudioSettings>)
+                .run_if(resource_changed::<Self>)
                 .in_set(UpdateSystems::Update),
         );
     }
@@ -54,16 +54,38 @@ fn apply_audio_settings(
     audio_settings: Res<AudioSettings>,
     music_audio_query: Query<Entity, With<IsMusicAudio>>,
     ui_audio_query: Query<Entity, With<IsUiAudio>>,
-    mut sink_query: Query<&mut AudioSink>,
+    mut volume_query: Query<(Option<&mut PlaybackSettings>, Option<&mut AudioSink>)>,
 ) {
+    // Apply music volume.
+    let volume = audio_settings.music_volume();
     for entity in &music_audio_query {
-        let mut sink = c!(sink_query.get_mut(entity));
-        sink.set_volume(audio_settings.music_volume());
+        let (playback, sink) = c!(volume_query.get_mut(entity));
+        if let Some(mut sink) = sink {
+            sink.set_volume(volume);
+        } else if let Some(mut playback) = playback {
+            playback.volume = volume;
+        }
     }
+
+    // Apply UI volume.
+    let volume = audio_settings.ui_volume();
     for entity in &ui_audio_query {
-        let mut sink = c!(sink_query.get_mut(entity));
-        sink.set_volume(audio_settings.ui_volume());
+        let (playback, sink) = c!(volume_query.get_mut(entity));
+        if let Some(mut sink) = sink {
+            sink.set_volume(volume);
+        } else if let Some(mut playback) = playback {
+            playback.volume = volume;
+        }
     }
+}
+
+pub fn music_audio(audio_settings: &AudioSettings, handle: Handle<AudioSource>) -> impl Bundle {
+    (
+        Name::new("MusicAudio"),
+        AudioPlayer(handle),
+        PlaybackSettings::LOOP.with_volume(audio_settings.music_volume()),
+        IsMusicAudio,
+    )
 }
 
 #[derive(Component, Reflect, Debug)]
@@ -74,6 +96,17 @@ impl Configure for IsMusicAudio {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
     }
+}
+
+pub fn ui_audio(audio_settings: &AudioSettings, handle: Handle<AudioSource>) -> impl Bundle {
+    (
+        Name::new("UiAudio"),
+        AudioPlayer(handle),
+        PlaybackSettings::DESPAWN
+            .with_volume(audio_settings.ui_volume())
+            .with_speed(thread_rng().gen_range(0.9..1.5)),
+        IsUiAudio,
+    )
 }
 
 #[derive(Component, Reflect, Debug)]
