@@ -49,7 +49,7 @@ fn spawn_splash_screen(
         )]));
 }
 
-#[cfg_attr(feature = "native_dev", hot)]
+//#[cfg_attr(feature = "native_dev", hot)]
 fn update_splash(
     mut commands: Commands,
     progress: Res<ProgressTracker<BevyState<Screen>>>,
