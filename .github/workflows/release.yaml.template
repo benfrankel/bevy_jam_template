@@ -124,6 +124,8 @@ jobs:
       - get-version
     env:
       version: ${{ needs.get-version.outputs.version }}
+      # TODO: Workaround for <https://github.com/cargo-bins/cargo-binstall/issues/2045>.
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       matrix:
         include:
@@ -211,14 +213,13 @@ jobs:
         if: ${{ env.is_platform_enabled == 'true' }}
         run: rm -rf tmp; mkdir -p tmp/binary '${{ env.app }}'
 
+      - name: Install cargo-binstall
+        if: ${{ env.is_platform_enabled == 'true' }}
+        uses: cargo-bins/cargo-binstall@main
+
       - name: Install Bevy CLI
         if: ${{ env.is_platform_enabled == 'true' }}
-        # TODO: Workaround for <https://github.com/TheBevyFlock/bevy_cli/issues/354>.
-        run: cargo install --locked --git='https://github.com/TheBevyFlock/bevy_cli' bevy_cli
-
-      - name: Install cargo-binstall (Web)
-        if: ${{ env.is_platform_enabled == 'true' && matrix.platform == 'web' }}
-        uses: cargo-bins/cargo-binstall@main
+        run: cargo binstall --locked --no-confirm --git='https://github.com/TheBevyFlock/bevy_cli' bevy_cli
 
       # TODO: Workaround for <https://github.com/TheBevyFlock/bevy_cli/issues/427>.
       - name: Install wasm-opt (Web)
