@@ -71,7 +71,7 @@ bevy run --release web
 For VS Code users, [`.vscode/tasks.json`](./.vscode/tasks.json) provides IDE integration.
 
 <details>
-  <summary><ins>Hot-patching with `subsecond`</ins></summary>
+  <summary><ins>Hot-patching with <code>subsecond</code></ins></summary>
 
   Follow the instructions in [`bevy_simple_subsecond_system`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/) to install `dioxus-cli` and set up your linker.
   Make sure to read the [`Known Limitations`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/?tab=readme-ov-file#known-limitations) section.
