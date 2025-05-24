@@ -75,6 +75,7 @@ variadics_please = "1"
 # TODO: Workaround for <https://github.com/NiklasEi/bevy_asset_loader/issues/219>.
 bevy_asset_loader = { git = "https://github.com/benfrankel/bevy_asset_loader.git", branch = "direct-depend" }
 bevy_editor_pls = { git = "https://github.com/benfrankel/bevy_editor_pls.git", branch = "bevy-0-16" }
+dioxus-devtools = { git = "https://github.com/DioxusLabs/dioxus.git", branch = "main" }
 
 
 [features]
@@ -87,8 +88,7 @@ dev = [
     "bevy/bevy_ui_debug",
     #"bevy/configurable_error_handler",
     "bevy/default_font",
-    # TODO: Workaround for <https://github.com/DioxusLabs/dioxus/issues/4154>.
-    #"bevy/dynamic_linking",
+    "bevy/dynamic_linking",
     "bevy/glam_assert",
     "bevy/sysinfo_plugin",
     "bevy/track_location",

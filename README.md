@@ -73,7 +73,7 @@ For VS Code users, [`.vscode/tasks.json`](./.vscode/tasks.json) provides IDE int
 <details>
   <summary><ins>Hot-patching with <code>subsecond</code></ins></summary>
 
-  Follow the instructions in [`bevy_simple_subsecond_system`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/) to install `dioxus-cli` and set up your linker.
+  Follow the instructions in [`bevy_simple_subsecond_system`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/).
   Make sure to read the [`Known Limitations`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/?tab=readme-ov-file#known-limitations) section.
 
   Annotate your systems to enable hot-patching.
