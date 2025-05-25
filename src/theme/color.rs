@@ -1,7 +1,6 @@
 use std::ops::Index;
 
 use bevy::ecs::component::Mutable;
-use strum::EnumCount;
 
 use crate::prelude::*;
 
@@ -33,8 +32,9 @@ impl Config for ThemeConfig {
     }
 }
 
+// Note: The length of this array MUST equal the number of `ThemeColor` variants.
 #[derive(Reflect, Serialize, Deserialize)]
-pub struct ThemeColorList([Color; ThemeColor::COUNT]);
+pub struct ThemeColorList([Color; 11]);
 
 impl Index<ThemeColor> for ThemeColorList {
     type Output = Color;
@@ -44,15 +44,15 @@ impl Index<ThemeColor> for ThemeColorList {
     }
 }
 
-/// See: <https://getbootstrap.com/docs/5.3/customize/color/>
-#[derive(Reflect, Clone, Copy, Default, EnumCount)]
+/// See: <https://getbootstrap.com/docs/5.3/customize/color/>.
+#[derive(Reflect, Clone, Copy, Default)]
 pub enum ThemeColor {
-    // Absolute colors
+    // Absolute colors.
     #[default]
     White,
     Invisible,
 
-    // Semantic colors
+    // Semantic colors.
     Body,
     BodyText,
 
@@ -62,7 +62,7 @@ pub enum ThemeColor {
     PrimaryDisabled,
     PrimaryText,
 
-    // Misc UI colors
+    // Other UI colors.
     Popup,
     Overlay,
 }

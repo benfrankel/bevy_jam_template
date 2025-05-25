@@ -6,6 +6,7 @@ pub use core::marker::PhantomData;
 pub use core::time::Duration;
 
 pub use avian2d::prelude::*;
+pub use bevy::audio::Volume;
 pub use bevy::color::palettes::tailwind::*;
 pub use bevy::diagnostic::FrameCount;
 pub use bevy::ecs::spawn::SpawnIter;
@@ -20,8 +21,6 @@ pub use bevy::sprite::Anchor;
 pub use bevy::ui::FocusPolicy;
 pub use bevy::ui::Val::*;
 pub use bevy_asset_loader::prelude::*;
-pub use bevy_seedling::prelude::*;
-pub use bevy_seedling::sample::Sample;
 #[cfg(feature = "native_dev")]
 pub use bevy_simple_subsecond_system::prelude::*;
 pub use iyes_progress::prelude::*;

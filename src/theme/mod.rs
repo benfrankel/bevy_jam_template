@@ -45,9 +45,9 @@ pub(super) fn plugin(app: &mut App) {
 #[reflect(Resource)]
 pub struct ThemeAssets {
     #[asset(path = "audio/sfx/251390__deadsillyrabbit__button_hover-mp3.ogg")]
-    pub sfx_hover: Handle<Sample>,
+    pub sfx_hover: Handle<AudioSource>,
     #[asset(path = "audio/sfx/253168__suntemple__sfx-ui-button-click.ogg")]
-    pub sfx_click: Handle<Sample>,
+    pub sfx_click: Handle<AudioSource>,
 }
 
 impl Configure for ThemeAssets {

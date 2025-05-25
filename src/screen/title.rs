@@ -1,4 +1,5 @@
-use crate::core::audio::music_sample;
+use crate::core::audio::AudioSettings;
+use crate::core::audio::music_audio;
 use crate::menu::Menu;
 use crate::prelude::*;
 use crate::screen::Screen;
@@ -16,9 +17,13 @@ pub(super) fn plugin(app: &mut App) {
     app.configure::<TitleAssets>();
 }
 
-fn spawn_title_screen(mut commands: Commands, assets: Res<TitleAssets>) {
+fn spawn_title_screen(
+    mut commands: Commands,
+    audio_settings: Res<AudioSettings>,
+    assets: Res<TitleAssets>,
+) {
     commands.spawn((
-        music_sample(assets.music.clone()),
+        music_audio(&audio_settings, assets.music.clone()),
         DespawnOnExitState::<Screen>::Recursive,
     ));
 }
@@ -27,7 +32,7 @@ fn spawn_title_screen(mut commands: Commands, assets: Res<TitleAssets>) {
 #[reflect(Resource)]
 pub struct TitleAssets {
     #[asset(path = "audio/music/240376__edtijo__happy-8bit-pixel-adenture.ogg")]
-    music: Handle<Sample>,
+    music: Handle<AudioSource>,
 }
 
 impl Configure for TitleAssets {
