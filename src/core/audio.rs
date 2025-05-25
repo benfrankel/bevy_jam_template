@@ -1,11 +1,9 @@
-use bevy::audio::AudioPlugin;
-
 use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.configure::<(AudioSettings, IsMusicAudio, IsUiAudio)>();
+    app.configure::<AudioSettings>();
 
-    app.add_plugins(AudioPlugin::default());
+    app.add_plugins(SeedlingPlugin::default());
 }
 
 #[derive(Resource, Reflect, Clone, Debug)]
@@ -30,6 +28,7 @@ impl Configure for AudioSettings {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
         app.init_resource::<Self>();
+        app.configure::<(MusicPool, UiPool)>();
         app.add_systems(
             Update,
             apply_audio_settings
@@ -39,82 +38,75 @@ impl Configure for AudioSettings {
     }
 }
 
-impl AudioSettings {
-    pub fn music_volume(&self) -> Volume {
-        Volume::Linear(self.master_volume * self.music_volume)
-    }
-
-    pub fn ui_volume(&self) -> Volume {
-        Volume::Linear(self.master_volume * self.ui_volume)
-    }
-}
-
 #[cfg_attr(feature = "native_dev", hot)]
 fn apply_audio_settings(
     audio_settings: Res<AudioSettings>,
-    music_audio_query: Query<Entity, With<IsMusicAudio>>,
-    ui_audio_query: Query<Entity, With<IsUiAudio>>,
-    mut volume_query: Query<(Option<&mut PlaybackSettings>, Option<&mut AudioSink>)>,
+    master_query: Query<Entity, (With<MainBus>, With<VolumeNode>)>,
+    music_query: Query<Entity, (With<SamplerPool<MusicPool>>, With<VolumeNode>)>,
+    ui_query: Query<Entity, (With<SamplerPool<UiPool>>, With<VolumeNode>)>,
+    mut volume_query: Query<&mut VolumeNode>,
 ) {
-    // Apply music volume.
-    let volume = audio_settings.music_volume();
-    for entity in &music_audio_query {
-        let (playback, sink) = c!(volume_query.get_mut(entity));
-        if let Some(mut sink) = sink {
-            sink.set_volume(volume);
-        } else if let Some(mut playback) = playback {
-            playback.volume = volume;
-        }
+    // Update master volume.
+    for entity in &master_query {
+        c!(volume_query.get_mut(entity)).volume = Volume::Linear(audio_settings.master_volume);
     }
 
-    // Apply UI volume.
-    let volume = audio_settings.ui_volume();
-    for entity in &ui_audio_query {
-        let (playback, sink) = c!(volume_query.get_mut(entity));
-        if let Some(mut sink) = sink {
-            sink.set_volume(volume);
-        } else if let Some(mut playback) = playback {
-            playback.volume = volume;
-        }
+    // Update music volume.
+    for entity in &music_query {
+        c!(volume_query.get_mut(entity)).volume = Volume::Linear(audio_settings.music_volume);
+    }
+
+    // Update UI volume.
+    for entity in &ui_query {
+        c!(volume_query.get_mut(entity)).volume = Volume::Linear(audio_settings.ui_volume);
     }
 }
 
-pub fn music_audio(audio_settings: &AudioSettings, handle: Handle<AudioSource>) -> impl Bundle {
+#[derive(PoolLabel, Reflect, Eq, PartialEq, Hash, Clone, Debug)]
+#[reflect(Component)]
+struct MusicPool;
+
+impl Configure for MusicPool {
+    fn configure(app: &mut App) {
+        app.register_type::<Self>();
+        app.add_systems(Startup, spawn_music_pool);
+    }
+}
+
+fn spawn_music_pool(mut commands: Commands) {
+    commands.spawn((Name::new("MusicPool"), SamplerPool(MusicPool)));
+}
+
+pub fn music_sample(handle: Handle<Sample>) -> impl Bundle {
     (
-        Name::new("MusicAudio"),
-        AudioPlayer(handle),
-        PlaybackSettings::LOOP.with_volume(audio_settings.music_volume()),
-        IsMusicAudio,
+        Name::new("MusicSample"),
+        SamplePlayer::new(handle),
+        PlaybackSettings::LOOP,
+        MusicPool,
     )
 }
 
-#[derive(Component, Reflect, Debug)]
+#[derive(PoolLabel, Reflect, Eq, PartialEq, Hash, Clone, Debug)]
 #[reflect(Component)]
-pub struct IsMusicAudio;
+struct UiPool;
 
-impl Configure for IsMusicAudio {
+impl Configure for UiPool {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
+        app.add_systems(Startup, spawn_ui_pool);
     }
 }
 
-pub fn ui_audio(audio_settings: &AudioSettings, handle: Handle<AudioSource>) -> impl Bundle {
+fn spawn_ui_pool(mut commands: Commands) {
+    commands.spawn((Name::new("UiPool"), SamplerPool(UiPool)));
+}
+
+pub fn ui_sample(handle: Handle<Sample>) -> impl Bundle {
     (
-        Name::new("UiAudio"),
-        AudioPlayer(handle),
-        PlaybackSettings::DESPAWN
-            .with_volume(audio_settings.ui_volume())
-            .with_speed(thread_rng().gen_range(0.9..1.5)),
-        IsUiAudio,
+        Name::new("UiSample"),
+        SamplePlayer::new(handle),
+        PlaybackSettings::ONCE,
+        // TODO: Set up pitch randomization again via `bevy_seedling/rand` feature.
+        UiPool,
     )
-}
-
-#[derive(Component, Reflect, Debug)]
-#[reflect(Component)]
-pub struct IsUiAudio;
-
-impl Configure for IsUiAudio {
-    fn configure(app: &mut App) {
-        app.register_type::<Self>();
-    }
 }

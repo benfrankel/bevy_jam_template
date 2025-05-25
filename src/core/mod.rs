@@ -10,8 +10,6 @@ pub mod physics;
 pub mod state;
 pub mod window;
 
-use bevy::audio::AudioPlugin;
-
 use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
@@ -22,7 +20,6 @@ pub(super) fn plugin(app: &mut App) {
         DefaultPlugins
             .build()
             .set(ImagePlugin::default_nearest())
-            .replace::<AudioPlugin>(audio::plugin)
             .replace::<WindowPlugin>(window::plugin)
             // `window::plugin` requires the following plugins:
             .disable::<AssetPlugin>()
@@ -32,6 +29,7 @@ pub(super) fn plugin(app: &mut App) {
 
     // Add other core plugins.
     app.add_plugins((
+        audio::plugin,
         camera::plugin,
         #[cfg(feature = "dev")]
         dev::plugin,

@@ -14,7 +14,6 @@ avian2d = { version = "0.3", default-features = false, features = [
 ] }
 bevy = { version = "0.16", default-features = false, features = [
     # Core features
-    "bevy_audio",
     "bevy_winit",
     "bevy_ui",
     "bevy_ui_picking_backend",
@@ -33,16 +32,24 @@ bevy = { version = "0.16", default-features = false, features = [
 
     # File formats
     "png",
-    "vorbis",
 ] }
 bevy_asset_loader = { version = "0.23", features = ["2d", "progress_tracking"] }
 bevy_common_assets = { version = "0.13", features = ["ron"] }
-bevy_editor_pls = { version = "0.11", optional = true }
+bevy_editor_pls = { version = "0.11", features = [
+    "highlight_changes",
+], optional = true }
 bevy_mod_debugdump = { version = "0.13", optional = true }
+bevy_seedling = { version = "0.3", default-features = false, features = [
+    "ogg",
+] }
 bevy_simple_prefs = "0.5"
 bevy_simple_subsecond_system = { version = "0.1", optional = true }
-bevy_state = "0.16"
+bevy_state = { version = "0.16", default-features = false }
 dirs = { version = "6", optional = true }
+# TODO: Workaround for <https://github.com/rust-random/getrandom/issues/671>.
+getrandom = { version = "0.3", default-features = false, features = [
+    "wasm_js",
+], optional = true }
 iyes_progress = "0.14"
 lazy-regex = { version = "3", features = ["lite"] }
 leafwing-input-manager = "0.17"
@@ -75,6 +82,7 @@ variadics_please = "1"
 # TODO: Workaround for <https://github.com/NiklasEi/bevy_asset_loader/issues/219>.
 bevy_asset_loader = { git = "https://github.com/benfrankel/bevy_asset_loader.git", branch = "direct-depend" }
 bevy_editor_pls = { git = "https://github.com/benfrankel/bevy_editor_pls.git", branch = "bevy-0-16" }
+bevy_seedling = { git = "https://github.com/CorvusPrudens/bevy_seedling.git", branch = "bevy-0.16" }
 dioxus-devtools = { git = "https://github.com/DioxusLabs/dioxus.git", branch = "main" }
 
 
@@ -102,7 +110,7 @@ native_dev = [
     "bevy/file_watcher",
     "bevy/embedded_watcher",
 ]
-web = []
+web = ["dep:getrandom"]
 web_dev = ["web", "dev"]
 bevy_mod_debugdump = ["dep:bevy_mod_debugdump"]
 trace = ["bevy/trace", "bevy/trace_tracy"]
@@ -115,8 +123,6 @@ features = ["native_dev"]
 
 [package.metadata.bevy_cli.web]
 features = ["web"]
-# Use the `wasm_js` backend for randomness on web.
-rustflags = ["--cfg", "getrandom_backend=\"wasm_js\""]
 
 [package.metadata.bevy_cli.web.dev]
 features = ["web_dev"]
