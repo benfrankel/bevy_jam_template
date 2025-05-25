@@ -1857,7 +1857,7 @@ dependencies = [
  "bitflags 2.9.1",
  "log",
  "polling",
- "rustix",
+ "rustix 0.38.44",
  "slab",
  "thiserror 1.0.69",
 ]
@@ -1869,7 +1869,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "95a66a987056935f7efce4ab5668920b5d0dac4a7c99991a67395f13702ddd20"
 dependencies = [
  "calloop",
- "rustix",
+ "rustix 0.38.44",
  "wayland-backend",
  "wayland-client",
 ]
@@ -2261,9 +2261,9 @@ dependencies = [
 
 [[package]]
 name = "cursor-icon"
-version = "1.1.0"
+version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "96a6ac251f4a2aca6b3f91340350eab87ae57c3f127ffeb585e92bd336717991"
+checksum = "f27ae1dd37df86211c42e150270f82743308803d90a6f6e6651cd730d5e1732f"
 
 [[package]]
 name = "darling"
@@ -2378,12 +2378,12 @@ dependencies = [
 [[package]]
 name = "dioxus-cli-config"
 version = "0.7.0-alpha.0"
-source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#b2bd1f48d434becfff9f0ea390ad8ef46996300a"
+source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#9027ffc278eeca9e06d2d3cef222481b4890b168"
 
 [[package]]
 name = "dioxus-core"
 version = "0.7.0-alpha.0"
-source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#b2bd1f48d434becfff9f0ea390ad8ef46996300a"
+source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#9027ffc278eeca9e06d2d3cef222481b4890b168"
 dependencies = [
  "const_format",
  "dioxus-core-types",
@@ -2404,15 +2404,12 @@ dependencies = [
 [[package]]
 name = "dioxus-core-types"
 version = "0.7.0-alpha.0"
-source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#b2bd1f48d434becfff9f0ea390ad8ef46996300a"
-dependencies = [
- "once_cell",
-]
+source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#9027ffc278eeca9e06d2d3cef222481b4890b168"
 
 [[package]]
 name = "dioxus-devtools"
 version = "0.7.0-alpha.0"
-source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#b2bd1f48d434becfff9f0ea390ad8ef46996300a"
+source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#9027ffc278eeca9e06d2d3cef222481b4890b168"
 dependencies = [
  "dioxus-cli-config",
  "dioxus-core",
@@ -2430,7 +2427,7 @@ dependencies = [
 [[package]]
 name = "dioxus-devtools-types"
 version = "0.7.0-alpha.0"
-source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#b2bd1f48d434becfff9f0ea390ad8ef46996300a"
+source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#9027ffc278eeca9e06d2d3cef222481b4890b168"
 dependencies = [
  "dioxus-core",
  "serde",
@@ -2440,13 +2437,12 @@ dependencies = [
 [[package]]
 name = "dioxus-signals"
 version = "0.7.0-alpha.0"
-source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#b2bd1f48d434becfff9f0ea390ad8ef46996300a"
+source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#9027ffc278eeca9e06d2d3cef222481b4890b168"
 dependencies = [
  "dioxus-core",
  "futures-channel",
  "futures-util",
  "generational-box",
- "once_cell",
  "parking_lot",
  "rustc-hash 2.1.1",
  "tracing",
@@ -2993,7 +2989,7 @@ dependencies = [
 [[package]]
 name = "generational-box"
 version = "0.7.0-alpha.0"
-source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#b2bd1f48d434becfff9f0ea390ad8ef46996300a"
+source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#9027ffc278eeca9e06d2d3cef222481b4890b168"
 dependencies = [
  "parking_lot",
  "tracing",
@@ -3281,9 +3277,9 @@ checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
 
 [[package]]
 name = "hermit-abi"
-version = "0.4.0"
+version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fbf6a919d6cf397374f7dfeeea91d974c7c0a7221d0d0f4f20d859d329e53fcc"
+checksum = "f154ce46856750ed433c8649605bf7ed2de3bc35fd9d2a9f30cddd873c80cb08"
 
 [[package]]
 name = "hexasphere"
@@ -3716,6 +3712,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d26c52dbd32dccf2d10cac7725f8eae5296885fb5703b261f7d0a0739ec807ab"
 
 [[package]]
+name = "linux-raw-sys"
+version = "0.9.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cd945864f07fe9f5371a27ad7b52a172b4b499999f1d97574c9fa68373937e12"
+
+[[package]]
 name = "litrs"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3824,7 +3826,7 @@ version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b2cffa4ad52c6f791f4f8b15f0c05f9824b2ced1160e88cc393d64fff9a8ac64"
 dependencies = [
- "rustix",
+ "rustix 0.38.44",
 ]
 
 [[package]]
@@ -4755,15 +4757,15 @@ dependencies = [
 
 [[package]]
 name = "polling"
-version = "3.7.4"
+version = "3.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a604568c3202727d1507653cb121dbd627a58684eb09a820fd746bee38b4442f"
+checksum = "b53a684391ad002dd6a596ceb6c74fd004fdce75f4be2e3f615068abbea5fd50"
 dependencies = [
  "cfg-if",
  "concurrent-queue",
  "hermit-abi",
  "pin-project-lite",
- "rustix",
+ "rustix 1.0.7",
  "tracing",
  "windows-sys 0.59.0",
 ]
@@ -4927,9 +4929,9 @@ dependencies = [
 
 [[package]]
 name = "pyri_state"
-version = "0.4.0"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "324fa0131225e9973c2322c5454e423a523a000ec177076627a1b8cd4dcb4ba0"
+checksum = "b114d04fcd2ea983dff2feaf041b660c341cf20f80c4d750fc54362edee28325"
 dependencies = [
  "bevy_app",
  "bevy_diagnostic",
@@ -5359,7 +5361,20 @@ dependencies = [
  "bitflags 2.9.1",
  "errno",
  "libc",
- "linux-raw-sys",
+ "linux-raw-sys 0.4.15",
+ "windows-sys 0.59.0",
+]
+
+[[package]]
+name = "rustix"
+version = "1.0.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c71e83d6afe7ff64890ec6b71d6a69bb8a610ab78ce364b3352876bb4c801266"
+dependencies = [
+ "bitflags 2.9.1",
+ "errno",
+ "libc",
+ "linux-raw-sys 0.9.4",
  "windows-sys 0.59.0",
 ]
 
@@ -5612,7 +5627,7 @@ dependencies = [
  "libc",
  "log",
  "memmap2",
- "rustix",
+ "rustix 0.38.44",
  "thiserror 1.0.69",
  "wayland-backend",
  "wayland-client",
@@ -5712,7 +5727,7 @@ dependencies = [
 [[package]]
 name = "subsecond"
 version = "0.7.0-alpha.0"
-source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#b2bd1f48d434becfff9f0ea390ad8ef46996300a"
+source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#9027ffc278eeca9e06d2d3cef222481b4890b168"
 dependencies = [
  "js-sys",
  "libc",
@@ -5730,7 +5745,7 @@ dependencies = [
 [[package]]
 name = "subsecond-types"
 version = "0.7.0-alpha.0"
-source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#b2bd1f48d434becfff9f0ea390ad8ef46996300a"
+source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#9027ffc278eeca9e06d2d3cef222481b4890b168"
 dependencies = [
  "serde",
 ]
@@ -6446,7 +6461,7 @@ checksum = "fe770181423e5fc79d3e2a7f4410b7799d5aab1de4372853de3c6aa13ca24121"
 dependencies = [
  "cc",
  "downcast-rs 1.2.1",
- "rustix",
+ "rustix 0.38.44",
  "scoped-tls",
  "smallvec",
  "wayland-sys",
@@ -6459,7 +6474,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "978fa7c67b0847dbd6a9f350ca2569174974cd4082737054dbb7fbb79d7d9a61"
 dependencies = [
  "bitflags 2.9.1",
- "rustix",
+ "rustix 0.38.44",
  "wayland-backend",
  "wayland-scanner",
 ]
@@ -6481,7 +6496,7 @@ version = "0.31.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a65317158dec28d00416cb16705934070aef4f8393353d41126c54264ae0f182"
 dependencies = [
- "rustix",
+ "rustix 0.38.44",
  "wayland-client",
  "xcursor",
 ]
@@ -7273,7 +7288,7 @@ dependencies = [
  "pin-project",
  "raw-window-handle",
  "redox_syscall 0.4.1",
- "rustix",
+ "rustix 0.38.44",
  "sctk-adwaita",
  "smithay-client-toolkit",
  "smol_str",
@@ -7333,7 +7348,7 @@ dependencies = [
  "libc",
  "libloading",
  "once_cell",
- "rustix",
+ "rustix 0.38.44",
  "x11rb-protocol",
 ]
 

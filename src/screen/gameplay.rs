@@ -3,6 +3,7 @@ use crate::core::audio::music_audio;
 use crate::menu::Menu;
 use crate::prelude::*;
 use crate::screen::Screen;
+use crate::screen::ScreenRoot;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(StateFlush, Screen::Gameplay.on_enter(spawn_gameplay_screen));
@@ -12,9 +13,15 @@ pub(super) fn plugin(app: &mut App) {
 
 fn spawn_gameplay_screen(
     mut commands: Commands,
+    screen_root: Res<ScreenRoot>,
     audio_settings: Res<AudioSettings>,
     assets: Res<GameplayAssets>,
 ) {
+    commands
+        .entity(screen_root.ui)
+        .with_child(widget::column_center(children![widget::label(
+            "Gameplay goes here. Press P to pause!",
+        )]));
     commands.spawn((
         music_audio(&audio_settings, assets.music.clone()),
         DespawnOnExitState::<Screen>::Recursive,

@@ -9,6 +9,7 @@ pub use avian2d::prelude::*;
 pub use bevy::audio::Volume;
 pub use bevy::color::palettes::tailwind::*;
 pub use bevy::diagnostic::FrameCount;
+pub use bevy::ecs::entity_disabling::Disabled;
 pub use bevy::ecs::spawn::SpawnIter;
 pub use bevy::ecs::spawn::SpawnWith;
 pub use bevy::input::common_conditions::*;

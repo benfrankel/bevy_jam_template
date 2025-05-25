@@ -13,6 +13,7 @@ pub(super) fn plugin(app: &mut App) {
 #[reflect(Resource)]
 pub struct MenuRoot {
     pub ui: Entity,
+    pub overlay: Entity,
 }
 
 impl Configure for MenuRoot {
@@ -32,6 +33,14 @@ impl FromWorld for MenuRoot {
                     GlobalZIndex(2),
                     Pickable::IGNORE,
                     DespawnOnExitState::<Menu>::Descendants,
+                ))
+                .id(),
+            overlay: world
+                .spawn((
+                    widget::blocking_overlay(1),
+                    ThemeColor::Overlay.set::<BackgroundColor>(),
+                    VisibleInEnabledState::<Menu>::default(),
+                    Visibility::Hidden,
                 ))
                 .id(),
         }
@@ -56,19 +65,11 @@ impl Configure for Menu {
             StateFlush,
             (
                 Menu::ANY.on_disable(Pause::disable),
-                Menu::ANY.on_enable((Pause::enable_default, spawn_menu_overlay)),
+                Menu::ANY.on_enable(Pause::enable_default),
             ),
         );
         app.add_plugins((main::plugin, intro::plugin, pause::plugin, settings::plugin));
     }
-}
-
-#[cfg_attr(feature = "native_dev", hot)]
-fn spawn_menu_overlay(mut commands: Commands, menu_root: Res<MenuRoot>) {
-    commands.entity(menu_root.ui).with_child((
-        widget::blocking_overlay(1),
-        ThemeColor::Overlay.set::<BackgroundColor>(),
-    ));
 }
 
 #[derive(Actionlike, Reflect, Copy, Clone, Eq, PartialEq, Hash, Debug)]
