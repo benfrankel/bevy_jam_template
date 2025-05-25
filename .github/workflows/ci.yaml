@@ -12,7 +12,7 @@ concurrency:
 
 env:
   # Reduce compile time and cache size.
-  RUSTFLAGS: -Dwarnings -Zshare-generics=y -Zthreads=0 -Cdebuginfo=line-tables-only
+  RUSTFLAGS: -Dwarnings -Zshare-generics=y -Zthreads=0
   RUSTDOCFLAGS: -Dwarnings -Zshare-generics=y -Zthreads=0
   # Use the same Rust toolchain across jobs so they can share a cache.
   toolchain: nightly-2025-04-03
@@ -51,16 +51,18 @@ jobs:
           toolchain: ${{ env.toolchain }}
 
       - name: Restore Rust cache
+        id: cache
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: dev
+          shared-key: ci
           save-if: false
 
       - name: Install build dependencies
+        if: ${{ steps.cache.output.cache-hit == 'false' }}
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Check documentation
-        run: cargo doc --locked --workspace --all-features --document-private-items --no-deps
+        run: cargo doc --locked --workspace --profile ci --all-features --document-private-items --no-deps
 
   # Run Clippy lints.
   clippy-lints:
@@ -78,16 +80,18 @@ jobs:
           components: clippy
 
       - name: Restore Rust cache
+        id: cache
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: dev
+          shared-key: ci
           save-if: false
 
       - name: Install build dependencies
+        if: ${{ steps.cache.output.cache-hit == 'false' }}
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Run Clippy lints
-        run: cargo clippy --locked --workspace --all-targets --all-features
+        run: cargo clippy --locked --workspace --all-targets --profile ci --all-features
 
   # Run Bevy lints.
   bevy-lints:
@@ -102,16 +106,18 @@ jobs:
         uses: TheBevyFlock/bevy_cli/bevy_lint@lint-v0.3.0
 
       - name: Restore Rust cache
+        id: cache
         uses: Swatinem/rust-cache@v2
         with:
-          shared-key: dev
+          shared-key: ci
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Install build dependencies
+        if: ${{ steps.cache.output.cache-hit == 'false' }}
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Run Bevy lints
-        run: bevy_lint --locked --workspace --all-targets --all-features
+        run: bevy_lint --locked --workspace --all-targets --profile ci --all-features
 
   # Run tests.
   tests:
@@ -136,13 +142,10 @@ jobs:
       - name: Install build dependencies
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
-      - name: Install cargo-nextest
-        uses: taiki-e/install-action@nextest
-
       - name: Run tests
-        run: cargo nextest run --locked --workspace --all-targets --no-fail-fast --no-tests=warn
+        run: cargo test --locked --workspace --all-targets --profile ci --all-features --no-fail-fast
 
       # TODO: Workaround for <https://github.com/DioxusLabs/dioxus/issues/4160>.
       # TODO: Workaround for <https://github.com/rust-lang/cargo/issues/6669>.
       #- name: Run doctests
-        #run: cargo test --locked --workspace --doc --no-fail-fast
+        #run: cargo test --locked --workspace --doc --profile ci --all-features --no-fail-fast

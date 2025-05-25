@@ -182,6 +182,16 @@ inherits = "release"
 # Reduces performance slightly; significant improvements to build time and size.
 #opt-level = "s"
 
+# Optimize for build time in CI.
+[profile.ci]
+inherits = "dev"
+opt-level = 0
+debug = "line-tables-only"
+codegen-units = 4
+
+[profile.ci.package."*"]
+opt-level = 0
+
 
 # TODO: Workaround for <https://github.com/DioxusLabs/dioxus/issues/4160>.
 #[[bin]]
