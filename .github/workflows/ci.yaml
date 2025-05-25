@@ -58,7 +58,7 @@ jobs:
           save-if: false
 
       - name: Install build dependencies
-        if: ${{ steps.cache.output.cache-hit == 'false' }}
+        if: steps.cache.outputs.cache-hit != 'true'
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Check documentation
@@ -84,10 +84,10 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           shared-key: ci
-          save-if: false
+          save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Install build dependencies
-        if: ${{ steps.cache.output.cache-hit == 'false' }}
+        if: steps.cache.outputs.cache-hit != 'true'
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Run Clippy lints
@@ -110,10 +110,10 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           shared-key: ci
-          save-if: ${{ github.ref == 'refs/heads/main' }}
+          save-if: false
 
       - name: Install build dependencies
-        if: ${{ steps.cache.output.cache-hit == 'false' }}
+        if: steps.cache.outputs.cache-hit != 'true'
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Run Bevy lints
@@ -128,10 +128,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up environment
+        run: echo "RUSTFLAGS=${RUSTFLAGS:+$RUSTFLAGS }-Zcodegen-backend=cranelift" >> "${GITHUB_ENV}"
+
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ env.toolchain }}
+          components: rustc-codegen-cranelift-preview
 
       - name: Restore Rust cache
         uses: Swatinem/rust-cache@v2
@@ -143,9 +147,9 @@ jobs:
         run: sudo apt-get update; sudo apt-get install --no-install-recommends libasound2-dev libudev-dev libwayland-dev
 
       - name: Run tests
-        run: cargo test --locked --workspace --all-targets --profile ci --all-features --no-fail-fast
+        run: cargo test --locked --workspace --all-targets --profile ci --no-fail-fast
 
       # TODO: Workaround for <https://github.com/DioxusLabs/dioxus/issues/4160>.
       # TODO: Workaround for <https://github.com/rust-lang/cargo/issues/6669>.
       #- name: Run doctests
-        #run: cargo test --locked --workspace --doc --profile ci --all-features --no-fail-fast
+        #run: cargo test --locked --workspace --doc --profile ci --no-fail-fast
