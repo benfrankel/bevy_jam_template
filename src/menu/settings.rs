@@ -212,24 +212,15 @@ struct Settings {
 
 impl Configure for Settings {
     fn configure(app: &mut App) {
-        let dirname = env!("CARGO_PKG_NAME");
-        let filename = "settings.ron";
-
-        #[cfg(feature = "native")]
-        let (filename, path) = {
-            let path = r!(dirs::config_local_dir()).join(dirname);
-            // Create parent directories if necessary.
-            r!(std::fs::create_dir_all(&path).is_ok());
-            r!(std::fs::exists(&path));
-            (filename.to_string(), path)
-        };
-        #[cfg(not(feature = "native"))]
-        let (filename, path) = (format!("{dirname}-{filename}"), default());
-
-        // If there were no issues, initialize settings.
         app.add_plugins(PrefsPlugin::<Settings> {
-            filename,
-            path,
+            #[cfg(feature = "native")]
+            path: {
+                let path = r!(dirs::config_local_dir()).join(env!("CARGO_PKG_NAME"));
+                // Create parent directories if necessary.
+                r!(std::fs::create_dir_all(&path).is_ok());
+                r!(std::fs::exists(&path));
+                path.join("settings.ron")
+            },
             ..default()
         });
     }

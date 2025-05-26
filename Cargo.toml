@@ -43,7 +43,7 @@ bevy_editor_pls = { version = "0.11", features = [
     "highlight_changes",
 ], optional = true }
 bevy_mod_debugdump = { version = "0.13", optional = true }
-bevy_simple_prefs = "0.5"
+bevy_simple_prefs = "0.6"
 bevy_simple_subsecond_system = { version = "0.1", optional = true }
 bevy_state = { version = "0.16", default-features = false }
 dirs = { version = "6", optional = true }
@@ -86,7 +86,7 @@ variadics_please = "1"
 # TODO: Workaround for <https://github.com/NiklasEi/bevy_asset_loader/issues/219>.
 bevy_asset_loader = { git = "https://github.com/benfrankel/bevy_asset_loader.git", branch = "direct-depend" }
 bevy_editor_pls = { git = "https://github.com/benfrankel/bevy_editor_pls.git", branch = "bevy-0-16" }
-dioxus-devtools = { git = "https://github.com/DioxusLabs/dioxus.git", branch = "main" }
+dioxus-devtools = { git = "https://github.com/DioxusLabs/dioxus.git", rev = "b2bd1f" }
 
 
 [features]

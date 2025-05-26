@@ -1360,9 +1360,9 @@ dependencies = [
 
 [[package]]
 name = "bevy_simple_prefs"
-version = "0.5.1"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b999ce5844e3236342e74ba6c8b032a014f0bc76f108c1b6b8ee439c5270c4fd"
+checksum = "7a2ce6e889f18d1fafa8b6362b29e6715526a4adda81378b5ba5f7bcfc65363a"
 dependencies = [
  "bevy",
  "bevy_simple_prefs_derive",
@@ -1373,9 +1373,9 @@ dependencies = [
 
 [[package]]
 name = "bevy_simple_prefs_derive"
-version = "0.5.1"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5a12bf924632c35e93516f0d0198c97b8680844e1d173f036a3bf82ec09b3654"
+checksum = "4164b212b685151b9870e8e5e362165c60ae693c004adc6090580afd8b342ca4"
 dependencies = [
  "bevy",
  "quote",
@@ -2378,12 +2378,12 @@ dependencies = [
 [[package]]
 name = "dioxus-cli-config"
 version = "0.7.0-alpha.0"
-source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#9027ffc278eeca9e06d2d3cef222481b4890b168"
+source = "git+https://github.com/DioxusLabs/dioxus.git?rev=b2bd1f#b2bd1f48d434becfff9f0ea390ad8ef46996300a"
 
 [[package]]
 name = "dioxus-core"
 version = "0.7.0-alpha.0"
-source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#9027ffc278eeca9e06d2d3cef222481b4890b168"
+source = "git+https://github.com/DioxusLabs/dioxus.git?rev=b2bd1f#b2bd1f48d434becfff9f0ea390ad8ef46996300a"
 dependencies = [
  "const_format",
  "dioxus-core-types",
@@ -2404,12 +2404,15 @@ dependencies = [
 [[package]]
 name = "dioxus-core-types"
 version = "0.7.0-alpha.0"
-source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#9027ffc278eeca9e06d2d3cef222481b4890b168"
+source = "git+https://github.com/DioxusLabs/dioxus.git?rev=b2bd1f#b2bd1f48d434becfff9f0ea390ad8ef46996300a"
+dependencies = [
+ "once_cell",
+]
 
 [[package]]
 name = "dioxus-devtools"
 version = "0.7.0-alpha.0"
-source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#9027ffc278eeca9e06d2d3cef222481b4890b168"
+source = "git+https://github.com/DioxusLabs/dioxus.git?rev=b2bd1f#b2bd1f48d434becfff9f0ea390ad8ef46996300a"
 dependencies = [
  "dioxus-cli-config",
  "dioxus-core",
@@ -2427,7 +2430,7 @@ dependencies = [
 [[package]]
 name = "dioxus-devtools-types"
 version = "0.7.0-alpha.0"
-source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#9027ffc278eeca9e06d2d3cef222481b4890b168"
+source = "git+https://github.com/DioxusLabs/dioxus.git?rev=b2bd1f#b2bd1f48d434becfff9f0ea390ad8ef46996300a"
 dependencies = [
  "dioxus-core",
  "serde",
@@ -2437,12 +2440,13 @@ dependencies = [
 [[package]]
 name = "dioxus-signals"
 version = "0.7.0-alpha.0"
-source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#9027ffc278eeca9e06d2d3cef222481b4890b168"
+source = "git+https://github.com/DioxusLabs/dioxus.git?rev=b2bd1f#b2bd1f48d434becfff9f0ea390ad8ef46996300a"
 dependencies = [
  "dioxus-core",
  "futures-channel",
  "futures-util",
  "generational-box",
+ "once_cell",
  "parking_lot",
  "rustc-hash 2.1.1",
  "tracing",
@@ -2989,7 +2993,7 @@ dependencies = [
 [[package]]
 name = "generational-box"
 version = "0.7.0-alpha.0"
-source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#9027ffc278eeca9e06d2d3cef222481b4890b168"
+source = "git+https://github.com/DioxusLabs/dioxus.git?rev=b2bd1f#b2bd1f48d434becfff9f0ea390ad8ef46996300a"
 dependencies = [
  "parking_lot",
  "tracing",
@@ -5727,7 +5731,7 @@ dependencies = [
 [[package]]
 name = "subsecond"
 version = "0.7.0-alpha.0"
-source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#9027ffc278eeca9e06d2d3cef222481b4890b168"
+source = "git+https://github.com/DioxusLabs/dioxus.git?rev=b2bd1f#b2bd1f48d434becfff9f0ea390ad8ef46996300a"
 dependencies = [
  "js-sys",
  "libc",
@@ -5745,7 +5749,7 @@ dependencies = [
 [[package]]
 name = "subsecond-types"
 version = "0.7.0-alpha.0"
-source = "git+https://github.com/DioxusLabs/dioxus.git?branch=main#9027ffc278eeca9e06d2d3cef222481b4890b168"
+source = "git+https://github.com/DioxusLabs/dioxus.git?rev=b2bd1f#b2bd1f48d434becfff9f0ea390ad8ef46996300a"
 dependencies = [
  "serde",
 ]
