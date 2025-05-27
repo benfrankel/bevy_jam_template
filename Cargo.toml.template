@@ -43,14 +43,10 @@ bevy_editor_pls = { version = "0.11", features = [
     "highlight_changes",
 ], optional = true }
 bevy_mod_debugdump = { version = "0.13", optional = true }
-bevy_simple_prefs = "0.5"
+bevy_simple_prefs = "0.6"
 bevy_simple_subsecond_system = { version = "0.1", optional = true }
 bevy_state = { version = "0.16", default-features = false }
 dirs = { version = "6", optional = true }
-# TODO: Workaround for <https://github.com/rust-random/getrandom/issues/671>.
-getrandom = { version = "0.3", default-features = false, features = [
-    "wasm_js",
-], optional = true }
 iyes_progress = "0.14"
 lazy-regex = { version = "3", default-features = false, features = ["lite"] }
 leafwing-input-manager = { version = "0.17", default-features = false, features = [
@@ -82,16 +78,21 @@ tracing = { version = "0.1", features = [
 ] }
 variadics_please = "1"
 
+[target.wasm32-unknown-unknown.dependencies]
+# TODO: Workaround for <https://github.com/rust-random/getrandom/issues/671>.
+getrandom = { version = "0.3", features = ["wasm_js"] }
+
 [patch.crates-io]
 # TODO: Workaround for <https://github.com/NiklasEi/bevy_asset_loader/issues/219>.
 bevy_asset_loader = { git = "https://github.com/benfrankel/bevy_asset_loader.git", branch = "direct-depend" }
 bevy_editor_pls = { git = "https://github.com/benfrankel/bevy_editor_pls.git", branch = "bevy-0-16" }
-dioxus-devtools = { git = "https://github.com/DioxusLabs/dioxus.git", branch = "main" }
+dioxus-devtools = { git = "https://github.com/DioxusLabs/dioxus.git", rev = "b2bd1f" }
+# TODO: Workaround for <https://github.com/rust-random/getrandom/issues/671>.
+getrandom = { git = "https://github.com/benfrankel/getrandom.git" }
 
 
 [features]
 dev = [
-    "dep:bevy_editor_pls",
     "avian2d/debug-plugin",
     "avian2d/diagnostic_ui",
     "bevy/bevy_dev_tools",
@@ -109,11 +110,12 @@ native = ["dep:dirs", "avian2d/parallel"]
 native_dev = [
     "native",
     "dev",
+    "dep:bevy_editor_pls",
     "dep:bevy_simple_subsecond_system",
     "bevy/file_watcher",
     #"bevy/embedded_watcher",
 ]
-web = ["dep:getrandom"]
+web = []
 web_dev = ["web", "dev"]
 bevy_mod_debugdump = ["dep:bevy_mod_debugdump"]
 trace = ["bevy/trace", "bevy/trace_tracy"]

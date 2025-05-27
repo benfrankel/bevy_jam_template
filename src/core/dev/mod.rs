@@ -1,6 +1,7 @@
 //! Dev tools for dev builds.
 
 mod diagnostics;
+#[cfg(feature = "native_dev")]
 mod editor;
 #[cfg(feature = "native_dev")]
 mod hot_patch;
@@ -17,6 +18,7 @@ pub(super) fn plugin(app: &mut App) {
 
     app.add_plugins((
         diagnostics::plugin,
+        #[cfg(feature = "native_dev")]
         editor::plugin,
         #[cfg(feature = "native_dev")]
         hot_patch::plugin,
