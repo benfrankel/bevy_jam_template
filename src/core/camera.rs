@@ -53,7 +53,7 @@ struct SmoothFollow {
 impl Configure for SmoothFollow {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.add_systems(Update, apply_smooth_follow.run_if(Pause::is_disabled));
+        app.add_systems(Update, apply_smooth_follow.in_set(PausableSystems));
     }
 }
 

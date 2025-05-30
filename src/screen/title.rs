@@ -11,7 +11,10 @@ pub(super) fn plugin(app: &mut App) {
     );
     app.add_systems(
         StateFlush,
-        Screen::Title.on_enter((Menu::Main.enter(), spawn_title_screen)),
+        Screen::Title.on_enter((
+            (Menu::Main.enter(), Menu::acquire).chain(),
+            spawn_title_screen,
+        )),
     );
 
     app.configure::<TitleAssets>();

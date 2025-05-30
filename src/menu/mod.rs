@@ -13,7 +13,6 @@ pub(super) fn plugin(app: &mut App) {
 #[reflect(Resource)]
 pub struct MenuRoot {
     pub ui: Entity,
-    pub overlay: Entity,
 }
 
 impl Configure for MenuRoot {
@@ -33,14 +32,6 @@ impl FromWorld for MenuRoot {
                     GlobalZIndex(2),
                     Pickable::IGNORE,
                     DespawnOnExitState::<Menu>::Descendants,
-                ))
-                .id(),
-            overlay: world
-                .spawn((
-                    widget::blocking_overlay(1),
-                    ThemeColor::Overlay.set::<BackgroundColor>(),
-                    VisibleInEnabledState::<Menu>::default(),
-                    Visibility::Hidden,
                 ))
                 .id(),
         }
@@ -64,8 +55,8 @@ impl Configure for Menu {
         app.add_systems(
             StateFlush,
             (
-                Menu::ANY.on_disable(Pause::disable),
                 Menu::ANY.on_enable(Pause::enable_default),
+                Menu::ANY.on_disable(Pause::disable),
             ),
         );
         app.add_plugins((main::plugin, intro::plugin, pause::plugin, settings::plugin));
@@ -88,11 +79,9 @@ impl Configure for MenuAction {
         app.add_plugins(InputManagerPlugin::<Self>::default());
         app.add_systems(
             Update,
-            Menu::with(|&x| x != Menu::Main).on_update(
-                Menu::pop
-                    .in_set(UpdateSystems::RecordInput)
-                    .run_if(action_just_pressed(Self::Back)),
-            ),
+            Menu::pop
+                .in_set(UpdateSystems::RecordInput)
+                .run_if(Menu::is_enabled.and(action_just_pressed(Self::Back))),
         );
     }
 }

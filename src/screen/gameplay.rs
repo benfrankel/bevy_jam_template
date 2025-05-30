@@ -44,7 +44,8 @@ impl Configure for GameplayAssets {
 
 #[derive(Actionlike, Reflect, Copy, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum GameplayAction {
-    TogglePause,
+    Pause,
+    CloseMenu,
 }
 
 impl Configure for GameplayAction {
@@ -52,22 +53,31 @@ impl Configure for GameplayAction {
         app.init_resource::<ActionState<Self>>();
         app.insert_resource(
             InputMap::default()
-                .with(Self::TogglePause, GamepadButton::Start)
-                .with(Self::TogglePause, KeyCode::Escape)
-                .with(Self::TogglePause, KeyCode::KeyP),
+                .with(Self::Pause, GamepadButton::Start)
+                .with(Self::Pause, KeyCode::Escape)
+                .with(Self::Pause, KeyCode::KeyP)
+                .with(Self::CloseMenu, KeyCode::KeyP),
         );
         app.add_plugins(InputManagerPlugin::<Self>::default());
         app.add_systems(
             Update,
-            Screen::Gameplay.on_update(
-                Menu::Pause
-                    .toggle()
+            Screen::Gameplay.on_update((
+                (spawn_pause_overlay, Menu::Pause.enter())
                     .in_set(UpdateSystems::RecordInput)
-                    .run_if(
-                        action_just_pressed(Self::TogglePause)
-                            .and(Menu::is_disabled.or(Menu::Pause.will_update())),
-                    ),
-            ),
+                    .run_if(Menu::is_disabled.and(action_just_pressed(Self::Pause))),
+                Menu::clear
+                    .in_set(UpdateSystems::RecordInput)
+                    .run_if(Menu::is_enabled.and(action_just_pressed(Self::CloseMenu))),
+            )),
         );
     }
+}
+
+fn spawn_pause_overlay(mut commands: Commands) {
+    commands.spawn((
+        widget::blocking_overlay(1),
+        ThemeColor::Overlay.set::<BackgroundColor>(),
+        DespawnOnExitState::<Screen>::default(),
+        DespawnOnDisableState::<Menu>::default(),
+    ));
 }

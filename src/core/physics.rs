@@ -10,11 +10,11 @@ pub(super) fn plugin(app: &mut App) {
 const PIXELS_PER_METER: f32 = 16.0;
 
 #[cfg_attr(feature = "native_dev", hot)]
-fn pause_physics(mut physics_time: ResMut<Time<Physics>>) {
-    physics_time.pause();
+fn unpause_physics(mut physics_time: ResMut<Time<Physics>>) {
+    physics_time.unpause();
 }
 
 #[cfg_attr(feature = "native_dev", hot)]
-fn unpause_physics(mut physics_time: ResMut<Time<Physics>>) {
-    physics_time.unpause();
+fn pause_physics(mut physics_time: ResMut<Time<Physics>>) {
+    physics_time.pause();
 }

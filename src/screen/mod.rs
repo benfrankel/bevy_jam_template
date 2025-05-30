@@ -68,7 +68,11 @@ impl Configure for Screen {
             StateFlush,
             (
                 WindowReady.on_enter(Screen::enable_default),
-                Screen::ANY.on_exit((Pause::disable, Menu::clear, reset_screen_camera)),
+                Screen::ANY.on_exit((
+                    Pause::disable,
+                    (Menu::release, Menu::clear).chain(),
+                    reset_screen_camera,
+                )),
             ),
         );
         app.add_plugins((
