@@ -30,7 +30,7 @@ pub enum PostTransformSystems {
     Blend,
     /// Apply facing (may multiply translation.x by -1).
     ApplyFacing,
-    /// Apply finishing touches to GlobalTransform, like rounding to the nearest pixel.
+    /// Apply finishing touches to [`GlobalTransform`], like rounding to the nearest pixel.
     Finish,
 }
 
