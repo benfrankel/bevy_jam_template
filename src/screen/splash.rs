@@ -43,7 +43,7 @@ fn spawn_splash_screen(
                     settings.sampler = ImageSampler::linear();
                 },
             )),
-            Node::DEFAULT.width(70.0),
+            Node::DEFAULT.width(Percent(70.0)),
             ThemeColor::BodyText.set::<ImageNode>(),
         )]));
 }

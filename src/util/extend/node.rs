@@ -13,13 +13,17 @@ pub trait NodeExtLayout {
     const COLUMN_RIGHT: Self;
     const COLUMN_CENTER: Self;
 
-    fn abs(self) -> Self;
-    fn width(self, percent: f32) -> Self;
+    fn reverse(self) -> Self;
+
+    fn width(self, width: Val) -> Self;
+    fn height(self, height: Val) -> Self;
+    fn size(self, width: Val, height: Val) -> Self;
     fn full_width(self) -> Self;
-    fn height(self, percent: f32) -> Self;
     fn full_height(self) -> Self;
     fn full_size(self) -> Self;
-    fn centered(self) -> Self;
+    fn grow(self) -> Self;
+
+    fn abs(self) -> Self;
 }
 
 impl NodeExtLayout for Node {
@@ -81,36 +85,55 @@ impl NodeExtLayout for Node {
         x
     };
 
+    fn reverse(mut self) -> Self {
+        self.flex_direction = match self.flex_direction {
+            FlexDirection::Row => FlexDirection::RowReverse,
+            FlexDirection::Column => FlexDirection::ColumnReverse,
+            FlexDirection::RowReverse => FlexDirection::Row,
+            FlexDirection::ColumnReverse => FlexDirection::Column,
+        };
+        self
+    }
+
+    fn width(mut self, width: Val) -> Self {
+        self.width = width;
+        self
+    }
+
+    fn height(mut self, height: Val) -> Self {
+        self.height = height;
+        self
+    }
+
+    fn size(mut self, width: Val, height: Val) -> Self {
+        self.width = width;
+        self.height = height;
+        self
+    }
+
+    fn full_width(mut self) -> Self {
+        self.width = Percent(100.0);
+        self
+    }
+
+    fn full_height(mut self) -> Self {
+        self.height = Percent(100.0);
+        self
+    }
+
+    fn full_size(mut self) -> Self {
+        self.width = Percent(100.0);
+        self.height = Percent(100.0);
+        self
+    }
+
+    fn grow(mut self) -> Self {
+        self.flex_grow = 1.0;
+        self
+    }
+
     fn abs(mut self) -> Self {
         self.position_type = PositionType::Absolute;
-        self
-    }
-
-    fn width(mut self, percent: f32) -> Self {
-        self.width = Percent(percent);
-        self
-    }
-
-    fn full_width(self) -> Self {
-        self.width(100.0)
-    }
-
-    fn height(mut self, percent: f32) -> Self {
-        self.height = Percent(percent);
-        self
-    }
-
-    fn full_height(self) -> Self {
-        self.height(100.0)
-    }
-
-    fn full_size(self) -> Self {
-        self.full_width().full_height()
-    }
-
-    fn centered(mut self) -> Self {
-        self.align_self = AlignSelf::Center;
-        self.justify_self = JustifySelf::Center;
         self
     }
 }

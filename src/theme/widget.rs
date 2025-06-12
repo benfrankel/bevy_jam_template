@@ -67,16 +67,7 @@ pub fn row_of_buttons(children: impl Bundle) -> impl Bundle {
 }
 
 pub fn stretch(children: impl Bundle) -> impl Bundle {
-    (
-        Name::new("Stretch"),
-        Node {
-            align_items: AlignItems::Center,
-            justify_content: JustifyContent::Center,
-            flex_grow: 1.0,
-            ..default()
-        },
-        children,
-    )
+    (Name::new("Stretch"), Node::ROW_CENTER.grow(), children)
 }
 
 pub fn header(text: impl AsRef<str>) -> impl Bundle {
@@ -171,11 +162,7 @@ where
     (
         Name::new(format!("Button(\"{text}\")")),
         Button,
-        Node {
-            width,
-            height,
-            ..Node::ROW_CENTER
-        },
+        Node::ROW_CENTER.size(width, height),
         BorderRadius::MAX,
         ThemeColor::default().set::<BackgroundColor>(),
         BoxShadow::from(ShadowStyle {
@@ -225,10 +212,7 @@ where
 {
     (
         Name::new("Selector"),
-        Node {
-            width: Vw(35.0),
-            ..Node::ROW
-        },
+        Node::ROW.width(Vw(35.0)),
         marker,
         children![
             (small_button("<", left_action), InteractionDisabled(false)),
@@ -242,12 +226,10 @@ pub fn loading_bar<S: State + Clone + PartialEq + Eq + Hash + Debug>() -> impl B
     (
         Name::new("LoadingBar"),
         Node {
-            width: Percent(60.0),
-            height: Vw(4.0),
             margin: UiRect::all(Vw(1.0)),
             padding: UiRect::all(Vw(0.5)),
             border: UiRect::all(Vw(0.5)),
-            ..default()
+            ..Node::DEFAULT.size(Percent(60.0), Vw(4.0))
         },
         ThemeColor::BodyText.set::<BorderColor>(),
         children![(
