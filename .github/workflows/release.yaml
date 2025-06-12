@@ -27,7 +27,16 @@ on:
         description: "Build for macOS?"
         default: true
         type: boolean
+      upload_to_github:
+        description: "Upload to GitHub releases?"
+        default: true
+        type: boolean
+      upload_to_itch:
+        description: "Upload to itch.io?"
+        default: true
+        type: boolean
 
+# Cancel the release workflow when a more recent workflow begins.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
   cancel-in-progress: true
@@ -40,9 +49,6 @@ env:
 
   # The path to the assets directory.
   assets_path: assets
-
-  # Whether to upload the packages produced by this workflow to a GitHub release.
-  upload_to_github: true
 
   # The itch.io project to upload to in the format `user-name/project-name`.
   # There will be no upload to itch.io if this is commented out.
@@ -76,9 +82,6 @@ env:
   # Before enabling LFS, please take a look at GitHub's documentation for costs and quota limits:
   # <https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage>
   git_lfs: false
-
-  # Reduce compile time.
-  RUSTFLAGS: -Zthreads=0
 
 jobs:
   # Forward some environment variables as outputs of this job.
@@ -155,6 +158,12 @@ jobs:
           # File paths:
           echo "app=tmp/app/${app_package_name}"'${{ matrix.app_suffix }}' >> "${GITHUB_ENV}"
           echo "package=${app_package_name}-"'${{ matrix.platform }}${{ matrix.package_ext }}' >> "${GITHUB_ENV}"
+
+          # Rustflags:
+          echo 'RUSTFLAGS=-Dwarnings -Zthreads=0' >> "${GITHUB_ENV}"
+          if [ '${{ matrix.platform }}' != 'windows' ]; then
+            echo "RUSTFLAGS=${RUSTFLAGS:+$RUSTFLAGS }"'-Zshare-generics=y' >> "${GITHUB_ENV}"
+          fi
 
           # macOS environment:
           if [ '${{ matrix.platform }}' = 'macos' ]; then
@@ -309,7 +318,7 @@ jobs:
       - forward-env
       - get-version
       - build
-    if: ${{ needs.forward-env.outputs.itch_page != '' }}
+    if: ${{ inputs.upload_to_itch && needs.forward-env.outputs.itch_page != '' }}
 
     steps:
       - name: Download all packages

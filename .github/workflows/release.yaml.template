@@ -27,8 +27,17 @@ on:
         description: "Build for macOS?"
         default: true
         type: boolean
+      upload_to_github:
+        description: "Upload to GitHub releases?"
+        default: true
+        type: boolean
+      upload_to_itch:
+        description: "Upload to itch.io?"
+        default: true
+        type: boolean
 
 {% raw -%}
+# Cancel the release workflow when a more recent workflow begins.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref || github.run_id }}
   cancel-in-progress: true
@@ -43,24 +52,17 @@ env:
   # The path to the assets directory.
   assets_path: assets
 
-  # Whether to upload the packages produced by this workflow to a GitHub release.
-  upload_to_github: true
-
   # The itch.io project to upload to in the format `user-name/project-name`.
   # There will be no upload to itch.io if this is commented out.
   {%- if itch_username != "" %}
   {%- if itch_project != "" %}
-  upload_to_itch: {{itch_username}}/{{itch_project}}
+  itch_page: {{itch_username}}/{{itch_project}}
   {%- else %}
-  upload_to_itch: {{itch_username}}/{{project-name}}
+  itch_page: {{itch_username}}/{{project-name}}
   {%- endif %}
   {%- else %}
-  #upload_to_itch: your-itch-username/{{project-name}}
+  #itch_page: your-itch-username/{{project-name}}
   {%- endif %}
-
-  ############
-  # ADVANCED #
-  ############
 
   # The ID of the app produced by this workflow.
   # Applies to macOS releases.
@@ -91,9 +93,6 @@ env:
   # <https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-storage-and-bandwidth-usage>
   git_lfs: false
 
-  # Reduce compile time.
-  RUSTFLAGS: -Dwarnings -Zshare-generics=y -Zthreads=0
-
 {% raw -%}
 jobs:
   # Forward some environment variables as outputs of this job.
@@ -105,7 +104,7 @@ jobs:
       - name: Do nothing
         run: "true"
     outputs:
-      upload_to_itch: ${{ env.upload_to_itch }}
+      itch_page: ${{ env.itch_page }}
 
   # Determine the version number for this workflow.
   get-version:
@@ -170,6 +169,12 @@ jobs:
           # File paths:
           echo "app=tmp/app/${app_package_name}"'${{ matrix.app_suffix }}' >> "${GITHUB_ENV}"
           echo "package=${app_package_name}-"'${{ matrix.platform }}${{ matrix.package_ext }}' >> "${GITHUB_ENV}"
+
+          # Rustflags:
+          echo 'RUSTFLAGS=-Dwarnings -Zthreads=0' >> "${GITHUB_ENV}"
+          if [ '${{ matrix.platform }}' != 'windows' ]; then
+            echo "RUSTFLAGS=${RUSTFLAGS:+$RUSTFLAGS }"'-Zshare-generics=y' >> "${GITHUB_ENV}"
+          fi
 
           # macOS environment:
           if [ '${{ matrix.platform }}' = 'macos' ]; then
@@ -324,7 +329,7 @@ jobs:
       - forward-env
       - get-version
       - build
-    if: ${{ needs.forward-env.outputs.upload_to_itch != '' }}
+    if: ${{ inputs.upload_to_itch && needs.forward-env.outputs.itch_page != '' }}
 
     steps:
       - name: Download all packages
@@ -349,6 +354,6 @@ jobs:
               --fix-permissions \
               --userversion='${{ needs.get-version.outputs.version }}' \
               tmp/"${channel}"/* \
-              '${{ env.upload_to_itch }}':"${channel#package-}"
+              '${{ env.itch_page }}':"${channel#package-}"
           done
 {%- endraw %}
