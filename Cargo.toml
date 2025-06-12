@@ -51,6 +51,7 @@ leafwing-input-manager = { version = "0.17", default-features = false, features 
     "mouse",
     "keyboard",
     "gamepad",
+    "picking",
 ] }
 # Compile low-severity logs out of native builds for performance.
 log = { version = "0.4", features = [
@@ -64,7 +65,7 @@ pyri_state = { version = "0.4", default-features = false, features = [
     "react",
     "stack",
 ] }
-pyri_tooltip = "0.3"
+pyri_tooltip = "0.4"
 rand = "0.8"
 ron = "0.10"
 serde = "1"

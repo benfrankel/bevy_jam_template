@@ -4712,9 +4712,9 @@ dependencies = [
 
 [[package]]
 name = "pyri_tooltip"
-version = "0.3.0"
+version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "93b0b83c628c39b665e15a062c3ac165413d8e08eeed19dff4280011aa10b099"
+checksum = "bfa2b98b03b60b38db86333646b2fc33088a7e62394361cb13c08bec7acc7315"
 dependencies = [
  "bevy_app",
  "bevy_asset",
