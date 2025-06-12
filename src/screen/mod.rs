@@ -103,17 +103,14 @@ impl Configure for ScreenTime {
     }
 }
 
-#[cfg_attr(feature = "native_dev", hot)]
 fn reset_screen_time(mut screen_time: ResMut<ScreenTime>) {
     *screen_time = default();
 }
 
-#[cfg_attr(feature = "native_dev", hot)]
 fn tick_screen_time(time: Res<Time>, mut screen_time: ResMut<ScreenTime>) {
     screen_time.0 += time.delta();
 }
 
-//#[cfg_attr(feature = "native_dev", hot)]
 fn wait_in_screen(duration: f32) -> ScheduleConfigs<ScheduleSystem> {
     (move |screen_time: Res<ScreenTime>| -> Progress {
         (screen_time.0.as_secs_f32() >= duration).into()

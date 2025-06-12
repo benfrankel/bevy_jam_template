@@ -8,7 +8,6 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(StateFlush, Menu::Pause.on_enter(spawn_pause_menu));
 }
 
-#[cfg_attr(feature = "native_dev", hot)]
 fn spawn_pause_menu(mut commands: Commands, menu_root: Res<MenuRoot>) {
     commands
         .entity(menu_root.ui)

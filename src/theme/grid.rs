@@ -40,7 +40,6 @@ impl GridAlignment {
     }
 }
 
-#[cfg_attr(feature = "native_dev", hot)]
 fn apply_grid_alignment(
     grid_query: Query<(Entity, &GridAlignment, &Children)>,
     mut item_query: Query<&mut Node>,

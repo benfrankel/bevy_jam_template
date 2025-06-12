@@ -17,7 +17,6 @@ pub(super) fn plugin(app: &mut App) {
     )>();
 }
 
-#[cfg_attr(feature = "native_dev", hot)]
 fn spawn_settings_menu(mut commands: Commands, menu_root: Res<MenuRoot>) {
     commands
         .entity(menu_root.ui)
@@ -72,7 +71,6 @@ impl Configure for IsMasterVolumeSelector {
     }
 }
 
-#[cfg_attr(feature = "native_dev", hot)]
 fn update_master_volume_selector(
     audio_settings: Res<AudioSettings>,
     selector_query: Query<Entity, With<IsMasterVolumeSelector>>,
@@ -121,7 +119,6 @@ impl Configure for IsMusicVolumeSelector {
     }
 }
 
-#[cfg_attr(feature = "native_dev", hot)]
 fn update_music_volume_selector(
     audio_settings: Res<AudioSettings>,
     selector_query: Query<Entity, With<IsMusicVolumeSelector>>,
@@ -170,7 +167,6 @@ impl Configure for IsUiVolumeSelector {
     }
 }
 
-#[cfg_attr(feature = "native_dev", hot)]
 fn update_ui_volume_selector(
     audio_settings: Res<AudioSettings>,
     selector_query: Query<Entity, With<IsUiVolumeSelector>>,

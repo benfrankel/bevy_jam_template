@@ -22,8 +22,6 @@ pub use bevy::sprite::Anchor;
 pub use bevy::ui::FocusPolicy;
 pub use bevy::ui::Val::*;
 pub use bevy_asset_loader::prelude::*;
-#[cfg(feature = "native_dev")]
-pub use bevy_simple_subsecond_system::prelude::*;
 pub use iyes_progress::prelude::*;
 pub use lazy_regex::*;
 pub use leafwing_input_manager::common_conditions::*;

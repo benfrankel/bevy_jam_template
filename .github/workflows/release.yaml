@@ -36,7 +36,7 @@ concurrency:
 env:
   # TODO: Workaround for <https://github.com/rust-lang/cargo/issues/6790>.
   # The base filename of the binary produced by `cargo build`.
-  cargo_build_binary_name: pyri_new_jam
+  cargo_build_binary_name: run
 
   # The path to the assets directory.
   assets_path: assets
@@ -46,11 +46,7 @@ env:
 
   # The itch.io project to upload to in the format `user-name/project-name`.
   # There will be no upload to itch.io if this is commented out.
-  upload_to_itch: pyrious/pyri-new-jam
-
-  ############
-  # ADVANCED #
-  ############
+  itch_page: pyrious/pyri-new-jam
 
   # The ID of the app produced by this workflow.
   # Applies to macOS releases.
@@ -82,7 +78,7 @@ env:
   git_lfs: false
 
   # Reduce compile time.
-  RUSTFLAGS: -Dwarnings -Zshare-generics=y -Zthreads=0
+  RUSTFLAGS: -Zthreads=0
 
 jobs:
   # Forward some environment variables as outputs of this job.
@@ -94,7 +90,7 @@ jobs:
       - name: Do nothing
         run: "true"
     outputs:
-      upload_to_itch: ${{ env.upload_to_itch }}
+      itch_page: ${{ env.itch_page }}
 
   # Determine the version number for this workflow.
   get-version:
@@ -313,7 +309,7 @@ jobs:
       - forward-env
       - get-version
       - build
-    if: ${{ needs.forward-env.outputs.upload_to_itch != '' }}
+    if: ${{ needs.forward-env.outputs.itch_page != '' }}
 
     steps:
       - name: Download all packages
@@ -338,5 +334,5 @@ jobs:
               --fix-permissions \
               --userversion='${{ needs.get-version.outputs.version }}' \
               tmp/"${channel}"/* \
-              '${{ env.upload_to_itch }}':"${channel#package-}"
+              '${{ env.itch_page }}':"${channel#package-}"
           done

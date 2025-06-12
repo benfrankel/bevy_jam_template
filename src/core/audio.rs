@@ -50,7 +50,6 @@ impl AudioSettings {
     }
 }
 
-#[cfg_attr(feature = "native_dev", hot)]
 fn apply_audio_settings(
     audio_settings: Res<AudioSettings>,
     music_audio_query: Query<Entity, With<IsMusicAudio>>,

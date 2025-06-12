@@ -29,12 +29,10 @@ pub(super) fn plugin(app: &mut App) {
 
 const TOGGLE_KEY: KeyCode = KeyCode::F2;
 
-#[cfg_attr(feature = "native_dev", hot)]
 fn toggle_physics_debug_render(mut gizmos: ResMut<GizmoConfigStore>) {
     gizmos.config_mut::<PhysicsGizmos>().0.enabled ^= true;
 }
 
-#[cfg_attr(feature = "native_dev", hot)]
 fn toggle_physics_diagnostics_ui(mut settings: ResMut<PhysicsDiagnosticsUiSettings>) {
     settings.enabled ^= true;
 }

@@ -57,7 +57,6 @@ impl Configure for SmoothFollow {
     }
 }
 
-#[cfg_attr(feature = "native_dev", hot)]
 fn apply_smooth_follow(
     time: Res<Time>,
     mut follow_query: Query<(&mut Transform, &SmoothFollow)>,
@@ -91,7 +90,6 @@ impl Default for AbsoluteScale {
     }
 }
 
-#[cfg_attr(feature = "native_dev", hot)]
 fn apply_absolute_scale(
     camera_root: Res<CameraRoot>,
     camera_query: Query<(&Projection, &Camera)>,

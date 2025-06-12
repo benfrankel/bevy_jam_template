@@ -29,7 +29,6 @@ This template builds on top of [Bevy New 2D](https://github.com/TheBevyFlock/bev
   - [`bevy_editor_pls`](https://github.com/jakobhellermann/bevy_editor_pls) for a live inspector window
   - [`bevy_mod_debugdump`](https://github.com/jakobhellermann/bevy_mod_debugdump) for inspecting the system graph
   - [`bevy_simple_prefs`](https://github.com/rparrett/bevy_simple_prefs) for remembering settings
-  - [`bevy_simple_subsecond_system`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system) for function hot-patching
   - [`iyes_progress`](https://github.com/IyesGames/iyes_progress) for loading bar progress tracking
   - [`leafwing-input-manager`](https://github.com/Leafwing-Studios/leafwing-input-manager) for input-to-action mapping
   - [`pyri_state`](https://github.com/benfrankel/pyri_state) for more flexible game states
@@ -69,30 +68,6 @@ bevy run --release web
 ```
 
 For VS Code users, [`.vscode/tasks.json`](./.vscode/tasks.json) provides IDE integration.
-
-<details>
-  <summary><ins>Hot-patching with <code>subsecond</code></ins></summary>
-
-  Follow the instructions in [`bevy_simple_subsecond_system`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/).
-  Make sure to read the [`Known Limitations`](https://github.com/TheBevyFlock/bevy_simple_subsecond_system/?tab=readme-ov-file#known-limitations) section.
-
-  Annotate your systems to enable hot-patching.
-  The functions they call can be hot-patched too; no additional annotations required!
-
-  ```rust
-  #[cfg_attr(feature = "native_dev", hot)]
-  fn my_system() {}
-  ```
-
-  Run your game with hot-patching enabled:
-
-  ```shell
-  dx serve --hot-patch --features native_dev
-  ```
-
-  Now edit an annotated system's code while the game is running, and save the file.
-  You should see `Status: Hot-patching...` in the CLI if you've got it working.
-</details>
 
 ## Release your game
 

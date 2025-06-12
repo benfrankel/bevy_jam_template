@@ -79,7 +79,6 @@ impl Configure for WindowReady {
     }
 }
 
-#[cfg_attr(feature = "native_dev", hot)]
 fn show_window(window_root: Res<WindowRoot>, mut window_query: Query<&mut Window>) {
     r!(window_query.get_mut(window_root.primary)).visible = true;
 }

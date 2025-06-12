@@ -70,7 +70,6 @@ impl DynamicFontSize {
     }
 }
 
-#[cfg_attr(feature = "native_dev", hot)]
 pub fn apply_dynamic_font_size(
     window_root: Res<WindowRoot>,
     window_query: Query<&Window>,

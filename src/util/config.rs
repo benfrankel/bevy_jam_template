@@ -44,14 +44,12 @@ impl<C: Config> Configure for ConfigHandle<C> {
     }
 }
 
-#[cfg_attr(feature = "native_dev", hot)]
 fn load_config<C: Config>(world: &mut World) {
     let asset_server = r!(world.get_resource_mut::<AssetServer>());
     let handle = asset_server.load(format!("{}/{}", C::FOLDER, C::FILE));
     world.insert_resource(ConfigHandle::<C>(handle));
 }
 
-#[cfg_attr(feature = "native_dev", hot)]
 fn apply_config<C: Config>(world: &mut World, mut cursor: Local<EventCursor<AssetEvent<C>>>) {
     if !cursor
         .read(r!(world.get_resource::<Events<AssetEvent<_>>>()))

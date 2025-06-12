@@ -154,8 +154,7 @@ jobs:
       - name: Run tests
         run: cargo test --locked --workspace --all-targets --profile ci --no-fail-fast
 
-      # TODO: Workaround for <https://github.com/DioxusLabs/dioxus/issues/4160>.
       # TODO: Workaround for <https://github.com/rust-lang/cargo/issues/6669>.
-      #- name: Run doctests
-        #run: cargo test --locked --workspace --doc --profile ci --no-fail-fast
+      - name: Run doctests
+        run: cargo test --locked --workspace --doc --profile ci --no-fail-fast
 {%- endraw %}
