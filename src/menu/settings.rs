@@ -13,6 +13,7 @@ pub(super) fn plugin(app: &mut App) {
         Settings,
         IsMasterVolumeSelector,
         IsMusicVolumeSelector,
+        IsSfxVolumeSelector,
         IsUiVolumeSelector,
     )>();
 }
@@ -54,6 +55,8 @@ fn grid() -> impl Bundle {
             widget::selector(IsMasterVolumeSelector, master_volume_down, master_volume_up),
             widget::label("Music volume"),
             widget::selector(IsMusicVolumeSelector, music_volume_down, music_volume_up),
+            widget::label("SFX volume"),
+            widget::selector(IsSfxVolumeSelector, sfx_volume_down, sfx_volume_up),
             widget::label("UI volume"),
             widget::selector(IsUiVolumeSelector, ui_volume_down, ui_volume_up),
         ],
@@ -154,6 +157,54 @@ fn music_volume_down(_: Trigger<Pointer<Click>>, mut audio_settings: ResMut<Audi
 
 fn music_volume_up(_: Trigger<Pointer<Click>>, mut audio_settings: ResMut<AudioSettings>) {
     audio_settings.music_volume = (audio_settings.music_volume + 0.1).min(1.0);
+}
+
+#[derive(Component, Reflect, Debug)]
+#[reflect(Component)]
+struct IsSfxVolumeSelector;
+
+impl Configure for IsSfxVolumeSelector {
+    fn configure(app: &mut App) {
+        app.register_type::<Self>();
+        app.add_systems(
+            Update,
+            Menu::Settings.on_update(update_sfx_volume_selector.in_set(UpdateSystems::Update)),
+        );
+    }
+}
+
+fn update_sfx_volume_selector(
+    audio_settings: Res<AudioSettings>,
+    selector_query: Query<Entity, With<IsSfxVolumeSelector>>,
+    children_query: Query<&Children>,
+    mut text_query: Query<&mut RichText>,
+    mut disabled_query: Query<&mut InteractionDisabled>,
+) {
+    for entity in &selector_query {
+        let children = c!(children_query.get(entity))
+            .into_iter()
+            .collect::<Vec<_>>();
+
+        let left = **c!(children.first());
+        c!(disabled_query.get_mut(left)).0 = audio_settings.sfx_volume <= f32::EPSILON;
+
+        let mid = **c!(children.get(1));
+        let mid_children = c!(children_query.get(mid));
+        let label = *c!(mid_children.first());
+        c!(text_query.get_mut(label)).sections =
+            parse_rich(format!("{:.0}%", audio_settings.sfx_volume * 100.0));
+
+        let right = **c!(children.get(2));
+        c!(disabled_query.get_mut(right)).0 = audio_settings.sfx_volume >= 1.0 - f32::EPSILON;
+    }
+}
+
+fn sfx_volume_down(_: Trigger<Pointer<Click>>, mut audio_settings: ResMut<AudioSettings>) {
+    audio_settings.sfx_volume = (audio_settings.sfx_volume - 0.1).max(0.0);
+}
+
+fn sfx_volume_up(_: Trigger<Pointer<Click>>, mut audio_settings: ResMut<AudioSettings>) {
+    audio_settings.sfx_volume = (audio_settings.sfx_volume + 0.1).min(1.0);
 }
 
 #[derive(Component, Reflect, Debug)]
