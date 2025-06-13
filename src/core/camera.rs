@@ -41,15 +41,14 @@ impl Config for CameraConfig {
 
         match self.aspect_ratio {
             Some(aspect_ratio) => {
-                world
-                    .entity_mut(entity)
+                r!(world.get_entity_mut(entity))
                     .entry::<Letterbox>()
                     .and_modify(|mut letterbox| letterbox.aspect_ratio = aspect_ratio)
                     .or_insert(Letterbox { aspect_ratio });
             },
             None => {
                 camera.viewport = None;
-                world.entity_mut(entity).remove::<Letterbox>();
+                r!(world.get_entity_mut(entity)).remove::<Letterbox>();
             },
         }
     }
@@ -88,7 +87,7 @@ fn spawn_primary_camera(mut commands: Commands) {
 /// Follow a target entity smoothly.
 ///
 /// This component should only be used on root entities.
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
 struct SmoothFollow {
     target: Entity,
@@ -117,13 +116,15 @@ fn apply_smooth_follow(
 }
 
 /// Letterbox a camera's viewport to a particular aspect ratio.
-#[derive(Component, Clone)]
+#[derive(Component, Reflect, Debug, Clone)]
+#[reflect(Component)]
 pub struct Letterbox {
     pub aspect_ratio: f32,
 }
 
 impl Configure for Letterbox {
     fn configure(app: &mut App) {
+        app.register_type::<Self>();
         app.add_systems(
             PostUpdate,
             apply_letterbox.run_if(
@@ -163,7 +164,7 @@ fn apply_letterbox(
 
 // TODO: Workaround for <https://github.com/bevyengine/bevy/issues/1890>.
 /// Camera zoom-independent scale.
-#[derive(Component, Reflect)]
+#[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
 pub struct AbsoluteScale(pub Vec3);
 
