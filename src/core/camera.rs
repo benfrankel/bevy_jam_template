@@ -1,7 +1,58 @@
+use bevy::render::camera::ScalingMode;
+use bevy::render::camera::Viewport;
+use bevy::window::PrimaryWindow;
+use bevy::window::WindowResized;
+use bevy::window::WindowScaleFactorChanged;
+
 use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.configure::<(PrimaryCamera, SmoothFollow, AbsoluteScale)>();
+    app.configure::<(
+        ConfigHandle<CameraConfig>,
+        PrimaryCamera,
+        SmoothFollow,
+        Letterbox,
+        AbsoluteScale,
+    )>();
+}
+
+#[derive(Asset, Reflect, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct CameraConfig {
+    scaling_mode: ScalingMode,
+    zoom: f32,
+    aspect_ratio: Option<f32>,
+}
+
+impl Config for CameraConfig {
+    const FILE: &'static str = "camera.ron";
+
+    fn on_load(&self, world: &mut World) {
+        let (entity, mut camera, projection) = r!(world
+            .query_filtered::<(Entity, &mut Camera, &mut Projection), With<PrimaryCamera>>()
+            .single_mut(world));
+
+        let projection = r!(match projection.into_inner() {
+            Projection::Orthographic(x) => Some(x),
+            _ => None,
+        });
+        projection.scale = self.zoom.recip();
+        projection.scaling_mode = self.scaling_mode;
+
+        match self.aspect_ratio {
+            Some(aspect_ratio) => {
+                world
+                    .entity_mut(entity)
+                    .entry::<Letterbox>()
+                    .and_modify(|mut letterbox| letterbox.aspect_ratio = aspect_ratio)
+                    .or_insert(Letterbox { aspect_ratio });
+            },
+            None => {
+                camera.viewport = None;
+                world.entity_mut(entity).remove::<Letterbox>();
+            },
+        }
+    }
 }
 
 /// A marker component for the primary camera.
@@ -62,6 +113,51 @@ fn apply_smooth_follow(
         let mut pos = transform.translation.xy();
         pos += (target_pos - pos) * (follow.rate * dt).clamp(Vec2::ZERO, Vec2::ONE);
         transform.translation = pos.extend(transform.translation.z);
+    }
+}
+
+/// Letterbox a camera's viewport to a particular aspect ratio.
+#[derive(Component, Clone)]
+pub struct Letterbox {
+    pub aspect_ratio: f32,
+}
+
+impl Configure for Letterbox {
+    fn configure(app: &mut App) {
+        app.add_systems(
+            PostUpdate,
+            apply_letterbox.run_if(
+                any_match_filter::<Changed<Letterbox>>
+                    .or(on_event::<WindowResized>)
+                    .or(on_event::<WindowScaleFactorChanged>),
+            ),
+        );
+    }
+}
+
+fn apply_letterbox(
+    mut letterbox_query: Query<(&mut Camera, &Letterbox)>,
+    primary_window: Single<&Window, With<PrimaryWindow>>,
+) {
+    for (mut camera, letterbox) in &mut letterbox_query {
+        let window_width = primary_window.physical_width() as f32;
+        let window_height = primary_window.physical_height() as f32;
+        let mut size = vec2(window_width, window_height);
+        let mut pos = Vec2::ZERO;
+
+        if window_width / window_height > letterbox.aspect_ratio {
+            size.x = (size.y * letterbox.aspect_ratio).max(1.0);
+            pos.x = window_width / 2.0 - size.x / 2.0;
+        } else {
+            size.y = (size.x / letterbox.aspect_ratio).max(1.0);
+            pos.y = window_height / 2.0 - size.y / 2.0;
+        }
+
+        camera.viewport = Some(Viewport {
+            physical_position: pos.as_uvec2(),
+            physical_size: size.as_uvec2(),
+            ..default()
+        });
     }
 }
 
