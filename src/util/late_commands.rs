@@ -20,7 +20,7 @@ pub struct LateCommands<'w, 's> {
 }
 
 impl LateCommands<'_, '_> {
-    pub fn commands(&mut self) -> Commands {
+    pub fn commands(&mut self) -> Commands<'_, '_> {
         Commands::new_from_entities(&mut self.queue.0, self.entities)
     }
 }
