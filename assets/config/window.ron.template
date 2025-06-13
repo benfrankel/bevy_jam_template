@@ -1,5 +1,0 @@
-(
-    title: "{{project-name | title_case}}",
-    window_mode: Windowed,
-    present_mode: AutoVsync,
-)
