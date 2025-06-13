@@ -29,7 +29,7 @@ pub(super) fn plugin(app: &mut App) {
             Name::new("Text"),
             RichText::default(),
             DynamicFontSize::new(Vw(2.0)).with_step(8.0),
-            Node::default(),
+            Node::DEFAULT,
             Pickable::IGNORE,
             ChildOf(container),
         ))

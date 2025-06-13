@@ -6,7 +6,19 @@ use crate::screen::Screen;
 use crate::screen::ScreenRoot;
 
 pub(super) fn plugin(app: &mut App) {
-    app.add_systems(StateFlush, Screen::Gameplay.on_enter(spawn_gameplay_screen));
+    app.add_systems(
+        StateFlush,
+        (
+            Screen::Gameplay.on_enter(spawn_gameplay_screen),
+            Menu::ANY.on_enter(
+                spawn_menu_overlay.run_if(
+                    Screen::Gameplay
+                        .will_enter()
+                        .and(Screen::is_triggered.or(Menu::is_disabled)),
+                ),
+            ),
+        ),
+    );
 
     app.configure::<(GameplayAssets, GameplayAction)>();
 }
@@ -19,12 +31,21 @@ fn spawn_gameplay_screen(
 ) {
     commands
         .entity(screen_root.ui)
-        .with_child(widget::column_center(children![widget::label(
+        .with_child(widget::center(children![widget::label(
             "Gameplay goes here. Press P to pause!",
         )]));
     commands.spawn((
         music_audio(&audio_settings, assets.music.clone()),
         DespawnOnExitState::<Screen>::Recursive,
+    ));
+}
+
+fn spawn_menu_overlay(mut commands: Commands) {
+    commands.spawn((
+        widget::blocking_overlay(1),
+        ThemeColor::Overlay.set::<BackgroundColor>(),
+        DespawnOnExitState::<Screen>::default(),
+        DespawnOnDisableState::<Menu>::default(),
     ));
 }
 
@@ -62,7 +83,8 @@ impl Configure for GameplayAction {
         app.add_systems(
             Update,
             Screen::Gameplay.on_update((
-                (spawn_pause_overlay, Menu::Pause.enter())
+                Menu::Pause
+                    .enter()
                     .in_set(UpdateSystems::RecordInput)
                     .run_if(Menu::is_disabled.and(action_just_pressed(Self::Pause))),
                 Menu::clear
@@ -71,13 +93,4 @@ impl Configure for GameplayAction {
             )),
         );
     }
-}
-
-fn spawn_pause_overlay(mut commands: Commands) {
-    commands.spawn((
-        widget::blocking_overlay(1),
-        ThemeColor::Overlay.set::<BackgroundColor>(),
-        DespawnOnExitState::<Screen>::default(),
-        DespawnOnDisableState::<Menu>::default(),
-    ));
 }

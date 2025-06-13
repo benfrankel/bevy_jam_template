@@ -34,7 +34,7 @@ impl Config for ThemeConfig {
 
 // Note: The length of this array MUST equal the number of `ThemeColor` variants.
 #[derive(Reflect, Serialize, Deserialize)]
-pub struct ThemeColorList([Color; 11]);
+pub struct ThemeColorList([Color; 12]);
 
 impl Index<ThemeColor> for ThemeColorList {
     type Output = Color;
@@ -64,6 +64,7 @@ pub enum ThemeColor {
 
     // Other UI colors.
     Popup,
+    PopupBorder,
     Overlay,
 }
 

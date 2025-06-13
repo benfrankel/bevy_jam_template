@@ -1,4 +1,6 @@
 use bevy::ecs::system::IntoObserverSystem;
+use bevy::text::FontSmoothing;
+use bevy::text::LineHeight;
 
 use crate::animation::backup::Backup;
 use crate::animation::offset::NodeOffset;
@@ -22,22 +24,86 @@ pub fn blocking_overlay(z: i32) -> impl Bundle {
     )
 }
 
-pub fn body(children: impl Bundle) -> impl Bundle {
+pub fn spacer(space: Val) -> impl Bundle {
+    (Name::new("Spacer"), Node::DEFAULT.size(space, space))
+}
+
+pub fn root(children: impl Bundle) -> impl Bundle {
     (
-        Name::new("Body"),
+        Name::new("Root"),
         Node {
-            display: Display::Block,
-            padding: UiRect::all(Vw(3.5)),
-            ..Node::DEFAULT.full_size()
+            padding: UiRect::all(Vw(4.0)),
+            ..Node::COLUMN.full_size()
         },
         children,
     )
 }
 
-pub fn column_center(children: impl Bundle) -> impl Bundle {
+pub fn header(children: impl Bundle) -> impl Bundle {
     (
-        Name::new("ColumnCenter"),
-        Node::COLUMN_CENTER.full_size(),
+        Name::new("Header"),
+        Node {
+            margin: UiRect::bottom(Vw(4.0)),
+            ..Node::ROW.center().full_width()
+        },
+        children,
+    )
+}
+
+pub fn body(children: impl Bundle) -> impl Bundle {
+    (
+        Name::new("Body"),
+        Node::COLUMN.center_left().full_width().grow(),
+        children,
+    )
+}
+
+pub fn footer(children: impl Bundle) -> impl Bundle {
+    (
+        Name::new("Footer"),
+        Node {
+            margin: UiRect::top(Vw(4.0)),
+            ..Node::ROW.center().full_width()
+        },
+        children,
+    )
+}
+
+pub fn full_popup(children: impl Bundle) -> impl Bundle {
+    popup(Percent(100.0), Percent(100.0), children)
+}
+
+pub fn popup(width: Val, height: Val, children: impl Bundle) -> impl Bundle {
+    (
+        Name::new("Popup"),
+        Node {
+            padding: UiRect::all(Vw(3.0)),
+            border: UiRect::all(Px(1.0)),
+            ..Node::COLUMN.size(width, height)
+        },
+        ThemeColor::Popup.set::<BackgroundColor>(),
+        BorderRadius::all(Vw(3.0)),
+        ThemeColor::PopupBorder.set::<BorderColor>(),
+        BoxShadow::from(ShadowStyle {
+            color: Color::BLACK.with_alpha(0.5),
+            x_offset: Val::ZERO,
+            y_offset: Val::ZERO,
+            spread_radius: Val::ZERO,
+            blur_radius: Val::Vw(4.0),
+        }),
+        FocusPolicy::Block,
+        children,
+    )
+}
+
+pub fn stretch(children: impl Bundle) -> impl Bundle {
+    (Name::new("Stretch"), Node::ROW.center().grow(), children)
+}
+
+pub fn center(children: impl Bundle) -> impl Bundle {
+    (
+        Name::new("Center"),
+        Node::COLUMN.center().full_size(),
         children,
     )
 }
@@ -46,9 +112,8 @@ pub fn column_of_buttons(children: impl Bundle) -> impl Bundle {
     (
         Name::new("ColumnOfButtons"),
         Node {
-            margin: UiRect::vertical(Vw(2.5)),
             row_gap: Vw(2.5),
-            ..Node::COLUMN_CENTER
+            ..Node::COLUMN.center()
         },
         children,
     )
@@ -58,55 +123,51 @@ pub fn row_of_buttons(children: impl Bundle) -> impl Bundle {
     (
         Name::new("RowOfButtons"),
         Node {
-            margin: UiRect::vertical(Vw(2.5)),
             column_gap: Vw(2.5),
-            ..Node::ROW_CENTER
+            ..Node::ROW.center()
         },
         children,
     )
 }
 
-pub fn stretch(children: impl Bundle) -> impl Bundle {
-    (Name::new("Stretch"), Node::ROW_CENTER.grow(), children)
-}
-
-pub fn header(text: impl AsRef<str>) -> impl Bundle {
-    (
-        label_base(Vw(5.0), ThemeColor::BodyText, text),
-        Node {
-            margin: UiRect::bottom(Vw(5.0)),
-            ..default()
-        },
+pub fn h1(text: impl AsRef<str>) -> impl Bundle {
+    label_base(
+        Vw(5.0),
+        1.2,
+        JustifyText::Center,
+        ThemeColor::BodyText,
+        text,
     )
 }
 
 pub fn big_label(text: impl AsRef<str>) -> impl Bundle {
-    label_base(Vw(5.0), ThemeColor::BodyText, text)
+    label_base(Vw(5.0), 1.2, JustifyText::Left, ThemeColor::BodyText, text)
 }
 
 pub fn label(text: impl AsRef<str>) -> impl Bundle {
-    label_base(Vw(3.5), ThemeColor::BodyText, text)
+    label_base(Vw(3.5), 1.2, JustifyText::Left, ThemeColor::BodyText, text)
 }
 
-pub fn paragraph(text: &'static str) -> impl Bundle {
-    (
-        Name::new("Paragraph"),
-        Node {
-            margin: UiRect::vertical(Vw(5.0)),
-            row_gap: Vw(1.4),
-            ..Node::COLUMN_MID
-        },
-        Children::spawn(SpawnIter(text.lines().map(label))),
-    )
-}
-
-fn label_base(font_size: Val, text_color: ThemeColor, text: impl AsRef<str>) -> impl Bundle {
+pub fn label_base(
+    font_size: Val,
+    line_height: f32,
+    justify: JustifyText,
+    text_color: ThemeColor,
+    text: impl AsRef<str>,
+) -> impl Bundle {
     let text = text.as_ref();
+    let rich_text = RichText::from_sections(parse_rich(text))
+        .with_justify(justify)
+        .with_font_smoothing(FontSmoothing::None)
+        .with_line_height(LineHeight::RelativeToFont(line_height));
+    let text_colors =
+        std::iter::repeat_n(text_color, rich_text.sections.len().max(1)).collect::<Vec<_>>();
+
     (
         Name::new(format!("Label(\"{text}\")")),
-        RichText::from_sections(parse_rich(text)).with_justify(JustifyText::Center),
+        rich_text,
         DynamicFontSize::new(font_size).with_step(8.0),
-        ThemeColorForText(vec![text_color]),
+        ThemeColorForText(text_colors),
     )
 }
 
@@ -146,7 +207,7 @@ where
     button_base(Vw(38.0), Vw(10.0), Vw(4.0), text, action)
 }
 
-fn button_base<E, B, M, I>(
+pub fn button_base<E, B, M, I>(
     width: Val,
     height: Val,
     font_size: Val,
@@ -162,7 +223,7 @@ where
     (
         Name::new(format!("Button(\"{text}\")")),
         Button,
-        Node::ROW_CENTER.size(width, height),
+        Node::ROW.center().size(width, height),
         BorderRadius::MAX,
         ThemeColor::default().set::<BackgroundColor>(),
         BoxShadow::from(ShadowStyle {
@@ -187,7 +248,13 @@ where
         },
         InteractionSfx,
         children![(
-            label_base(font_size, ThemeColor::PrimaryText, text),
+            label_base(
+                font_size,
+                1.2,
+                JustifyText::Center,
+                ThemeColor::PrimaryText,
+                text
+            ),
             Pickable::IGNORE,
         )],
         Patch(|entity| {
@@ -226,7 +293,6 @@ pub fn loading_bar<S: State + Clone + PartialEq + Eq + Hash + Debug>() -> impl B
     (
         Name::new("LoadingBar"),
         Node {
-            margin: UiRect::all(Vw(1.0)),
             padding: UiRect::all(Vw(0.5)),
             border: UiRect::all(Vw(0.5)),
             ..Node::DEFAULT.size(Percent(60.0), Vw(4.0))
@@ -234,9 +300,9 @@ pub fn loading_bar<S: State + Clone + PartialEq + Eq + Hash + Debug>() -> impl B
         ThemeColor::BodyText.set::<BorderColor>(),
         children![(
             Name::new("LoadingBarFill"),
+            IsLoadingBarFill::<S>(PhantomData),
             Node::DEFAULT.full_height(),
             ThemeColor::Primary.set::<BackgroundColor>(),
-            IsLoadingBarFill::<S>(PhantomData),
         )],
     )
 }

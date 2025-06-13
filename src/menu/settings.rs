@@ -20,11 +20,15 @@ pub(super) fn plugin(app: &mut App) {
 fn spawn_settings_menu(mut commands: Commands, menu_root: Res<MenuRoot>) {
     commands
         .entity(menu_root.ui)
-        .with_child(widget::body(children![
-            widget::header("[b]Settings"),
-            grid(),
-            widget::row_of_buttons(children![widget::wide_button("Back", go_back)]),
-        ]));
+        .with_child(widget::root(children![widget::full_popup(children![
+            widget::center(children![
+                widget::header(children![widget::h1("[b]Settings")]),
+                grid(),
+                widget::footer(children![widget::row_of_buttons(children![
+                    widget::wide_button("Back", go_back),
+                ])]),
+            ]),
+        ])]));
 }
 
 fn go_back(_: Trigger<Pointer<Click>>, mut menu: ResMut<NextStateStack<Menu>>) {
@@ -36,7 +40,6 @@ fn grid() -> impl Bundle {
         Name::new("Grid"),
         Node {
             display: Display::Grid,
-            margin: UiRect::vertical(Vw(5.0)),
             row_gap: Vw(1.4),
             column_gap: Vw(6.0),
             grid_template_columns: vec![

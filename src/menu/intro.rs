@@ -11,14 +11,24 @@ pub(super) fn plugin(app: &mut App) {
 fn spawn_intro_menu(mut commands: Commands, menu_root: Res<MenuRoot>) {
     commands
         .entity(menu_root.ui)
-        .with_child(widget::body(children![
-            widget::header("[b]How to play"),
-            widget::paragraph("Be skillful,\nwin the game!\nPress P to pause."),
-            widget::row_of_buttons(children![
+        .with_child(widget::root(children![widget::center(children![
+            widget::header(children![widget::h1("[b]How to play")]),
+            widget::label_base(
+                Vw(3.5),
+                1.8,
+                JustifyText::Center,
+                ThemeColor::BodyText,
+                "\
+                Be skillful,\n\
+                win the game!\n\
+                Press P to pause.\
+                ",
+            ),
+            widget::footer(children![widget::row_of_buttons(children![
                 widget::button("Back", go_back),
                 widget::button("Start", start_game)
-            ]),
-        ]));
+            ])]),
+        ])]));
 }
 
 fn go_back(_: Trigger<Pointer<Click>>, mut menu: ResMut<NextStateStack<Menu>>) {

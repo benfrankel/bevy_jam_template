@@ -22,8 +22,10 @@
         Srgba(Srgba(red: 0.157, green: 0.157, blue: 0.157, alpha: 1.000)),
 
         // Popup
-        Srgba(Srgba(red: 0.106, green: 0.118, blue: 0.122, alpha: 0.850)),
+        Srgba(Srgba(red: 0.106, green: 0.118, blue: 0.122, alpha: 0.900)),
+        // PopupBorder
+        Srgba(Srgba(red: 0.300, green: 0.300, blue: 0.300, alpha: 1.000)),
         // Overlay
-        Srgba(Srgba(red: 0.157, green: 0.157, blue: 0.157, alpha: 0.980)),
+        Srgba(Srgba(red: 0.000, green: 0.000, blue: 0.000, alpha: 0.500)),
     )),
 )

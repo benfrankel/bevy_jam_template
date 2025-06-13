@@ -33,7 +33,7 @@ fn spawn_splash_screen(
 ) {
     commands
         .entity(screen_root.ui)
-        .with_child(widget::column_center(children![(
+        .with_child(widget::center(children![(
             Name::new("SplashImage"),
             ImageNode::new(asset_server.load_with_settings(
                 // TODO: Workaround for <https://github.com/bevyengine/bevy/issues/14246>.

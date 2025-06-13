@@ -15,10 +15,11 @@ pub(super) fn plugin(app: &mut App) {
 fn spawn_loading_screen(mut commands: Commands, screen_root: Res<ScreenRoot>) {
     commands
         .entity(screen_root.ui)
-        .with_child(widget::column_center(children![
+        .with_child(widget::root(children![widget::center(children![
             widget::big_label("[b]Loading..."),
+            widget::spacer(Vw(1.0)),
             widget::loading_bar::<Screen>(),
-        ]));
+        ])]));
 }
 
 fn update_loading(

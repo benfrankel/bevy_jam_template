@@ -9,8 +9,8 @@ pub(super) fn plugin(app: &mut App) {
 fn spawn_main_menu(mut commands: Commands, menu_root: Res<MenuRoot>) {
     commands
         .entity(menu_root.ui)
-        .with_child(widget::body(children![
-            widget::header("[b]Pyri New Jam"),
+        .with_child(widget::root(children![widget::center(children![
+            widget::header(children![widget::h1("[b]Pyri New Jam")]),
             widget::column_of_buttons(children![
                 widget::big_button("Play", open_intro),
                 widget::big_button("Settings", open_settings),
@@ -20,7 +20,7 @@ fn spawn_main_menu(mut commands: Commands, menu_root: Res<MenuRoot>) {
                     InteractionDisabled(true),
                 ),
             ]),
-        ]));
+        ])]));
 }
 
 fn open_intro(_: Trigger<Pointer<Click>>, mut menu: ResMut<NextStateStack<Menu>>) {
