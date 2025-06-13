@@ -42,7 +42,7 @@ struct DevConfig {
 
     // State:
     pub log_state_flush: bool,
-    pub extend_loading_screen: f32,
+    pub extend_loading_menu: f32,
     pub initial_screen: Option<Screen>,
 }
 
@@ -54,7 +54,7 @@ impl Default for DevConfig {
             log_entity_count: false,
 
             log_state_flush: true,
-            extend_loading_screen: 0.0,
+            extend_loading_menu: 0.0,
             initial_screen: None,
         }
     }

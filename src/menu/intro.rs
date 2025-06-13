@@ -39,11 +39,12 @@ fn start_game(
     _: Trigger<Pointer<Click>>,
     mut commands: Commands,
     progress: Res<ProgressTracker<BevyState<Screen>>>,
+    mut menu: ResMut<NextStateStack<Menu>>,
 ) {
     let Progress { done, total } = progress.get_global_combined_progress();
-    commands.spawn(fade_out(if done >= total {
-        Screen::Gameplay
+    if done >= total {
+        commands.spawn(fade_out(Screen::Gameplay));
     } else {
-        Screen::Loading
-    }));
+        menu.push(Menu::Loading);
+    }
 }

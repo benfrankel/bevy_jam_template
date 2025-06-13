@@ -11,7 +11,7 @@ const FADE_OUT_SECS: f32 = 0.2;
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
-struct FadeIn {
+pub struct FadeIn {
     duration: f32,
     remaining: f32,
 }
@@ -63,7 +63,7 @@ pub fn fade_in() -> impl Bundle {
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
-struct FadeOut {
+pub struct FadeOut {
     duration: f32,
     remaining: f32,
     to_screen: Screen,

@@ -318,20 +318,18 @@ impl<S: State + Clone + PartialEq + Eq + Hash + Debug + TypePath> Configure
 {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.add_systems(Update, update_loading_bar_fill::<S>);
+        app.add_systems(
+            Update,
+            update_loading_bar_fill::<S>.in_set(UpdateSystems::SyncLate),
+        );
     }
 }
 
 fn update_loading_bar_fill<S: State + Clone + PartialEq + Eq + Hash + Debug>(
     progress: Res<ProgressTracker<BevyState<S>>>,
     mut fill_query: Query<&mut Node, With<IsLoadingBarFill<S>>>,
-    mut last_done: Local<u32>,
 ) {
     let Progress { done, total } = progress.get_global_combined_progress();
-    if *last_done == done {
-        return;
-    }
-    *last_done = done;
 
     for mut node in &mut fill_query {
         node.width = Percent(100.0 * done as f32 / total as f32);

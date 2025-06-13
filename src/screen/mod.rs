@@ -1,11 +1,7 @@
 pub mod fade;
 mod gameplay;
-mod loading;
 mod splash;
 mod title;
-
-use bevy::ecs::schedule::ScheduleConfigs;
-use bevy::ecs::system::ScheduleSystem;
 
 use crate::core::camera::CameraRoot;
 use crate::core::window::WindowReady;
@@ -55,7 +51,6 @@ pub enum Screen {
     #[default]
     Splash,
     Title,
-    Loading,
     Gameplay,
 }
 
@@ -75,12 +70,7 @@ impl Configure for Screen {
                 )),
             ),
         );
-        app.add_plugins((
-            splash::plugin,
-            title::plugin,
-            loading::plugin,
-            gameplay::plugin,
-        ));
+        app.add_plugins((splash::plugin, title::plugin, gameplay::plugin));
     }
 }
 
@@ -99,7 +89,12 @@ impl Configure for ScreenTime {
         app.register_type::<Self>();
         app.init_resource::<Self>();
         app.add_systems(StateFlush, Screen::ANY.on_exit(reset_screen_time));
-        app.add_systems(Update, tick_screen_time.run_if(Screen::is_enabled));
+        app.add_systems(
+            Update,
+            tick_screen_time
+                .in_set(UpdateSystems::TickTimers)
+                .run_if(Screen::is_enabled),
+        );
     }
 }
 
@@ -109,11 +104,4 @@ fn reset_screen_time(mut screen_time: ResMut<ScreenTime>) {
 
 fn tick_screen_time(time: Res<Time>, mut screen_time: ResMut<ScreenTime>) {
     screen_time.0 += time.delta();
-}
-
-fn wait_in_screen(duration: f32) -> ScheduleConfigs<ScheduleSystem> {
-    (move |screen_time: Res<ScreenTime>| -> Progress {
-        (screen_time.0.as_secs_f32() >= duration).into()
-    })
-    .track_progress::<BevyState<Screen>>()
 }
