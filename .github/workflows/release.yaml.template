@@ -11,28 +11,32 @@ on:
         description: "Version number in the format `v1.2.3`"
         required: true
         type: string
-      build_for_web:
-        description: "Build for web?"
-        default: true
-        type: boolean
-      build_for_linux:
-        description: "Build for Linux?"
-        default: true
-        type: boolean
       build_for_windows:
-        description: "Build for Windows?"
+        description: "Build for Windows (WARNING: slow!)"
         default: true
         type: boolean
       build_for_macos:
-        description: "Build for macOS?"
+        description: "Build for macOS"
+        default: true
+        type: boolean
+      build_for_linux:
+        description: "Build for Linux"
+        default: true
+        type: boolean
+      build_for_web:
+        description: "Build for web"
         default: true
         type: boolean
       upload_to_github:
-        description: "Upload to GitHub releases?"
+        description: "Upload to GitHub releases"
         default: true
         type: boolean
       upload_to_itch:
-        description: "Upload to itch.io?"
+        description: "Upload to itch.io (if configured)"
+        default: true
+        type: boolean
+      deny_warnings:
+        description: "Deny warnings"
         default: true
         type: boolean
 
@@ -171,9 +175,12 @@ jobs:
           echo "package=${app_package_name}-"'${{ matrix.platform }}${{ matrix.package_ext }}' >> "${GITHUB_ENV}"
 
           # Rustflags:
-          echo 'RUSTFLAGS=-Dwarnings -Zthreads=0' >> "${GITHUB_ENV}"
+          echo 'RUSTFLAGS=-Zthreads=0' >> "${GITHUB_ENV}"
           if [ '${{ matrix.platform }}' != 'windows' ]; then
             echo "RUSTFLAGS=${RUSTFLAGS:+$RUSTFLAGS }"'-Zshare-generics=y' >> "${GITHUB_ENV}"
+          fi
+          if [ '${{ inputs.deny_warnings }}' = 'true' ]; then
+            echo "RUSTFLAGS=${RUSTFLAGS:+$RUSTFLAGS }"'-Dwarnings' >> "${GITHUB_ENV}"
           fi
 
           # macOS environment:
