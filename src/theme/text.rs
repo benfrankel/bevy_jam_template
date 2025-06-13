@@ -1,7 +1,7 @@
 use bevy::asset::load_internal_binary_asset;
 use bevy::asset::weak_handle;
+use bevy::window::PrimaryWindow;
 
-use crate::core::window::WindowRoot;
 use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
@@ -64,12 +64,10 @@ impl DynamicFontSize {
 }
 
 pub fn apply_dynamic_font_size(
-    window_root: Res<WindowRoot>,
-    window_query: Query<&Window>,
+    primary_window: Single<&Window, With<PrimaryWindow>>,
     mut text_query: Query<(&DynamicFontSize, &ComputedNode, &mut RichText)>,
 ) {
-    let window = rq!(window_query.get(window_root.primary));
-    let viewport_size = window.resolution.size();
+    let viewport_size = primary_window.resolution.size();
 
     for (font_size, computed_node, mut text) in &mut text_query {
         // Compute font size.

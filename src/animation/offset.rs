@@ -1,6 +1,7 @@
+use bevy::window::PrimaryWindow;
+
 use crate::animation::PostTransformSystems;
 use crate::animation::backup::Backup;
-use crate::core::window::WindowRoot;
 use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
@@ -50,8 +51,7 @@ impl NodeOffset {
 }
 
 fn apply_node_offset(
-    window_root: Res<WindowRoot>,
-    window_query: Query<&Window>,
+    primary_window: Single<&Window, With<PrimaryWindow>>,
     mut node_offset_query: Query<(
         &NodeOffset,
         &ComputedNode,
@@ -60,8 +60,7 @@ fn apply_node_offset(
         Has<Backup<BoxShadow>>,
     )>,
 ) {
-    let window = rq!(window_query.get(window_root.primary));
-    let viewport_size = window.resolution.size();
+    let viewport_size = primary_window.resolution.size();
 
     for (offset, computed_node, mut transform, box_shadow, has_backup_box_shadow) in
         &mut node_offset_query

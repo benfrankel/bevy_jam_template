@@ -3,43 +3,36 @@ mod gameplay;
 mod splash;
 mod title;
 
-use crate::core::camera::CameraRoot;
+use crate::core::camera::PrimaryCamera;
 use crate::menu::Menu;
 use crate::prelude::*;
-use crate::theme::widget::IsLoadingBarFill;
+use crate::theme::widget::LoadingBarFill;
 
 pub fn plugin(app: &mut App) {
-    app.configure::<(ScreenRoot, Screen, ScreenTime)>();
+    app.configure::<(ScreenRootUi, Screen, ScreenTime)>();
 
     app.add_plugins(fade::plugin);
 }
 
-#[derive(Resource, Reflect)]
-#[reflect(Resource)]
-pub struct ScreenRoot {
-    pub ui: Entity,
-}
+#[derive(Component, Reflect, Debug)]
+#[reflect(Component)]
+struct ScreenRootUi;
 
-impl Configure for ScreenRoot {
+impl Configure for ScreenRootUi {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.init_resource::<Self>();
+        app.add_systems(Startup, spawn_screen_root_ui);
     }
 }
 
-impl FromWorld for ScreenRoot {
-    fn from_world(world: &mut World) -> Self {
-        Self {
-            ui: world
-                .spawn((
-                    Name::new("ScreenUi"),
-                    Node::DEFAULT.full_size(),
-                    Pickable::IGNORE,
-                    DespawnOnExitState::<Screen>::Descendants,
-                ))
-                .id(),
-        }
-    }
+fn spawn_screen_root_ui(mut commands: Commands) {
+    commands.spawn((
+        Name::new("ScreenUi"),
+        ScreenRootUi,
+        Node::DEFAULT.full_size(),
+        Pickable::IGNORE,
+        DespawnOnExitState::<Screen>::Descendants,
+    ));
 }
 
 #[derive(
@@ -57,7 +50,7 @@ impl Configure for Screen {
     fn configure(app: &mut App) {
         app.init_state::<Self>();
         app.add_plugins(ProgressPlugin::<BevyState<Self>>::new());
-        app.configure::<IsLoadingBarFill<Self>>();
+        app.configure::<LoadingBarFill<Self>>();
         app.add_systems(
             StateFlush,
             Screen::ANY.on_exit((
@@ -70,9 +63,10 @@ impl Configure for Screen {
     }
 }
 
-fn reset_screen_camera(camera_root: Res<CameraRoot>, mut camera_query: Query<&mut Transform>) {
-    let mut transform = r!(camera_query.get_mut(camera_root.primary));
-    *transform = default();
+fn reset_screen_camera(mut camera_query: Query<&mut Transform, With<PrimaryCamera>>) {
+    for mut transform in &mut camera_query {
+        *transform = default();
+    }
 }
 
 /// The total time elapsed in the current screen.

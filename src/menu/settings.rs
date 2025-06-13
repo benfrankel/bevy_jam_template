@@ -3,7 +3,7 @@ use bevy_simple_prefs::PrefsPlugin;
 
 use crate::core::audio::AudioSettings;
 use crate::menu::Menu;
-use crate::menu::MenuRoot;
+use crate::menu::MenuRootUi;
 use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
@@ -11,16 +11,16 @@ pub(super) fn plugin(app: &mut App) {
 
     app.configure::<(
         Settings,
-        IsMasterVolumeSelector,
-        IsMusicVolumeSelector,
-        IsSfxVolumeSelector,
-        IsUiVolumeSelector,
+        MasterVolumeSelector,
+        MusicVolumeSelector,
+        SfxVolumeSelector,
+        UiVolumeSelector,
     )>();
 }
 
-fn spawn_settings_menu(mut commands: Commands, menu_root: Res<MenuRoot>) {
+fn spawn_settings_menu(mut commands: Commands, menu_root_ui: Single<Entity, With<MenuRootUi>>) {
     commands
-        .entity(menu_root.ui)
+        .entity(*menu_root_ui)
         .with_child(widget::root(children![widget::full_popup(children![
             widget::center(children![
                 widget::header(children![widget::h1("[b]Settings")]),
@@ -52,22 +52,22 @@ fn grid() -> impl Bundle {
         GridAlignment::columns([JustifySelf::End, JustifySelf::Start]),
         children![
             widget::label("Master volume"),
-            widget::selector(IsMasterVolumeSelector, master_volume_down, master_volume_up),
+            widget::selector(MasterVolumeSelector, master_volume_down, master_volume_up),
             widget::label("Music volume"),
-            widget::selector(IsMusicVolumeSelector, music_volume_down, music_volume_up),
+            widget::selector(MusicVolumeSelector, music_volume_down, music_volume_up),
             widget::label("SFX volume"),
-            widget::selector(IsSfxVolumeSelector, sfx_volume_down, sfx_volume_up),
+            widget::selector(SfxVolumeSelector, sfx_volume_down, sfx_volume_up),
             widget::label("UI volume"),
-            widget::selector(IsUiVolumeSelector, ui_volume_down, ui_volume_up),
+            widget::selector(UiVolumeSelector, ui_volume_down, ui_volume_up),
         ],
     )
 }
 
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
-struct IsMasterVolumeSelector;
+struct MasterVolumeSelector;
 
-impl Configure for IsMasterVolumeSelector {
+impl Configure for MasterVolumeSelector {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
         app.add_systems(
@@ -79,7 +79,7 @@ impl Configure for IsMasterVolumeSelector {
 
 fn update_master_volume_selector(
     audio_settings: Res<AudioSettings>,
-    selector_query: Query<Entity, With<IsMasterVolumeSelector>>,
+    selector_query: Query<Entity, With<MasterVolumeSelector>>,
     children_query: Query<&Children>,
     mut text_query: Query<&mut RichText>,
     mut disabled_query: Query<&mut InteractionDisabled>,
@@ -113,9 +113,9 @@ fn master_volume_up(_: Trigger<Pointer<Click>>, mut audio_settings: ResMut<Audio
 
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
-struct IsMusicVolumeSelector;
+struct MusicVolumeSelector;
 
-impl Configure for IsMusicVolumeSelector {
+impl Configure for MusicVolumeSelector {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
         app.add_systems(
@@ -127,7 +127,7 @@ impl Configure for IsMusicVolumeSelector {
 
 fn update_music_volume_selector(
     audio_settings: Res<AudioSettings>,
-    selector_query: Query<Entity, With<IsMusicVolumeSelector>>,
+    selector_query: Query<Entity, With<MusicVolumeSelector>>,
     children_query: Query<&Children>,
     mut text_query: Query<&mut RichText>,
     mut disabled_query: Query<&mut InteractionDisabled>,
@@ -161,9 +161,9 @@ fn music_volume_up(_: Trigger<Pointer<Click>>, mut audio_settings: ResMut<AudioS
 
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
-struct IsSfxVolumeSelector;
+struct SfxVolumeSelector;
 
-impl Configure for IsSfxVolumeSelector {
+impl Configure for SfxVolumeSelector {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
         app.add_systems(
@@ -175,7 +175,7 @@ impl Configure for IsSfxVolumeSelector {
 
 fn update_sfx_volume_selector(
     audio_settings: Res<AudioSettings>,
-    selector_query: Query<Entity, With<IsSfxVolumeSelector>>,
+    selector_query: Query<Entity, With<SfxVolumeSelector>>,
     children_query: Query<&Children>,
     mut text_query: Query<&mut RichText>,
     mut disabled_query: Query<&mut InteractionDisabled>,
@@ -209,9 +209,9 @@ fn sfx_volume_up(_: Trigger<Pointer<Click>>, mut audio_settings: ResMut<AudioSet
 
 #[derive(Component, Reflect, Debug)]
 #[reflect(Component)]
-struct IsUiVolumeSelector;
+struct UiVolumeSelector;
 
-impl Configure for IsUiVolumeSelector {
+impl Configure for UiVolumeSelector {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
         app.add_systems(
@@ -223,7 +223,7 @@ impl Configure for IsUiVolumeSelector {
 
 fn update_ui_volume_selector(
     audio_settings: Res<AudioSettings>,
-    selector_query: Query<Entity, With<IsUiVolumeSelector>>,
+    selector_query: Query<Entity, With<UiVolumeSelector>>,
     children_query: Query<&Children>,
     mut text_query: Query<&mut RichText>,
     mut disabled_query: Query<&mut InteractionDisabled>,

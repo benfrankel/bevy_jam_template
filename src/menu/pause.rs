@@ -1,5 +1,5 @@
 use crate::menu::Menu;
-use crate::menu::MenuRoot;
+use crate::menu::MenuRootUi;
 use crate::prelude::*;
 use crate::screen::Screen;
 use crate::screen::fade::fade_out;
@@ -8,9 +8,9 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(StateFlush, Menu::Pause.on_enter(spawn_pause_menu));
 }
 
-fn spawn_pause_menu(mut commands: Commands, menu_root: Res<MenuRoot>) {
+fn spawn_pause_menu(mut commands: Commands, menu_root_ui: Single<Entity, With<MenuRootUi>>) {
     commands
-        .entity(menu_root.ui)
+        .entity(*menu_root_ui)
         .with_child(widget::root(children![widget::center(children![
             widget::header(children![widget::h1("[b]Game paused")]),
             widget::column_of_buttons(children![

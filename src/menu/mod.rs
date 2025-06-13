@@ -7,36 +7,29 @@ mod settings;
 use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.configure::<(MenuRoot, Menu, MenuAction, MenuTime)>();
+    app.configure::<(MenuRootUi, Menu, MenuAction, MenuTime)>();
 }
 
-#[derive(Resource, Reflect)]
-#[reflect(Resource)]
-pub struct MenuRoot {
-    pub ui: Entity,
-}
+#[derive(Component, Reflect, Debug)]
+#[reflect(Component)]
+struct MenuRootUi;
 
-impl Configure for MenuRoot {
+impl Configure for MenuRootUi {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.init_resource::<Self>();
+        app.add_systems(Startup, spawn_menu_root_ui);
     }
 }
 
-impl FromWorld for MenuRoot {
-    fn from_world(world: &mut World) -> Self {
-        Self {
-            ui: world
-                .spawn((
-                    Name::new("MenuUi"),
-                    Node::DEFAULT.full_size(),
-                    GlobalZIndex(2),
-                    Pickable::IGNORE,
-                    DespawnOnExitState::<Menu>::Descendants,
-                ))
-                .id(),
-        }
-    }
+fn spawn_menu_root_ui(mut commands: Commands) {
+    commands.spawn((
+        Name::new("MenuUi"),
+        MenuRootUi,
+        Node::DEFAULT.full_size(),
+        Pickable::IGNORE,
+        GlobalZIndex(2),
+        DespawnOnExitState::<Menu>::Descendants,
+    ));
 }
 
 #[derive(State, Reflect, Copy, Clone, Eq, PartialEq, Debug)]

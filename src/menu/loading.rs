@@ -1,5 +1,5 @@
 use crate::menu::Menu;
-use crate::menu::MenuRoot;
+use crate::menu::MenuRootUi;
 use crate::prelude::*;
 use crate::screen::Screen;
 use crate::screen::fade::fade_out;
@@ -9,9 +9,9 @@ pub(super) fn plugin(app: &mut App) {
     app.add_systems(Update, Menu::Loading.on_update(update_loading));
 }
 
-fn spawn_loading_menu(mut commands: Commands, menu_root: Res<MenuRoot>) {
+fn spawn_loading_menu(mut commands: Commands, menu_root_ui: Single<Entity, With<MenuRootUi>>) {
     commands
-        .entity(menu_root.ui)
+        .entity(*menu_root_ui)
         .with_child(widget::root(children![widget::center(children![
             widget::big_label("[b]Loading..."),
             widget::spacer(Vw(1.0)),

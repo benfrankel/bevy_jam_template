@@ -4,7 +4,7 @@ use bevy::image::ImageSampler;
 
 use crate::prelude::*;
 use crate::screen::Screen;
-use crate::screen::ScreenRoot;
+use crate::screen::ScreenRootUi;
 use crate::screen::ScreenTime;
 use crate::screen::fade::FADE_IN_SECS;
 use crate::screen::fade::FadeOut;
@@ -23,11 +23,11 @@ const SPLASH_SCREEN_MIN_SECS: f32 = 0.8;
 
 fn spawn_splash_screen(
     mut commands: Commands,
-    screen_root: Res<ScreenRoot>,
+    screen_root_ui: Single<Entity, With<ScreenRootUi>>,
     asset_server: Res<AssetServer>,
 ) {
     commands
-        .entity(screen_root.ui)
+        .entity(*screen_root_ui)
         .with_child(widget::center(children![(
             Name::new("SplashImage"),
             ImageNode::new(asset_server.load_with_settings(

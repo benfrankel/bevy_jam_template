@@ -1,14 +1,14 @@
 use crate::menu::Menu;
-use crate::menu::MenuRoot;
+use crate::menu::MenuRootUi;
 use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_systems(StateFlush, Menu::Main.on_enter(spawn_main_menu));
 }
 
-fn spawn_main_menu(mut commands: Commands, menu_root: Res<MenuRoot>) {
+fn spawn_main_menu(mut commands: Commands, menu_root_ui: Single<Entity, With<MenuRootUi>>) {
     commands
-        .entity(menu_root.ui)
+        .entity(*menu_root_ui)
         .with_child(widget::root(children![widget::center(children![
             widget::header(children![widget::h1("[b]Pyri New Jam")]),
             widget::column_of_buttons(children![

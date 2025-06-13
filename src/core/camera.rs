@@ -1,43 +1,37 @@
 use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.configure::<(CameraRoot, SmoothFollow, AbsoluteScale)>();
+    app.configure::<(PrimaryCamera, SmoothFollow, AbsoluteScale)>();
 }
 
-#[derive(Resource, Reflect)]
-#[reflect(Resource)]
-pub struct CameraRoot {
-    pub primary: Entity,
-}
+/// A marker component for the primary camera.
+#[derive(Component, Reflect, Debug)]
+#[reflect(Component)]
+pub struct PrimaryCamera;
 
-impl Configure for CameraRoot {
+impl Configure for PrimaryCamera {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
-        app.init_resource::<Self>();
+        app.add_systems(Startup, spawn_primary_camera);
     }
 }
 
-impl FromWorld for CameraRoot {
-    fn from_world(world: &mut World) -> Self {
-        Self {
-            primary: world
-                .spawn((
-                    Name::new("PrimaryCamera"),
-                    Camera2d,
-                    Projection::Orthographic(OrthographicProjection {
-                        near: -1000.0,
-                        ..OrthographicProjection::default_2d()
-                    }),
-                    Msaa::Off,
-                    SmoothFollow {
-                        target: Entity::PLACEHOLDER,
-                        rate: Vec2::splat(100.0),
-                    },
-                    IsDefaultUiCamera,
-                ))
-                .id(),
-        }
-    }
+fn spawn_primary_camera(mut commands: Commands) {
+    commands.spawn((
+        Name::new("PrimaryCamera"),
+        PrimaryCamera,
+        IsDefaultUiCamera,
+        Camera2d,
+        Projection::Orthographic(OrthographicProjection {
+            near: -1000.0,
+            ..OrthographicProjection::default_2d()
+        }),
+        Msaa::Off,
+        SmoothFollow {
+            target: Entity::PLACEHOLDER,
+            rate: Vec2::splat(100.0),
+        },
+    ));
 }
 
 /// Follow a target entity smoothly.
@@ -91,11 +85,10 @@ impl Default for AbsoluteScale {
 }
 
 fn apply_absolute_scale(
-    camera_root: Res<CameraRoot>,
-    camera_query: Query<(&Projection, &Camera)>,
+    primary_camera: Single<(&Projection, &Camera), With<PrimaryCamera>>,
     mut scale_query: Query<(&mut Transform, &AbsoluteScale)>,
 ) {
-    let (projection, camera) = r!(camera_query.get(camera_root.primary));
+    let (projection, camera) = *primary_camera;
     let projection = r!(match projection {
         Projection::Orthographic(x) => Some(x),
         _ => None,

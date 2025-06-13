@@ -4,19 +4,19 @@ use bevy_editor_pls::EditorWindowPlacement;
 use crate::prelude::*;
 
 pub(super) fn plugin(app: &mut App) {
-    app.configure::<IsEditorWindow>();
+    app.configure::<EditorWindow>();
 
     let window = app
         .world_mut()
         .spawn((
             Name::new("EditorWindow"),
+            EditorWindow,
             Window {
                 title: "bevy_editor_pls".to_string(),
                 focused: false,
                 visible: false,
                 ..default()
             },
-            IsEditorWindow,
         ))
         .id();
 
@@ -29,9 +29,9 @@ const TOGGLE_KEY: KeyCode = KeyCode::F3;
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
-struct IsEditorWindow;
+struct EditorWindow;
 
-impl Configure for IsEditorWindow {
+impl Configure for EditorWindow {
     fn configure(app: &mut App) {
         app.register_type::<Self>();
         app.add_systems(
@@ -41,7 +41,7 @@ impl Configure for IsEditorWindow {
     }
 }
 
-fn toggle_editor_window(mut window_query: Query<&mut Window, With<IsEditorWindow>>) {
+fn toggle_editor_window(mut window_query: Query<&mut Window, With<EditorWindow>>) {
     for mut window in &mut window_query {
         window.visible ^= true;
     }
