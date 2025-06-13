@@ -10,10 +10,13 @@ use crate::screen::fade::FADE_IN_SECS;
 use crate::screen::fade::FadeOut;
 use crate::screen::fade::fade_out;
 use crate::screen::title::TitleAssets;
+use crate::theme::ThemeAssets;
 
 pub(super) fn plugin(app: &mut App) {
     app.add_loading_state(
-        LoadingState::new(Screen::Splash.bevy()).load_collection::<TitleAssets>(),
+        LoadingState::new(Screen::Splash.bevy())
+            .load_collection::<TitleAssets>()
+            .load_collection::<ThemeAssets>(),
     );
     app.add_systems(StateFlush, Screen::Splash.on_enter(spawn_splash_screen));
     app.add_systems(Update, Screen::Splash.on_update(update_splash));
